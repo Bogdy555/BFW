@@ -1,0 +1,280 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{92686FB6-B3E5-4D99-8461-B3F1E6316DB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmd Batches", "Cmd Batches", "{1B16E66A-8A5D-453F-B898-1133DE115B2F}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Cmd Batches\BFW_CreateFolders.bat = Solution Items\Cmd Batches\BFW_CreateFolders.bat
+		Solution Items\Cmd Batches\BFW_GenerateCertificates.bat = Solution Items\Cmd Batches\BFW_GenerateCertificates.bat
+		Solution Items\Cmd Batches\BFW_Path.bat = Solution Items\Cmd Batches\BFW_Path.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{2A869BBA-5FD6-4505-948E-2044BFB65FF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Digital Certificates", "Digital Certificates", "{53A3701B-34DF-4E81-A83B-A33FED6D1085}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW", "BFW", "{9FA5DCA2-1299-441A-8177-634D525A3509}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Digital Certificates\BFW\BFW_CA_CER.cer = Solution Items\Digital Certificates\BFW\BFW_CA_CER.cer
+		Solution Items\Digital Certificates\BFW\BFW_CA_PK.pvk = Solution Items\Digital Certificates\BFW\BFW_CA_PK.pvk
+		Solution Items\Digital Certificates\BFW\BFW_SPC_CER.cer = Solution Items\Digital Certificates\BFW\BFW_SPC_CER.cer
+		Solution Items\Digital Certificates\BFW\BFW_SPC_PFX.pfx = Solution Items\Digital Certificates\BFW\BFW_SPC_PFX.pfx
+		Solution Items\Digital Certificates\BFW\BFW_SPC_PK.pvk = Solution Items\Digital Certificates\BFW\BFW_SPC_PK.pvk
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{2684C70F-102E-43C5-93FA-86EB35FFD1D9}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Documentation\BFW_BuildSteps.txt = Solution Items\Documentation\BFW_BuildSteps.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW", "BFW", "{E7808610-1B93-4234-8CA6-135561C4DA42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW_APP", "BFW_APP", "{14DF8151-66BD-4C2A-B9D5-98597DC77EDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW_ARDUINO", "BFW_ARDUINO", "{B12AD1A5-34A1-4ABD-8011-93295C29C6DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{E3AD1222-A899-48C4-AA1E-B02E54BA9778}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Examples\BFW_Debug.inl = Solution Items\Examples\BFW_Debug.inl
+		Solution Items\Examples\BFW_Hardware.inl = Solution Items\Examples\BFW_Hardware.inl
+		Solution Items\Examples\BFW_Input.inl = Solution Items\Examples\BFW_Input.inl
+		Solution Items\Examples\BFW_Log.inl = Solution Items\Examples\BFW_Log.inl
+		Solution Items\Examples\BFW_Math.inl = Solution Items\Examples\BFW_Math.inl
+		Solution Items\Examples\BFW_Multiprocessing.inl = Solution Items\Examples\BFW_Multiprocessing.inl
+		Solution Items\Examples\BFW_Time.inl = Solution Items\Examples\BFW_Time.inl
+		Solution Items\Examples\BFW_Vector.inl = Solution Items\Examples\BFW_Vector.inl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{CEBEE152-ACFF-47AE-9F4C-C3741B31B592}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\License\BFW_License.txt = Solution Items\License\BFW_License.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadMe", "ReadMe", "{06F09353-D4E7-4353-BE98-4A08A075DE8A}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\ReadMe\BFW_ReadMe.txt = Solution Items\ReadMe\BFW_ReadMe.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{8DB47A5A-FCBB-40CF-94D1-746766F584F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ToDo", "ToDo", "{F2FCD981-B4F4-4281-8DB5-92E3C437AD33}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\ToDo\BFW_ToDo.txt = Solution Items\ToDo\BFW_ToDo.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{3162F563-2310-4D3D-934D-91A482F932AE}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Resources\Icons\BFW_Icon.ico = Solution Items\Resources\Icons\BFW_Icon.ico
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW_ARDUINO", "BFW_ARDUINO", "{CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmd Batches", "Cmd Batches", "{B9DE238C-1FB9-44AA-8AA7-D07C88A7704D}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Build.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Build.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Clean.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Clean.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanDebug.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanDebug.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanRelease.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanRelease.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Rebuild.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Rebuild.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildDebug.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildDebug.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildRelease.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildRelease.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadDebug.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadDebug.bat
+		BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadRelease.bat = BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadRelease.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Headers", "Headers", "{AA42B05D-C7C2-4E45-AD4B-E1ED633F6A78}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Headers\BFW_ARDUINO.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO.hpp
+		BFW_ARDUINO\Headers\BFW_ARDUINO_Application.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO_Application.hpp
+		BFW_ARDUINO\Headers\BFW_ARDUINO_Dependencies.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO_Dependencies.hpp
+		BFW_ARDUINO\Headers\BFW_ARDUINO_Enums.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO_Enums.hpp
+		BFW_ARDUINO\Headers\BFW_ARDUINO_Macros.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO_Macros.hpp
+		BFW_ARDUINO\Headers\BFW_ARDUINO_MainMenu.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO_MainMenu.hpp
+		BFW_ARDUINO\Headers\BFW_ARDUINO_Typedef.hpp = BFW_ARDUINO\Headers\BFW_ARDUINO_Typedef.hpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{7605C6B1-25C7-42CA-9A6C-32196AE91ECC}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\License\BFW_ARDUINO_License.txt = BFW_ARDUINO\License\BFW_ARDUINO_License.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadMe", "ReadMe", "{78FAE086-8C86-4EB4-AB87-66262734C51E}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\ReadMe\BFW_ARDUINO_ReadMe.txt = BFW_ARDUINO\ReadMe\BFW_ARDUINO_ReadMe.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schemes", "Schemes", "{490B0F8B-43EA-4DC7-B935-CCB0507BD212}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{F8F0E62E-072B-46F8-B9FD-8EB0E69A4881}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Sources\BFW_ARDUINO_Application.cpp = BFW_ARDUINO\Sources\BFW_ARDUINO_Application.cpp
+		BFW_ARDUINO\Sources\BFW_ARDUINO_EntryPoint.cpp = BFW_ARDUINO\Sources\BFW_ARDUINO_EntryPoint.cpp
+		BFW_ARDUINO\Sources\BFW_ARDUINO_MainMenu.cpp = BFW_ARDUINO\Sources\BFW_ARDUINO_MainMenu.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ToDo", "ToDo", "{F4E13D1B-9882-4755-B7B2-D5A55E27E731}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\ToDo\BFW_ARDUINO_ToDo.txt = BFW_ARDUINO\ToDo\BFW_ARDUINO_ToDo.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vendor", "Vendor", "{239022FC-0831-495D-971D-8D2A6E2E88A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BFW_APP_DLL", "BFW_APP\BFW_APP_DLL.vcxproj", "{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8} = {1926A856-65BD-44DE-B0B9-1F395636CEC8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BFW_APP_STATIC", "BFW_APP\BFW_APP_STATIC.vcxproj", "{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77} = {56671CD9-B1A8-4541-BE3E-AF183B981C77}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BFW_DLL", "BFW\BFW_DLL.vcxproj", "{1926A856-65BD-44DE-B0B9-1F395636CEC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BFW_STATIC", "BFW\BFW_STATIC.vcxproj", "{56671CD9-B1A8-4541-BE3E-AF183B981C77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Arduino", "Arduino", "{B1464633-6448-4103-ADEF-99496CB3D1B1}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Vendor\Arduino\avrdude.conf = BFW_ARDUINO\Vendor\Arduino\avrdude.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Headers", "Headers", "{7E4477BB-9983-4696-8661-40519EFB6CDF}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Vendor\Arduino\Headers\Arduino.h = BFW_ARDUINO\Vendor\Arduino\Headers\Arduino.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\binary.h = BFW_ARDUINO\Vendor\Arduino\Headers\binary.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\Client.h = BFW_ARDUINO\Vendor\Arduino\Headers\Client.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\HardwareSerial.h = BFW_ARDUINO\Vendor\Arduino\Headers\HardwareSerial.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\HardwareSerial_private.h = BFW_ARDUINO\Vendor\Arduino\Headers\HardwareSerial_private.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\IPAddress.h = BFW_ARDUINO\Vendor\Arduino\Headers\IPAddress.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\new = BFW_ARDUINO\Vendor\Arduino\Headers\new
+		BFW_ARDUINO\Vendor\Arduino\Headers\new.h = BFW_ARDUINO\Vendor\Arduino\Headers\new.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\pins_arduino.h = BFW_ARDUINO\Vendor\Arduino\Headers\pins_arduino.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\PluggableUSB.h = BFW_ARDUINO\Vendor\Arduino\Headers\PluggableUSB.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\Print.h = BFW_ARDUINO\Vendor\Arduino\Headers\Print.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\Printable.h = BFW_ARDUINO\Vendor\Arduino\Headers\Printable.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\Server.h = BFW_ARDUINO\Vendor\Arduino\Headers\Server.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\Stream.h = BFW_ARDUINO\Vendor\Arduino\Headers\Stream.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\Udp.h = BFW_ARDUINO\Vendor\Arduino\Headers\Udp.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\USBAPI.h = BFW_ARDUINO\Vendor\Arduino\Headers\USBAPI.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\USBCore.h = BFW_ARDUINO\Vendor\Arduino\Headers\USBCore.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\USBDesc.h = BFW_ARDUINO\Vendor\Arduino\Headers\USBDesc.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\WCharacter.h = BFW_ARDUINO\Vendor\Arduino\Headers\WCharacter.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\wiring_private.h = BFW_ARDUINO\Vendor\Arduino\Headers\wiring_private.h
+		BFW_ARDUINO\Vendor\Arduino\Headers\WString.h = BFW_ARDUINO\Vendor\Arduino\Headers\WString.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{B09BF1B2-E19B-4E7D-92E8-78660F9601D2}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Vendor\Arduino\Sources\abi.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\abi.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\CDC.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\CDC.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial0.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial0.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial1.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial1.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial2.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial2.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial3.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\HardwareSerial3.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\hooks.c = BFW_ARDUINO\Vendor\Arduino\Sources\hooks.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\IPAddress.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\IPAddress.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\main.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\main.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\new.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\new.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\PluggableUSB.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\PluggableUSB.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\Print.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\Print.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\Stream.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\Stream.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\Tone.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\Tone.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\USBCore.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\USBCore.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\WInterrupts.c = BFW_ARDUINO\Vendor\Arduino\Sources\WInterrupts.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\wiring.c = BFW_ARDUINO\Vendor\Arduino\Sources\wiring.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\wiring_analog.c = BFW_ARDUINO\Vendor\Arduino\Sources\wiring_analog.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\wiring_digital.c = BFW_ARDUINO\Vendor\Arduino\Sources\wiring_digital.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\wiring_pulse.c = BFW_ARDUINO\Vendor\Arduino\Sources\wiring_pulse.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\wiring_pulse_asm.S = BFW_ARDUINO\Vendor\Arduino\Sources\wiring_pulse_asm.S
+		BFW_ARDUINO\Vendor\Arduino\Sources\wiring_shift.c = BFW_ARDUINO\Vendor\Arduino\Sources\wiring_shift.c
+		BFW_ARDUINO\Vendor\Arduino\Sources\WMath.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\WMath.cpp
+		BFW_ARDUINO\Vendor\Arduino\Sources\WString.cpp = BFW_ARDUINO\Vendor\Arduino\Sources\WString.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{8FEDAD7D-4D61-41C4-81E6-28F587C60E4B}"
+	ProjectSection(SolutionItems) = preProject
+		BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.jpg = BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.jpg
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Debug|x64.ActiveCfg = Debug|x64
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Debug|x64.Build.0 = Debug|x64
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Debug|x86.ActiveCfg = Debug|Win32
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Debug|x86.Build.0 = Debug|Win32
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Release|x64.ActiveCfg = Release|x64
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Release|x64.Build.0 = Release|x64
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Release|x86.ActiveCfg = Release|Win32
+		{1E5ED8ED-37EE-4A2F-827E-C65C3C5A3C0F}.Release|x86.Build.0 = Release|Win32
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Debug|x64.ActiveCfg = Debug|x64
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Debug|x64.Build.0 = Debug|x64
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Debug|x86.ActiveCfg = Debug|Win32
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Debug|x86.Build.0 = Debug|Win32
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Release|x64.ActiveCfg = Release|x64
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Release|x64.Build.0 = Release|x64
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Release|x86.ActiveCfg = Release|Win32
+		{04F845FE-4C64-4DCE-BF1B-52F18C90FA2C}.Release|x86.Build.0 = Release|Win32
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Debug|x64.ActiveCfg = Debug|x64
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Debug|x64.Build.0 = Debug|x64
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Debug|x86.ActiveCfg = Debug|Win32
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Debug|x86.Build.0 = Debug|Win32
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Release|x64.ActiveCfg = Release|x64
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Release|x64.Build.0 = Release|x64
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Release|x86.ActiveCfg = Release|Win32
+		{1926A856-65BD-44DE-B0B9-1F395636CEC8}.Release|x86.Build.0 = Release|Win32
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Debug|x64.ActiveCfg = Debug|x64
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Debug|x64.Build.0 = Debug|x64
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Debug|x86.ActiveCfg = Debug|Win32
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Debug|x86.Build.0 = Debug|Win32
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Release|x64.ActiveCfg = Release|x64
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Release|x64.Build.0 = Release|x64
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Release|x86.ActiveCfg = Release|Win32
+		{56671CD9-B1A8-4541-BE3E-AF183B981C77}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1B16E66A-8A5D-453F-B898-1133DE115B2F} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{2A869BBA-5FD6-4505-948E-2044BFB65FF7} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{53A3701B-34DF-4E81-A83B-A33FED6D1085} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{9FA5DCA2-1299-441A-8177-634D525A3509} = {53A3701B-34DF-4E81-A83B-A33FED6D1085}
+		{2684C70F-102E-43C5-93FA-86EB35FFD1D9} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{E7808610-1B93-4234-8CA6-135561C4DA42} = {2684C70F-102E-43C5-93FA-86EB35FFD1D9}
+		{14DF8151-66BD-4C2A-B9D5-98597DC77EDE} = {2684C70F-102E-43C5-93FA-86EB35FFD1D9}
+		{B12AD1A5-34A1-4ABD-8011-93295C29C6DD} = {2684C70F-102E-43C5-93FA-86EB35FFD1D9}
+		{E3AD1222-A899-48C4-AA1E-B02E54BA9778} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{CEBEE152-ACFF-47AE-9F4C-C3741B31B592} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{06F09353-D4E7-4353-BE98-4A08A075DE8A} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{8DB47A5A-FCBB-40CF-94D1-746766F584F2} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{F2FCD981-B4F4-4281-8DB5-92E3C437AD33} = {92686FB6-B3E5-4D99-8461-B3F1E6316DB9}
+		{3162F563-2310-4D3D-934D-91A482F932AE} = {8DB47A5A-FCBB-40CF-94D1-746766F584F2}
+		{B9DE238C-1FB9-44AA-8AA7-D07C88A7704D} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{AA42B05D-C7C2-4E45-AD4B-E1ED633F6A78} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{7605C6B1-25C7-42CA-9A6C-32196AE91ECC} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{78FAE086-8C86-4EB4-AB87-66262734C51E} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{490B0F8B-43EA-4DC7-B935-CCB0507BD212} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{F8F0E62E-072B-46F8-B9FD-8EB0E69A4881} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{F4E13D1B-9882-4755-B7B2-D5A55E27E731} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{239022FC-0831-495D-971D-8D2A6E2E88A7} = {CEFF0D8B-7A66-417F-8681-99ED8F7C5B53}
+		{B1464633-6448-4103-ADEF-99496CB3D1B1} = {239022FC-0831-495D-971D-8D2A6E2E88A7}
+		{7E4477BB-9983-4696-8661-40519EFB6CDF} = {B1464633-6448-4103-ADEF-99496CB3D1B1}
+		{B09BF1B2-E19B-4E7D-92E8-78660F9601D2} = {B1464633-6448-4103-ADEF-99496CB3D1B1}
+		{8FEDAD7D-4D61-41C4-81E6-28F587C60E4B} = {490B0F8B-43EA-4DC7-B935-CCB0507BD212}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA025F39-18E6-4F01-9B89-CBFD3E0E5B8A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,61 @@
+----------------------------------------------------------------------------------------------------
+
+Windows compilation
+
+	Compiling the framework
+
+		It works right out of the box. Just build it inside Visual Studio.
+
+	Compiling the application
+
+		Same as the framework, however due to some post build steps it will show that it failed even
+		if the binaries are outputted.
+
+		To solve this issue just run ".\Solution Items\Cmd Batches\BFW_CreateFolders.bat".
+
+		The post build steps copies (or at least tries to) all the files from ".\BFW_APP\Files\" to
+		the output directory and the working directory of the application is set to the
+		output directory. The reason is that I want default config files and a copy of them in case
+		of the application overwriting them (example: settings saved like full screen or not etcetera).
+		And I still want to be able to run the executable outside the debugger without having to copy
+		the files manually.
+
+		The post build step will not fail if the folder exist even if it is empty.
+
+		The files from ".\BFW_APP\Files\" are copied to "$(OutDir)" NOT "$(OutDir)Files\"
+
+		This would not be required, but github does not save empty folders.
+
+----------------------------------------------------------------------------------------------------
+
+Arduino compilation
+
+	Add the path to the avr compiler binaries in the environment variables.
+
+	Run ".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.bat" or
+	".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.bat".
+
+	".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Build.bat" is not meant to be run.
+
+	Run ".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadRelease.bat" or
+	".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadDebug.bat".
+
+	At some point in ".\BFW_ARDUINO\Schemes\" will be some schemes with the board and the connections.
+
+----------------------------------------------------------------------------------------------------
+
+Linking
+
+	Compile the framework and link it in the linker settings. Debug builds contain asserts and debug
+	breaks so it is recommended to link depending on the configuration.
+
+	In the C and C++ preprocessor add the target macros (BFW_WINDOWS_PLATFORM / BFW_ARDUINO_PLATFORM)
+	the link macros (BFW_DLL_LINK / BFW_STATIC_LINK / BFW_VENDOR) and the debug macros only in
+	debug (BFW_DEBUG).
+
+	Do the same thing in the resource script preprocessor.
+
+	BFW_VENDOR is meant to be used if you want to compile the framework with the application avoiding
+	linking because of the runtime library or in Arduino builds.
+
+----------------------------------------------------------------------------------------------------

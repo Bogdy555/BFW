@@ -1,0 +1,22 @@
+﻿----------------------------------------------------------------------------------------------------
+
+Copyright (C) BFW.
+All rights reserved.
+BFW does not assume responsibility for anything.
+
+BFW_APP is an application made with BFW.
+
+For more information check this link out -----> https://github.com/Bogdy555/BFW.
+
+Open source projects have to copy BFW_APP_License.txt in the folder with BFW_APP sources or binaries
+and any change to the source code of BFW_APP has to be documented in this file.
+
+Publicly available projects that use BFW_APP_DLL.exe or BFW_APP_STATIC.exe as a part of their product
+have to copy BFW_APP_License.txt in the folder with the exe and non official binaries need to modify
+this file and mention that this version of BFW_APP is not official.
+
+----------------------------------------------------------------------------------------------------
+
+Modifications ✖
+
+----------------------------------------------------------------------------------------------------

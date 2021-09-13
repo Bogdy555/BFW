@@ -1,0 +1,126 @@
+#include "..\Headers\BFW_APP_Resources.hpp"
+
+
+
+#define BFW_APP_VERSION "1.0.0.0"
+
+
+
+#define WIN32_LEAN_AND_MEAN
+#include <BFW_WinTargetVer.hpp>
+#include <winres.h>
+
+
+
+#ifndef BFW_WINDOWS_PLATFORM
+
+#error Only available for Windows
+
+#endif
+
+
+
+#if !defined BFW_DLL_LINK && !defined BFW_STATIC_LINK
+
+#error No target specified
+
+#endif
+
+
+
+#if defined BFW_DLL_LINK && defined BFW_STATIC_LINK
+
+#error You have to specifie just one target
+
+#endif
+
+
+
+#ifdef BFW_DEBUG
+
+
+
+#ifdef BFW_DLL_LINK
+
+#define BFW_APP_NAME "BFW_APP_DLL (Debug)"
+#define BFW_APP_NAME_EXT "BFW_APP_DLL.exe (Debug)"
+
+#endif
+
+
+
+#ifdef BFW_STATIC_LINK
+
+#define BFW_APP_NAME "BFW_APP_STATIC (Debug)"
+#define BFW_APP_NAME_EXT "BFW_APP_STATIC.exe (Debug)"
+
+#endif
+
+
+
+#endif
+
+
+
+#ifndef BFW_DEBUG
+
+
+
+#ifdef BFW_DLL_LINK
+
+#define BFW_APP_NAME "BFW_APP_DLL"
+#define BFW_APP_NAME_EXT "BFW_APP_DLL.exe"
+
+#endif
+
+
+
+#ifdef BFW_STATIC_LINK
+
+#define BFW_APP_NAME "BFW_APP_STATIC"
+#define BFW_APP_NAME_EXT "BFW_APP_STATIC.exe"
+
+#endif
+
+
+
+#endif
+
+
+
+BFW_APP_IDI_B_ICON ICON "..\..\Solution Items\Resources\Icons\BFW_Icon.ico"
+
+
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1, 0, 0, 0
+ PRODUCTVERSION 1, 0, 0, 0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x0L
+ FILESUBTYPE 0x0L
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904b0"
+		BEGIN
+			VALUE "CompanyName", "BFW"
+			VALUE "FileDescription", BFW_APP_NAME
+			VALUE "FileVersion", BFW_APP_VERSION
+			VALUE "InternalName", BFW_APP_NAME_EXT
+			VALUE "LegalCopyright", "Copyright (C) BFW"
+			VALUE "OriginalFilename", BFW_APP_NAME_EXT
+			VALUE "ProductName", BFW_APP_NAME
+			VALUE "ProductVersion", BFW_APP_VERSION
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x409, 1200
+	END
+END
