@@ -1,0 +1,22 @@
+﻿----------------------------------------------------------------------------------------------------
+
+Copyright (C) BFW.
+All rights reserved.
+BFW does not assume responsibility for anything.
+
+BFW_ARDUINO is an Arduino application made with BFW.
+
+For more information check this link out -----> https://github.com/Bogdy555/BFW.
+
+Open source projects have to copy BFW_ARDUINO_License.txt in the folder with BFW_ARDUINO sources
+or binaries and any change to the source code of BFW_ARDUINO has to be documented in this file.
+
+Publicly available projects that use BFW_ARDUINO as a part of their product have to copy
+BFW_ARDUINO_License.txt in the folder with the binaries and non official binaries need to modify
+this file and mention that this version of BFW_ARDUINO is not official.
+
+----------------------------------------------------------------------------------------------------
+
+Modifications ✖
+
+----------------------------------------------------------------------------------------------------

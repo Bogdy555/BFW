@@ -1,0 +1,4 @@
+set BFW_DEFINES=-DBFW_ARDUINO_PLATFORM -DBFW_VENDOR -DBFW_DEBUG
+set Configuration=Debug
+
+call BFW_ARDUINO_Build.bat
