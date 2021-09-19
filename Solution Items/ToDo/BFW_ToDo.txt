@@ -5,3 +5,9 @@ BFW::Application, BFW::Menu
 	Decide how to implement sleep checks
 
 ----------------------------------------------------------------------------------------------------
+
+BFW_Hardware.inl
+
+	Change after implementing the window system
+
+----------------------------------------------------------------------------------------------------

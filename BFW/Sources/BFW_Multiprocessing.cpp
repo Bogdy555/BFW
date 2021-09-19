@@ -275,17 +275,16 @@ BFW::Multiprocessing::Process::~Process()
 
 bool BFW::Multiprocessing::Process::Create(const wchar_t* _Path, STARTUPINFO* _StartInfo, const wchar_t* _WorkingDir, wchar_t* _CmdLine)
 {
+	ProcessInfo = { 0 };
+	Created = false;
+	ReturnValue = Enums::_ReturnStillRunning;
+	Path = _Path;
+
 	if (!_Path)
 	{
 		BFW_DEBUG_BREAK_MSG(L"Process creation attempt with invalid parameters!");
 		return false;
 	}
-
-	ProcessInfo = { 0 };
-	Created = false;
-	ReturnValue = Enums::_ReturnStillRunning;
-
-	Path = _Path;
 
 	if (_StartInfo)
 	{
@@ -311,17 +310,16 @@ bool BFW::Multiprocessing::Process::Create(const wchar_t* _Path, STARTUPINFO* _S
 
 bool BFW::Multiprocessing::Process::CreateElevated(const wchar_t* _Path, const int _ShowCmd, const wchar_t* _WorkingDir, wchar_t* _CmdLine)
 {
+	ProcessInfo = { 0 };
+	Created = false;
+	ReturnValue = Enums::_ReturnStillRunning;
+	Path = _Path;
+
 	if (!_Path)
 	{
 		BFW_DEBUG_BREAK_MSG(L"Elevated process creation attempt with invalid parameters!");
 		return false;
 	}
-
-	ProcessInfo = { 0 };
-	Created = false;
-	ReturnValue = Enums::_ReturnStillRunning;
-
-	Path = _Path;
 
 	SHELLEXECUTEINFO _ShellExInfo = { 0 };
 

@@ -10,6 +10,12 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 		return BFW::Enums::_ReturnError;
 	}
 
+	if (CoInitializeEx(nullptr, COINIT_MULTITHREADED) != S_OK)
+	{
+		MessageBox(NULL, L"An unexpected error occurred!", L"Error", MB_OK | MB_ICONERROR);
+		return BFW::Enums::_ReturnError;
+	}
+
 	BFW_DEBUG_CALL
 	(
 		if (!BFW::Log::Init())
@@ -24,6 +30,8 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 	unsigned int _ReturnValue = _ApplicationObj.Run(_hInstance, _CmdLine, _ShowCmd, L"BFW_APP");
 
 	BFW_DEBUG_CALL(BFW::Log::Stop());
+
+	CoUninitialize();
 
 	BFW::Time::Stop();
 

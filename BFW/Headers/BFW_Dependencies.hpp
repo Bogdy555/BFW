@@ -265,6 +265,10 @@ namespace BFW
 
 		class BFW_API SerialPort;
 
+		class BFW_API Webcam;
+
+		class BFW_API Microphone;
+
 #endif
 
 #ifdef BFW_ARDUINO_PLATFORM

@@ -35,7 +35,7 @@ bool BFW::Hardware::SerialPort::Open(const wchar_t* _PortName, const unsigned lo
 
 	if (!_PortName || !_BaudRate)
 	{
-		BFW_DEBUG_BREAK_MSG(L"Invalid parameters!");
+		BFW_DEBUG_BREAK_MSG(L"Can not open port because of invalid parameters!");
 		return false;
 	}
 
@@ -240,6 +240,1200 @@ void BFW::Hardware::SerialPort::operator= (SerialPort&& _Other) noexcept
 	_Other.PortName = nullptr;
 	_Other.Connected = false;
 	_Other.BaudRate = 0;
+}
+
+
+
+BFW::Hardware::Webcam::Webcam() :
+	Connected(false), Recording(false),
+	Buff(nullptr), BuffSize(0),
+	Width(0), Height(0), RefreshRate(0), Name(nullptr),
+	CaptureGraphBuilder(nullptr), GraphBuilder(nullptr),
+	CreateDevEnum(nullptr), EnumMoniker(nullptr), Moniker(nullptr),
+	BindCtx(nullptr), BaseFilter(nullptr), SampleFilter(nullptr), SampleGrabber(nullptr),
+	MediaControl(nullptr), MediaEvent(nullptr), RendererFilter(nullptr), PropertyBag(nullptr)
+{
+
+}
+
+BFW::Hardware::Webcam::Webcam(Webcam&& _Other) noexcept :
+	Connected(_Other.Connected), Recording(_Other.Recording),
+	Buff(_Other.Buff), BuffSize(_Other.BuffSize),
+	Width(_Other.Width), Height(_Other.Height), RefreshRate(_Other.RefreshRate), Name(_Other.Name),
+	CaptureGraphBuilder(_Other.CaptureGraphBuilder), GraphBuilder(_Other.GraphBuilder),
+	CreateDevEnum(_Other.CreateDevEnum), EnumMoniker(_Other.EnumMoniker), Moniker(_Other.Moniker),
+	BindCtx(_Other.BindCtx), BaseFilter(_Other.BaseFilter), SampleFilter(_Other.SampleFilter), SampleGrabber(_Other.SampleGrabber),
+	MediaControl(_Other.MediaControl), MediaEvent(_Other.MediaEvent), RendererFilter(_Other.RendererFilter), PropertyBag(_Other.PropertyBag)
+{
+	_Other.Connected = false;
+	_Other.Recording = false;
+	_Other.Buff = nullptr;
+	_Other.BuffSize = 0;
+	_Other.Width = 0;
+	_Other.Height = 0;
+	_Other.RefreshRate = 0;
+	_Other.Name = nullptr;
+	_Other.CaptureGraphBuilder = nullptr;
+	_Other.GraphBuilder = nullptr;
+	_Other.CreateDevEnum = nullptr;
+	_Other.EnumMoniker = nullptr;
+	_Other.Moniker = nullptr;
+	_Other.BindCtx = nullptr;
+	_Other.BaseFilter = nullptr;
+	_Other.SampleFilter = nullptr;
+	_Other.SampleGrabber = nullptr;
+	_Other.MediaControl = nullptr;
+	_Other.MediaEvent = nullptr;
+	_Other.RendererFilter = nullptr;
+	_Other.PropertyBag = nullptr;
+}
+
+BFW::Hardware::Webcam::~Webcam()
+{
+	Disconnect();
+}
+
+bool BFW::Hardware::Webcam::Connect(const unsigned long _Index)
+{
+	Disconnect();
+
+	if (!_Index)
+	{
+		BFW_DEBUG_BREAK_MSG(L"Can not connect to webcam because of invalid index!");
+		return false;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = CoCreateInstance(CLSID_CaptureGraphBuilder2, nullptr, CLSCTX_INPROC_SERVER, IID_ICaptureGraphBuilder2, (void**)(&CaptureGraphBuilder));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	CaptureGraphBuilder->AddRef();
+
+	hr = CoCreateInstance(CLSID_FilterGraph, nullptr, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void**)(&GraphBuilder));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	GraphBuilder->AddRef();
+
+	hr = CaptureGraphBuilder->SetFiltergraph(GraphBuilder);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = CoCreateInstance(CLSID_SystemDeviceEnum, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&CreateDevEnum));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	CreateDevEnum->AddRef();
+
+	hr = CreateDevEnum->CreateClassEnumerator(CLSID_VideoInputDeviceCategory, &EnumMoniker, NULL);
+
+	BFW_COM_RELEASE(CreateDevEnum);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	for (unsigned long _ForIndex = 0; _ForIndex < _Index; _ForIndex++)
+	{
+		hr = EnumMoniker->Next(1, &Moniker, nullptr);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+	}
+
+	BFW_COM_RELEASE(EnumMoniker);
+
+	hr = CreateBindCtx(NULL, &BindCtx);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	if (!BindCtx)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = Moniker->BindToObject(BindCtx, nullptr, IID_IBaseFilter, (void**)(&BaseFilter));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->AddFilter(BaseFilter, L"BaseFilter");
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = CoCreateInstance(CLSID_SampleGrabber, nullptr, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&SampleFilter));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	SampleFilter->AddRef();
+
+	hr = SampleFilter->QueryInterface(IID_ISampleGrabber, (void**)(&SampleGrabber));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	{
+		AM_MEDIA_TYPE _MediaType = { 0 };
+
+		_MediaType.majortype = MEDIATYPE_Video;
+		_MediaType.subtype = MEDIASUBTYPE_RGB32;
+
+		hr = SampleGrabber->SetMediaType(&_MediaType);
+	}
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = SampleGrabber->SetOneShot(FALSE);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = SampleGrabber->SetBufferSamples(TRUE);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->AddFilter(SampleFilter, L"SampleFilter");
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->QueryInterface(IID_IMediaControl, (void**)(&MediaControl));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->QueryInterface(IID_IMediaEventEx, (void**)(&MediaEvent));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = CoCreateInstance(CLSID_NullRenderer, nullptr, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&RendererFilter));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->AddFilter(RendererFilter, L"RendererFilter");
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = Moniker->BindToStorage(BindCtx, nullptr, IID_IPropertyBag, (void**)(&PropertyBag));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	{
+		VARIANT _Variant = { 0 };
+
+		VariantInit(&_Variant);
+
+		hr = PropertyBag->Read(L"FriendlyName", &_Variant, nullptr);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+
+		size_t _StrLen = wcslen(_Variant.bstrVal);
+
+		Name = new wchar_t[_StrLen + 1];
+
+		if (!Name)
+		{
+			Disconnect();
+			return false;
+		}
+
+		for (unsigned long _ForIndex = 0; _ForIndex < _StrLen + 1; _ForIndex++)
+		{
+			Name[_ForIndex] = _Variant.bstrVal[_ForIndex];
+		}
+
+		VariantClear(&_Variant);
+	}
+
+	hr = CaptureGraphBuilder->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Video, BaseFilter, SampleFilter, RendererFilter);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	{
+		AM_MEDIA_TYPE _MediaType = { 0 };
+
+		hr = SampleGrabber->GetConnectedMediaType(&_MediaType);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+
+		VIDEOINFOHEADER* _VideoInfo = (VIDEOINFOHEADER*)(_MediaType.pbFormat);
+
+		if (!_VideoInfo)
+		{
+			Disconnect();
+			return false;
+		}
+
+		Width = _VideoInfo->bmiHeader.biWidth;
+		Height = _VideoInfo->bmiHeader.biHeight;
+		RefreshRate = _VideoInfo->dwBitRate / (8 * 4 * Width * Height);
+
+		if (_MediaType.cbFormat != 0)
+		{
+			CoTaskMemFree((PVOID)(_MediaType.pbFormat));
+			_MediaType.cbFormat = 0;
+			_MediaType.pbFormat = nullptr;
+		}
+
+		BFW_COM_RELEASE(_MediaType.pUnk);
+	}
+
+	Connected = true;
+
+	return true;
+}
+
+void BFW::Hardware::Webcam::Disconnect()
+{
+	Connected = false;
+
+	HRESULT hr = S_OK;
+
+	if (Recording)
+	{
+		Recording = false;
+		hr = MediaControl->Stop();
+	}
+
+	if (Buff)
+	{
+		BuffSize = 0;
+		delete[] Buff;
+		Buff = nullptr;
+	}
+
+	if (Name)
+	{
+		delete[] Name;
+		Name = nullptr;
+	}
+
+	Width = 0;
+	Height = 0;
+	RefreshRate = 0;
+
+	BFW_COM_RELEASE(PropertyBag);
+	BFW_COM_RELEASE(RendererFilter);
+	BFW_COM_RELEASE(MediaEvent);
+	BFW_COM_RELEASE(MediaControl);
+	BFW_COM_RELEASE(SampleGrabber);
+	BFW_COM_RELEASE(SampleFilter);
+	BFW_COM_RELEASE(BaseFilter);
+	BFW_COM_RELEASE(BindCtx);
+	BFW_COM_RELEASE(Moniker);
+	BFW_COM_RELEASE(EnumMoniker);
+	BFW_COM_RELEASE(CreateDevEnum);
+	BFW_COM_RELEASE(GraphBuilder);
+	BFW_COM_RELEASE(CaptureGraphBuilder);
+}
+
+bool BFW::Hardware::Webcam::StartRecording()
+{
+	if (!Connected)
+	{
+		return false;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = MediaControl->Run();
+
+	BuffSize = 0;
+
+	while (!BuffSize)
+	{
+		hr = SampleGrabber->GetCurrentBuffer((long*)(&BuffSize), (long*)(nullptr));
+
+		switch (hr)
+		{
+		case E_INVALIDARG:
+		{
+			break;
+		}
+		case E_OUTOFMEMORY:
+		{
+			break;
+		}
+		case E_POINTER:
+		{
+			break;
+		}
+		case S_OK:
+		{
+			break;
+		}
+		case VFW_E_WRONG_STATE:
+		{
+			break;
+		}
+		case VFW_E_NOT_CONNECTED:
+		{
+			Disconnect();
+			return false;
+		}
+		default:
+		{
+			Disconnect();
+			return false;
+		}
+		}
+	}
+
+	Buff = new unsigned char[BuffSize];
+
+	if (!Buff)
+	{
+		Disconnect();
+		return false;
+	}
+
+	Recording = true;
+
+	return true;
+}
+
+void BFW::Hardware::Webcam::StopRecording()
+{
+	if (!Recording)
+	{
+		return;
+	}
+
+	Recording = false;
+
+	if (Buff)
+	{
+		BuffSize = 0;
+		delete[] Buff;
+		Buff = nullptr;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = MediaControl->Stop();
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return;
+	}
+}
+
+bool BFW::Hardware::Webcam::Capture(unsigned char* _Buff, const unsigned long _Width, const unsigned long _Height)
+{
+	if (!_Buff || !_Width || !_Height)
+	{
+		BFW_DEBUG_BREAK_MSG(L"Can not write webcam image to buffer because of invalid capture parameters!");
+		return false;
+	}
+
+	if (!Recording)
+	{
+		return false;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = SampleGrabber->GetCurrentBuffer((long*)(&BuffSize), (long*)(Buff));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	for (unsigned long _X = 0; _X < _Width; _X++)
+	{
+		for (unsigned long _Y = 0; _Y < _Height; _Y++)
+		{
+			_Buff[(_X + _Y * _Width) * 4 + 0] = Buff[(Width * Height - 1 - Math::lMap(_X, 0, _Width, 0, Width) - Math::lMap(_Y, 0, _Height, 0, Height) * Width) * 4 + 0];
+			_Buff[(_X + _Y * _Width) * 4 + 1] = Buff[(Width * Height - 1 - Math::lMap(_X, 0, _Width, 0, Width) - Math::lMap(_Y, 0, _Height, 0, Height) * Width) * 4 + 1];
+			_Buff[(_X + _Y * _Width) * 4 + 2] = Buff[(Width * Height - 1 - Math::lMap(_X, 0, _Width, 0, Width) - Math::lMap(_Y, 0, _Height, 0, Height) * Width) * 4 + 2];
+			_Buff[(_X + _Y * _Width) * 4 + 3] = Buff[(Width * Height - 1 - Math::lMap(_X, 0, _Width, 0, Width) - Math::lMap(_Y, 0, _Height, 0, Height) * Width) * 4 + 3];
+		}
+	}
+
+	return true;
+}
+
+const bool BFW::Hardware::Webcam::CheckConnected() const
+{
+	return Connected;
+}
+
+const bool BFW::Hardware::Webcam::CheckRecording() const
+{
+	return Recording;
+}
+
+const unsigned long BFW::Hardware::Webcam::GetWidth() const
+{
+	return Width;
+}
+
+const unsigned long BFW::Hardware::Webcam::GetHeight() const
+{
+	return Height;
+}
+
+const unsigned long BFW::Hardware::Webcam::GetRefreshRate() const
+{
+	return RefreshRate;
+}
+
+const wchar_t* BFW::Hardware::Webcam::GetName() const
+{
+	return Name;
+}
+
+unsigned long BFW::Hardware::Webcam::GetCount()
+{
+	unsigned long _Index = 0;
+	Webcam _Webcam;
+
+	do
+	{
+		if (_Webcam.CheckConnected())
+		{
+			_Webcam.Disconnect();
+		}
+		if (_Webcam.Connect(_Index + 1))
+		{
+			_Index++;
+		}
+	} while (_Webcam.CheckConnected());
+
+	return _Index;
+}
+
+void BFW::Hardware::Webcam::operator= (Webcam&& _Other) noexcept
+{
+	Connected = _Other.Connected;
+	Recording = _Other.Recording;
+	Buff = _Other.Buff;
+	BuffSize = _Other.BuffSize;
+	Width = _Other.Width;
+	Height = _Other.Height;
+	RefreshRate = _Other.RefreshRate;
+	Name = _Other.Name;
+	CaptureGraphBuilder = _Other.CaptureGraphBuilder;
+	GraphBuilder = _Other.GraphBuilder;
+	CreateDevEnum = _Other.CreateDevEnum;
+	EnumMoniker = _Other.EnumMoniker;
+	Moniker = _Other.Moniker;
+	BindCtx = _Other.BindCtx;
+	BaseFilter = _Other.BaseFilter;
+	SampleFilter = _Other.SampleFilter;
+	SampleGrabber = _Other.SampleGrabber;
+	MediaControl = _Other.MediaControl;
+	MediaEvent = _Other.MediaEvent;
+	RendererFilter = _Other.RendererFilter;
+	PropertyBag = _Other.PropertyBag;
+
+	_Other.Connected = false;
+	_Other.Recording = false;
+	_Other.Buff = nullptr;
+	_Other.BuffSize = 0;
+	_Other.Width = 0;
+	_Other.Height = 0;
+	_Other.RefreshRate = 0;
+	_Other.Name = nullptr;
+	_Other.CaptureGraphBuilder = nullptr;
+	_Other.GraphBuilder = nullptr;
+	_Other.CreateDevEnum = nullptr;
+	_Other.EnumMoniker = nullptr;
+	_Other.Moniker = nullptr;
+	_Other.BindCtx = nullptr;
+	_Other.BaseFilter = nullptr;
+	_Other.SampleFilter = nullptr;
+	_Other.SampleGrabber = nullptr;
+	_Other.MediaControl = nullptr;
+	_Other.MediaEvent = nullptr;
+	_Other.RendererFilter = nullptr;
+	_Other.PropertyBag = nullptr;
+}
+
+
+
+BFW::Hardware::Microphone::Microphone() :
+	Connected(false), Recording(false),
+	Buff(nullptr), BuffSize(0),
+	AudioInfo({ 0 }), Name(nullptr), ID(0),
+	CaptureGraphBuilder(nullptr), GraphBuilder(nullptr),
+	CreateDevEnum(nullptr), EnumMoniker(nullptr), Moniker(nullptr),
+	BindCtx(nullptr), BaseFilter(nullptr), SampleFilter(nullptr), SampleGrabber(nullptr),
+	MediaControl(nullptr), MediaEvent(nullptr), RendererFilter(nullptr), PropertyBag(nullptr)
+{
+
+}
+
+BFW::Hardware::Microphone::Microphone(Microphone&& _Other) noexcept :
+	Connected(_Other.Connected), Recording(_Other.Recording),
+	Buff(_Other.Buff), BuffSize(_Other.BuffSize),
+	AudioInfo(_Other.AudioInfo), Name(_Other.Name), ID(_Other.ID),
+	CaptureGraphBuilder(_Other.CaptureGraphBuilder), GraphBuilder(_Other.GraphBuilder),
+	CreateDevEnum(_Other.CreateDevEnum), EnumMoniker(_Other.EnumMoniker), Moniker(_Other.Moniker),
+	BindCtx(_Other.BindCtx), BaseFilter(_Other.BaseFilter), SampleFilter(_Other.SampleFilter), SampleGrabber(_Other.SampleGrabber),
+	MediaControl(_Other.MediaControl), MediaEvent(_Other.MediaEvent), RendererFilter(_Other.RendererFilter), PropertyBag(_Other.PropertyBag)
+{
+	_Other.Connected = false;
+	_Other.Recording = false;
+	_Other.Buff = nullptr;
+	_Other.BuffSize = 0;
+	_Other.AudioInfo = { 0 };
+	_Other.Name = nullptr;
+	_Other.ID = 0;
+	_Other.CaptureGraphBuilder = nullptr;
+	_Other.GraphBuilder = nullptr;
+	_Other.CreateDevEnum = nullptr;
+	_Other.EnumMoniker = nullptr;
+	_Other.Moniker = nullptr;
+	_Other.BindCtx = nullptr;
+	_Other.BaseFilter = nullptr;
+	_Other.SampleFilter = nullptr;
+	_Other.SampleGrabber = nullptr;
+	_Other.MediaControl = nullptr;
+	_Other.MediaEvent = nullptr;
+	_Other.RendererFilter = nullptr;
+	_Other.PropertyBag = nullptr;
+}
+
+BFW::Hardware::Microphone::~Microphone()
+{
+
+}
+
+bool BFW::Hardware::Microphone::Connect(const unsigned long _Index)
+{
+	Disconnect();
+
+	if (!_Index)
+	{
+		BFW_DEBUG_BREAK_MSG(L"Can not connect to microphone because of invalid index!");
+		return false;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = CoCreateInstance(CLSID_CaptureGraphBuilder2, nullptr, CLSCTX_INPROC_SERVER, IID_ICaptureGraphBuilder2, (void**)(&CaptureGraphBuilder));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	CaptureGraphBuilder->AddRef();
+
+	hr = CoCreateInstance(CLSID_FilterGraph, nullptr, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void**)(&GraphBuilder));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	GraphBuilder->AddRef();
+
+	hr = CaptureGraphBuilder->SetFiltergraph(GraphBuilder);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = CoCreateInstance(CLSID_SystemDeviceEnum, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&CreateDevEnum));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	CreateDevEnum->AddRef();
+
+	hr = CreateDevEnum->CreateClassEnumerator(CLSID_AudioInputDeviceCategory, &EnumMoniker, NULL);
+
+	BFW_COM_RELEASE(CreateDevEnum);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	for (unsigned long _ForIndex = 0; _ForIndex < _Index; _ForIndex++)
+	{
+		hr = EnumMoniker->Next(1, &Moniker, nullptr);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+	}
+
+	BFW_COM_RELEASE(EnumMoniker);
+
+	hr = CreateBindCtx(NULL, &BindCtx);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	if (!BindCtx)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = Moniker->BindToObject(BindCtx, nullptr, IID_IBaseFilter, (void**)(&BaseFilter));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->AddFilter(BaseFilter, L"BaseFilter");
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = CoCreateInstance(CLSID_SampleGrabber, nullptr, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&SampleFilter));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	SampleFilter->AddRef();
+
+	hr = SampleFilter->QueryInterface(IID_ISampleGrabber, (void**)(&SampleGrabber));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	{
+		AM_MEDIA_TYPE _MediaType = { 0 };
+
+		_MediaType.majortype = MEDIATYPE_Audio;
+		_MediaType.subtype = MEDIASUBTYPE_PCM;
+
+		hr = SampleGrabber->SetMediaType(&_MediaType);
+	}
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = SampleGrabber->SetOneShot(FALSE);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = SampleGrabber->SetBufferSamples(TRUE);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->AddFilter(SampleFilter, L"SampleFilter");
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->QueryInterface(IID_IMediaControl, (void**)(&MediaControl));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->QueryInterface(IID_IMediaEventEx, (void**)(&MediaEvent));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = CoCreateInstance(CLSID_NullRenderer, nullptr, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)(&RendererFilter));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = GraphBuilder->AddFilter(RendererFilter, L"RendererFilter");
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	hr = Moniker->BindToStorage(BindCtx, nullptr, IID_IPropertyBag, (void**)(&PropertyBag));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	{
+		VARIANT _Variant = { 0 };
+
+		VariantInit(&_Variant);
+
+		hr = PropertyBag->Read(L"FriendlyName", &_Variant, nullptr);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+
+		size_t _StrLen = wcslen(_Variant.bstrVal);
+
+		Name = new wchar_t[_StrLen + 1];
+
+		if (!Name)
+		{
+			Disconnect();
+			return false;
+		}
+
+		for (unsigned long _ForIndex = 0; _ForIndex < _StrLen + 1; _ForIndex++)
+		{
+			Name[_ForIndex] = _Variant.bstrVal[_ForIndex];
+		}
+
+		VariantClear(&_Variant);
+
+		_Variant = { 0 };
+
+		VariantInit(&_Variant);
+
+		hr = PropertyBag->Read(L"WaveInID", &_Variant, nullptr);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+
+		ID = _Variant.lVal;
+
+		VariantClear(&_Variant);
+	}
+
+	hr = CaptureGraphBuilder->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Audio, BaseFilter, SampleFilter, RendererFilter);
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	{
+		AM_MEDIA_TYPE _MediaType = { 0 };
+
+		hr = SampleGrabber->GetConnectedMediaType(&_MediaType);
+
+		if (hr != S_OK)
+		{
+			Disconnect();
+			return false;
+		}
+
+		WAVEFORMATEX* _AudioInfo = (WAVEFORMATEX*)(_MediaType.pbFormat);
+
+		if (!_AudioInfo)
+		{
+			Disconnect();
+			return false;
+		}
+
+		AudioInfo = *_AudioInfo;
+
+		if (_MediaType.cbFormat != 0)
+		{
+			CoTaskMemFree((PVOID)(_MediaType.pbFormat));
+			_MediaType.cbFormat = 0;
+			_MediaType.pbFormat = nullptr;
+		}
+
+		BFW_COM_RELEASE(_MediaType.pUnk);
+	}
+
+	Connected = true;
+
+	return true;
+}
+
+void BFW::Hardware::Microphone::Disconnect()
+{
+	Connected = false;
+
+	HRESULT hr = S_OK;
+
+	if (Recording)
+	{
+		Recording = false;
+		hr = MediaControl->Stop();
+	}
+
+	if (Buff)
+	{
+		BuffSize = 0;
+		delete[] Buff;
+		Buff = nullptr;
+	}
+
+	if (Name)
+	{
+		delete[] Name;
+		Name = nullptr;
+	}
+
+	AudioInfo = { 0 };
+	ID = 0;
+
+	BFW_COM_RELEASE(PropertyBag);
+	BFW_COM_RELEASE(RendererFilter);
+	BFW_COM_RELEASE(MediaEvent);
+	BFW_COM_RELEASE(MediaControl);
+	BFW_COM_RELEASE(SampleGrabber);
+	BFW_COM_RELEASE(SampleFilter);
+	BFW_COM_RELEASE(BaseFilter);
+	BFW_COM_RELEASE(BindCtx);
+	BFW_COM_RELEASE(Moniker);
+	BFW_COM_RELEASE(EnumMoniker);
+	BFW_COM_RELEASE(CreateDevEnum);
+	BFW_COM_RELEASE(GraphBuilder);
+	BFW_COM_RELEASE(CaptureGraphBuilder);
+}
+
+bool BFW::Hardware::Microphone::StartRecording()
+{
+	if (!Connected)
+	{
+		return false;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = MediaControl->Run();
+
+	BuffSize = 0;
+
+	while (!BuffSize)
+	{
+		hr = SampleGrabber->GetCurrentBuffer((long*)(&BuffSize), (long*)(nullptr));
+
+		switch (hr)
+		{
+		case E_INVALIDARG:
+		{
+			break;
+		}
+		case E_OUTOFMEMORY:
+		{
+			break;
+		}
+		case E_POINTER:
+		{
+			break;
+		}
+		case S_OK:
+		{
+			break;
+		}
+		case VFW_E_WRONG_STATE:
+		{
+			break;
+		}
+		case VFW_E_NOT_CONNECTED:
+		{
+			Disconnect();
+			return false;
+		}
+		default:
+		{
+			Disconnect();
+			return false;
+		}
+		}
+	}
+
+	Buff = new unsigned char[BuffSize];
+
+	if (!Buff)
+	{
+		Disconnect();
+		return false;
+	}
+
+	Recording = true;
+
+	return true;
+}
+
+void BFW::Hardware::Microphone::StopRecording()
+{
+	if (!Recording)
+	{
+		return;
+	}
+
+	Recording = false;
+
+	if (Buff)
+	{
+		BuffSize = 0;
+		delete[] Buff;
+		Buff = nullptr;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = MediaControl->Stop();
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return;
+	}
+}
+
+bool BFW::Hardware::Microphone::Capture()
+{
+	if (!Recording)
+	{
+		return false;
+	}
+
+	HRESULT hr = S_OK;
+
+	hr = SampleGrabber->GetCurrentBuffer((long*)(&BuffSize), (long*)(Buff));
+
+	if (hr != S_OK)
+	{
+		Disconnect();
+		return false;
+	}
+
+	return true;
+}
+
+const unsigned long BFW::Hardware::Microphone::GetBuffSize() const
+{
+	return BuffSize;
+}
+
+const unsigned char* BFW::Hardware::Microphone::GetBuff() const
+{
+	return Buff;
+}
+
+const bool BFW::Hardware::Microphone::CheckConnected() const
+{
+	return Connected;
+}
+
+const bool BFW::Hardware::Microphone::CheckRecording() const
+{
+	return Recording;
+}
+
+const WAVEFORMATEX BFW::Hardware::Microphone::GetAudioInfo() const
+{
+	return AudioInfo;
+}
+
+const wchar_t* BFW::Hardware::Microphone::GetName() const
+{
+	return Name;
+}
+
+const unsigned long BFW::Hardware::Microphone::GetID() const
+{
+	return ID;
+}
+
+unsigned long BFW::Hardware::Microphone::GetCount()
+{
+	unsigned long _Index = 0;
+	Microphone _Microphone;
+
+	do
+	{
+		if (_Microphone.CheckConnected())
+		{
+			_Microphone.Disconnect();
+		}
+		if (_Microphone.Connect(_Index + 1))
+		{
+			_Index++;
+		}
+	} while (_Microphone.CheckConnected());
+
+	return _Index;
+}
+
+void BFW::Hardware::Microphone::operator= (Microphone&& _Other) noexcept
+{
+	Connected = _Other.Connected;
+	Recording = _Other.Recording;
+	Buff = _Other.Buff;
+	BuffSize = _Other.BuffSize;
+	AudioInfo = _Other.AudioInfo;
+	Name = _Other.Name;
+	ID = _Other.ID;
+	CaptureGraphBuilder = _Other.CaptureGraphBuilder;
+	GraphBuilder = _Other.GraphBuilder;
+	CreateDevEnum = _Other.CreateDevEnum;
+	EnumMoniker = _Other.EnumMoniker;
+	Moniker = _Other.Moniker;
+	BindCtx = _Other.BindCtx;
+	BaseFilter = _Other.BaseFilter;
+	SampleFilter = _Other.SampleFilter;
+	SampleGrabber = _Other.SampleGrabber;
+	MediaControl = _Other.MediaControl;
+	MediaEvent = _Other.MediaEvent;
+	RendererFilter = _Other.RendererFilter;
+	PropertyBag = _Other.PropertyBag;
+
+	_Other.Connected = false;
+	_Other.Recording = false;
+	_Other.Buff = nullptr;
+	_Other.BuffSize = 0;
+	_Other.AudioInfo = { 0 };
+	_Other.Name = nullptr;
+	_Other.ID = 0;
+	_Other.CaptureGraphBuilder = nullptr;
+	_Other.GraphBuilder = nullptr;
+	_Other.CreateDevEnum = nullptr;
+	_Other.EnumMoniker = nullptr;
+	_Other.Moniker = nullptr;
+	_Other.BindCtx = nullptr;
+	_Other.BaseFilter = nullptr;
+	_Other.SampleFilter = nullptr;
+	_Other.SampleGrabber = nullptr;
+	_Other.MediaControl = nullptr;
+	_Other.MediaEvent = nullptr;
+	_Other.RendererFilter = nullptr;
+	_Other.PropertyBag = nullptr;
 }
 
 

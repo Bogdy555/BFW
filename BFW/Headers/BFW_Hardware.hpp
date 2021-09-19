@@ -51,6 +51,126 @@ namespace BFW
 
 		};
 
+		class BFW_API Webcam
+		{
+
+		public:
+
+			Webcam();
+			Webcam(const Webcam& _Other) = delete;
+			Webcam(Webcam&& _Other) noexcept;
+			~Webcam();
+
+			bool Connect(const unsigned long _Index = 1);
+			void Disconnect();
+
+			bool StartRecording();
+			void StopRecording();
+
+			bool Capture(unsigned char* _Buff, const unsigned long _Width, const unsigned long _Height);
+
+			const bool CheckConnected() const;
+			const bool CheckRecording() const;
+
+			const unsigned long GetWidth() const;
+			const unsigned long GetHeight() const;
+			const unsigned long GetRefreshRate() const;
+
+			const wchar_t* GetName() const;
+
+			static unsigned long GetCount();
+
+			void operator= (const Webcam& _Other) = delete;
+			void operator= (Webcam&& _Other) noexcept;
+
+		private:
+
+			bool Connected;
+			bool Recording;
+			unsigned char* Buff;
+			unsigned long BuffSize;
+			unsigned long Width;
+			unsigned long Height;
+			unsigned long RefreshRate;
+			wchar_t* Name;
+
+			ICaptureGraphBuilder2* CaptureGraphBuilder;
+			IGraphBuilder* GraphBuilder;
+			ICreateDevEnum* CreateDevEnum;
+			IEnumMoniker* EnumMoniker;
+			IMoniker* Moniker;
+			IBindCtx* BindCtx;
+			IBaseFilter* BaseFilter;
+			IBaseFilter* SampleFilter;
+			ISampleGrabber* SampleGrabber;
+			IMediaControl* MediaControl;
+			IMediaEventEx* MediaEvent;
+			IBaseFilter* RendererFilter;
+			IPropertyBag* PropertyBag;
+
+		};
+
+		class BFW_API Microphone
+		{
+
+		public:
+
+			Microphone();
+			Microphone(const Microphone& _Other) = delete;
+			Microphone(Microphone&& _Other) noexcept;
+			~Microphone();
+
+			bool Connect(const unsigned long _Index = 1);
+			void Disconnect();
+
+			bool StartRecording();
+			void StopRecording();
+
+			bool Capture();
+
+			const bool CheckConnected() const;
+			const bool CheckRecording() const;
+
+			const unsigned long GetBuffSize() const;
+			const unsigned char* GetBuff() const;
+
+			const WAVEFORMATEX GetAudioInfo() const;
+
+			const wchar_t* GetName() const;
+
+			const unsigned long GetID() const;
+
+			static unsigned long GetCount();
+
+			void operator= (const Microphone& _Other) = delete;
+			void operator= (Microphone&& _Other) noexcept;
+
+		private:
+
+			bool Connected;
+			bool Recording;
+			unsigned char* Buff;
+			unsigned long BuffSize;
+			WAVEFORMATEX AudioInfo;
+			wchar_t* Name;
+			unsigned long ID;
+
+			ICaptureGraphBuilder2* CaptureGraphBuilder;
+			IGraphBuilder* GraphBuilder;
+			ICreateDevEnum* CreateDevEnum;
+			IEnumMoniker* EnumMoniker;
+			IMoniker* Moniker;
+			IBindCtx* BindCtx;
+			IBaseFilter* BaseFilter;
+			IBaseFilter* SampleFilter;
+			ISampleGrabber* SampleGrabber;
+			IMediaControl* MediaControl;
+			IMediaEventEx* MediaEvent;
+			IBaseFilter* RendererFilter;
+			IPropertyBag* PropertyBag;
+
+		};
+
 #endif
 
 #ifdef BFW_ARDUINO_PLATFORM

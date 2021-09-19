@@ -140,4 +140,16 @@
 
 
 
+#ifdef BFW_WINDOWS_PLATFORM
+
+#define BFW_COM_RELEASE(X) if(X)\
+{\
+	X->Release();\
+	X = nullptr;\
+}
+
+#endif
+
+
+
 #endif
