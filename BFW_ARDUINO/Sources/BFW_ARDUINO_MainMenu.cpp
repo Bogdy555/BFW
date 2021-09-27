@@ -68,16 +68,17 @@ void BFW_ARDUINO::MainMenu::QueuedMenus()
 	{
 	case Enums::_MainMenu:
 	{
-		MainMenu _MenuObj;
-		_MenuObj.Run(GetApplicationObj());
+		GetApplicationObj()->Close(BFW::Enums::_ReturnError);
 		break;
 	}
 	case BFW::Enums::_NullMenu:
 	{
+		GetApplicationObj()->Close(BFW::Enums::_ReturnError);
 		break;
 	}
 	default:
 	{
+		GetApplicationObj()->Close(BFW::Enums::_ReturnError);
 		break;
 	}
 	}

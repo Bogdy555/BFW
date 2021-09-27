@@ -100,6 +100,7 @@ avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Hardware.o"			"%BFWSrcDir%BFW_
 avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Math.o"				"%BFWSrcDir%BFW_Math.cpp"
 avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Math_Matrix.o"		"%BFWSrcDir%BFW_Math_Matrix.cpp"
 avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Math_Vector.o"		"%BFWSrcDir%BFW_Math_Vector.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Sound.o"				"%BFWSrcDir%BFW_Sound.cpp"
 
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_EntryPoint.o"
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Debug.o"
@@ -113,6 +114,7 @@ avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Hardware.o"
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Math.o"
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Math_Matrix.o"
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Math_Vector.o"
+avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Sound.o"
 
 
 
