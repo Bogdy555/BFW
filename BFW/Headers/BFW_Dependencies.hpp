@@ -214,18 +214,18 @@ namespace BFW
 
 	}
 
-#ifdef BFW_WINDOWS_PLATFORM
-
 	namespace Multiprocessing
 	{
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 		class BFW_API SharedMemory;
 
 		class BFW_API Process;
 
-	}
-
 #endif
+
+	}
 
 	namespace Time
 	{
@@ -331,6 +331,17 @@ namespace BFW
 		class BFW_API Mat3d;
 
 		class BFW_API Mat4d;
+
+	}
+
+	namespace Sound
+	{
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
+#endif
 
 	}
 

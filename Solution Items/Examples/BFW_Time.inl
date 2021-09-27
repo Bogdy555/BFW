@@ -16,7 +16,7 @@
 
 
 
-void BFW_Time_Example()
+long BFW_Time_Example()
 {
 	BFW::Log::Init();
 
@@ -40,4 +40,6 @@ void BFW_Time_Example()
 	BFW_WINDOWS_CALL(BFW::Time::Stop());
 
 	BFW::Log::Stop();
+
+	return BFW::Enums::_ReturnNoError;
 }

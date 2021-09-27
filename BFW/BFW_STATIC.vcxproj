@@ -182,6 +182,7 @@
     <ClCompile Include="Sources\BFW_Math_Vector.cpp" />
     <ClCompile Include="Sources\BFW_Menu.cpp" />
     <ClCompile Include="Sources\BFW_Multiprocessing.cpp" />
+    <ClCompile Include="Sources\BFW_Sound.cpp" />
     <ClCompile Include="Sources\BFW_Time.cpp" />
     <ClCompile Include="Vendor\Glad\Sources\glad.cpp" />
   </ItemGroup>
@@ -202,6 +203,7 @@
     <ClInclude Include="Headers\BFW_Menu.hpp" />
     <ClInclude Include="Headers\BFW_Multiprocessing.hpp" />
     <ClInclude Include="Headers\BFW_Resources.hpp" />
+    <ClInclude Include="Headers\BFW_Sound.hpp" />
     <ClInclude Include="Headers\BFW_Templates.hpp" />
     <ClInclude Include="Headers\BFW_Time.hpp" />
     <ClInclude Include="Headers\BFW_Typedef.hpp" />

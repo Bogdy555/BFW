@@ -4,13 +4,7 @@
 
 #endif
 
-#ifdef BFW_ARDUINO_PLATFORM
-
-#error Only available on windows
-
-#endif
-
-#if !defined BFW_WINDOWS_PLATFORM
+#if !defined BFW_WINDOWS_PLATFORM && !defined BFW_ARDUINO_PLATFORM
 
 #define BFW_WINDOWS_PLATFORM
 
@@ -22,7 +16,11 @@
 
 
 
-void BFW_Multiprocessing_Example()
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
+long BFW_Multiprocessing_Example()
 {
 	BFW::Multiprocessing::SharedMemory SharedMemory;
 
@@ -54,4 +52,10 @@ void BFW_Multiprocessing_Example()
 	}
 
 	(*SharedMemory)--;
+
+	return BFW::Enums::_ReturnNoError;
 }
+
+
+
+#endif

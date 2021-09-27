@@ -4,13 +4,7 @@
 
 #endif
 
-#ifdef BFW_ARDUINO_PLATFORM
-
-#error Only available on windows
-
-#endif
-
-#if !defined BFW_WINDOWS_PLATFORM
+#if !defined BFW_WINDOWS_PLATFORM && !defined BFW_ARDUINO_PLATFORM
 
 #define BFW_WINDOWS_PLATFORM
 
@@ -22,7 +16,11 @@
 
 
 
-void BFW_Input_Example()
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
+long BFW_Input_Example()
 {
 	BFW::Time::Init();
 
@@ -77,4 +75,10 @@ void BFW_Input_Example()
 	}
 
 	BFW::Time::Stop();
+
+	return BFW::Enums::_ReturnNoError;
 }
+
+
+
+#endif

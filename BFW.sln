@@ -44,6 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{E3
 		Solution Items\Examples\BFW_Log.inl = Solution Items\Examples\BFW_Log.inl
 		Solution Items\Examples\BFW_Math.inl = Solution Items\Examples\BFW_Math.inl
 		Solution Items\Examples\BFW_Multiprocessing.inl = Solution Items\Examples\BFW_Multiprocessing.inl
+		Solution Items\Examples\BFW_Sound.inl = Solution Items\Examples\BFW_Sound.inl
 		Solution Items\Examples\BFW_Time.inl = Solution Items\Examples\BFW_Time.inl
 		Solution Items\Examples\BFW_Vector.inl = Solution Items\Examples\BFW_Vector.inl
 	EndProjectSection

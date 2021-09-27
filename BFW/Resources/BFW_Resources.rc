@@ -90,7 +90,7 @@
 
 #ifdef BFW_DLL_BUILD
 
-BFW_IDI_B_ICON ICON "..\..\Solution Items\Resources\Icons\BFW_Icon.ico"
+BFW_IDI_B_ICON ICON "..\\..\\Solution Items\\Resources\\Icons\\BFW_Icon.ico"
 
 #endif
 

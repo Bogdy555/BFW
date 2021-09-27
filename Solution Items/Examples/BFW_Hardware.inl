@@ -20,11 +20,16 @@
 
 
 
-void BFW_Hardware_Example_SerialPort()
+long BFW_Hardware_Example_SerialPort()
 {
 	BFW::Hardware::SerialPort Sp;
 
-	Sp.Open(L"\\\\.\\COM7", 9600);
+	if (!Sp.Open(L"\\\\.\\COM7", 9600))
+	{
+		BFW_PRINT(L"Could not connect to board!\n");
+		std::cin.get();
+		return BFW::Enums::_ReturnError;
+	}
 
 	while (Sp.CheckConnected())
 	{
@@ -35,6 +40,8 @@ void BFW_Hardware_Example_SerialPort()
 			BFW_PRINT(Buff);
 		}
 	}
+
+	return BFW::Enums::_ReturnNoError;
 }
 
 
@@ -55,13 +62,13 @@ LRESULT CALLBACK BFW_Hardware_WndProc_Capture(_In_ HWND _hWnd, _In_ UINT _Msg, _
 	case WM_CLOSE:
 	{
 		Exit = true;
-		ReturnValue = 0;
+		ReturnValue = BFW::Enums::_ReturnNoError;
 		break;
 	}
 	case WM_DESTROY:
 	{
 		Exit = true;
-		ReturnValue = 0;
+		ReturnValue = BFW::Enums::_ReturnNoError;
 		break;
 	}
 	case WM_KEYDOWN:
@@ -71,7 +78,7 @@ LRESULT CALLBACK BFW_Hardware_WndProc_Capture(_In_ HWND _hWnd, _In_ UINT _Msg, _
 		case VK_ESCAPE:
 		{
 			Exit = true;
-			ReturnValue = 0;
+			ReturnValue = BFW::Enums::_ReturnNoError;
 			break;
 		}
 		case VK_F11:
@@ -123,14 +130,14 @@ LRESULT CALLBACK BFW_Hardware_WndProc_Capture(_In_ HWND _hWnd, _In_ UINT _Msg, _
 		if (!WebCam.Capture(Image, ImageWidth, ImageHeight))
 		{
 			Exit = true;
-			ReturnValue = 0;
+			ReturnValue = BFW::Enums::_ReturnError;
 			return 0;
 		}
 
 		if (!Microphone.Capture())
 		{
 			Exit = true;
-			ReturnValue = 0;
+			ReturnValue = BFW::Enums::_ReturnError;
 			return 0;
 		}
 
@@ -369,7 +376,7 @@ int WINAPI BFW_Hardware_Example_Capture(_In_ HINSTANCE _hInstance, _In_opt_ HINS
 	BFW::Log::Stop();
 	BFW::Time::Stop();
 
-	return BFW::Enums::_ReturnNoError;
+	return ReturnValue;
 }
 
 
@@ -382,7 +389,7 @@ int WINAPI BFW_Hardware_Example_Capture(_In_ HINSTANCE _hInstance, _In_opt_ HINS
 
 
 
-void BFW_Hardware_Example()
+long BFW_Hardware_Example()
 {
 	BFW::Log::Init();
 
@@ -473,6 +480,8 @@ void BFW_Hardware_Example()
 	}
 
 	BFW::Log::Stop();
+
+	return BFW::Enums::_ReturnNoError;
 }
 
 

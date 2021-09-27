@@ -30,6 +30,8 @@
 
 #include "BFW_Math.hpp"
 
+#include "BFW_Sound.hpp"
+
 
 
 #endif

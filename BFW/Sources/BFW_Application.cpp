@@ -197,8 +197,6 @@ long BFW::Application::Run(const HINSTANCE _hInstance, const LPWSTR _CmdLine, co
 		return Enums::_ReturnError;
 	}
 
-	FrameTime[Enums::_Previous].SetMicroSec((unsigned long)(GetTimeStep() * Time::SecToMicro, false));
-
 	*SharedInstance = *SharedInstance + 1;
 
 	Setup();
@@ -361,8 +359,6 @@ void BFW::Application::SetSync(const unsigned long _Sync)
 
 long BFW::Application::Run()
 {
-	FrameTime[Enums::_Previous].SetMicroSec((unsigned long)(GetTimeStep() * Time::SecToMicro, false));
-
 	Setup();
 	while (On)
 	{

@@ -94,7 +94,7 @@ private:
 
 
 
-void BFW_Vector_Example()
+long BFW_Vector_Example()
 {
 	BFW::Log::Init();
 
@@ -113,4 +113,6 @@ void BFW_Vector_Example()
 	Vec2.Clear();
 
 	BFW::Log::Stop();
+
+	return BFW::Enums::_ReturnNoError;
 }

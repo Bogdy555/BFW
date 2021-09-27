@@ -16,7 +16,7 @@
 
 
 
-void BFW_Math_Example()
+long BFW_Math_Example()
 {
 	BFW::Log::Init();
 
@@ -89,7 +89,7 @@ void BFW_Math_Example()
 	}
 	else
 	{
-		BFW_PRINT(L"Could not create Crypt object!");
+		BFW_PRINT(L"Could not create Crypt object!\n");
 	}
 
 #endif
@@ -124,4 +124,6 @@ void BFW_Math_Example()
 #endif
 
 	BFW::Log::Stop();
+
+	return BFW::Enums::_ReturnNoError;
 }

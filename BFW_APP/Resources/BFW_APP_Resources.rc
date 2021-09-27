@@ -88,7 +88,7 @@
 
 
 
-BFW_APP_IDI_B_ICON ICON "..\..\Solution Items\Resources\Icons\BFW_Icon.ico"
+BFW_APP_IDI_B_ICON ICON "..\\..\\Solution Items\\Resources\\Icons\\BFW_Icon.ico"
 
 
 

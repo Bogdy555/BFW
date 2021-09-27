@@ -20,7 +20,7 @@
 
 
 
-void Break(const unsigned long _Line, const char* _File, const char* _Msg)
+void BFW_Debug_Break(const unsigned long _Line, const char* _File, const char* _Msg)
 {
 	if (_Msg)
 	{
@@ -40,10 +40,10 @@ void Break(const unsigned long _Line, const char* _File, const char* _Msg)
 
 
 
-void BFW_Debug_Example()
+long BFW_Debug_Example()
 {
 	BFW::Log::Init();
-	BFW_ARDUINO_CALL(BFW::Debug::Break = Break);
+	BFW_ARDUINO_CALL(BFW::Debug::Break = BFW_Debug_Break);
 
 	int* a = new int[100];
 	BFW_HEAP_PROFILE_PUSH(sizeof(int) * 100, a);
@@ -76,4 +76,6 @@ void BFW_Debug_Example()
 
 	BFW_ARDUINO_CALL(BFW::Debug::Break = nullptr);
 	BFW::Log::Stop();
+
+	return BFW::Enums::_ReturnNoError;
 }

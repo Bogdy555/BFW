@@ -11,10 +11,10 @@
 namespace BFW
 {
 
-#ifdef BFW_WINDOWS_PLATFORM
-
 	namespace Multiprocessing
 	{
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 		class BFW_API SharedMemory
 		{
@@ -93,9 +93,9 @@ namespace BFW
 
 		};
 
-	}
-
 #endif
+
+	}
 
 }
 

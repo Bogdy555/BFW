@@ -54,6 +54,9 @@
     <ClCompile Include="Sources\BFW_Math_Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\BFW_Sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\BFW_Resources.rc">
@@ -119,6 +122,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\BFW_Math.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\BFW_Sound.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
