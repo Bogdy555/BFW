@@ -52,9 +52,9 @@
 
 
 
-#ifndef BFW_VENDOR
+#ifndef BFW_STATIC_LINK
 
-#define BFW_VENDOR
+#define BFW_STATIC_LINK
 
 #endif
 

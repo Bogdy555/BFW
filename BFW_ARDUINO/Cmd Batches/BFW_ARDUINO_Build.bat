@@ -1,5 +1,7 @@
 cd "..\..\"
 
+
+
 mkdir ".\Binaries\"
 mkdir ".\Binaries\BFW_ARDUINO\"
 mkdir ".\Binaries\BFW_ARDUINO\%Configuration%\"
@@ -17,6 +19,20 @@ set SrcDir=.\BFW_ARDUINO\Sources\
 set ArduinoSrcDir=.\BFW_ARDUINO\Vendor\Arduino\Sources\
 set BFWSrcDir=.\BFW\Sources\
 
+
+
+if "%Configuration%"=="" set Configuration=Debug
+
+
+
+if "%Configuration%"=="Release" set BFW_DEFINES=-DBFW_ARDUINO_PLATFORM
+if "%Configuration%"=="Debug" set BFW_DEFINES=-DBFW_ARDUINO_PLATFORM -DBFW_DEBUG
+
+set BFW_BUILD=-DBFW_STATIC_BUILD
+set BFW_LINK=-DBFW_STATIC_LINK
+
+
+
 set ASSEMBLY_FLAGS=-c -g -x assembler-with-cpp -flto -MMD -mmcu=atmega328p
 set ASSEMBLY_DEFINES=-DF_CPU=16000000L -DARDUINO=10815 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR %BFW_DEFINES%
 
@@ -32,33 +48,33 @@ set LINK_OBJ="%IntDir%BFW_ARDUINO_EntryPoint.o" "%IntDir%BFW_ARDUINO_Application
 
 
 
-avr-gcc %ASSEMBLY_FLAGS% %ASSEMBLY_DEFINES% -o "%IntDir%wiring_pulse_asm.o" "%ArduinoSrcDir%wiring_pulse_asm.S"
+avr-gcc %ASSEMBLY_FLAGS% %ASSEMBLY_DEFINES% %BFW_BUILD% -o "%IntDir%wiring_pulse_asm.o" "%ArduinoSrcDir%wiring_pulse_asm.S"
 
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%WInterrupts.o"	"%ArduinoSrcDir%WInterrupts.c"
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%wiring_digital.o"	"%ArduinoSrcDir%wiring_digital.c"
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%wiring_pulse.o"	"%ArduinoSrcDir%wiring_pulse.c"
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%wiring_analog.o"	"%ArduinoSrcDir%wiring_analog.c"
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%hooks.o"			"%ArduinoSrcDir%hooks.c"
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%wiring_shift.o"	"%ArduinoSrcDir%wiring_shift.c"
-avr-gcc %C_FLAGS% %C_DEFINES% -o "%IntDir%wiring.o"			"%ArduinoSrcDir%wiring.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%WInterrupts.o"		"%ArduinoSrcDir%WInterrupts.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%wiring_digital.o"	"%ArduinoSrcDir%wiring_digital.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%wiring_pulse.o"	"%ArduinoSrcDir%wiring_pulse.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%wiring_analog.o"	"%ArduinoSrcDir%wiring_analog.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%hooks.o"			"%ArduinoSrcDir%hooks.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%wiring_shift.o"	"%ArduinoSrcDir%wiring_shift.c"
+avr-gcc %C_FLAGS% %C_DEFINES% %BFW_BUILD% -o "%IntDir%wiring.o"			"%ArduinoSrcDir%wiring.c"
 
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%HardwareSerial.o"		"%ArduinoSrcDir%HardwareSerial.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%HardwareSerial0.o"	"%ArduinoSrcDir%HardwareSerial0.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%CDC.o"				"%ArduinoSrcDir%CDC.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%PluggableUSB.o"		"%ArduinoSrcDir%PluggableUSB.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%HardwareSerial1.o"	"%ArduinoSrcDir%HardwareSerial1.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%HardwareSerial2.o"	"%ArduinoSrcDir%HardwareSerial2.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%IPAddress.o"			"%ArduinoSrcDir%IPAddress.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%HardwareSerial3.o"	"%ArduinoSrcDir%HardwareSerial3.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%Print.o"				"%ArduinoSrcDir%Print.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%Stream.o"				"%ArduinoSrcDir%Stream.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%Tone.o"				"%ArduinoSrcDir%Tone.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%USBCore.o"			"%ArduinoSrcDir%USBCore.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%WMath.o"				"%ArduinoSrcDir%WMath.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%WString.o"			"%ArduinoSrcDir%WString.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%abi.o"				"%ArduinoSrcDir%abi.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%main.o"				"%ArduinoSrcDir%main.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%new.o"				"%ArduinoSrcDir%new.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%HardwareSerial.o"	"%ArduinoSrcDir%HardwareSerial.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%HardwareSerial0.o"	"%ArduinoSrcDir%HardwareSerial0.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%CDC.o"				"%ArduinoSrcDir%CDC.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%PluggableUSB.o"	"%ArduinoSrcDir%PluggableUSB.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%HardwareSerial1.o"	"%ArduinoSrcDir%HardwareSerial1.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%HardwareSerial2.o"	"%ArduinoSrcDir%HardwareSerial2.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%IPAddress.o"		"%ArduinoSrcDir%IPAddress.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%HardwareSerial3.o"	"%ArduinoSrcDir%HardwareSerial3.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%Print.o"			"%ArduinoSrcDir%Print.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%Stream.o"			"%ArduinoSrcDir%Stream.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%Tone.o"			"%ArduinoSrcDir%Tone.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%USBCore.o"			"%ArduinoSrcDir%USBCore.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%WMath.o"			"%ArduinoSrcDir%WMath.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%WString.o"			"%ArduinoSrcDir%WString.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%abi.o"				"%ArduinoSrcDir%abi.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%main.o"			"%ArduinoSrcDir%main.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%new.o"				"%ArduinoSrcDir%new.cpp"
 
 avr-gcc-ar rcs "%OutDir%Arduino.a" "%IntDir%abi.o"
 avr-gcc-ar rcs "%OutDir%Arduino.a" "%IntDir%CDC.o"
@@ -88,19 +104,19 @@ avr-gcc-ar rcs "%OutDir%Arduino.a" "%IntDir%WString.o"
 
 
 
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_EntryPoint.o"			"%BFWSrcDir%BFW_EntryPoint.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Debug.o"				"%BFWSrcDir%BFW_Debug.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Log.o"				"%BFWSrcDir%BFW_Log.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Multiprocessing.o"	"%BFWSrcDir%BFW_Multiprocessing.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Time.o"				"%BFWSrcDir%BFW_Time.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Application.o"		"%BFWSrcDir%BFW_Application.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Menu.o"				"%BFWSrcDir%BFW_Menu.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Input.o"				"%BFWSrcDir%BFW_Input.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Hardware.o"			"%BFWSrcDir%BFW_Hardware.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Math.o"				"%BFWSrcDir%BFW_Math.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Math_Matrix.o"		"%BFWSrcDir%BFW_Math_Matrix.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Math_Vector.o"		"%BFWSrcDir%BFW_Math_Vector.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_Sound.o"				"%BFWSrcDir%BFW_Sound.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_EntryPoint.o"		"%BFWSrcDir%BFW_EntryPoint.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Debug.o"			"%BFWSrcDir%BFW_Debug.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Log.o"				"%BFWSrcDir%BFW_Log.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Multiprocessing.o"	"%BFWSrcDir%BFW_Multiprocessing.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Time.o"			"%BFWSrcDir%BFW_Time.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Application.o"		"%BFWSrcDir%BFW_Application.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Menu.o"			"%BFWSrcDir%BFW_Menu.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Input.o"			"%BFWSrcDir%BFW_Input.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Hardware.o"		"%BFWSrcDir%BFW_Hardware.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Math.o"			"%BFWSrcDir%BFW_Math.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Math_Matrix.o"		"%BFWSrcDir%BFW_Math_Matrix.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Math_Vector.o"		"%BFWSrcDir%BFW_Math_Vector.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_BUILD% -o "%IntDir%BFW_Sound.o"			"%BFWSrcDir%BFW_Sound.cpp"
 
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_EntryPoint.o"
 avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Debug.o"
@@ -118,9 +134,9 @@ avr-gcc-ar rcs "%OutDir%BFW.a" "%IntDir%BFW_Sound.o"
 
 
 
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_ARDUINO_EntryPoint.o"		"%SrcDir%BFW_ARDUINO_EntryPoint.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_ARDUINO_Application.o"	"%SrcDir%BFW_ARDUINO_Application.cpp"
-avr-g++ %CPP_FLAGS% %CPP_DEFINES% -o "%IntDir%BFW_ARDUINO_MainMenu.o"		"%SrcDir%BFW_ARDUINO_MainMenu.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_LINK% -o "%IntDir%BFW_ARDUINO_EntryPoint.o"	"%SrcDir%BFW_ARDUINO_EntryPoint.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_LINK% -o "%IntDir%BFW_ARDUINO_Application.o"	"%SrcDir%BFW_ARDUINO_Application.cpp"
+avr-g++ %CPP_FLAGS% %CPP_DEFINES% %BFW_LINK% -o "%IntDir%BFW_ARDUINO_MainMenu.o"		"%SrcDir%BFW_ARDUINO_MainMenu.cpp"
 
 
 
