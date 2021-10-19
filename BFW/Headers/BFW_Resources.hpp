@@ -4,6 +4,10 @@
 
 
 
+#define BFW_VERSION "1.0.0.0"
+
+
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 
@@ -17,6 +21,10 @@
 
 
 #endif
+
+
+
+#define BFW_WAV_RESOURCE 256
 
 
 

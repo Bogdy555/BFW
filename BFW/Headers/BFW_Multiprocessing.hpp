@@ -71,7 +71,7 @@ namespace BFW
 			Process(Process&& _Other) noexcept;
 			~Process();
 
-			bool Create(const wchar_t* _Path, STARTUPINFO* _StartInfo = nullptr, const wchar_t* _WorkingDir = nullptr, wchar_t* _CmdLine = nullptr);
+			bool Create(const wchar_t* _Path, STARTUPINFO* _StartInfo = nullptr, const wchar_t* _WorkingDir = nullptr, wchar_t* _CmdLine = nullptr, unsigned long _Flags = CREATE_NEW_CONSOLE);
 			bool CreateElevated(const wchar_t* _Path, const int _ShowCmd = SW_NORMAL, const wchar_t* _WorkingDir = nullptr, wchar_t* _CmdLine = nullptr);
 			void Destroy(const unsigned long _ReturnValue);
 			bool UpdateStatus();

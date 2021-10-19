@@ -66,29 +66,9 @@ const BFW::Time::Timer& BFW::Application::GetFrameTime(const unsigned long _Inde
 	return FrameTime[_Index];
 }
 
-BFW::Time::Timer* BFW::Application::GetFrameTimePtr()
-{
-	return FrameTime;
-}
-
-const BFW::Time::Timer* BFW::Application::GetFrameTimePtr() const
-{
-	return FrameTime;
-}
-
 const float BFW::Application::GetTimeStep() const
 {
 	return TimeStep;
-}
-
-float* BFW::Application::GetTimeStepPtr()
-{
-	return &TimeStep;
-}
-
-const float* BFW::Application::GetTimeStepPtr() const
-{
-	return &TimeStep;
 }
 
 const float BFW::Application::GetTimeStepRatio() const
@@ -99,16 +79,6 @@ const float BFW::Application::GetTimeStepRatio() const
 const unsigned long BFW::Application::GetSync() const
 {
 	return Sync;
-}
-
-unsigned long* BFW::Application::GetSyncPtr()
-{
-	return &Sync;
-}
-
-const unsigned long* BFW::Application::GetSyncPtr() const
-{
-	return &Sync;
 }
 
 const HINSTANCE BFW::Application::GetHInstance() const
@@ -199,6 +169,9 @@ long BFW::Application::Run(const HINSTANCE _hInstance, const LPWSTR _CmdLine, co
 
 	*SharedInstance = *SharedInstance + 1;
 
+	FrameTime[Enums::_Previous].Reset();
+	FrameTime[Enums::_Current].Reset();
+
 	Setup();
 	while (On)
 	{
@@ -276,29 +249,9 @@ const BFW::Time::Timer& BFW::Application::GetFrameTime(const unsigned long _Inde
 	return FrameTime[_Index];
 }
 
-BFW::Time::Timer* BFW::Application::GetFrameTimePtr()
-{
-	return FrameTime;
-}
-
-const BFW::Time::Timer* BFW::Application::GetFrameTimePtr() const
-{
-	return FrameTime;
-}
-
 const float BFW::Application::GetTimeStep() const
 {
 	return TimeStep;
-}
-
-float* BFW::Application::GetTimeStepPtr()
-{
-	return &TimeStep;
-}
-
-const float* BFW::Application::GetTimeStepPtr() const
-{
-	return &TimeStep;
 }
 
 const float BFW::Application::GetTimeStepRatio() const
@@ -309,16 +262,6 @@ const float BFW::Application::GetTimeStepRatio() const
 const unsigned long BFW::Application::GetSync() const
 {
 	return Sync;
-}
-
-unsigned long* BFW::Application::GetSyncPtr()
-{
-	return &Sync;
-}
-
-const unsigned long* BFW::Application::GetSyncPtr() const
-{
-	return &Sync;
 }
 
 void BFW::Application::TurnOn()
@@ -359,6 +302,9 @@ void BFW::Application::SetSync(const unsigned long _Sync)
 
 long BFW::Application::Run()
 {
+	FrameTime[Enums::_Previous].Reset();
+	FrameTime[Enums::_Current].Reset();
+
 	Setup();
 	while (On)
 	{

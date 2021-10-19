@@ -57,29 +57,9 @@ const BFW::Time::Timer& BFW::Menu::GetFrameTime(const unsigned long _Index) cons
 	return ApplicationObj->GetFrameTime(_Index);
 }
 
-BFW::Time::Timer* BFW::Menu::GetFrameTimePtr()
-{
-	return ApplicationObj->GetFrameTimePtr();
-}
-
-const BFW::Time::Timer* BFW::Menu::GetFrameTimePtr() const
-{
-	return ApplicationObj->GetFrameTimePtr();
-}
-
 const float BFW::Menu::GetTimeStep() const
 {
 	return ApplicationObj->GetTimeStep();
-}
-
-float* BFW::Menu::GetTimeStepPtr()
-{
-	return ApplicationObj->GetTimeStepPtr();
-}
-
-const float* BFW::Menu::GetTimeStepPtr() const
-{
-	return ApplicationObj->GetTimeStepPtr();
 }
 
 const float BFW::Menu::GetTimeStepRatio() const
@@ -90,16 +70,6 @@ const float BFW::Menu::GetTimeStepRatio() const
 const unsigned long BFW::Menu::GetSync() const
 {
 	return ApplicationObj->GetSync();
-}
-
-unsigned long* BFW::Menu::GetSyncPtr()
-{
-	return ApplicationObj->GetSyncPtr();
-}
-
-const unsigned long* BFW::Menu::GetSyncPtr() const
-{
-	return ApplicationObj->GetSyncPtr();
 }
 
 void BFW::Menu::TurnOn()
@@ -142,7 +112,7 @@ void BFW::Menu::Run(Application* _ApplicationObj)
 {
 	if (!_ApplicationObj)
 	{
-		BFW_DEBUG_BREAK_MSG(BFW_STRING("An application object is required for menu object to run!"));
+		BFW_DEBUG_BREAK_MSG(BFW_STRING("An application object is required for a menu object to run!"));
 		return;
 	}
 

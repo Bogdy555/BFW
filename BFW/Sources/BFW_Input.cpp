@@ -258,6 +258,11 @@ void BFW::Input::RumbleSequence::SetTime(const float _Time)
 
 void BFW::Input::RumbleSequence::SetIndex(const unsigned long _Index)
 {
+	if (!RumbleStateVec.GetSize())
+	{
+		return;
+	}
+
 	Index = _Index;
 	Time = RumbleStateVec[_Index].Begin;
 }

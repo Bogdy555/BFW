@@ -8,6 +8,10 @@
 
 
 
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
 #if defined BFW_DLL_BUILD || defined BFW_DLL_LINK
 
 
@@ -33,6 +37,10 @@ struct BFW_API std::uniform_real<float>::param_type;
 BFW_EXTERN template class BFW_API std::uniform_real_distribution<float>;
 struct BFW_API std::uniform_real<double>::param_type;
 BFW_EXTERN template class BFW_API std::uniform_real_distribution<double>;
+
+
+
+#endif
 
 
 

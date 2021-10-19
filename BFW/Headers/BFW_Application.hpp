@@ -35,18 +35,12 @@ namespace BFW
 
 		Time::Timer& GetFrameTime(const unsigned long _Index);
 		const Time::Timer& GetFrameTime(const unsigned long _Index) const;
-		Time::Timer* GetFrameTimePtr();
-		const Time::Timer* GetFrameTimePtr() const;
 
 		const float GetTimeStep() const;
-		float* GetTimeStepPtr();
-		const float* GetTimeStepPtr() const;
 
 		const float GetTimeStepRatio() const;
 
 		const unsigned long GetSync() const;
-		unsigned long* GetSyncPtr();
-		const unsigned long* GetSyncPtr() const;
 
 		const HINSTANCE GetHInstance() const;
 		const LPWSTR GetCmdLine() const;
@@ -116,18 +110,12 @@ namespace BFW
 
 		Time::Timer& GetFrameTime(const unsigned long _Index);
 		const Time::Timer& GetFrameTime(const unsigned long _Index) const;
-		Time::Timer* GetFrameTimePtr();
-		const Time::Timer* GetFrameTimePtr() const;
 
 		const float GetTimeStep() const;
-		float* GetTimeStepPtr();
-		const float* GetTimeStepPtr() const;
 
 		const float GetTimeStepRatio() const;
 
 		const unsigned long GetSync() const;
-		unsigned long* GetSyncPtr();
-		const unsigned long* GetSyncPtr() const;
 
 		void TurnOn();
 		void Close(const long _ReturnValue);

@@ -93,7 +93,7 @@ BFW::Debug::HeapTracker::HeapTracker(HeapTracker&& _Other) noexcept : HeapSize(_
 
 BFW::Debug::HeapTracker::~HeapTracker()
 {
-	if (HeapVector.GetSize())
+	if (HeapSize)
 	{
 		BFW_DEBUG_BREAK_MSG(BFW_STRING("Memory leak detected!"));
 	}

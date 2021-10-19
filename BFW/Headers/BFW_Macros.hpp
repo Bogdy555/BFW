@@ -28,6 +28,10 @@
 
 
 
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
 #ifdef BFW_DLL_BUILD
 
 #if defined BFW_DLL_LINK || defined BFW_STATIC_BUILD || defined BFW_STATIC_LINK || defined BFW_VENDOR
@@ -100,6 +104,88 @@
 
 
 
+#endif
+
+
+
+#ifdef BFW_ARDUINO_PLATFORM
+
+
+
+#ifdef BFW_DLL_BUILD
+
+#if defined BFW_DLL_LINK || defined BFW_STATIC_BUILD || defined BFW_STATIC_LINK || defined BFW_VENDOR
+
+#error You have to specifie just one target
+
+#endif
+
+#error Dll-s are not supported on Arduino
+
+#endif
+
+
+
+#ifdef BFW_DLL_LINK
+
+#if defined BFW_DLL_BUILD || defined BFW_STATIC_BUILD || defined BFW_STATIC_LINK || defined BFW_VENDOR
+
+#error You have to specifie just one target
+
+#endif
+
+#error Dll-s are not supported on Arduino
+
+#endif
+
+
+
+#ifdef BFW_STATIC_BUILD
+
+#if defined BFW_DLL_BUILD || defined BFW_DLL_LINK || defined BFW_STATIC_LINK || defined BFW_VENDOR
+
+#error You have to specifie just one target
+
+#endif
+
+#define BFW_API
+
+#endif
+
+
+
+#ifdef BFW_STATIC_LINK
+
+#if defined BFW_DLL_BUILD || defined BFW_DLL_LINK || defined BFW_STATIC_BUILD || defined BFW_VENDOR
+
+#error You have to specifie just one target
+
+#endif
+
+#define BFW_API
+
+#endif
+
+
+
+#ifdef BFW_VENDOR
+
+#if defined BFW_DLL_BUILD || defined BFW_DLL_LINK || defined BFW_STATIC_BUILD || defined BFW_STATIC_LINK
+
+#error You have to specifie just one target
+
+#endif
+
+#define BFW_API
+
+#endif
+
+
+
+#endif
+
+
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 #define BFW_WINDOWS_CALL(X) X
@@ -135,6 +221,42 @@
 #define BFW_DEBUG_CALL(X) X
 
 #define BFW_RELEASE_CALL(X)
+
+#endif
+
+
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
+#ifdef _WIN32
+
+
+
+#ifdef _WIN64
+
+#define BFW_X64_CALL(X) X
+
+#define BFW_X86_CALL(X)
+
+#endif
+
+
+
+#ifndef _WIN64
+
+#define BFW_X64_CALL(X)
+
+#define BFW_X86_CALL(X) X
+
+#endif
+
+
+
+#endif
+
+
 
 #endif
 

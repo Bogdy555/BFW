@@ -339,7 +339,13 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+		class BFW_API SoundBuff;
 
+		class BFW_API ResourceInStream;
+
+		class BFW_API FileInStream;
+
+		class BFW_API FileOutStream;
 
 #endif
 
@@ -359,15 +365,7 @@ namespace BFW
 
 
 
-#ifdef BFW_WINDOWS_PLATFORM
-
-
-
 #include "BFW_Templates.hpp"
-
-
-
-#endif
 
 
 

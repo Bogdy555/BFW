@@ -201,6 +201,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{8FEDAD7D-4D61-41C4-81E6-28F587C60E4B}"
 	ProjectSection(SolutionItems) = preProject
 		BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.jpg = BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.jpg
+		BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.sdocx = BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.sdocx
 	EndProjectSection
 EndProject
 Global

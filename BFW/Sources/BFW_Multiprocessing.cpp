@@ -273,7 +273,7 @@ BFW::Multiprocessing::Process::~Process()
 
 }
 
-bool BFW::Multiprocessing::Process::Create(const wchar_t* _Path, STARTUPINFO* _StartInfo, const wchar_t* _WorkingDir, wchar_t* _CmdLine)
+bool BFW::Multiprocessing::Process::Create(const wchar_t* _Path, STARTUPINFO* _StartInfo, const wchar_t* _WorkingDir, wchar_t* _CmdLine, unsigned long _Flags)
 {
 	ProcessInfo = { 0 };
 	Created = false;
@@ -288,13 +288,13 @@ bool BFW::Multiprocessing::Process::Create(const wchar_t* _Path, STARTUPINFO* _S
 
 	if (_StartInfo)
 	{
-		Created = CreateProcess(Path, _CmdLine, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, _WorkingDir, _StartInfo, &ProcessInfo);
+		Created = CreateProcess(Path, _CmdLine, NULL, NULL, FALSE, _Flags, NULL, _WorkingDir, _StartInfo, &ProcessInfo);
 	}
 	else
 	{
 		STARTUPINFO _DefaultStartInfo = { 0 };
 		_DefaultStartInfo.dwFlags = STARTF_FORCEOFFFEEDBACK;
-		Created = CreateProcess(Path, _CmdLine, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, _WorkingDir, &_DefaultStartInfo, &ProcessInfo);
+		Created = CreateProcess(Path, _CmdLine, NULL, NULL, FALSE, _Flags, NULL, _WorkingDir, &_DefaultStartInfo, &ProcessInfo);
 	}
 
 	ReturnValue = Enums::_ReturnStillRunning;
