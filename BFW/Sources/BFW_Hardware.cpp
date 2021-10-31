@@ -23,10 +23,7 @@ BFW::Hardware::SerialPort::SerialPort(SerialPort&& _Other) noexcept :
 
 BFW::Hardware::SerialPort::~SerialPort()
 {
-	if (Connected)
-	{
-		Close();
-	}
+	Close();
 }
 
 bool BFW::Hardware::SerialPort::Open(const wchar_t* _PortName, const unsigned long _BaudRate)
@@ -887,7 +884,7 @@ BFW::Hardware::Microphone::Microphone(Microphone&& _Other) noexcept :
 
 BFW::Hardware::Microphone::~Microphone()
 {
-
+	Disconnect();
 }
 
 bool BFW::Hardware::Microphone::Connect(const unsigned long _Index)

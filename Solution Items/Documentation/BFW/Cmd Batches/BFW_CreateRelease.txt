@@ -1,0 +1,14 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_CreateRelease.bat
+
+	Description
+
+		Creates binaries for all platforms and configurations (Debug, Release, x64, x86, Arduino),
+		signs them and creates installers.
+
+	Remarks
+
+		Edit ".\Solution Items\Cmd Batches\BFW_Path.bat".
+
+----------------------------------------------------------------------------------------------------

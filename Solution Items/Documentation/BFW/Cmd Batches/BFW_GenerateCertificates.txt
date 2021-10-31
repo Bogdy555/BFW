@@ -1,0 +1,18 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_GenerateCertificates.bat
+
+	Description
+
+		Generates the BFW certificates.
+
+	Remarks
+
+		The files are placed in "..\Digital Certificates\BFW\".
+
+		Use the password BFWSoftware for all private keys.
+
+		Make sure that the paths to makecert.exe and pvk2pfx.exe are relevant for your Visual
+		Studio installation. Edit ".\Solution Items\Cmd Batches\BFW_Path.bat".
+
+----------------------------------------------------------------------------------------------------

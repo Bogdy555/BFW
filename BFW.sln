@@ -8,8 +8,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmd Batches", "Cmd Batches", "{1B16E66A-8A5D-453F-B898-1133DE115B2F}"
 	ProjectSection(SolutionItems) = preProject
 		Solution Items\Cmd Batches\BFW_CreateFolders.bat = Solution Items\Cmd Batches\BFW_CreateFolders.bat
+		Solution Items\Cmd Batches\BFW_CreateRelease.bat = Solution Items\Cmd Batches\BFW_CreateRelease.bat
 		Solution Items\Cmd Batches\BFW_GenerateCertificates.bat = Solution Items\Cmd Batches\BFW_GenerateCertificates.bat
 		Solution Items\Cmd Batches\BFW_Path.bat = Solution Items\Cmd Batches\BFW_Path.bat
+		Solution Items\Cmd Batches\BFW_Setup.bat = Solution Items\Cmd Batches\BFW_Setup.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{2A869BBA-5FD6-4505-948E-2044BFB65FF7}"
@@ -26,11 +28,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW", "BFW", "{9FA5DCA2-129
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{2684C70F-102E-43C5-93FA-86EB35FFD1D9}"
-	ProjectSection(SolutionItems) = preProject
-		Solution Items\Documentation\BFW_BuildSteps.txt = Solution Items\Documentation\BFW_BuildSteps.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW", "BFW", "{E7808610-1B93-4234-8CA6-135561C4DA42}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Documentation\BFW\BFW_BuildSteps.txt = Solution Items\Documentation\BFW\BFW_BuildSteps.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFW_APP", "BFW_APP", "{14DF8151-66BD-4C2A-B9D5-98597DC77EDE}"
 EndProject
@@ -199,9 +201,43 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{B09B
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{8FEDAD7D-4D61-41C4-81E6-28F587C60E4B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hardware", "Hardware", "{7E4B10A6-05E2-4B94-BEDB-FF84E4640660}"
 	ProjectSection(SolutionItems) = preProject
-		BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.jpg = BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.jpg
-		BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.sdocx = BFW_ARDUINO\Schemes\Examples\BFW_Hardware_Example.sdocx
+		BFW_ARDUINO\Schemes\Examples\Hardware\BFW_ARDUINO_Hardware_Example_Image.jpg = BFW_ARDUINO\Schemes\Examples\Hardware\BFW_ARDUINO_Hardware_Example_Image.jpg
+		BFW_ARDUINO\Schemes\Examples\Hardware\BFW_ARDUINO_Hardware_Example_Note.sdocx = BFW_ARDUINO\Schemes\Examples\Hardware\BFW_ARDUINO_Hardware_Example_Note.sdocx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmd Batches", "Cmd Batches", "{67BAB146-7E96-4C3E-94AE-F89F3DADED4E}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_CreateFolders.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_CreateFolders.txt
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_CreateRelease.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_CreateRelease.txt
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_GenerateCertificates.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_GenerateCertificates.txt
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_ISCC.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_ISCC.txt
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_Path.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_Path.txt
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_Setup.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_Setup.txt
+		Solution Items\Documentation\BFW\Cmd Batches\BFW_SignTool.txt = Solution Items\Documentation\BFW\Cmd Batches\BFW_SignTool.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmd Batches", "Cmd Batches", "{9E19BCC2-4DDC-4F8F-9AB5-608545D65A4E}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Documentation\BFW_APP\Cmd Batches\BFW_APP_ISCC.txt = Solution Items\Documentation\BFW_APP\Cmd Batches\BFW_APP_ISCC.txt
+		Solution Items\Documentation\BFW_APP\Cmd Batches\BFW_APP_SignTool.txt = Solution Items\Documentation\BFW_APP\Cmd Batches\BFW_APP_SignTool.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmd Batches", "Cmd Batches", "{3672FDB2-77CC-4D16-820D-121199941D36}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Build.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Build.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Clean.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Clean.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanDebug.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanDebug.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanRelease.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_CleanRelease.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Rebuild.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Rebuild.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildDebug.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildDebug.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildRelease.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_RebuildRelease.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadDebug.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadDebug.txt
+		Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadRelease.txt = Solution Items\Documentation\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_UploadRelease.txt
 	EndProjectSection
 EndProject
 Global
@@ -275,6 +311,10 @@ Global
 		{7E4477BB-9983-4696-8661-40519EFB6CDF} = {B1464633-6448-4103-ADEF-99496CB3D1B1}
 		{B09BF1B2-E19B-4E7D-92E8-78660F9601D2} = {B1464633-6448-4103-ADEF-99496CB3D1B1}
 		{8FEDAD7D-4D61-41C4-81E6-28F587C60E4B} = {490B0F8B-43EA-4DC7-B935-CCB0507BD212}
+		{7E4B10A6-05E2-4B94-BEDB-FF84E4640660} = {8FEDAD7D-4D61-41C4-81E6-28F587C60E4B}
+		{67BAB146-7E96-4C3E-94AE-F89F3DADED4E} = {E7808610-1B93-4234-8CA6-135561C4DA42}
+		{9E19BCC2-4DDC-4F8F-9AB5-608545D65A4E} = {14DF8151-66BD-4C2A-B9D5-98597DC77EDE}
+		{3672FDB2-77CC-4D16-820D-121199941D36} = {B12AD1A5-34A1-4ABD-8011-93295C29C6DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA025F39-18E6-4F01-9B89-CBFD3E0E5B8A}

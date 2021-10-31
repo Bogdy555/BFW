@@ -1,0 +1,32 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_ISCC.bat
+
+	Description
+
+		Compiles ".\BFW\Setup\BFW_SetupScript.iss" for BFW_DLL and BFW_STATIC using Inno Setup
+		command line compiler.
+
+	Remarks
+
+		This batch looks at all configurations and platforms and compiles all of them.
+
+		The binaries are placed in ".\Binaries\$(ProjectName)\$(Configuration)\$(PlatformShortName)\".
+
+		Make sure that the path to ISCC.exe is relevant for your Inno Setup installation.
+		Edit ".\Solution Items\Cmd Batches\BFW_Path.bat".
+
+		Before running this batch make sure that the BFW certificates are generated.
+		If they are not use ".\Solution Items\Cmd Batches\BFW_GenerateCertificates.bat".
+
+		To use this batch you have to configure a SignTool in Inno Setup.
+
+			SignTool=C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe $p
+
+			Make sure that the path to signtool.exe is relevant for your Visual Studio installation.
+
+		This batch fails without a valid internet connection.
+
+		Run ".\BFW\Cmd Batches\BFW_SignTool.bat" before running this batch.
+
+----------------------------------------------------------------------------------------------------

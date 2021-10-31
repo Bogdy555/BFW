@@ -1,0 +1,14 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_CreateFolders.bat
+
+	Description
+
+		Creates empty folders used by the project.
+
+	Remarks
+
+		Have a look at the build steps in ".\Solution Items\Documentation\BFW\BFW_BuildSteps.txt".
+		It is better explained there.
+
+----------------------------------------------------------------------------------------------------

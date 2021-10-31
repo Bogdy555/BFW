@@ -56,10 +56,7 @@ BFW::Multiprocessing::SharedMemory::SharedMemory(SharedMemory&& _Other) noexcept
 
 BFW::Multiprocessing::SharedMemory::~SharedMemory()
 {
-	if (Created)
-	{
-		Destroy();
-	}
+	Destroy();
 }
 
 bool BFW::Multiprocessing::SharedMemory::Create(const wchar_t* _Name, const unsigned long _Size)

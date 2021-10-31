@@ -1,0 +1,19 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_ARDUINO_Build.bat
+
+	Description
+
+		Used to build Arduino.a, BFW.a and BFW_ARDUINO.hex.
+
+		Before running this do this "set Configuration=Debug" or this "set Configuration=Release".
+
+		It defaults to Debug, but it is not recommended to be used. Use instead
+		".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.bat" or
+		".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.bat".
+
+	Remarks
+
+		It fails without having the compiler path in the environmental variables.
+
+----------------------------------------------------------------------------------------------------

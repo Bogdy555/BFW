@@ -1,0 +1,13 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_ARDUINO_BuildDebug.bat
+
+	Description
+
+		Used to build the debug Arduino.a, BFW.a and BFW_ARDUINO.hex.
+
+	Remarks
+
+		It fails without having the compiler path in the environmental variables.
+
+----------------------------------------------------------------------------------------------------

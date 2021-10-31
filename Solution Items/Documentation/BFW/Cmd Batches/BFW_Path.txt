@@ -1,0 +1,13 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_Path.bat
+
+	Description
+
+		Sets variables for paths to external software.
+
+	Remarks
+
+		It should be edited depending on your installation paths for external software.
+
+----------------------------------------------------------------------------------------------------

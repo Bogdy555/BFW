@@ -1,0 +1,12 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_ARDUINO_Rebuild.bat
+
+	Description
+
+		Calls ".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_Clear.bat",
+		".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildDebug.bat" and
+		".\BFW_ARDUINO\Cmd Batches\BFW_ARDUINO_BuildRelease.bat".
+		See docs for them.
+
+----------------------------------------------------------------------------------------------------

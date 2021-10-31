@@ -508,10 +508,7 @@ BFW::Math::Crypt::Crypt(Crypt&& _Other) noexcept : hCrypt(_Other.hCrypt), Create
 
 BFW::Math::Crypt::~Crypt()
 {
-	if (Created)
-	{
-		Destroy();
-	}
+	Destroy();
 }
 
 bool BFW::Math::Crypt::Create(const wchar_t* _Name)

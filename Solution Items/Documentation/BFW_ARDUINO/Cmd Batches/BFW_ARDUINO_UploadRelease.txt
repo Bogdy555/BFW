@@ -1,0 +1,17 @@
+----------------------------------------------------------------------------------------------------
+
+BFW_ARDUINO_UploadRelease.bat
+
+	Description
+
+		Uploads the release binaries to the microcontroller.
+
+	Remarks
+
+		Edit this batch and chose the COM port for your microcontroller.
+
+		It fails without having avrdude.exe in the environmental variables.
+
+		Run this after compiling the source code.
+
+----------------------------------------------------------------------------------------------------
