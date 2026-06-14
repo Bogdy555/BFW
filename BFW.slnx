@@ -1,0 +1,158 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/BFW_ESP32/" />
+  <Folder Name="/BFW_ESP32/Cmd Batches/">
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build_Debug.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build_Release.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload_Debug.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload_Release.bat" />
+  </Folder>
+  <Folder Name="/BFW_ESP32/Files/" />
+  <Folder Name="/BFW_ESP32/Headers/">
+    <File Path="BFW_ESP32/Headers/BFW_ESP32.hpp" />
+    <File Path="BFW_ESP32/Headers/BFW_ESP32_Dependencies.hpp" />
+    <File Path="BFW_ESP32/Headers/BFW_ESP32_Macros.hpp" />
+    <File Path="BFW_ESP32/Headers/BFW_ESP32_Resources.hpp" />
+    <File Path="BFW_ESP32/Headers/BFW_ESP32_RunTime.hpp" />
+  </Folder>
+  <Folder Name="/BFW_ESP32/Sources/">
+    <File Path="BFW_ESP32/Sources/BFW_ESP32_Application.cpp" />
+    <File Path="BFW_ESP32/Sources/BFW_ESP32_EntryPoint.cpp" />
+    <File Path="BFW_ESP32/Sources/BFW_ESP32_MainMenu.cpp" />
+  </Folder>
+  <Folder Name="/BFW_LINUX/" />
+  <Folder Name="/BFW_LINUX/Cmd Batches/">
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_DYNAMIC_Build.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_DYNAMIC_Build_Debug_x64.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_DYNAMIC_Build_Debug_x86.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_DYNAMIC_Build_Release_x64.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_DYNAMIC_Build_Release_x86.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_STATIC_Build.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_STATIC_Build_Debug_x64.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_STATIC_Build_Debug_x86.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_STATIC_Build_Release_x64.sh" />
+    <File Path="BFW_LINUX/Cmd Batches/BFW_LINUX_STATIC_Build_Release_x86.sh" />
+  </Folder>
+  <Folder Name="/BFW_LINUX/Files/" />
+  <Folder Name="/BFW_LINUX/Headers/">
+    <File Path="BFW_LINUX/Headers/BFW_LINUX.hpp" />
+    <File Path="BFW_LINUX/Headers/BFW_LINUX_Dependencies.hpp" />
+    <File Path="BFW_LINUX/Headers/BFW_LINUX_Macros.hpp" />
+    <File Path="BFW_LINUX/Headers/BFW_LINUX_Resources.hpp" />
+    <File Path="BFW_LINUX/Headers/BFW_LINUX_RunTime.hpp" />
+  </Folder>
+  <Folder Name="/BFW_LINUX/Sources/">
+    <File Path="BFW_LINUX/Sources/BFW_LINUX_Application.cpp" />
+    <File Path="BFW_LINUX/Sources/BFW_LINUX_EntryPoint.cpp" />
+    <File Path="BFW_LINUX/Sources/BFW_LINUX_MainMenu.cpp" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="Licence.md" />
+    <File Path="ReadMe.md" />
+  </Folder>
+  <Folder Name="/Solution Items/Cmd Batches/">
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildAll.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildCore.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_CreateFolders.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_Path.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_Setup.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_LINUX_BuildAll.sh" />
+    <File Path="Solution Items/Cmd Batches/BFW_LINUX_CreateFolders.sh" />
+    <File Path="Solution Items/Cmd Batches/BFW_LINUX_Path.sh" />
+    <File Path="Solution Items/Cmd Batches/BFW_LINUX_Setup.sh" />
+    <File Path="Solution Items/Cmd Batches/BFW_WINDOWS_BuildAll.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_WINDOWS_CreateFolders.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_WINDOWS_CreateRelease.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_WINDOWS_GenerateCertificates.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_WINDOWS_Path.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_WINDOWS_Setup.bat" />
+  </Folder>
+  <Folder Name="/Solution Items/Dependencies/" />
+  <Folder Name="/Solution Items/Dependencies/ArduinoCore/" />
+  <Folder Name="/Solution Items/Dependencies/ArduinoCore/Lib/">
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/ArduinoCore.a" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/base64.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/cbuf.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/cdecode.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/cencode.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/chip-debug-report.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/ColorFormat.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/Esp.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-adc.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-bt.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-cpu.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-dac.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-gpio.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-i2c-ng.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-i2c-slave.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-i2c.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-ledc.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-matrix.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-misc.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-periman.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-psram.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-rgb-led.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-rmt.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-sigmadelta.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-spi.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-time.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-timer.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-tinyusb.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-touch-ng.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-touch.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/esp32-hal-uart.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/FirmwareMSC.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/firmware_msc_fat.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/freertos_stats.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/FunctionalInterrupt.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/HardwareSerial.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/HEXBuilder.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/HWCDC.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/IPAddress.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/MacAddress.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/main.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/MD5Builder.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/Print.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/SHA1Builder.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/stdlib_noniso.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/Stream.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/StreamString.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/Tone.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/USB.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/USBCDC.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/USBMSC.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/wiring_pulse.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/wiring_shift.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/WMath.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/WString.o" />
+  </Folder>
+  <Folder Name="/Solution Items/Digital Certificates/" />
+  <Folder Name="/Solution Items/Digital Certificates/BSW/">
+    <File Path="Solution Items/Digital Certificates/BSW/BSW_CA_CER.cer" />
+    <File Path="Solution Items/Digital Certificates/BSW/BSW_CA_PK.pvk" />
+    <File Path="Solution Items/Digital Certificates/BSW/BSW_SPC_CER.cer" />
+    <File Path="Solution Items/Digital Certificates/BSW/BSW_SPC_PFX.pfx" />
+    <File Path="Solution Items/Digital Certificates/BSW/BSW_SPC_PK.pvk" />
+  </Folder>
+  <Folder Name="/Solution Items/Docs/" />
+  <Folder Name="/Solution Items/Examples/" />
+  <Folder Name="/Solution Items/ReadMe Resources/" />
+  <Folder Name="/Solution Items/Resources/" />
+  <Folder Name="/Solution Items/Resources/Icons/">
+    <File Path="Solution Items/Resources/Icons/BFW_Icon.ico" />
+  </Folder>
+  <Project Path="BFW/BFW_DYNAMIC.vcxproj" Id="818f5c93-389f-450b-a739-bae6aeb4aa99" />
+  <Project Path="BFW/BFW_STATIC.vcxproj" Id="c87198bb-c0d9-4109-9335-56545840a63d" />
+  <Project Path="BFW_WINDOWS/BFW_WINDOWS_DYNAMIC.vcxproj" Id="35441b07-f0d9-4bb0-b603-4a0b99848818">
+    <BuildDependency Project="BFW/BFW_DYNAMIC.vcxproj" />
+  </Project>
+  <Project Path="BFW_WINDOWS/BFW_WINDOWS_STATIC.vcxproj" Id="34ef4e17-16ae-434c-9648-699959457a82">
+    <BuildDependency Project="BFW/BFW_STATIC.vcxproj" />
+  </Project>
+</Solution>

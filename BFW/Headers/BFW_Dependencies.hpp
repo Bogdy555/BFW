@@ -1,0 +1,173 @@
+#ifndef BFW_Dependencies_hpp
+
+#define BFW_Dependencies_hpp
+
+
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+#pragma comment(lib, "WinMM.Lib")
+#pragma comment(lib, "Xinput9_1_0.lib")
+
+#endif
+
+
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+#include "BFW_WinTargetVer.hpp"
+#include <Windows.h>
+#include <Xinput.h>
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <chrono>
+#include <ctime>
+#include <cstdint>
+#include <thread>
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+#include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <semaphore.h>
+#include <linux/joystick.h>
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <chrono>
+#include <ctime>
+#include <cstdint>
+#include <thread>
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+#include <Arduino.h>
+#include <string>
+#include <cmath>
+#include <cstdint>
+
+#endif
+
+
+
+#include "BFW_Macros.hpp"
+
+
+
+namespace BFW
+{
+
+	enum BFW_API States : const size_t
+	{
+		_PreviousState = 0,
+		_CurrentState = 1
+	};
+
+	namespace Debug
+	{
+
+		struct BFW_API HeapPointer;
+
+		class BFW_API HeapTracker;
+
+	}
+
+	namespace Log
+	{
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		enum BFW_API Attributes : const uint16_t;
+
+#endif
+
+	}
+
+	namespace Math
+	{
+
+		class BFW_API Vec2;
+
+		class BFW_API Vec3;
+
+		class BFW_API Vec4;
+
+		class BFW_API Mat2;
+
+		class BFW_API Mat3;
+
+		class BFW_API Mat4;
+
+		class BFW_API Quat;
+
+	}
+
+	namespace Time
+	{
+
+		class BFW_API Timer;
+
+		typedef void (*LogScopeTimeFnc)(const float _ScopeTime);
+
+		class BFW_API ScopeTimer;
+
+	}
+
+	namespace MultiProcessing
+	{
+
+		enum BFW_API ReturnValues : const int32_t;
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		class BFW_API Process;
+
+		class BFW_API SharedMemory;
+
+		class BFW_API SharedMutex;
+
+#endif
+
+	}
+
+	namespace RunTime
+	{
+
+		class BFW_API Application;
+
+		enum BFW_API Menus : const uint64_t;
+
+		class BFW_API Menu;
+
+	}
+
+	namespace Input
+	{
+
+		class BFW_API Key;
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		class BFW_API Controller;
+
+#endif
+
+	}
+
+}
+
+
+
+#include "BFW_Templates.hpp"
+
+
+
+#endif

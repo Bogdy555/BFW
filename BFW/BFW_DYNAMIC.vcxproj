@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{818f5c93-389f-450b-a739-bae6aeb4aa99}</ProjectGuid>
+    <RootNamespace>BFWDYNAMIC</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\Windows\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_DEBUG;BFW_X86;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_DEBUG;BFW_X86;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=VS_FF_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_X86;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_X86;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=NULL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_DEBUG;BFW_X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_DEBUG;BFW_X64;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=VS_FF_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_X64;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=NULL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="Cmd Batches\BFW_ESP32_Build.bat" />
+    <None Include="Cmd Batches\BFW_ESP32_Build_Debug.bat" />
+    <None Include="Cmd Batches\BFW_ESP32_Build_Release.bat" />
+    <None Include="Cmd Batches\BFW_LINUX_DYNAMIC_Build.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_DYNAMIC_Build_Debug_x64.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_DYNAMIC_Build_Debug_x86.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_DYNAMIC_Build_Release_x64.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_DYNAMIC_Build_Release_x86.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_STATIC_Build.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_STATIC_Build_Debug_x64.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_STATIC_Build_Debug_x86.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_STATIC_Build_Release_x64.sh" />
+    <None Include="Cmd Batches\BFW_LINUX_STATIC_Build_Release_x86.sh" />
+    <None Include="Cmd Batches\BFW_WINDOWS_Sign.bat" />
+    <None Include="Resources\BFW_EnglishUS.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\BFW.hpp" />
+    <ClInclude Include="Headers\BFW_Animation.hpp" />
+    <ClInclude Include="Headers\BFW_Debug.hpp" />
+    <ClInclude Include="Headers\BFW_Dependencies.hpp" />
+    <ClInclude Include="Headers\BFW_Input.hpp" />
+    <ClInclude Include="Headers\BFW_Log.hpp" />
+    <ClInclude Include="Headers\BFW_Macros.hpp" />
+    <ClInclude Include="Headers\BFW_Math.hpp" />
+    <ClInclude Include="Headers\BFW_MultiProcessing.hpp" />
+    <ClInclude Include="Headers\BFW_Resources.hpp" />
+    <ClInclude Include="Headers\BFW_RunTime.hpp" />
+    <ClInclude Include="Headers\BFW_Templates.hpp" />
+    <ClInclude Include="Headers\BFW_Time.hpp" />
+    <ClInclude Include="Headers\BFW_Vector.hpp" />
+    <ClInclude Include="Headers\BFW_WinTargetVer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Resources\Manifests\BFW_MainManifest.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\BFW_Resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sources\BFW_Debug.cpp" />
+    <ClCompile Include="Sources\BFW_EntryPoint.cpp" />
+    <ClCompile Include="Sources\BFW_Input.cpp" />
+    <ClCompile Include="Sources\BFW_Log.cpp" />
+    <ClCompile Include="Sources\BFW_Math.cpp" />
+    <ClCompile Include="Sources\BFW_Math_Matrix.cpp" />
+    <ClCompile Include="Sources\BFW_Math_Quaternion.cpp" />
+    <ClCompile Include="Sources\BFW_Math_Vector.cpp" />
+    <ClCompile Include="Sources\BFW_MultiProcessing.cpp" />
+    <ClCompile Include="Sources\BFW_RunTime.cpp" />
+    <ClCompile Include="Sources\BFW_Time.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,19 @@
+#include <BFW_Resources.hpp>
+#include "..\Headers\BFW_WINDOWS_Resources.hpp"
+
+
+
+#include <BFW_WinTargetVer.hpp>
+#include <Windows.h>
+
+
+
+BFW_WINDOWS_IDI_MAIN_ICON ICON L"..\\..\\Solution Items\\Resources\\Icons\\BFW_Icon.ico"
+
+
+
+BFW_WINDOWS_IDM_MAIN_MANIFEST RT_MANIFEST L".\\Manifests\\BFW_WINDOWS_MainManifest.manifest"
+
+
+
+#include "BFW_WINDOWS_EnglishUS.rc2"

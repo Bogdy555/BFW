@@ -1,0 +1,119 @@
+#ifndef BFW_LINUX_Resources_hpp
+
+#define BFW_LINUX_Resources_hpp
+
+
+
+#define BFW_LINUX_VERSION_LIST 1, 0, 0, 0
+
+
+
+#define BFW_LINUX_VERSION_STRING_A "1.0.0.0"
+#define BFW_LINUX_VERSION_STRING_W L"1.0.0.0"
+
+#ifdef _UNICODE
+
+#define BFW_LINUX_VERSION_STRING BFW_LINUX_VERSION_STRING_W
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_LINUX_VERSION_STRING BFW_LINUX_VERSION_STRING_A
+
+#endif
+
+
+
+#define BFW_LINUX_APP_NAME_A "BFW_LINUX"
+#define BFW_LINUX_APP_NAME_W L"BFW_LINUX"
+
+#ifdef _UNICODE
+
+#define BFW_LINUX_APP_NAME BFW_LINUX_APP_NAME_W
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_LINUX_APP_NAME BFW_LINUX_APP_NAME_A
+
+#endif
+
+
+
+#ifdef BFW_LINK_DYNAMIC
+
+#define BFW_LINUX_FILE_NAME_A "BFW_LINUX_DYNAMIC"
+#define BFW_LINUX_FILE_NAME_W L"BFW_LINUX_DYNAMIC"
+
+#ifdef _UNICODE
+
+#define BFW_LINUX_FILE_NAME BFW_LINUX_FILE_NAME_W
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_LINUX_FILE_NAME BFW_LINUX_FILE_NAME_A
+
+#endif
+
+#endif
+
+#ifdef BFW_LINK_STATIC
+
+#define BFW_LINUX_FILE_NAME_A "BFW_LINUX_STATIC"
+#define BFW_LINUX_FILE_NAME_W L"BFW_LINUX_STATIC"
+
+#ifdef _UNICODE
+
+#define BFW_LINUX_FILE_NAME BFW_LINUX_FILE_NAME_W
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_LINUX_FILE_NAME BFW_LINUX_FILE_NAME_A
+
+#endif
+
+#endif
+
+
+
+#define BFW_LINUX_COMPANY_NAME_A "BSW"
+#define BFW_LINUX_COMPANY_NAME_W L"BSW"
+
+#ifdef _UNICODE
+
+#define BFW_LINUX_COMPANY_NAME BFW_LINUX_COMPANY_NAME_W
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_LINUX_COMPANY_NAME BFW_LINUX_COMPANY_NAME_A
+
+#endif
+
+
+
+#define BFW_LINUX_COPY_RIGHT_EN_US_A "Copyright (C) BSW (TM). All rights reserved."
+#define BFW_LINUX_COPY_RIGHT_EN_US_W L"Copyright © BSW™. All rights reserved."
+
+#ifdef _UNICODE
+
+#define BFW_LINUX_COPY_RIGHT_EN_US BFW_LINUX_COPY_RIGHT_EN_US_W
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_LINUX_COPY_RIGHT_EN_US BFW_LINUX_COPY_RIGHT_EN_US_A
+
+#endif
+
+
+
+#endif

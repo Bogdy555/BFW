@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{35441b07-f0d9-4bb0-b603-4a0b99848818}</ProjectGuid>
+    <RootNamespace>BFWWINDOWSDYNAMIC</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Binaries\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)Objects\$(ProjectName)\$(Configuration)\$(PlatformShortName)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_DEBUG;BFW_X86;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_DEBUG;BFW_X86;NULL=0;VERSION_INFO_FILE_FLAGS=VS_FF_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(ProjectDir)Files\" xcopy "$(ProjectDir)Files\*" "$(OutDir)*" /h /e /y /q
+if exist "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" "$(OutDir)*"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_X86;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_X86;NULL=0;VERSION_INFO_FILE_FLAGS=NULL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(ProjectDir)Files\" xcopy "$(ProjectDir)Files\*" "$(OutDir)*" /h /e /y /q
+if exist "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" "$(OutDir)*"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_DEBUG;BFW_X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_DEBUG;BFW_X64;NULL=0;VERSION_INFO_FILE_FLAGS=VS_FF_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(ProjectDir)Files\" xcopy "$(ProjectDir)Files\*" "$(OutDir)*" /h /e /y /q
+if exist "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" "$(OutDir)*"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)BFW\Headers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_LINK_DYNAMIC;BFW_X64;NULL=0;VERSION_INFO_FILE_FLAGS=NULL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(ProjectDir)Files\" xcopy "$(ProjectDir)Files\*" "$(OutDir)*" /h /e /y /q
+if exist "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" "$(OutDir)*"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="Cmd Batches\BFW_WINDOWS_Sign.bat" />
+    <None Include="Resources\BFW_WINDOWS_EnglishUS.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\BFW_WINDOWS.hpp" />
+    <ClInclude Include="Headers\BFW_WINDOWS_Dependencies.hpp" />
+    <ClInclude Include="Headers\BFW_WINDOWS_Macros.hpp" />
+    <ClInclude Include="Headers\BFW_WINDOWS_Resources.hpp" />
+    <ClInclude Include="Headers\BFW_WINDOWS_RunTime.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Resources\Manifests\BFW_WINDOWS_MainManifest.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\BFW_WINDOWS_Resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sources\BFW_WINDOWS_Application.cpp" />
+    <ClCompile Include="Sources\BFW_WINDOWS_EntryPoint.cpp" />
+    <ClCompile Include="Sources\BFW_WINDOWS_MainMenu.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
