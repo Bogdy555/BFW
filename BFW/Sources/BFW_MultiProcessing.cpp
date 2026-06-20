@@ -788,7 +788,7 @@ BFW::MultiProcessing::SharedMutex& BFW::MultiProcessing::SharedMutex::operator= 
 
 	Semaphore = _Other.Semaphore;
 
-	_Other.Semaphore = NULL;
+	_Other.Semaphore = nullptr;
 
 	return *this;
 }

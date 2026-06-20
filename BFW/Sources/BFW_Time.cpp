@@ -201,7 +201,7 @@ const tm BFW::Time::Timer::GetLocalEnd() const
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
-BFW::Time::Timer::operator const float() const
+BFW::Time::Timer::operator const float () const
 {
 	return std::chrono::duration<float>(End - Begin).count();
 }
@@ -210,7 +210,7 @@ BFW::Time::Timer::operator const float() const
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::Time::Timer::operator const float() const
+BFW::Time::Timer::operator const float () const
 {
 	return (float)(End - Begin) / 1000000.0f;
 }

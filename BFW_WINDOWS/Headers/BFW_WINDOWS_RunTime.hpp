@@ -24,8 +24,20 @@ namespace BFW_WINDOWS
 			Application(Application&& _Other) noexcept;
 			~Application();
 
+			const bool AddChildWindow();
+			void RemoveChildWindow(const size_t _Index);
+
 			BFW::Input::Controller& GetController(const size_t _Index);
 			const BFW::Input::Controller& GetController(const size_t _Index) const;
+
+			BFW::GUI::Window& GetMainWindow();
+			const BFW::GUI::Window& GetMainWindow() const;
+			GUI::WindowData& GetMainWindowData();
+			const GUI::WindowData& GetMainWindowData() const;
+			BFW::Vector<BFW::GUI::Window>& GetChildWindows();
+			const BFW::Vector<BFW::GUI::Window>& GetChildWindows() const;
+			BFW::Vector<GUI::WindowData*>& GetChildWindowsData();
+			const BFW::Vector<GUI::WindowData*>& GetChildWindowsData() const;
 
 			Application& operator= (const Application& _Other) = delete;
 			Application& operator= (Application&& _Other) noexcept;
@@ -38,7 +50,15 @@ namespace BFW_WINDOWS
 
 			const bool InitInstance();
 
+			const bool InitWindows();
+			void CleanUpWindows();
+
 			BFW::Input::Controller Controllers[4];
+
+			BFW::GUI::Window MainWindow;
+			GUI::WindowData MainWindowData;
+			BFW::Vector<BFW::GUI::Window> ChildWindows;
+			BFW::Vector<GUI::WindowData*> ChildWindowsData;
 
 		};
 
@@ -68,6 +88,11 @@ namespace BFW_WINDOWS
 			void Setup() override;
 			void Update() override;
 			void Stop() override;
+
+			void InitGUI();
+			void CleanUpGUI();
+
+			void RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 
 			void Input();
 			void DeleteInputs();

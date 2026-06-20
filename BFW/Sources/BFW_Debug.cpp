@@ -6,9 +6,36 @@ BFW::Debug::HeapTracker BFW_API BFW::Debug::HeapProfile;
 
 
 
+BFW::Debug::HeapPointer::HeapPointer() : Size(0), Pointer(nullptr)
+{
+
+}
+
 BFW::Debug::HeapPointer::HeapPointer(const size_t _Size, const void* _Pointer) : Size(_Size), Pointer(_Pointer)
 {
 
+}
+
+BFW::Debug::HeapPointer::HeapPointer(HeapPointer&& _Other) noexcept : Size(_Other.Size), Pointer(_Other.Pointer)
+{
+	_Other.Size = 0;
+	_Other.Pointer = nullptr;
+}
+
+BFW::Debug::HeapPointer& BFW::Debug::HeapPointer::operator= (HeapPointer&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Size = _Other.Size;
+	Pointer = _Other.Pointer;
+
+	_Other.Size = 0;
+	_Other.Pointer = nullptr;
+
+	return *this;
 }
 
 

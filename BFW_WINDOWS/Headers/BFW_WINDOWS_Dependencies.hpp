@@ -29,6 +29,17 @@
 namespace BFW_WINDOWS
 {
 
+	namespace GUI
+	{
+
+		enum PopUpIds : const uint64_t;
+
+		struct PopUpData;
+
+		struct WindowData;
+
+	}
+
 	namespace RunTime
 	{
 

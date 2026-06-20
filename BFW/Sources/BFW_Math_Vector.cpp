@@ -302,7 +302,7 @@ BFW::Math::Vec3::~Vec3()
 
 }
 
-BFW::Math::Vec3::operator const BFW::Math::Vec2() const
+BFW::Math::Vec3::operator const BFW::Math::Vec2 () const
 {
 	return Vec2(x, y);
 }
@@ -603,12 +603,12 @@ BFW::Math::Vec4::~Vec4()
 
 }
 
-BFW::Math::Vec4::operator const BFW::Math::Vec2() const
+BFW::Math::Vec4::operator const BFW::Math::Vec2 () const
 {
 	return Vec2(x, y);
 }
 
-BFW::Math::Vec4::operator const BFW::Math::Vec3() const
+BFW::Math::Vec4::operator const BFW::Math::Vec3 () const
 {
 	return Vec3(x, y, z);
 }

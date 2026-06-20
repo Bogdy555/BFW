@@ -18,9 +18,41 @@ namespace BFW
 		float Begin;
 		float End;
 
-		AnimationState(const T& _State = T(), const float _Begin = 0.0f, const float _End = 0.0f) : State(_State), Begin(_Begin), End(_End)
+		AnimationState() : State(T()), Begin(0.0f), End(0.0f)
 		{
 
+		}
+
+		AnimationState(const T& _State, const float _Begin, const float _End) : State(_State), Begin(_Begin), End(_End)
+		{
+
+		}
+
+		AnimationState(const AnimationState& _Other) = default;
+
+		AnimationState(AnimationState&& _Other) noexcept : State((T&&)(_Other.State)), Begin(_Other.Begin), End(_Other.End)
+		{
+			_Other.Begin = 0.0f;
+			_Other.End = 0.0f;
+		}
+
+		AnimationState& operator= (const AnimationState& _Other) = default;
+
+		AnimationState& operator= (AnimationState&& _Other) noexcept
+		{
+			if (this == &_Other)
+			{
+				return *this;
+			}
+
+			State = (T&&)(_Other.State);
+			Begin = _Other.Begin;
+			End = _Other.End;
+
+			_Other.Begin = 0.0f;
+			_Other.End = 0.0f;
+
+			return *this;
 		}
 
 	};

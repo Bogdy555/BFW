@@ -8,6 +8,8 @@
 
 #include "BFW_WINDOWS_Resources.hpp"
 
+#include "BFW_WINDOWS_GUI.hpp"
+
 #include "BFW_WINDOWS_RunTime.hpp"
 
 

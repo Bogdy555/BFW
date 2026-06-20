@@ -116,6 +116,89 @@ BFW::Input::Key& BFW::Input::Key::operator= (Key&& _Other) noexcept
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
+BFW::Input::ClickEvent::ClickEvent() : X(0), Y(0), Control(false), Shift(false)
+{
+
+}
+
+BFW::Input::ClickEvent::ClickEvent(const intptr_t _X, const intptr_t _Y, const bool _Control, const bool _Shift) : X(_X), Y(_Y), Control(_Control), Shift(_Shift)
+{
+
+}
+
+BFW::Input::ClickEvent::ClickEvent(ClickEvent&& _Other) noexcept : X(_Other.X), Y(_Other.Y), Control(_Other.Control), Shift(_Other.Shift)
+{
+	_Other.X = 0;
+	_Other.Y = 0;
+	_Other.Control = false;
+	_Other.Shift = false;
+}
+
+BFW::Input::ClickEvent& BFW::Input::ClickEvent::operator= (ClickEvent&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	X = _Other.X;
+	Y = _Other.Y;
+	Control = _Other.Control;
+	Shift = _Other.Shift;
+
+	_Other.X = 0;
+	_Other.Y = 0;
+	_Other.Control = false;
+	_Other.Shift = false;
+
+	return *this;
+}
+
+
+
+BFW::Input::WheelEvent::WheelEvent() : Delta(0), X(0), Y(0), Control(false), Shift(false)
+{
+
+}
+
+BFW::Input::WheelEvent::WheelEvent(const intptr_t _Delta, const intptr_t _X, const intptr_t _Y, const bool _Control, const bool _Shift) : Delta(_Delta), X(_X), Y(_Y), Control(_Control), Shift(_Shift)
+{
+
+}
+
+BFW::Input::WheelEvent::WheelEvent(WheelEvent&& _Other) noexcept : Delta(_Other.Delta), X(_Other.X), Y(_Other.Y), Control(_Other.Control), Shift(_Other.Shift)
+{
+	_Other.Delta = 0;
+	_Other.X = 0;
+	_Other.Y = 0;
+	_Other.Control = false;
+	_Other.Shift = false;
+}
+
+BFW::Input::WheelEvent& BFW::Input::WheelEvent::operator= (WheelEvent&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Delta = _Other.Delta;
+	X = _Other.X;
+	Y = _Other.Y;
+	Control = _Other.Control;
+	Shift = _Other.Shift;
+
+	_Other.Delta = 0;
+	_Other.X = 0;
+	_Other.Y = 0;
+	_Other.Control = false;
+	_Other.Shift = false;
+
+	return *this;
+}
+
+
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 BFW::Input::Controller::Controller() : Connected(false), XLeft(0.0f), YLeft(0.0f), XRight(0.0f), YRight(0.0f), TriggerLeft(0.0f), TriggerRight(0.0f), Start(), Back(), ThumbLeft(), ThumbRight(), ButtonA(), ButtonB(), ButtonX(), ButtonY(), ButtonLeft(), ButtonRight(), ButtonUp(), ButtonDown(), ShoulderLeft(), ShoulderRight()

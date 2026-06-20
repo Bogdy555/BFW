@@ -38,6 +38,9 @@
     <ClInclude Include="Headers\BFW_WINDOWS_RunTime.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\BFW_WINDOWS_GUI.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Resources\Manifests\BFW_WINDOWS_MainManifest.manifest" />
@@ -55,6 +58,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_WINDOWS_MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\BFW_WINDOWS_GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

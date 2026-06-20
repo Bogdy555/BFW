@@ -25,6 +25,7 @@
 #include <ctime>
 #include <cstdint>
 #include <thread>
+#include <mutex>
 
 #endif
 
@@ -44,6 +45,7 @@
 #include <ctime>
 #include <cstdint>
 #include <thread>
+#include <mutex>
 
 #endif
 
@@ -156,9 +158,35 @@ namespace BFW
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
+		struct BFW_API ClickEvent;
+
+		struct BFW_API WheelEvent;
+
 		class BFW_API Controller;
 
 #endif
+
+	}
+
+	namespace GUI
+	{
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		class BFW_API Window;
+
+#endif
+
+		enum BFW_API PopUpIds : const uint64_t;
+
+		enum BFW_API PanelTypes : const uint8_t;
+
+		typedef void (*SetupRenderDataFnc)(void* _Wnd, void* _ParentWnd, void* _Global);
+		typedef void (*CleanUpRenderDataFnc)(void* _Wnd, void* _Global);
+		typedef void (*RenderFnc)(void* _Wnd, void* _Global);
+		typedef void (*CompositFnc)(void* _ParentWnd, void* _ChildWnd, void* _Global);
+
+		class BFW_API PopUp;
 
 	}
 

@@ -2,12 +2,12 @@
 
 
 
-BFW_WINDOWS::RunTime::Application::Application() : BFW::RunTime::Application(), Controllers()
+BFW_WINDOWS::RunTime::Application::Application() : BFW::RunTime::Application(), Controllers(), MainWindow(), MainWindowData(), ChildWindows(), ChildWindowsData()
 {
 
 }
 
-BFW_WINDOWS::RunTime::Application::Application(Application&& _Other) noexcept : BFW::RunTime::Application((BFW::RunTime::Application&&)(_Other)), Controllers()
+BFW_WINDOWS::RunTime::Application::Application(Application&& _Other) noexcept : BFW::RunTime::Application((BFW::RunTime::Application&&)(_Other)), Controllers(), MainWindow((BFW::GUI::Window&&)(_Other.MainWindow)), MainWindowData((GUI::WindowData&&)(_Other.MainWindowData)), ChildWindows((BFW::Vector<BFW::GUI::Window>&&)(_Other.ChildWindows)), ChildWindowsData((BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData))
 {
 	Controllers[0] = (BFW::Input::Controller&&)(_Other.Controllers[0]);
 	Controllers[1] = (BFW::Input::Controller&&)(_Other.Controllers[1]);
@@ -20,6 +20,29 @@ BFW_WINDOWS::RunTime::Application::~Application()
 
 }
 
+const bool BFW_WINDOWS::RunTime::Application::AddChildWindow()
+{
+	ChildWindowsData.PushBack(new GUI::WindowData());
+
+	if (ChildWindowsData[ChildWindowsData.GetSize() - 1] == nullptr)
+	{
+		ChildWindowsData.Erase(ChildWindowsData.GetSize() - 1);
+		return false;
+	}
+
+	ChildWindows.EmplaceBack(BFW::GUI::Window());
+
+	return true;
+}
+
+void BFW_WINDOWS::RunTime::Application::RemoveChildWindow(const size_t _Index)
+{
+	ChildWindows[_Index].Destroy();
+	delete ChildWindowsData[_Index];
+	ChildWindows.Erase(_Index);
+	ChildWindowsData.Erase(_Index);
+}
+
 BFW::Input::Controller& BFW_WINDOWS::RunTime::Application::GetController(const size_t _Index)
 {
 	return Controllers[_Index];
@@ -28,6 +51,46 @@ BFW::Input::Controller& BFW_WINDOWS::RunTime::Application::GetController(const s
 const BFW::Input::Controller& BFW_WINDOWS::RunTime::Application::GetController(const size_t _Index) const
 {
 	return Controllers[_Index];
+}
+
+BFW::GUI::Window& BFW_WINDOWS::RunTime::Application::GetMainWindow()
+{
+	return MainWindow;
+}
+
+const BFW::GUI::Window& BFW_WINDOWS::RunTime::Application::GetMainWindow() const
+{
+	return MainWindow;
+}
+
+BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::RunTime::Application::GetMainWindowData()
+{
+	return MainWindowData;
+}
+
+const BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::RunTime::Application::GetMainWindowData() const
+{
+	return MainWindowData;
+}
+
+BFW::Vector<BFW::GUI::Window>& BFW_WINDOWS::RunTime::Application::GetChildWindows()
+{
+	return ChildWindows;
+}
+
+const BFW::Vector<BFW::GUI::Window>& BFW_WINDOWS::RunTime::Application::GetChildWindows() const
+{
+	return ChildWindows;
+}
+
+BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Application::GetChildWindowsData()
+{
+	return ChildWindowsData;
+}
+
+const BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Application::GetChildWindowsData() const
+{
+	return ChildWindowsData;
 }
 
 BFW_WINDOWS::RunTime::Application& BFW_WINDOWS::RunTime::Application::operator= (Application&& _Other) noexcept
@@ -42,6 +105,10 @@ BFW_WINDOWS::RunTime::Application& BFW_WINDOWS::RunTime::Application::operator= 
 	Controllers[1] = (BFW::Input::Controller&&)(_Other.Controllers[1]);
 	Controllers[2] = (BFW::Input::Controller&&)(_Other.Controllers[2]);
 	Controllers[3] = (BFW::Input::Controller&&)(_Other.Controllers[3]);
+	MainWindow = (BFW::GUI::Window&&)(_Other.MainWindow);
+	MainWindowData = (GUI::WindowData&&)(_Other.MainWindowData);
+	ChildWindows = (BFW::Vector<BFW::GUI::Window>&&)(_Other.ChildWindows);
+	ChildWindowsData = (BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData);
 
 	return *this;
 }
@@ -57,6 +124,18 @@ void BFW_WINDOWS::RunTime::Application::Setup()
 	if (!InitInstance())
 	{
 		Close(BFW::MultiProcessing::_NoErrorReturnValue);
+		return;
+	}
+
+	if (!InitWindows())
+	{
+		Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
+		return;
+	}
+
+	if (!MainWindow.Show(GetShowCmd()))
+	{
+		Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
 		return;
 	}
 
@@ -93,7 +172,7 @@ void BFW_WINDOWS::RunTime::Application::Update()
 
 void BFW_WINDOWS::RunTime::Application::Stop()
 {
-
+	CleanUpWindows();
 }
 
 const bool BFW_WINDOWS::RunTime::Application::InitInstance()
@@ -112,4 +191,73 @@ const bool BFW_WINDOWS::RunTime::Application::InitInstance()
 	GetSharedInstanceMutex().Unlock();
 
 	return true;
+}
+
+const bool BFW_WINDOWS::RunTime::Application::InitWindows()
+{
+	WNDCLASSEX _WndClass = { 0 };
+
+	_WndClass.cbSize = sizeof(WNDCLASSEX);
+	_WndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+	_WndClass.lpfnWndProc = GUI::MainWindowProc;
+	_WndClass.cbClsExtra = 0;
+	_WndClass.cbWndExtra = 0;
+	_WndClass.hInstance = GetInstanceHandle();
+	_WndClass.hIcon = LoadIcon(GetInstanceHandle(), MAKEINTRESOURCE(BFW_WINDOWS_IDI_MAIN_ICON));
+	_WndClass.hCursor = NULL;
+	_WndClass.hbrBackground = NULL;
+	_WndClass.lpszMenuName = nullptr;
+	_WndClass.lpszClassName = BFW_WINDOWS_MAIN_WINDOW_CLASS;
+	_WndClass.hIconSm = LoadIcon(GetInstanceHandle(), MAKEINTRESOURCE(BFW_WINDOWS_IDI_MAIN_ICON));
+
+	if (!RegisterClassEx(&_WndClass))
+	{
+		return false;
+	}
+
+	_WndClass.cbSize = sizeof(WNDCLASSEX);
+	_WndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+	_WndClass.lpfnWndProc = GUI::ChildWindowProc;
+	_WndClass.cbClsExtra = 0;
+	_WndClass.cbWndExtra = 0;
+	_WndClass.hInstance = GetInstanceHandle();
+	_WndClass.hIcon = LoadIcon(GetInstanceHandle(), MAKEINTRESOURCE(BFW_WINDOWS_IDI_MAIN_ICON));
+	_WndClass.hCursor = NULL;
+	_WndClass.hbrBackground = NULL;
+	_WndClass.lpszMenuName = nullptr;
+	_WndClass.lpszClassName = BFW_WINDOWS_CHILD_WINDOW_CLASS;
+	_WndClass.hIconSm = LoadIcon(GetInstanceHandle(), MAKEINTRESOURCE(BFW_WINDOWS_IDI_MAIN_ICON));
+
+	if (!RegisterClassEx(&_WndClass))
+	{
+		UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
+		return false;
+	}
+
+	if (!MainWindow.Create(NULL, BFW_WINDOWS_MAIN_WINDOW_CLASS, BFW_STRING_PREFIX("BFW_WINDOWS"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, GetInstanceHandle(), nullptr, NULL, GUI::MainWindowThreadInit, GUI::MainWindowThreadCleanUp, GUI::MainWindowInit, GUI::MainWindowCleanUp, &MainWindowData))
+	{
+		UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
+		UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());
+		return false;
+	}
+
+	return true;
+}
+
+void BFW_WINDOWS::RunTime::Application::CleanUpWindows()
+{
+	if (!MainWindow.CheckOn())
+	{
+		return;
+	}
+
+	while (ChildWindows.GetSize())
+	{
+		RemoveChildWindow(0);
+	}
+
+	MainWindow.Destroy();
+
+	UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
+	UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());
 }

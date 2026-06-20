@@ -45,6 +45,39 @@ namespace BFW
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
+		struct BFW_API ClickEvent
+		{
+
+			intptr_t X, Y;
+			bool Control;
+			bool Shift;
+
+			ClickEvent();
+			ClickEvent(const intptr_t _X, const intptr_t _Y, const bool _Control, const bool _Shift);
+			ClickEvent(const ClickEvent& _Other) = default;
+			ClickEvent(ClickEvent&& _Other) noexcept;
+			ClickEvent& operator= (const ClickEvent& _Other) = default;
+			ClickEvent& operator= (ClickEvent&& _Other) noexcept;
+
+		};
+
+		struct BFW_API WheelEvent
+		{
+
+			intptr_t Delta;
+			intptr_t X, Y;
+			bool Control;
+			bool Shift;
+
+			WheelEvent();
+			WheelEvent(const intptr_t _Delta, const intptr_t _X, const intptr_t _Y, const bool _Control, const bool _Shift);
+			WheelEvent(const WheelEvent& _Other) = default;
+			WheelEvent(WheelEvent&& _Other) noexcept;
+			WheelEvent& operator= (const WheelEvent& _Other) = default;
+			WheelEvent& operator= (WheelEvent&& _Other) noexcept;
+
+		};
+
 		class BFW_API Controller
 		{
 

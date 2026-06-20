@@ -221,6 +221,7 @@
   <ItemGroup>
     <ClInclude Include="Headers\BFW_WINDOWS.hpp" />
     <ClInclude Include="Headers\BFW_WINDOWS_Dependencies.hpp" />
+    <ClInclude Include="Headers\BFW_WINDOWS_GUI.hpp" />
     <ClInclude Include="Headers\BFW_WINDOWS_Macros.hpp" />
     <ClInclude Include="Headers\BFW_WINDOWS_Resources.hpp" />
     <ClInclude Include="Headers\BFW_WINDOWS_RunTime.hpp" />
@@ -234,6 +235,7 @@
   <ItemGroup>
     <ClCompile Include="Sources\BFW_WINDOWS_Application.cpp" />
     <ClCompile Include="Sources\BFW_WINDOWS_EntryPoint.cpp" />
+    <ClCompile Include="Sources\BFW_WINDOWS_GUI.cpp" />
     <ClCompile Include="Sources\BFW_WINDOWS_MainMenu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

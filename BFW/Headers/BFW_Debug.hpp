@@ -20,7 +20,12 @@ namespace BFW
 			size_t Size;
 			const void* Pointer;
 
-			HeapPointer(const size_t _Size = 0, const void* _Pointer = nullptr);
+			HeapPointer();
+			HeapPointer(const size_t _Size, const void* _Pointer);
+			HeapPointer(const HeapPointer& _Other) = default;
+			HeapPointer(HeapPointer&& _Other) noexcept;
+			HeapPointer& operator= (const HeapPointer& _Other) = default;
+			HeapPointer& operator= (HeapPointer&& _Other) noexcept;
 
 		};
 

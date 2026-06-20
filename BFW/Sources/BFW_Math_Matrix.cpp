@@ -415,7 +415,7 @@ BFW::Math::Mat3::~Mat3()
 
 }
 
-BFW::Math::Mat3::operator const BFW::Math::Mat2() const
+BFW::Math::Mat3::operator const BFW::Math::Mat2 () const
 {
 	Mat2 _Matrix;
 
@@ -937,7 +937,7 @@ BFW::Math::Mat4::~Mat4()
 
 }
 
-BFW::Math::Mat4::operator const BFW::Math::Mat2() const
+BFW::Math::Mat4::operator const BFW::Math::Mat2 () const
 {
 	Mat2 _Matrix;
 
@@ -947,7 +947,7 @@ BFW::Math::Mat4::operator const BFW::Math::Mat2() const
 	return _Matrix;
 }
 
-BFW::Math::Mat4::operator const BFW::Math::Mat3() const
+BFW::Math::Mat4::operator const BFW::Math::Mat3 () const
 {
 	Mat3 _Matrix;
 

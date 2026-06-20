@@ -22,6 +22,8 @@
 
 #include "BFW_Input.hpp"
 
+#include "BFW_GUI.hpp"
+
 
 
 #endif

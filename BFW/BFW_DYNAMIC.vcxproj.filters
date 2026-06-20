@@ -87,6 +87,9 @@
     <ClInclude Include="Headers\BFW_WinTargetVer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\BFW_GUI.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Resources\Manifests\BFW_MainManifest.manifest" />
@@ -128,6 +131,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_Time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\BFW_GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

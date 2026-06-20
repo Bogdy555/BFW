@@ -40,6 +40,7 @@ mkdir -p "./Objects/BFW_STATIC/Linux/$Configuration/"
 mkdir -p "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/"
 
 g++ $CompileFlags -c "./BFW/Sources/BFW_Debug.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Debug.o"
+g++ $CompileFlags -c "./BFW/Sources/BFW_GUI.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_GUI.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_EntryPoint.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_Input.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Input.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_Log.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Log.o"
@@ -52,6 +53,7 @@ g++ $CompileFlags -c "./BFW/Sources/BFW_RunTime.cpp" -o "./Objects/BFW_STATIC/Li
 g++ $CompileFlags -c "./BFW/Sources/BFW_Time.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Time.o"
 
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Debug.o"
+ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_GUI.o"
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o"
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Input.o"
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Log.o"

@@ -41,6 +41,7 @@ mkdir -p "./Objects/BFW_DYNAMIC/Linux/$Configuration/"
 mkdir -p "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/"
 
 g++ $CompileFlags -c "./BFW/Sources/BFW_Debug.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Debug.o"
+g++ $CompileFlags -c "./BFW/Sources/BFW_GUI.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_GUI.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_EntryPoint.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_Input.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Input.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_Log.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Log.o"
@@ -52,7 +53,7 @@ g++ $CompileFlags -c "./BFW/Sources/BFW_MultiProcessing.cpp" -o "./Objects/BFW_D
 g++ $CompileFlags -c "./BFW/Sources/BFW_RunTime.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_RunTime.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_Time.cpp" -o "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Time.o"
 
-g++ "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Debug.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Input.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Log.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Matrix.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Quaternion.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Vector.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_RunTime.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Time.o" $LinkFlags -o "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so"
+g++ "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Debug.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_GUI.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Input.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Log.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Matrix.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Quaternion.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Vector.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_RunTime.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Time.o" $LinkFlags -o "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so"
 
 CompileFlags=
 LinkFlags=
