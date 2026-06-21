@@ -1590,12 +1590,24 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushLeftPanel(const uint64_t _Id, const size_t
 			throw nullptr;
 		}
 
-		Node->TrueWidth = TrueWidth - _Width;
-		Node->TrueHeight = TrueHeight;
-		Node->Width = TrueWidth - _Width;
-		Node->Height = TrueHeight;
-		Node->PositionX = _Width;
-		Node->PositionY = 0;
+		if (_Width <= TrueWidth)
+		{
+			Node->TrueWidth = TrueWidth - _Width;
+			Node->TrueHeight = TrueHeight;
+			Node->Width = TrueWidth - _Width;
+			Node->Height = TrueHeight;
+			Node->PositionX = _Width;
+			Node->PositionY = 0;
+		}
+		else
+		{
+			Node->TrueWidth = 0;
+			Node->TrueHeight = TrueHeight;
+			Node->Width = 0;
+			Node->Height = TrueHeight;
+			Node->PositionX = _Width;
+			Node->PositionY = 0;
+		}
 	}
 
 	return Panels[Panels.GetSize() - 1];
@@ -1626,12 +1638,24 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushRightPanel(const uint64_t _Id, const size_
 			throw nullptr;
 		}
 
-		Node->TrueWidth = TrueWidth - _Width;
-		Node->TrueHeight = TrueHeight;
-		Node->Width = TrueWidth - _Width;
-		Node->Height = TrueHeight;
-		Node->PositionX = 0;
-		Node->PositionY = 0;
+		if (_Width <= TrueWidth)
+		{
+			Node->TrueWidth = TrueWidth - _Width;
+			Node->TrueHeight = TrueHeight;
+			Node->Width = TrueWidth - _Width;
+			Node->Height = TrueHeight;
+			Node->PositionX = 0;
+			Node->PositionY = 0;
+		}
+		else
+		{
+			Node->TrueWidth = 0;
+			Node->TrueHeight = TrueHeight;
+			Node->Width = 0;
+			Node->Height = TrueHeight;
+			Node->PositionX = 0;
+			Node->PositionY = 0;
+		}
 	}
 
 	return Panels[Panels.GetSize() - 1];
@@ -1662,12 +1686,24 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushTopPanel(const uint64_t _Id, const size_t 
 			throw nullptr;
 		}
 
-		Node->TrueWidth = TrueWidth;
-		Node->TrueHeight = TrueHeight - _Height;
-		Node->Width = TrueWidth;
-		Node->Height = TrueHeight - _Height;
-		Node->PositionX = 0;
-		Node->PositionY = _Height;
+		if (_Height <= TrueHeight)
+		{
+			Node->TrueWidth = TrueWidth;
+			Node->TrueHeight = TrueHeight - _Height;
+			Node->Width = TrueWidth;
+			Node->Height = TrueHeight - _Height;
+			Node->PositionX = 0;
+			Node->PositionY = _Height;
+		}
+		else
+		{
+			Node->TrueWidth = TrueWidth;
+			Node->TrueHeight = 0;
+			Node->Width = TrueWidth;
+			Node->Height = 0;
+			Node->PositionX = 0;
+			Node->PositionY = _Height;
+		}
 	}
 
 	return Panels[Panels.GetSize() - 1];
@@ -1698,12 +1734,24 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushBottomPanel(const uint64_t _Id, const size
 			throw nullptr;
 		}
 
-		Node->TrueWidth = TrueWidth;
-		Node->TrueHeight = TrueHeight - _Height;
-		Node->Width = TrueWidth;
-		Node->Height = TrueHeight - _Height;
-		Node->PositionX = 0;
-		Node->PositionY = 0;
+		if (_Height <= TrueHeight)
+		{
+			Node->TrueWidth = TrueWidth;
+			Node->TrueHeight = TrueHeight - _Height;
+			Node->Width = TrueWidth;
+			Node->Height = TrueHeight - _Height;
+			Node->PositionX = 0;
+			Node->PositionY = 0;
+		}
+		else
+		{
+			Node->TrueWidth = TrueWidth;
+			Node->TrueHeight = 0;
+			Node->Width = TrueWidth;
+			Node->Height = 0;
+			Node->PositionX = 0;
+			Node->PositionY = 0;
+		}
 	}
 
 	return Panels[Panels.GetSize() - 1];
