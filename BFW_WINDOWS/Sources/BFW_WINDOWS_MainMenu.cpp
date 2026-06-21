@@ -36,6 +36,14 @@ BFW_WINDOWS::RunTime::MainMenu& BFW_WINDOWS::RunTime::MainMenu::operator= (MainM
 
 void BFW_WINDOWS::RunTime::MainMenu::SpawnQueuedMenu(const uint64_t _QueuedMenu)
 {
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
+
+	CleanUpGUI();
+
 	switch (_QueuedMenu)
 	{
 	case BFW::RunTime::_NullMenu:
@@ -49,6 +57,17 @@ void BFW_WINDOWS::RunTime::MainMenu::SpawnQueuedMenu(const uint64_t _QueuedMenu)
 		break;
 	}
 	}
+
+	_MainWindow.CleanInputState();
+	_MainWindow.CleanEvents();
+	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
+	{
+		_ChildWindows[_Index].CleanInputState();
+		_ChildWindows[_Index].CleanEvents();
+	}
+	DeleteInputs();
+
+	InitGUI();
 }
 
 void BFW_WINDOWS::RunTime::MainMenu::Setup()
