@@ -1541,6 +1541,11 @@ void BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _PanelType, const 
 	FocusedPopUps.Clear();
 	PopUps.Clear();
 
+	if (_Width > _TrueWidth || _Height > _TrueHeight)
+	{
+		throw nullptr;
+	}
+
 	Id = _Id;
 	PanelType = _PanelType;
 	TrueWidth = _TrueWidth;
@@ -1569,7 +1574,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushLeftPanel(const uint64_t _Id, const size_t
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _LeftPanelType, _TrueWidth, _TrueHeight, _Width, Height, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _LeftPanelType, _TrueWidth, _TrueHeight, _Width, TrueHeight, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
@@ -1586,9 +1591,9 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushLeftPanel(const uint64_t _Id, const size_t
 		}
 
 		Node->TrueWidth = TrueWidth - _Width;
-		Node->TrueHeight = Height;
+		Node->TrueHeight = TrueHeight;
 		Node->Width = TrueWidth - _Width;
-		Node->Height = Height;
+		Node->Height = TrueHeight;
 		Node->PositionX = _Width;
 		Node->PositionY = 0;
 	}
@@ -1605,7 +1610,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushRightPanel(const uint64_t _Id, const size_
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _RightPanelType, _TrueWidth, _TrueHeight, _Width, Height, TrueWidth - _Width, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _RightPanelType, _TrueWidth, _TrueHeight, _Width, TrueHeight, TrueWidth - _Width, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
@@ -1622,9 +1627,9 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushRightPanel(const uint64_t _Id, const size_
 		}
 
 		Node->TrueWidth = TrueWidth - _Width;
-		Node->TrueHeight = Height;
+		Node->TrueHeight = TrueHeight;
 		Node->Width = TrueWidth - _Width;
-		Node->Height = Height;
+		Node->Height = TrueHeight;
 		Node->PositionX = 0;
 		Node->PositionY = 0;
 	}
@@ -1641,7 +1646,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushTopPanel(const uint64_t _Id, const size_t 
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _TopPanelType, _TrueWidth, _TrueHeight, Width, _Height, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _TopPanelType, _TrueWidth, _TrueHeight, TrueWidth, _Height, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
@@ -1658,9 +1663,9 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushTopPanel(const uint64_t _Id, const size_t 
 		}
 
 		Node->TrueWidth = TrueWidth;
-		Node->TrueHeight = Height - _Height;
+		Node->TrueHeight = TrueHeight - _Height;
 		Node->Width = TrueWidth;
-		Node->Height = Height - _Height;
+		Node->Height = TrueHeight - _Height;
 		Node->PositionX = 0;
 		Node->PositionY = _Height;
 	}
@@ -1677,7 +1682,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushBottomPanel(const uint64_t _Id, const size
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _BottomPanelType, _TrueWidth, _TrueHeight, Width, _Height, 0, TrueHeight - _Height, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _BottomPanelType, _TrueWidth, _TrueHeight, TrueWidth, _Height, 0, TrueHeight - _Height, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
@@ -1694,9 +1699,9 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushBottomPanel(const uint64_t _Id, const size
 		}
 
 		Node->TrueWidth = TrueWidth;
-		Node->TrueHeight = Height - _Height;
+		Node->TrueHeight = TrueHeight - _Height;
 		Node->Width = TrueWidth;
-		Node->Height = Height - _Height;
+		Node->Height = TrueHeight - _Height;
 		Node->PositionX = 0;
 		Node->PositionY = 0;
 	}
