@@ -1541,7 +1541,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _Panel
 	FocusedPopUps.Clear();
 	PopUps.Clear();
 
-	if (_Width > _TrueWidth || _Height > _TrueHeight)
+	if (_Width > _TrueWidth || _Height > _TrueHeight || _ScrollX > _TrueWidth - _Width || _ScrollY > _TrueHeight - _Height)
 	{
 		throw nullptr;
 	}
@@ -1787,6 +1787,12 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushPopUp(const size_t _Layer, const uint64_t 
 
 void BFW::GUI::PopUp::Render(void* _Global)
 {
+	if (Width > TrueWidth || Height > TrueHeight || ScrollX > TrueWidth - Width || ScrollY > TrueHeight - Height)
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Attempt to render invalid PopUp layout!"));
+		throw nullptr;
+	}
+
 	if (RenderBottom)
 	{
 		RenderBottom(this, _Global);
