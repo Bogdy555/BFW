@@ -128,7 +128,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM 
 		HBITMAP _HandleOld = (HBITMAP)(SelectObject(_HandleDC, _HandleBmp));
 
 		SetBitmapBits(_HandleBmp, (uint32_t)(_PopUpData.Width * _PopUpData.Height * 4), _PopUpData.Pixels);
-		StretchBlt(_WndDC, 0, 0, (int32_t)(_Width), (int32_t)(_Height), _HandleDC, 0, 0, (int32_t)(_PopUpData.Width), (int32_t)(_PopUpData.Height), SRCCOPY);
+		StretchBlt(_WndDC, 0, 0, (int32_t)(_Width), (int32_t)(_Height), _HandleDC, (int32_t)(_WndUserData.Layout.GetScrollX()), (int32_t)(_WndUserData.Layout.GetScrollY()), (int32_t)(_WndUserData.Layout.GetWidth()), (int32_t)(_WndUserData.Layout.GetHeight()), SRCCOPY);
 
 		_WndUserData.RenderingMutex->unlock();
 
@@ -291,7 +291,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 		HBITMAP _HandleOld = (HBITMAP)(SelectObject(_HandleDC, _HandleBmp));
 
 		SetBitmapBits(_HandleBmp, (uint32_t)(_PopUpData.Width * _PopUpData.Height * 4), _PopUpData.Pixels);
-		StretchBlt(_WndDC, 0, 0, (int32_t)(_Width), (int32_t)(_Height), _HandleDC, 0, 0, (int32_t)(_PopUpData.Width), (int32_t)(_PopUpData.Height), SRCCOPY);
+		StretchBlt(_WndDC, 0, 0, (int32_t)(_Width), (int32_t)(_Height), _HandleDC, (int32_t)(_WndUserData.Layout.GetScrollX()), (int32_t)(_WndUserData.Layout.GetScrollY()), (int32_t)(_WndUserData.Layout.GetWidth()), (int32_t)(_WndUserData.Layout.GetHeight()), SRCCOPY);
 
 		_WndUserData.RenderingMutex->unlock();
 
