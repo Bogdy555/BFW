@@ -49,8 +49,6 @@ namespace BFW_WINDOWS
 
 		};
 
-		extern const size_t PixelResize;
-
 		extern const size_t ExampleMinX;
 		extern const size_t ExampleMinY;
 

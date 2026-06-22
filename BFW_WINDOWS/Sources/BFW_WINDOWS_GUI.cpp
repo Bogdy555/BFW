@@ -2,7 +2,6 @@
 
 
 
-const size_t BFW_WINDOWS::GUI::PixelResize = 10;
 const size_t BFW_WINDOWS::GUI::ExampleMinX = 200;
 const size_t BFW_WINDOWS::GUI::ExampleMinY = 200;
 
@@ -409,8 +408,8 @@ void BFW_WINDOWS::GUI::SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Glob
 		return;
 	}
 
-	_WndPopUpData->Width = _WndPopUp.GetTrueWidth() / PixelResize;
-	_WndPopUpData->Height = _WndPopUp.GetTrueHeight() / PixelResize;
+	_WndPopUpData->Width = _WndPopUp.GetTrueWidth();
+	_WndPopUpData->Height = _WndPopUp.GetTrueHeight();
 	_WndPopUpData->Pixels = new uint8_t[_WndPopUpData->Width * _WndPopUpData->Height * 4];
 	_WndPopUpData->Wnd = _ParentWndPopUpData.Wnd;
 
@@ -527,14 +526,23 @@ void BFW_WINDOWS::GUI::Composit(void* _ParentWnd, void* _ChildWnd, void* _Global
 		return;
 	}
 
-	for (size_t _Y = _ChildWndPopUp.GetPositionY() / (intptr_t)(PixelResize) * (_ChildWndPopUp.GetPositionY() / (intptr_t)(PixelResize) >= 0); _Y < _ParentWndPopUpData.Height * (_ParentWndPopUpData.Height <= (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()) / PixelResize) + (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()) / PixelResize * (_ParentWndPopUpData.Height > (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()) / PixelResize); _Y++)
+	size_t _PositionX = _ChildWndPopUp.GetPositionX();
+	size_t _PositionY = _ChildWndPopUp.GetPositionY();
+	size_t _ScrollX = _ChildWndPopUp.GetScrollX();
+	size_t _ScrollY = _ChildWndPopUp.GetScrollY();
+	size_t _StartX = _PositionX * (_PositionX >= 0);
+	size_t _StartY = _ChildWndPopUp.GetPositionY() * (_ChildWndPopUp.GetPositionY() >= 0);
+	size_t _EndX = _ParentWndPopUpData.Width * (_ParentWndPopUpData.Width <= (_PositionX + _ChildWndPopUp.GetWidth())) + (_PositionX + _ChildWndPopUp.GetWidth()) * (_ParentWndPopUpData.Width > (_PositionX + _ChildWndPopUp.GetWidth()));
+	size_t _EndY = _ParentWndPopUpData.Height * (_ParentWndPopUpData.Height <= (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight())) + (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()) * (_ParentWndPopUpData.Height > (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()));
+
+	for (size_t _Y = _StartY; _Y < _EndY; _Y++)
 	{
-		for (size_t _X = _ChildWndPopUp.GetPositionX() / (intptr_t)(PixelResize) * (_ChildWndPopUp.GetPositionX() / (intptr_t)(PixelResize) >= 0); _X < _ParentWndPopUpData.Width * (_ParentWndPopUpData.Width <= (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()) / PixelResize) + (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()) / PixelResize * (_ParentWndPopUpData.Width > (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()) / PixelResize); _X++)
+		for (size_t _X = _StartX; _X < _EndX; _X++)
 		{
-			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 0] = _ChildWndPopUpData.Pixels[(_X - _ChildWndPopUp.GetPositionX() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollX() / (intptr_t)(PixelResize) + (_Y - _ChildWndPopUp.GetPositionY() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollY() / (intptr_t)(PixelResize)) * _ChildWndPopUpData.Width) * 4 + 0];
-			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 1] = _ChildWndPopUpData.Pixels[(_X - _ChildWndPopUp.GetPositionX() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollX() / (intptr_t)(PixelResize) + (_Y - _ChildWndPopUp.GetPositionY() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollY() / (intptr_t)(PixelResize)) * _ChildWndPopUpData.Width) * 4 + 1];
-			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 2] = _ChildWndPopUpData.Pixels[(_X - _ChildWndPopUp.GetPositionX() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollX() / (intptr_t)(PixelResize) + (_Y - _ChildWndPopUp.GetPositionY() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollY() / (intptr_t)(PixelResize)) * _ChildWndPopUpData.Width) * 4 + 2];
-			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 3] = _ChildWndPopUpData.Pixels[(_X - _ChildWndPopUp.GetPositionX() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollX() / (intptr_t)(PixelResize) + (_Y - _ChildWndPopUp.GetPositionY() / (intptr_t)(PixelResize) + _ChildWndPopUp.GetScrollY() / (intptr_t)(PixelResize)) * _ChildWndPopUpData.Width) * 4 + 3];
+			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 0] = _ChildWndPopUpData.Pixels[(_X - _PositionX + _ScrollX + (_Y - _PositionY + _ScrollY) * _ChildWndPopUpData.Width) * 4 + 0];
+			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 1] = _ChildWndPopUpData.Pixels[(_X - _PositionX + _ScrollX + (_Y - _PositionY + _ScrollY) * _ChildWndPopUpData.Width) * 4 + 1];
+			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 2] = _ChildWndPopUpData.Pixels[(_X - _PositionX + _ScrollX + (_Y - _PositionY + _ScrollY) * _ChildWndPopUpData.Width) * 4 + 2];
+			_ParentWndPopUpData.Pixels[(_X + _Y * _ParentWndPopUpData.Width) * 4 + 3] = _ChildWndPopUpData.Pixels[(_X - _PositionX + _ScrollX + (_Y - _PositionY + _ScrollY) * _ChildWndPopUpData.Width) * 4 + 3];
 		}
 	}
 }

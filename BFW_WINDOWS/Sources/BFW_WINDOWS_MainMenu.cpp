@@ -162,22 +162,22 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 	GUI::PopUpData& _WndPopUpData = *(GUI::PopUpData*)(_WndData.Layout.GetUserData());
 
-	if (_WndWidth / GUI::PixelResize == 0 || _WndHeight / GUI::PixelResize == 0)
+	if (_WndWidth == 0 || _WndHeight == 0)
 	{
-		_WndWidth = _WndPopUpData.Width * GUI::PixelResize;
-		_WndHeight = _WndPopUpData.Height * GUI::PixelResize;
+		_WndWidth = _WndPopUpData.Width;
+		_WndHeight = _WndPopUpData.Height;
 	}
 
-	if (_WndWidth / GUI::PixelResize != _WndPopUpData.Width || _WndHeight / GUI::PixelResize != _WndPopUpData.Height)
+	if (_WndWidth != _WndPopUpData.Width || _WndHeight != _WndPopUpData.Height)
 	{
-		uint8_t* _Pixels = new uint8_t[(_WndWidth / GUI::PixelResize) * (_WndHeight / GUI::PixelResize) * 4];
+		uint8_t* _Pixels = new uint8_t[(_WndWidth) * (_WndHeight) * 4];
 
 		if (_Pixels)
 		{
 			delete[] _WndPopUpData.Pixels;
 
-			_WndPopUpData.Width = _WndWidth / GUI::PixelResize;
-			_WndPopUpData.Height = _WndHeight / GUI::PixelResize;
+			_WndPopUpData.Width = _WndWidth;
+			_WndPopUpData.Height = _WndHeight;
 			_WndPopUpData.Pixels = _Pixels;
 
 			switch (_WndData.Layout.GetId())
