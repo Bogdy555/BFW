@@ -692,6 +692,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			{
 			case _ExamplePopUpId:
 			{
+				if (_Panels[0].GetWidth() < _Layout.GetTrueWidth())
+				{
+					_Node->SetWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+					_Node->SetTrueWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+				}
+				else
+				{
+					_Node->SetWidth(0);
+					_Node->SetTrueWidth(0);
+				}
+
 				_Node->SetHeight(_Layout.GetTrueHeight());
 				_Node->SetTrueHeight(_Layout.GetTrueHeight() * (_Layout.GetTrueHeight() >= ExampleMinY) + ExampleMinY * (_Layout.GetTrueHeight() < ExampleMinY));
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -702,6 +713,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			}
 			case BFW::GUI::_NodePopUpId:
 			{
+				if (_Panels[0].GetWidth() < _Layout.GetTrueWidth())
+				{
+					_Node->SetWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+					_Node->SetTrueWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+				}
+				else
+				{
+					_Node->SetWidth(0);
+					_Node->SetTrueWidth(0);
+				}
+
 				_Node->SetHeight(_Layout.GetTrueHeight());
 				_Node->SetTrueHeight(_Layout.GetTrueHeight());
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -724,6 +746,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			{
 			case _ExamplePopUpId:
 			{
+				if (_Panels[0].GetWidth() < _Layout.GetTrueWidth())
+				{
+					_Node->SetWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+					_Node->SetTrueWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+				}
+				else
+				{
+					_Node->SetWidth(0);
+					_Node->SetTrueWidth(0);
+				}
+
 				_Node->SetHeight(_Layout.GetTrueHeight());
 				_Node->SetTrueHeight(_Layout.GetTrueHeight() * (_Layout.GetTrueHeight() >= ExampleMinY) + ExampleMinY * (_Layout.GetTrueHeight() < ExampleMinY));
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -733,6 +766,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			}
 			case BFW::GUI::_NodePopUpId:
 			{
+				if (_Panels[0].GetWidth() < _Layout.GetTrueWidth())
+				{
+					_Node->SetWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+					_Node->SetTrueWidth(_Layout.GetTrueWidth() - _Panels[0].GetWidth());
+				}
+				else
+				{
+					_Node->SetWidth(0);
+					_Node->SetTrueWidth(0);
+				}
+
 				_Node->SetHeight(_Layout.GetTrueHeight());
 				_Node->SetTrueHeight(_Layout.GetTrueHeight());
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -754,6 +798,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			{
 			case _ExamplePopUpId:
 			{
+				if (_Panels[0].GetHeight() < _Layout.GetTrueHeight())
+				{
+					_Node->SetHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+					_Node->SetTrueHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+				}
+				else
+				{
+					_Node->SetHeight(0);
+					_Node->SetTrueHeight(0);
+				}
+
 				_Node->SetWidth(_Layout.GetTrueWidth());
 				_Node->SetTrueWidth(_Layout.GetTrueWidth() * (_Layout.GetTrueWidth() >= ExampleMinX) + ExampleMinX * (_Layout.GetTrueWidth() < ExampleMinX));
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -764,6 +819,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			}
 			case BFW::GUI::_NodePopUpId:
 			{
+				if (_Panels[0].GetHeight() < _Layout.GetTrueHeight())
+				{
+					_Node->SetHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+					_Node->SetTrueHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+				}
+				else
+				{
+					_Node->SetHeight(0);
+					_Node->SetTrueHeight(0);
+				}
+
 				_Node->SetWidth(_Layout.GetTrueWidth());
 				_Node->SetTrueWidth(_Layout.GetTrueWidth());
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -786,6 +852,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			{
 			case _ExamplePopUpId:
 			{
+				if (_Panels[0].GetHeight() < _Layout.GetTrueHeight())
+				{
+					_Node->SetHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+					_Node->SetTrueHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+				}
+				else
+				{
+					_Node->SetHeight(0);
+					_Node->SetTrueHeight(0);
+				}
+
 				_Node->SetWidth(_Layout.GetTrueWidth());
 				_Node->SetTrueWidth(_Layout.GetTrueWidth() * (_Layout.GetTrueWidth() >= ExampleMinX) + ExampleMinX * (_Layout.GetTrueWidth() < ExampleMinX));
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
@@ -795,6 +872,17 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout)
 			}
 			case BFW::GUI::_NodePopUpId:
 			{
+				if (_Panels[0].GetHeight() < _Layout.GetTrueHeight())
+				{
+					_Node->SetHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+					_Node->SetTrueHeight(_Layout.GetTrueHeight() - _Panels[0].GetHeight());
+				}
+				else
+				{
+					_Node->SetHeight(0);
+					_Node->SetTrueHeight(0);
+				}
+
 				_Node->SetWidth(_Layout.GetTrueWidth());
 				_Node->SetTrueWidth(_Layout.GetTrueWidth());
 				_Node->SetScrollX(_Node->GetScrollX() * (_Node->GetScrollX() <= _Node->GetTrueWidth() - _Node->GetWidth()) + (_Node->GetTrueWidth() - _Node->GetWidth()) * (_Node->GetScrollX() > _Node->GetTrueWidth() - _Node->GetWidth()));
