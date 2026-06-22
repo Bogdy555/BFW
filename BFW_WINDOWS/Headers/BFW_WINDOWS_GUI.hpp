@@ -73,8 +73,9 @@ namespace BFW_WINDOWS
 		void RenderGray40(void* _Wnd, void* _Global);
 		void Composit(void* _ParentWnd, void* _ChildWnd, void* _Global);
 
-		void GenerateWindow(BFW::GUI::PopUp& _NewLayout, BFW::GUI::PopUp& _OldLayout, const size_t _Width, const size_t _Height);
-		void GenerateExample(BFW::GUI::PopUp& _Parent);
+		void ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu* _Menu);
+		void GenerateNode(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu);
+		void GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 	}

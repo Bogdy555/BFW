@@ -541,31 +541,165 @@ void BFW_WINDOWS::GUI::Composit(void* _ParentWnd, void* _ChildWnd, void* _Global
 
 
 
-void BFW_WINDOWS::GUI::GenerateWindow(BFW::GUI::PopUp& _NewLayout, BFW::GUI::PopUp& _OldLayout, const size_t _Width, const size_t _Height)
+void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu* _Menu)
 {
-	switch (_NewLayout.GetId())
+	BFW::Vector<BFW::GUI::PopUp>& _Panels = _Layout.GetPanels();
+
+	for (size_t _Index = 0; _Index < _Panels.GetSize(); _Index++)
 	{
-	case GUI::_ExamplePopUpId:
-	{
-		_NewLayout.Begin(_OldLayout.GetId(), _OldLayout.GetPanelType(), _Width, _Height, _Width, _Height, _OldLayout.GetPositionX(), _OldLayout.GetPositionY(), _OldLayout.GetScrollX(), _OldLayout.GetScrollY(), _OldLayout.GetSetupData(), _OldLayout.GetCleanUpData(), _OldLayout.GetRenderBottom(), _OldLayout.GetRenderMiddle(), _OldLayout.GetRenderTop(), _OldLayout.GetComposit(), _OldLayout.GetUserData());
-		break;
-	}
-	case BFW::GUI::_NodePopUpId:
-	{
-		_NewLayout.Begin(_OldLayout.GetId(), _OldLayout.GetPanelType(), _Width, _Height, _Width, _Height, _OldLayout.GetPositionX(), _OldLayout.GetPositionY(), _OldLayout.GetScrollX(), _OldLayout.GetScrollY(), _OldLayout.GetSetupData(), _OldLayout.GetCleanUpData(), _OldLayout.GetRenderBottom(), _OldLayout.GetRenderMiddle(), _OldLayout.GetRenderTop(), _OldLayout.GetComposit(), _OldLayout.GetUserData());
-		break;
-	}
-	default:
-	{
-		_NewLayout.Begin(_OldLayout.GetId(), _OldLayout.GetPanelType(), _Width, _Height, _Width, _Height, _OldLayout.GetPositionX(), _OldLayout.GetPositionY(), _OldLayout.GetScrollX(), _OldLayout.GetScrollY(), _OldLayout.GetSetupData(), _OldLayout.GetCleanUpData(), _OldLayout.GetRenderBottom(), _OldLayout.GetRenderMiddle(), _OldLayout.GetRenderTop(), _OldLayout.GetComposit(), _OldLayout.GetUserData());
-		break;
-	}
+		switch (_Panels[_Index].GetPanelType())
+		{
+		case BFW::GUI::_LeftPanelType:
+		{
+			switch (_Panels[_Index].GetId())
+			{
+			case _ExamplePopUpId:
+			{
+				GenerateExample(_Panels[_Index], _Menu);
+				break;
+			}
+			case BFW::GUI::_NodePopUpId:
+			{
+				GenerateNode(_Panels[_Index], _Menu);
+				break;
+			}
+			default:
+			{
+				throw nullptr;
+			}
+			}
+
+			break;
+		}
+		case BFW::GUI::_RightPanelType:
+		{
+			switch (_Panels[_Index].GetId())
+			{
+			case _ExamplePopUpId:
+			{
+				GenerateExample(_Panels[_Index], _Menu);
+				break;
+			}
+			case BFW::GUI::_NodePopUpId:
+			{
+				GenerateNode(_Panels[_Index], _Menu);
+				break;
+			}
+			default:
+			{
+				throw nullptr;
+			}
+			}
+
+			break;
+		}
+		case BFW::GUI::_BottomPanelType:
+		{
+			switch (_Panels[_Index].GetId())
+			{
+			case _ExamplePopUpId:
+			{
+				GenerateExample(_Panels[_Index], _Menu);
+				break;
+			}
+			case BFW::GUI::_NodePopUpId:
+			{
+				GenerateNode(_Panels[_Index], _Menu);
+				break;
+			}
+			default:
+			{
+				throw nullptr;
+			}
+			}
+
+			break;
+		}
+		case BFW::GUI::_TopPanelType:
+		{
+			switch (_Panels[_Index].GetId())
+			{
+			case _ExamplePopUpId:
+			{
+				GenerateExample(_Panels[_Index], _Menu);
+				break;
+			}
+			case BFW::GUI::_NodePopUpId:
+			{
+				GenerateNode(_Panels[_Index], _Menu);
+				break;
+			}
+			default:
+			{
+				throw nullptr;
+			}
+			}
+
+			break;
+		}
+		default:
+		{
+			throw nullptr;
+		}
+		}
 	}
 
-	//_NewLayout.Begin(_OldLayout.GetId(), _OldLayout.GetPanelType(), _Width, _Height, _Width, _Height, _OldLayout.GetPositionX(), _OldLayout.GetPositionY(), _OldLayout.GetScrollX(), _OldLayout.GetScrollY(), _OldLayout.GetSetupData(), _OldLayout.GetCleanUpData(), _OldLayout.GetRenderBottom(), _OldLayout.GetRenderMiddle(), _OldLayout.GetRenderTop(), _OldLayout.GetComposit(), _OldLayout.GetUserData());
+	BFW::GUI::PopUp* _Node = _Layout.GetNode();
+
+	if (_Node != nullptr)
+	{
+		switch (_Node->GetId())
+		{
+		case _ExamplePopUpId:
+		{
+			GenerateExample(*_Node, _Menu);
+			break;
+		}
+		case BFW::GUI::_NodePopUpId:
+		{
+			GenerateNode(*_Node, _Menu);
+			break;
+		}
+		default:
+		{
+			throw nullptr;
+		}
+		}
+	}
+
+	BFW::Vector<BFW::Vector<BFW::GUI::PopUp>>& _PopUps = _Layout.GetPopUps();
+
+	for (size_t _Layer = 0; _Layer < _PopUps.GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < _PopUps[_Layer].GetSize(); _Index++)
+		{
+			switch (_PopUps[_Layer][_Index].GetId())
+			{
+			case _ExamplePopUpId:
+			{
+				GenerateExample(_PopUps[_Layer][_Index], _Menu);
+				break;
+			}
+			case BFW::GUI::_NodePopUpId:
+			{
+				GenerateNode(_PopUps[_Layer][_Index], _Menu);
+				break;
+			}
+			default:
+			{
+				throw nullptr;
+			}
+			}
+		}
+	}
 }
 
-void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent)
+void BFW_WINDOWS::GUI::GenerateNode(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu)
+{
+
+}
+
+void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu)
 {
 
 }
