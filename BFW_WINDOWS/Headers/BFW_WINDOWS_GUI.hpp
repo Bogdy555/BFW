@@ -16,7 +16,8 @@ namespace BFW_WINDOWS
 
 		enum PopUpIds : const uint64_t
 		{
-			_ExamplePopUpId = 1
+			_ExamplePopUpId = 1,
+			_SpawnButtonPopUpId = 2
 		};
 
 		struct PopUpData
@@ -71,7 +72,7 @@ namespace BFW_WINDOWS
 		void RenderGray40(void* _Wnd, void* _Global);
 		void Composit(void* _ParentWnd, void* _ChildWnd, void* _Global);
 
-		void ResizeChilds(BFW::GUI::PopUp& _Layout);
+		void ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu* _Menu);
 		void GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 

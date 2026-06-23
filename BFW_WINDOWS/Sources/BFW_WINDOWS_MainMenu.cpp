@@ -118,10 +118,65 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	BFW::GUI::PopUp _NewLayout;
 
-	_NewLayout.Begin(BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType, _MainWindowPopUpData.Width, _MainWindowPopUpData.Height, _MainWindowPopUpData.Width, _MainWindowPopUpData.Height, 0, 0, 0, 0, nullptr, nullptr, GUI::RenderGray20, nullptr, nullptr, GUI::Composit, _MainWindowData.Layout.GetUserData());
-	GUI::GenerateExample(_NewLayout.PushLeftPanel(GUI::_ExamplePopUpId, GUI::ExampleMinX, GUI::ExampleMinY * (GUI::ExampleMinY >= _NewLayout.GetTrueHeight()) + _NewLayout.GetTrueHeight() * (GUI::ExampleMinY < _NewLayout.GetTrueHeight()), GUI::ExampleMinX, 0, 0, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray30, nullptr, nullptr, GUI::Composit, nullptr, true), this);
-	_NewLayout.GetNode()->Begin(BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType, _NewLayout.GetNode()->GetTrueWidth(), _NewLayout.GetNode()->GetTrueHeight(), _NewLayout.GetNode()->GetWidth(), _NewLayout.GetNode()->GetHeight(), _NewLayout.GetNode()->GetPositionX(), _NewLayout.GetNode()->GetPositionY(), 0, 0, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray20, nullptr, nullptr, GUI::Composit, _MainWindowData.Layout.GetUserData());
-	GUI::GenerateExample(_NewLayout.GetNode()->PushBottomPanel(GUI::_ExamplePopUpId, GUI::ExampleMinX * (GUI::ExampleMinX >= _NewLayout.GetNode()->GetTrueWidth()) + _NewLayout.GetNode()->GetTrueWidth() * (GUI::ExampleMinX < _NewLayout.GetNode()->GetTrueWidth()), GUI::ExampleMinY, GUI::ExampleMinY, 0, 0, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray30, nullptr, nullptr, GUI::Composit, nullptr, true), this);
+	_NewLayout.Begin
+	(
+		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
+		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
+		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
+		0, 0,
+		0, 0,
+		nullptr, nullptr,
+		GUI::RenderGray20, nullptr, nullptr,
+		GUI::Composit,
+		_MainWindowData.Layout.GetUserData()
+	);
+
+	GUI::GenerateExample
+	(
+		_NewLayout.PushLeftPanel
+		(
+			GUI::_ExamplePopUpId,
+			GUI::ExampleMinX, GUI::ExampleMinY * (GUI::ExampleMinY >= _NewLayout.GetTrueHeight()) + _NewLayout.GetTrueHeight() * (GUI::ExampleMinY < _NewLayout.GetTrueHeight()),
+			GUI::ExampleMinX,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			nullptr,
+			true
+		),
+		this
+	);
+
+	_NewLayout.GetNode()->Begin
+	(
+		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
+		_NewLayout.GetNode()->GetTrueWidth(), _NewLayout.GetNode()->GetTrueHeight(),
+		_NewLayout.GetNode()->GetWidth(), _NewLayout.GetNode()->GetHeight(),
+		_NewLayout.GetNode()->GetPositionX(), _NewLayout.GetNode()->GetPositionY(),
+		0, 0,
+		GUI::SetupRenderData, GUI::CleanUpRenderData,
+		GUI::RenderGray20, nullptr, nullptr,
+		GUI::Composit,
+		_MainWindowData.Layout.GetUserData()
+	);
+
+	GUI::GenerateExample
+	(
+		_NewLayout.GetNode()->PushBottomPanel
+		(
+			GUI::_ExamplePopUpId,
+			GUI::ExampleMinX * (GUI::ExampleMinX >= _NewLayout.GetNode()->GetTrueWidth()) + _NewLayout.GetNode()->GetTrueWidth() * (GUI::ExampleMinX < _NewLayout.GetNode()->GetTrueWidth()), GUI::ExampleMinY,
+			GUI::ExampleMinY,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			nullptr,
+			true
+		),
+		this
+	);
 
 	_MainWindowData.Layout = _NewLayout;
 
@@ -210,7 +265,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 			}
 			}
 
-			GUI::ResizeChilds(_WndData.Layout);
+			GUI::ResizeChilds(_WndData.Layout, this);
 		}
 	}
 
