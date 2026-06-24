@@ -92,6 +92,9 @@ namespace BFW_WINDOWS
 			void InitGUI();
 			void CleanUpGUI();
 
+			void MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
+			void DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
+			void HandleWindowInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const bool _IsMainWindow);
 			void RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 
 			void Input();

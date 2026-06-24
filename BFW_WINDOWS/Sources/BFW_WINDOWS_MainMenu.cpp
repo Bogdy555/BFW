@@ -205,9 +205,203 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 	}
 }
 
+void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData)
+{
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
+
+	intptr_t _MouseX = 0, _MouseY = 0;
+
+	if (_Wnd.GetMousePosition(_MouseX, _MouseY))
+	{
+		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+		{
+			_WndData.LCapture = true;
+			_WndData.RenderingMutex->lock();
+			_WndData.LCapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.RenderingMutex->unlock();
+			_WndData.LCaptureMouseX = _MouseX;
+			_WndData.LCaptureMouseY = _MouseY;
+		}
+
+		if (_Wnd.GetKeys()[VK_MBUTTON].JustPressed())
+		{
+			_WndData.MCapture = true;
+			_WndData.RenderingMutex->lock();
+			_WndData.MCapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.RenderingMutex->unlock();
+			_WndData.MCaptureMouseX = _MouseX;
+			_WndData.MCaptureMouseY = _MouseY;
+		}
+
+		if (_Wnd.GetKeys()[VK_RBUTTON].JustPressed())
+		{
+			_WndData.RCapture = true;
+			_WndData.RenderingMutex->lock();
+			_WndData.RCapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.RenderingMutex->unlock();
+			_WndData.RCaptureMouseX = _MouseX;
+			_WndData.RCaptureMouseY = _MouseY;
+		}
+
+		if (_Wnd.GetKeys()[VK_XBUTTON1].JustPressed())
+		{
+			_WndData.X1Capture = true;
+			_WndData.RenderingMutex->lock();
+			_WndData.X1CapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.RenderingMutex->unlock();
+			_WndData.X1CaptureMouseX = _MouseX;
+			_WndData.X1CaptureMouseY = _MouseY;
+		}
+
+		if (_Wnd.GetKeys()[VK_XBUTTON2].JustPressed())
+		{
+			_WndData.X2Capture = true;
+			_WndData.RenderingMutex->lock();
+			_WndData.X2CapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.RenderingMutex->unlock();
+			_WndData.X2CaptureMouseX = _MouseX;
+			_WndData.X2CaptureMouseY = _MouseY;
+		}
+	}
+}
+
+void BFW_WINDOWS::RunTime::MainMenu::DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData)
+{
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
+
+	_WndData.LCapture = false;
+	_WndData.LCapturePopUp = nullptr;
+	_WndData.LCaptureMouseX = 0;
+	_WndData.LCaptureMouseY = 0;
+
+	_WndData.MCapture = false;
+	_WndData.MCapturePopUp = nullptr;
+	_WndData.MCaptureMouseX = 0;
+	_WndData.MCaptureMouseY = 0;
+
+	_WndData.RCapture = false;
+	_WndData.RCapturePopUp = nullptr;
+	_WndData.RCaptureMouseX = 0;
+	_WndData.RCaptureMouseY = 0;
+
+	_WndData.X1Capture = false;
+	_WndData.X1CapturePopUp = nullptr;
+	_WndData.X1CaptureMouseX = 0;
+	_WndData.X1CaptureMouseY = 0;
+
+	_WndData.X2Capture = false;
+	_WndData.X2CapturePopUp = nullptr;
+	_WndData.X2CaptureMouseX = 0;
+	_WndData.X2CaptureMouseY = 0;
+}
+
+void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const bool _IsMainWindow)
+{
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
+
+	if (_IsMainWindow)
+	{
+		if (_Wnd.GetKeys()[VK_F11].JustPressed())
+		{
+			if (_Wnd.IsFullScreen())
+			{
+				_Wnd.GoWindowed();
+			}
+			else
+			{
+				_Wnd.GoFullScreen();
+			}
+		}
+	}
+
+	if (_Wnd.GetKeys()[VK_LBUTTON].JustReleased())
+	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.LCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			_WndData.RenderingMutex->lock();
+
+			BFW::GUI::PopUp* _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+
+			if (_ReleasePopUp && _ReleasePopUp->GetId() == _WndData.LCapturePopUp->GetId())
+			{
+				switch (_ReleasePopUp->GetId())
+				{
+				case GUI::_SpawnButtonPopUpId:
+				{
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
+			}
+
+			_WndData.RenderingMutex->unlock();
+		}
+
+		_WndData.LCapture = false;
+		_WndData.LCapturePopUp = nullptr;
+		_WndData.LCaptureMouseX = 0;
+		_WndData.LCaptureMouseY = 0;
+	}
+
+	if (_Wnd.GetKeys()[VK_MBUTTON].JustReleased())
+	{
+		_WndData.MCapture = false;
+		_WndData.MCapturePopUp = nullptr;
+		_WndData.MCaptureMouseX = 0;
+		_WndData.MCaptureMouseY = 0;
+	}
+
+	if (_Wnd.GetKeys()[VK_RBUTTON].JustReleased())
+	{
+		_WndData.RCapture = false;
+		_WndData.RCapturePopUp = nullptr;
+		_WndData.RCaptureMouseX = 0;
+		_WndData.RCaptureMouseY = 0;
+	}
+
+	if (_Wnd.GetKeys()[VK_XBUTTON1].JustReleased())
+	{
+		_WndData.X1Capture = false;
+		_WndData.X1CapturePopUp = nullptr;
+		_WndData.X1CaptureMouseX = 0;
+		_WndData.X1CaptureMouseY = 0;
+	}
+
+	if (_Wnd.GetKeys()[VK_XBUTTON2].JustReleased())
+	{
+		_WndData.X2Capture = false;
+		_WndData.X2CapturePopUp = nullptr;
+		_WndData.X2CaptureMouseX = 0;
+		_WndData.X2CaptureMouseY = 0;
+	}
+
+	_Wnd.CleanEvents();
+}
+
 void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData)
 {
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_WndData.RenderingMutex->lock();
 
@@ -271,19 +465,26 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 	_WndData.Layout.Render(this);
 
-	intptr_t _WndMouseX = 0, _WndMouseY = 0;
+	intptr_t _MouseX = 0, _MouseY = 0;
 
-	if (_Wnd.GetMousePosition(_WndMouseX, _WndMouseY))
+	if (_Wnd.GetMousePosition(_MouseX, _MouseY))
 	{
-		BFW::GUI::PopUp* _HoverPopUp = _WndData.Layout.GetChildFromMouse(_WndMouseX, _WndMouseY);
-
-		if (_HoverPopUp)
+		if (_WndData.LCapture || _WndData.MCapture || _WndData.RCapture || _WndData.X1Capture || _WndData.X2Capture)
 		{
-			GUI::RenderCursor(_Wnd, _HoverPopUp->GetId());
+			GUI::RenderCursor(_Wnd, BFW::GUI::_NodePopUpId);
 		}
 		else
 		{
-			GUI::RenderCursor(_Wnd, BFW::GUI::_NodePopUpId);
+			BFW::GUI::PopUp* _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+
+			if (_HoverPopUp)
+			{
+				GUI::RenderCursor(_Wnd, _HoverPopUp->GetId());
+			}
+			else
+			{
+				GUI::RenderCursor(_Wnd, BFW::GUI::_NodePopUpId);
+			}
 		}
 	}
 
@@ -301,10 +502,12 @@ void BFW_WINDOWS::RunTime::MainMenu::Input()
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_MainWindow.UpdateInputState();
+	MouseCaptureInputs(_MainWindow, _MainWindowData);
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
 		_ChildWindows[_Index].UpdateInputState();
+		MouseCaptureInputs(_ChildWindows[_Index], *_ChildWindowsData[_Index]);
 	}
 
 	_ApplicationObj.GetController(0).UpdateState(0);
@@ -336,6 +539,13 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteInputs()
 	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
+	DeleteMouseCaptureInputs(_MainWindow, _MainWindowData);
+
+	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
+	{
+		DeleteMouseCaptureInputs(_ChildWindows[_Index], *_ChildWindowsData[_Index]);
+	}
+
 	_ApplicationObj.GetController(0).CleanState();
 	_ApplicationObj.GetController(1).CleanState();
 	_ApplicationObj.GetController(2).CleanState();
@@ -364,23 +574,11 @@ void BFW_WINDOWS::RunTime::MainMenu::Engine()
 		}
 	}
 
-	if (_MainWindow.GetKeys()[VK_F11].JustPressed())
-	{
-		if (_MainWindow.IsFullScreen())
-		{
-			_MainWindow.GoWindowed();
-		}
-		else
-		{
-			_MainWindow.GoFullScreen();
-		}
-	}
-
-	_MainWindow.CleanEvents();
+	HandleWindowInputs(_MainWindow, _MainWindowData, true);
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		_ChildWindows[_Index].CleanEvents();
+		HandleWindowInputs(_ChildWindows[_Index], *_ChildWindowsData[_Index], false);
 	}
 
 	BFW::Input::Controller::SetRumble(0, 0.0f, 0.0f);

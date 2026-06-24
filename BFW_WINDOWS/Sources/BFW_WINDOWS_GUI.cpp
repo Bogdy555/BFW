@@ -42,14 +42,34 @@ BFW_WINDOWS::GUI::PopUpData& BFW_WINDOWS::GUI::PopUpData::operator= (PopUpData&&
 
 
 
-BFW_WINDOWS::GUI::WindowData::WindowData() : RenderingMutex(nullptr), Layout()
+BFW_WINDOWS::GUI::WindowData::WindowData() : RenderingMutex(nullptr), Layout(), LCapture(false), LCapturePopUp(nullptr), LCaptureMouseX(0), LCaptureMouseY(0), MCapture(false), MCapturePopUp(nullptr), MCaptureMouseX(0), MCaptureMouseY(0), RCapture(false), RCapturePopUp(nullptr), RCaptureMouseX(0), RCaptureMouseY(0), X1Capture(false), X1CapturePopUp(nullptr), X1CaptureMouseX(0), X1CaptureMouseY(0), X2Capture(false), X2CapturePopUp(nullptr), X2CaptureMouseX(0), X2CaptureMouseY(0)
 {
 
 }
 
-BFW_WINDOWS::GUI::WindowData::WindowData(WindowData&& _Other) noexcept : RenderingMutex(_Other.RenderingMutex), Layout((BFW::GUI::PopUp&&)(_Other.Layout))
+BFW_WINDOWS::GUI::WindowData::WindowData(WindowData&& _Other) noexcept : RenderingMutex(_Other.RenderingMutex), Layout((BFW::GUI::PopUp&&)(_Other.Layout)), LCapture(_Other.LCapture), LCapturePopUp(_Other.LCapturePopUp), LCaptureMouseX(_Other.LCaptureMouseX), LCaptureMouseY(_Other.LCaptureMouseY), MCapture(_Other.MCapture), MCapturePopUp(_Other.MCapturePopUp), MCaptureMouseX(_Other.MCaptureMouseX), MCaptureMouseY(_Other.MCaptureMouseY), RCapture(_Other.RCapture), RCapturePopUp(_Other.RCapturePopUp), RCaptureMouseX(_Other.RCaptureMouseX), RCaptureMouseY(_Other.RCaptureMouseY), X1Capture(_Other.X1Capture), X1CapturePopUp(_Other.X1CapturePopUp), X1CaptureMouseX(_Other.X1CaptureMouseX), X1CaptureMouseY(_Other.X1CaptureMouseY), X2Capture(_Other.X2Capture), X2CapturePopUp(_Other.X2CapturePopUp), X2CaptureMouseX(_Other.X2CaptureMouseX), X2CaptureMouseY(_Other.X2CaptureMouseY)
 {
 	_Other.RenderingMutex = nullptr;
+	_Other.LCapture = false;
+	_Other.LCapturePopUp = nullptr;
+	_Other.LCaptureMouseX = 0;
+	_Other.LCaptureMouseY = 0;
+	_Other.MCapture = false;
+	_Other.MCapturePopUp = nullptr;
+	_Other.MCaptureMouseX = 0;
+	_Other.MCaptureMouseY = 0;
+	_Other.RCapture = false;
+	_Other.RCapturePopUp = nullptr;
+	_Other.RCaptureMouseX = 0;
+	_Other.RCaptureMouseY = 0;
+	_Other.X1Capture = false;
+	_Other.X1CapturePopUp = nullptr;
+	_Other.X1CaptureMouseX = 0;
+	_Other.X1CaptureMouseY = 0;
+	_Other.X2Capture = false;
+	_Other.X2CapturePopUp = nullptr;
+	_Other.X2CaptureMouseX = 0;
+	_Other.X2CaptureMouseY = 0;
 }
 
 BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowData&& _Other) noexcept
@@ -61,8 +81,48 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 
 	RenderingMutex = _Other.RenderingMutex;
 	Layout = (BFW::GUI::PopUp&&)(_Other.Layout);
+	LCapture = _Other.LCapture;
+	LCapturePopUp = _Other.LCapturePopUp;
+	LCaptureMouseX = _Other.LCaptureMouseX;
+	LCaptureMouseY = _Other.LCaptureMouseY;
+	MCapture = _Other.MCapture;
+	MCapturePopUp = _Other.MCapturePopUp;
+	MCaptureMouseX = _Other.MCaptureMouseX;
+	MCaptureMouseY = _Other.MCaptureMouseY;
+	RCapture = _Other.RCapture;
+	RCapturePopUp = _Other.RCapturePopUp;
+	RCaptureMouseX = _Other.RCaptureMouseX;
+	RCaptureMouseY = _Other.RCaptureMouseY;
+	X1Capture = _Other.X1Capture;
+	X1CapturePopUp = _Other.X1CapturePopUp;
+	X1CaptureMouseX = _Other.X1CaptureMouseX;
+	X1CaptureMouseY = _Other.X1CaptureMouseY;
+	X2Capture = _Other.X2Capture;
+	X2CapturePopUp = _Other.X2CapturePopUp;
+	X2CaptureMouseX = _Other.X2CaptureMouseX;
+	X2CaptureMouseY = _Other.X2CaptureMouseY;
 
 	_Other.RenderingMutex = nullptr;
+	_Other.LCapture = false;
+	_Other.LCapturePopUp = nullptr;
+	_Other.LCaptureMouseX = 0;
+	_Other.LCaptureMouseY = 0;
+	_Other.MCapture = false;
+	_Other.MCapturePopUp = nullptr;
+	_Other.MCaptureMouseX = 0;
+	_Other.MCaptureMouseY = 0;
+	_Other.RCapture = false;
+	_Other.RCapturePopUp = nullptr;
+	_Other.RCaptureMouseX = 0;
+	_Other.RCaptureMouseY = 0;
+	_Other.X1Capture = false;
+	_Other.X1CapturePopUp = nullptr;
+	_Other.X1CaptureMouseX = 0;
+	_Other.X1CaptureMouseY = 0;
+	_Other.X2Capture = false;
+	_Other.X2CapturePopUp = nullptr;
+	_Other.X2CaptureMouseX = 0;
+	_Other.X2CaptureMouseY = 0;
 
 	return *this;
 }
