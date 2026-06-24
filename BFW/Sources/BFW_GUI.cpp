@@ -1883,7 +1883,7 @@ BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX, cons
 	{
 		PopUp& _PopUp = PopUps[PopUps.GetSize() - 1 - _Index][FocusedPopUps[PopUps.GetSize() - 1 - _Index]];
 
-		PopUp* _Result = _PopUp.GetChildFromMouse(_MouseX - _PopUp.PositionX, _MouseY - _PopUp.PositionY, _Path);
+		PopUp* _Result = _PopUp.GetChildFromMouse(_MouseX + ScrollX - _PopUp.PositionX, _MouseY + ScrollY - _PopUp.PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -1898,7 +1898,7 @@ BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX, cons
 
 	if (Node != nullptr)
 	{
-		PopUp* _Result = Node->GetChildFromMouse(_MouseX - Node->PositionX, _MouseY - Node->PositionY, _Path);
+		PopUp* _Result = Node->GetChildFromMouse(_MouseX + ScrollX - Node->PositionX, _MouseY + ScrollY - Node->PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -1915,7 +1915,7 @@ BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX, cons
 	{
 		PopUp& _Panel = Panels[FocusedPanel];
 
-		PopUp* _Result = _Panel.GetChildFromMouse(_MouseX - _Panel.PositionX, _MouseY - _Panel.PositionY, _Path);
+		PopUp* _Result = _Panel.GetChildFromMouse(_MouseX + ScrollX - _Panel.PositionX, _MouseY + ScrollY - _Panel.PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -1947,7 +1947,7 @@ const BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX
 	{
 		const PopUp& _PopUp = PopUps[PopUps.GetSize() - 1 - _Index][FocusedPopUps[PopUps.GetSize() - 1 - _Index]];
 
-		const PopUp* _Result = _PopUp.GetChildFromMouse(_MouseX - _PopUp.PositionX, _MouseY - _PopUp.PositionY, _Path);
+		const PopUp* _Result = _PopUp.GetChildFromMouse(_MouseX + ScrollX - _PopUp.PositionX, _MouseY + ScrollY - _PopUp.PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -1962,7 +1962,7 @@ const BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX
 
 	if (Node != nullptr)
 	{
-		const PopUp* _Result = Node->GetChildFromMouse(_MouseX - Node->PositionX, _MouseY - Node->PositionY, _Path);
+		const PopUp* _Result = Node->GetChildFromMouse(_MouseX + ScrollX - Node->PositionX, _MouseY + ScrollY - Node->PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -1979,7 +1979,7 @@ const BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX
 	{
 		const PopUp& _Panel = Panels[FocusedPanel];
 
-		const PopUp* _Result = _Panel.GetChildFromMouse(_MouseX - _Panel.PositionX, _MouseY - _Panel.PositionY, _Path);
+		const PopUp* _Result = _Panel.GetChildFromMouse(_MouseX + ScrollX - _Panel.PositionX, _MouseY + ScrollY - _Panel.PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
