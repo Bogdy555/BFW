@@ -23,7 +23,7 @@ namespace BFW
 
 			Window();
 			Window(const Window& _Other) = delete;
-			Window(Window&& _Other) noexcept;
+			Window(Window&& _Other) noexcept = delete;
 			~Window();
 
 			const bool Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const bool (*_ThreadInitFnc)(void* _UserData), void (*_ThreadCleanUpFnc)(void* _UserData), const bool (*_WndInitFnc)(Window* _Wnd), void (*_WndCleanUpFnc)(Window* _Wnd), void* _UserData);
@@ -68,7 +68,7 @@ namespace BFW
 			operator const HWND () const;
 
 			Window& operator= (const Window& _Other) = delete;
-			Window& operator= (Window&& _Other) noexcept;
+			Window& operator= (Window&& _Other) noexcept = delete;
 
 			static Window* GetWindowPtr(const HWND _Handle);
 			static const bool IsDefaultMessage(const UINT _Msg);

@@ -21,37 +21,6 @@ BFW::GUI::Window::Window() : Handle(NULL), WndThread(nullptr), UserData(nullptr)
 	}
 }
 
-BFW::GUI::Window::Window(Window&& _Other) noexcept : Handle(_Other.Handle), WndThread(_Other.WndThread), UserData(_Other.UserData), FullScreen(_Other.FullScreen), WndRect(_Other.WndRect), WndPlace(_Other.WndPlace), WindowMutex(_Other.WindowMutex), Cursor(_Other.Cursor), Close(_Other.Close), Focus(_Other.Focus), RawKeys(), Keys(), Tracking(_Other.Tracking), HasMouse(_Other.HasMouse), MouseX(_Other.MouseX), MouseY(_Other.MouseY), KeyEvents((Vector<uint8_t>&&)(_Other.KeyEvents)), LClicks((Vector<Input::ClickEvent>&&)(_Other.LClicks)), RClicks((Vector<Input::ClickEvent>&&)(_Other.RClicks)), MClicks((Vector<Input::ClickEvent>&&)(_Other.MClicks)), X1Clicks((Vector<Input::ClickEvent>&&)(_Other.X1Clicks)), X2Clicks((Vector<Input::ClickEvent>&&)(_Other.X2Clicks)), LDblClicks((Vector<Input::ClickEvent>&&)(_Other.LDblClicks)), RDblClicks((Vector<Input::ClickEvent>&&)(_Other.RDblClicks)), MDblClicks((Vector<Input::ClickEvent>&&)(_Other.MDblClicks)), X1DblClicks((Vector<Input::ClickEvent>&&)(_Other.X1DblClicks)), X2DblClicks((Vector<Input::ClickEvent>&&)(_Other.X2DblClicks)), WheelEvents((Vector<Input::WheelEvent>&&)(_Other.WheelEvents)), HWheelEvents((Vector<Input::WheelEvent>&&)(_Other.HWheelEvents)), CharEvents((Vector<BFW_CHAR_TYPE>&&)(_Other.CharEvents))
-{
-	for (size_t _Index = 0; _Index < 256; _Index++)
-	{
-		RawKeys[_Index] = _Other.RawKeys[_Index];
-	}
-	for (size_t _Index = 0; _Index < 256; _Index++)
-	{
-		Keys[_Index] = (Input::Key&&)(_Other.Keys[_Index]);
-	}
-
-	_Other.Handle = NULL;
-	_Other.WndThread = nullptr;
-	_Other.UserData = nullptr;
-	_Other.FullScreen = false;
-	_Other.WndRect = { 0 };
-	_Other.WndPlace = { 0 };
-	_Other.WindowMutex = nullptr;
-	_Other.Cursor = LoadCursor(NULL, IDC_ARROW);
-	_Other.Close = false;
-	_Other.Focus = false;
-	for (size_t _Index = 0; _Index < 256; _Index++)
-	{
-		_Other.RawKeys[_Index] = false;
-	}
-	_Other.Tracking = false;
-	_Other.HasMouse = false;
-	_Other.MouseX = 0;
-	_Other.MouseY = 0;
-}
-
 BFW::GUI::Window::~Window()
 {
 	Destroy();
@@ -73,6 +42,8 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 		return false;
 	}
 
+	BFW_HEAP_PROFILE_PUSH(sizeof(std::mutex), WindowMutex);
+
 	bool _Done = false;
 	bool _Fail = false;
 
@@ -80,10 +51,13 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 
 	if (!WndThread)
 	{
+		BFW_HEAP_PROFILE_POP(WindowMutex);
 		delete WindowMutex;
 		WindowMutex = nullptr;
 		return false;
 	}
+
+	BFW_HEAP_PROFILE_PUSH(sizeof(std::thread), WndThread);
 
 	while (!_Done)
 	{
@@ -93,8 +67,10 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 	if (_Fail)
 	{
 		WndThread->join();
+		BFW_HEAP_PROFILE_POP(WndThread);
 		delete WndThread;
 		WndThread = nullptr;
+		BFW_HEAP_PROFILE_POP(WindowMutex);
 		delete WindowMutex;
 		WindowMutex = nullptr;
 		return false;
@@ -112,11 +88,13 @@ void BFW::GUI::Window::Destroy()
 
 	PostMessage(Handle, WM_QUIT, 0, 0);
 	WndThread->join();
+	BFW_HEAP_PROFILE_POP(WndThread);
 	delete WndThread;
 	WndThread = nullptr;
 	FullScreen = false;
 	WndRect = { 0 };
 	WndPlace = { 0 };
+	BFW_HEAP_PROFILE_POP(WindowMutex);
 	delete WindowMutex;
 	WindowMutex = nullptr;
 	Cursor = LoadCursor(NULL, IDC_ARROW);
@@ -752,74 +730,6 @@ const uint64_t BFW::GUI::Window::GetRefreshRate() const
 BFW::GUI::Window::operator const HWND () const
 {
 	return Handle;
-}
-
-BFW::GUI::Window& BFW::GUI::Window::operator= (Window&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	Destroy();
-
-	Handle = _Other.Handle;
-	WndThread = _Other.WndThread;
-	UserData = _Other.UserData;
-	FullScreen = _Other.FullScreen;
-	WndRect = _Other.WndRect;
-	WndPlace = _Other.WndPlace;
-	WindowMutex = _Other.WindowMutex;
-	Cursor = _Other.Cursor;
-	Close = _Other.Close;
-	Focus = _Other.Focus;
-	for (size_t _Index = 0; _Index < 256; _Index++)
-	{
-		RawKeys[_Index] = _Other.RawKeys[_Index];
-	}
-	for (size_t _Index = 0; _Index < 256; _Index++)
-	{
-		Keys[_Index] = (Input::Key&&)(_Other.Keys[_Index]);
-	}
-	Tracking = _Other.Tracking;
-	HasMouse = _Other.HasMouse;
-	MouseX = _Other.MouseX;
-	MouseY = _Other.MouseY;
-	KeyEvents = (Vector<uint8_t>&&)(_Other.KeyEvents);
-	LClicks = (Vector<Input::ClickEvent>&&)(_Other.LClicks);
-	RClicks = (Vector<Input::ClickEvent>&&)(_Other.RClicks);
-	MClicks = (Vector<Input::ClickEvent>&&)(_Other.MClicks);
-	X1Clicks = (Vector<Input::ClickEvent>&&)(_Other.X1Clicks);
-	X2Clicks = (Vector<Input::ClickEvent>&&)(_Other.X2Clicks);
-	LDblClicks = (Vector<Input::ClickEvent>&&)(_Other.LDblClicks);
-	RDblClicks = (Vector<Input::ClickEvent>&&)(_Other.RDblClicks);
-	MDblClicks = (Vector<Input::ClickEvent>&&)(_Other.MDblClicks);
-	X1DblClicks = (Vector<Input::ClickEvent>&&)(_Other.X1DblClicks);
-	X2DblClicks = (Vector<Input::ClickEvent>&&)(_Other.X2DblClicks);
-	WheelEvents = (Vector<Input::WheelEvent>&&)(_Other.WheelEvents);
-	HWheelEvents = (Vector<Input::WheelEvent>&&)(_Other.HWheelEvents);
-	CharEvents = (Vector<BFW_CHAR_TYPE>&&)(_Other.CharEvents);
-
-	_Other.Handle = NULL;
-	_Other.WndThread = nullptr;
-	_Other.UserData = nullptr;
-	_Other.FullScreen = false;
-	_Other.WndRect = { 0 };
-	_Other.WndPlace = { 0 };
-	_Other.WindowMutex = nullptr;
-	_Other.Cursor = LoadCursor(NULL, IDC_ARROW);
-	_Other.Close = false;
-	_Other.Focus = false;
-	for (size_t _Index = 0; _Index < 256; _Index++)
-	{
-		_Other.RawKeys[_Index] = false;
-	}
-	_Other.Tracking = false;
-	_Other.HasMouse = false;
-	_Other.MouseX = 0;
-	_Other.MouseY = 0;
-
-	return *this;
 }
 
 BFW::GUI::Window* BFW::GUI::Window::GetWindowPtr(const HWND _Handle)
@@ -1478,6 +1388,8 @@ BFW::GUI::PopUp::PopUp(const PopUp& _Other) : FocusedPanel(0), Panels(), Node(nu
 			throw nullptr;
 		}
 
+		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
+
 		*Node = *_Other.Node;
 	}
 
@@ -1529,6 +1441,7 @@ BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : FocusedPanel(_Other.FocusedPan
 
 BFW::GUI::PopUp::~PopUp()
 {
+	BFW_HEAP_PROFILE_POP(Node);
 	delete Node;
 }
 
@@ -1536,6 +1449,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _Panel
 {
 	FocusedPanel = 0;
 	Panels.Clear();
+	BFW_HEAP_PROFILE_POP(Node);
 	delete Node;
 	Node = nullptr;
 	FocusedPopUps.Clear();
@@ -1592,6 +1506,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushLeftPanel(const uint64_t _Id, const size_t
 			throw nullptr;
 		}
 
+		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
+
 		if (_Width <= TrueWidth)
 		{
 			Node->TrueWidth = TrueWidth - _Width;
@@ -1639,6 +1555,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushRightPanel(const uint64_t _Id, const size_
 		{
 			throw nullptr;
 		}
+
+		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
 
 		if (_Width <= TrueWidth)
 		{
@@ -1688,6 +1606,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushTopPanel(const uint64_t _Id, const size_t 
 			throw nullptr;
 		}
 
+		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
+
 		if (_Height <= TrueHeight)
 		{
 			Node->TrueWidth = TrueWidth;
@@ -1735,6 +1655,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::PushBottomPanel(const uint64_t _Id, const size
 		{
 			throw nullptr;
 		}
+
+		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
 
 		if (_Height <= TrueHeight)
 		{
@@ -2220,6 +2142,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (const PopUp& _Other)
 		return *this;
 	}
 
+	BFW_HEAP_PROFILE_POP(Node);
 	delete Node;
 	Node = nullptr;
 
@@ -2231,6 +2154,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (const PopUp& _Other)
 		{
 			throw nullptr;
 		}
+
+		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
 
 		*Node = *_Other.Node;
 	}
@@ -2267,6 +2192,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (PopUp&& _Other) noexcept
 		return *this;
 	}
 
+	BFW_HEAP_PROFILE_POP(Node);
 	delete Node;
 	Node = nullptr;
 

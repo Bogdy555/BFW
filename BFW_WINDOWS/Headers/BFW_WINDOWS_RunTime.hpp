@@ -21,7 +21,7 @@ namespace BFW_WINDOWS
 
 			Application();
 			Application(const Application& _Other) = delete;
-			Application(Application&& _Other) noexcept;
+			Application(Application&& _Other) noexcept = delete;
 			~Application();
 
 			const bool AddChildWindow();
@@ -34,13 +34,13 @@ namespace BFW_WINDOWS
 			const BFW::GUI::Window& GetMainWindow() const;
 			GUI::WindowData& GetMainWindowData();
 			const GUI::WindowData& GetMainWindowData() const;
-			BFW::Vector<BFW::GUI::Window>& GetChildWindows();
-			const BFW::Vector<BFW::GUI::Window>& GetChildWindows() const;
+			BFW::Vector<BFW::GUI::Window*>& GetChildWindows();
+			const BFW::Vector<BFW::GUI::Window*>& GetChildWindows() const;
 			BFW::Vector<GUI::WindowData*>& GetChildWindowsData();
 			const BFW::Vector<GUI::WindowData*>& GetChildWindowsData() const;
 
 			Application& operator= (const Application& _Other) = delete;
-			Application& operator= (Application&& _Other) noexcept;
+			Application& operator= (Application&& _Other) noexcept = delete;
 
 		private:
 
@@ -57,7 +57,7 @@ namespace BFW_WINDOWS
 
 			BFW::GUI::Window MainWindow;
 			GUI::WindowData MainWindowData;
-			BFW::Vector<BFW::GUI::Window> ChildWindows;
+			BFW::Vector<BFW::GUI::Window*> ChildWindows;
 			BFW::Vector<GUI::WindowData*> ChildWindowsData;
 
 		};

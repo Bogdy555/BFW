@@ -7,14 +7,6 @@ BFW_WINDOWS::RunTime::Application::Application() : BFW::RunTime::Application(), 
 
 }
 
-BFW_WINDOWS::RunTime::Application::Application(Application&& _Other) noexcept : BFW::RunTime::Application((BFW::RunTime::Application&&)(_Other)), Controllers(), MainWindow((BFW::GUI::Window&&)(_Other.MainWindow)), MainWindowData((GUI::WindowData&&)(_Other.MainWindowData)), ChildWindows((BFW::Vector<BFW::GUI::Window>&&)(_Other.ChildWindows)), ChildWindowsData((BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData))
-{
-	Controllers[0] = (BFW::Input::Controller&&)(_Other.Controllers[0]);
-	Controllers[1] = (BFW::Input::Controller&&)(_Other.Controllers[1]);
-	Controllers[2] = (BFW::Input::Controller&&)(_Other.Controllers[2]);
-	Controllers[3] = (BFW::Input::Controller&&)(_Other.Controllers[3]);
-}
-
 BFW_WINDOWS::RunTime::Application::~Application()
 {
 
@@ -30,14 +22,30 @@ const bool BFW_WINDOWS::RunTime::Application::AddChildWindow()
 		return false;
 	}
 
-	ChildWindows.EmplaceBack(BFW::GUI::Window());
+	BFW_HEAP_PROFILE_PUSH(sizeof(GUI::WindowData), ChildWindowsData[ChildWindowsData.GetSize() - 1]);
+
+	ChildWindows.PushBack(new BFW::GUI::Window());
+
+	if (ChildWindows[ChildWindows.GetSize() - 1] == nullptr)
+	{
+		BFW_HEAP_PROFILE_POP(ChildWindowsData[ChildWindowsData.GetSize() - 1]);
+		delete ChildWindowsData[ChildWindowsData.GetSize() - 1];
+		ChildWindowsData.Erase(ChildWindowsData.GetSize() - 1);
+		ChildWindows.Erase(ChildWindows.GetSize() - 1);
+		return false;
+	}
+
+	BFW_HEAP_PROFILE_PUSH(sizeof(BFW::GUI::Window), ChildWindows[ChildWindows.GetSize() - 1]);
 
 	return true;
 }
 
 void BFW_WINDOWS::RunTime::Application::RemoveChildWindow(const size_t _Index)
 {
-	ChildWindows[_Index].Destroy();
+	ChildWindows[_Index]->Destroy();
+	BFW_HEAP_PROFILE_POP(ChildWindows[_Index]);
+	delete ChildWindows[_Index];
+	BFW_HEAP_PROFILE_POP(ChildWindowsData[_Index]);
 	delete ChildWindowsData[_Index];
 	ChildWindows.Erase(_Index);
 	ChildWindowsData.Erase(_Index);
@@ -73,12 +81,12 @@ const BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::RunTime::Application::GetMainWi
 	return MainWindowData;
 }
 
-BFW::Vector<BFW::GUI::Window>& BFW_WINDOWS::RunTime::Application::GetChildWindows()
+BFW::Vector<BFW::GUI::Window*>& BFW_WINDOWS::RunTime::Application::GetChildWindows()
 {
 	return ChildWindows;
 }
 
-const BFW::Vector<BFW::GUI::Window>& BFW_WINDOWS::RunTime::Application::GetChildWindows() const
+const BFW::Vector<BFW::GUI::Window*>& BFW_WINDOWS::RunTime::Application::GetChildWindows() const
 {
 	return ChildWindows;
 }
@@ -91,26 +99,6 @@ BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Application::G
 const BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Application::GetChildWindowsData() const
 {
 	return ChildWindowsData;
-}
-
-BFW_WINDOWS::RunTime::Application& BFW_WINDOWS::RunTime::Application::operator= (Application&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	*(BFW::RunTime::Application*)(this) = (BFW::RunTime::Application&&)(_Other);
-	Controllers[0] = (BFW::Input::Controller&&)(_Other.Controllers[0]);
-	Controllers[1] = (BFW::Input::Controller&&)(_Other.Controllers[1]);
-	Controllers[2] = (BFW::Input::Controller&&)(_Other.Controllers[2]);
-	Controllers[3] = (BFW::Input::Controller&&)(_Other.Controllers[3]);
-	MainWindow = (BFW::GUI::Window&&)(_Other.MainWindow);
-	MainWindowData = (GUI::WindowData&&)(_Other.MainWindowData);
-	ChildWindows = (BFW::Vector<BFW::GUI::Window>&&)(_Other.ChildWindows);
-	ChildWindowsData = (BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData);
-
-	return *this;
 }
 
 void BFW_WINDOWS::RunTime::Application::Setup()
@@ -183,6 +171,18 @@ const bool BFW_WINDOWS::RunTime::Application::InitInstance()
 
 	if (_SharedInstanceMemory != 1)
 	{
+		HWND _Handle = FindWindow(BFW_WINDOWS_MAIN_WINDOW_CLASS, BFW_STRING_PREFIX("BFW_WINDOWS"));
+
+		if (_Handle != NULL)
+		{
+			if (IsIconic(_Handle))
+			{
+				ShowWindow(_Handle, SW_RESTORE);
+			}
+
+			SetForegroundWindow(_Handle);
+		}
+
 		GetSharedInstanceMutex().Unlock();
 
 		return false;

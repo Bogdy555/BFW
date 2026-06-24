@@ -39,7 +39,7 @@ void BFW_WINDOWS::RunTime::MainMenu::SpawnQueuedMenu(const uint64_t _QueuedMenu)
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	CleanUpGUI();
@@ -62,8 +62,8 @@ void BFW_WINDOWS::RunTime::MainMenu::SpawnQueuedMenu(const uint64_t _QueuedMenu)
 	_MainWindow.CleanEvents();
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		_ChildWindows[_Index].CleanInputState();
-		_ChildWindows[_Index].CleanEvents();
+		_ChildWindows[_Index]->CleanInputState();
+		_ChildWindows[_Index]->CleanEvents();
 	}
 	DeleteInputs();
 
@@ -75,15 +75,15 @@ void BFW_WINDOWS::RunTime::MainMenu::Setup()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_MainWindow.CleanInputState();
 	_MainWindow.CleanEvents();
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		_ChildWindows[_Index].CleanInputState();
-		_ChildWindows[_Index].CleanEvents();
+		_ChildWindows[_Index]->CleanInputState();
+		_ChildWindows[_Index]->CleanEvents();
 	}
 	DeleteInputs();
 
@@ -109,7 +109,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_MainWindowData.RenderingMutex->lock();
@@ -125,7 +125,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
 		0, 0,
 		0, 0,
-		nullptr, nullptr,
+		GUI::SetupRenderData, GUI::CleanUpRenderData,
 		GUI::RenderGray20, nullptr, nullptr,
 		GUI::Composit,
 		_MainWindowData.Layout.GetUserData()
@@ -188,7 +188,7 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_MainWindowData.RenderingMutex->lock();
@@ -210,7 +210,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	intptr_t _MouseX = 0, _MouseY = 0;
@@ -274,7 +274,7 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteMouseCaptureInputs(BFW::GUI::Window& 
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_WndData.LCapture = false;
@@ -308,7 +308,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	if (_IsMainWindow)
@@ -342,6 +342,44 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 				{
 				case GUI::_SpawnButtonPopUpId:
 				{
+					if (!_ApplicationObj.AddChildWindow())
+					{
+						break;
+					}
+
+					if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, 0, 0, (int32_t)(GUI::ExampleMinX), (int32_t)(GUI::ExampleMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
+					{
+						_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
+						break;
+					}
+
+					if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Show(SW_SHOW))
+					{
+						_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
+						break;
+					}
+
+					_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->lock();
+
+					GUI::GenerateExample
+					(
+						_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.Begin
+						(
+							GUI::_ExamplePopUpId, BFW::GUI::_NullPanelType,
+							GUI::ExampleMinX, GUI::ExampleMinY,
+							GUI::ExampleMinX, GUI::ExampleMinY,
+							0, 0,
+							0, 0,
+							GUI::SetupRenderData, GUI::CleanUpRenderData,
+							GUI::RenderGray30, nullptr, nullptr,
+							GUI::Composit,
+							_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.GetUserData()
+						),
+						this
+					);
+
+					_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->unlock();
+
 					break;
 				}
 				default:
@@ -400,7 +438,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_WndData.RenderingMutex->lock();
@@ -419,10 +457,13 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 	if (_WndWidth != _WndPopUpData.Width || _WndHeight != _WndPopUpData.Height)
 	{
-		uint8_t* _Pixels = new uint8_t[(_WndWidth) * (_WndHeight) * 4];
+		uint8_t* _Pixels = new uint8_t[_WndWidth * _WndHeight * 4];
 
 		if (_Pixels)
 		{
+			BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _WndWidth * _WndHeight * 4, _Pixels);
+
+			BFW_HEAP_PROFILE_POP(_WndPopUpData.Pixels);
 			delete[] _WndPopUpData.Pixels;
 
 			_WndPopUpData.Width = _WndWidth;
@@ -498,7 +539,7 @@ void BFW_WINDOWS::RunTime::MainMenu::Input()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_MainWindow.UpdateInputState();
@@ -506,8 +547,8 @@ void BFW_WINDOWS::RunTime::MainMenu::Input()
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		_ChildWindows[_Index].UpdateInputState();
-		MouseCaptureInputs(_ChildWindows[_Index], *_ChildWindowsData[_Index]);
+		_ChildWindows[_Index]->UpdateInputState();
+		MouseCaptureInputs(*_ChildWindows[_Index], *_ChildWindowsData[_Index]);
 	}
 
 	_ApplicationObj.GetController(0).UpdateState(0);
@@ -519,7 +560,7 @@ void BFW_WINDOWS::RunTime::MainMenu::Input()
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		if (_ChildWindows[_Index].HasFocus())
+		if (_ChildWindows[_Index]->HasFocus())
 		{
 			_Focus = true;
 		}
@@ -536,14 +577,14 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteInputs()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	DeleteMouseCaptureInputs(_MainWindow, _MainWindowData);
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		DeleteMouseCaptureInputs(_ChildWindows[_Index], *_ChildWindowsData[_Index]);
+		DeleteMouseCaptureInputs(*_ChildWindows[_Index], *_ChildWindowsData[_Index]);
 	}
 
 	_ApplicationObj.GetController(0).CleanState();
@@ -557,7 +598,7 @@ void BFW_WINDOWS::RunTime::MainMenu::Engine()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	if (_MainWindow.ShouldClose())
@@ -567,7 +608,7 @@ void BFW_WINDOWS::RunTime::MainMenu::Engine()
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		if (_ChildWindows[_Index].ShouldClose())
+		if (_ChildWindows[_Index]->ShouldClose())
 		{
 			_ApplicationObj.RemoveChildWindow(_Index);
 			_Index--;
@@ -578,7 +619,7 @@ void BFW_WINDOWS::RunTime::MainMenu::Engine()
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		HandleWindowInputs(_ChildWindows[_Index], *_ChildWindowsData[_Index], false);
+		HandleWindowInputs(*_ChildWindows[_Index], *_ChildWindowsData[_Index], false);
 	}
 
 	BFW::Input::Controller::SetRumble(0, 0.0f, 0.0f);
@@ -590,7 +631,7 @@ void BFW_WINDOWS::RunTime::MainMenu::Engine()
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		uint64_t _LocalSync = _ChildWindows[_Index].GetRefreshRate();
+		uint64_t _LocalSync = _ChildWindows[_Index]->GetRefreshRate();
 
 		if (_LocalSync > _Sync)
 		{
@@ -606,13 +647,13 @@ void BFW_WINDOWS::RunTime::MainMenu::FrameBuild()
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	RenderWindow(_MainWindow, _MainWindowData);
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
-		RenderWindow(_ChildWindows[_Index], *_ChildWindowsData[_Index]);
+		RenderWindow(*_ChildWindows[_Index], *_ChildWindowsData[_Index]);
 	}
 }
