@@ -19,9 +19,12 @@ namespace BFW
 
 			size_t Size;
 			const void* Pointer;
+			const BFW_CHAR_TYPE* File;
+			size_t Line;
+			const BFW_CHAR_TYPE* Function;
 
 			HeapPointer();
-			HeapPointer(const size_t _Size, const void* _Pointer);
+			HeapPointer(const size_t _Size, const void* _Pointer, const BFW_CHAR_TYPE* _File, const size_t _Line, const BFW_CHAR_TYPE* _Function);
 			HeapPointer(const HeapPointer& _Other) = default;
 			HeapPointer(HeapPointer&& _Other) noexcept;
 			HeapPointer& operator= (const HeapPointer& _Other) = default;
@@ -39,7 +42,7 @@ namespace BFW
 			HeapTracker(HeapTracker&& _Other) noexcept;
 			~HeapTracker();
 
-			void Push(const size_t _Size, const void* _Pointer);
+			void Push(const size_t _Size, const void* _Pointer, const BFW_CHAR_TYPE* _File, const size_t _Line, const BFW_CHAR_TYPE* _Function);
 			void Pop(const void* _Pointer);
 
 			const size_t GetHeapSize() const;

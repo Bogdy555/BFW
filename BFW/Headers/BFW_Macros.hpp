@@ -1,4 +1,4 @@
-#ifndef BFW_Macros_hpp
+ #ifndef BFW_Macros_hpp
 
 #define BFW_Macros_hpp
 
@@ -418,7 +418,7 @@
 #ifdef BFW_DEBUG
 
 #define BFW_PROFILE_SCOPE() BFW_LOG("Push "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Time::ScopeTimer _ScopeTimer([](const float _ScopeTime) { BFW_LOG("Pop "); BFW_LOG_LINE(_ScopeTime); })
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer)
+#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
 #define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
 
 #endif
@@ -655,7 +655,7 @@
 #ifdef BFW_DEBUG
 
 #define BFW_PROFILE_SCOPE() BFW_LOG("Push "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Time::ScopeTimer _ScopeTimer([](const float _ScopeTime) { BFW_LOG("Pop "); BFW_LOG_LINE(_ScopeTime); })
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer)
+#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
 #define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
 
 #endif
@@ -874,7 +874,7 @@
 #ifdef BFW_DEBUG
 
 #define BFW_PROFILE_SCOPE() BFW_LOG("Push "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Time::ScopeTimer _ScopeTimer([](const float _ScopeTime) { BFW_LOG("Pop "); BFW_LOG_LINE(_ScopeTime); })
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer)
+#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
 #define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
 
 #endif

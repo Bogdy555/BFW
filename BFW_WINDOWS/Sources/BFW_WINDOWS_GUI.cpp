@@ -209,52 +209,6 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM 
 
 		break;
 	}
-	case WM_NCHITTEST:
-	{
-		LRESULT _Result = DefWindowProc(_hWnd, _Msg, _wParam, _lParam);
-
-		if (_Result != HTCLIENT)
-		{
-			return _Result;
-		}
-
-		POINT _Cursor = { 0 };
-
-		_Cursor.x = LOWORD(_lParam);
-		_Cursor.y = HIWORD(_lParam);
-
-		if (ScreenToClient(_hWnd, &_Cursor))
-		{
-			_WndUserData.RenderingMutex->lock();
-
-			BFW::GUI::PopUp* _HoverPopUp = _WndUserData.Layout.GetChildFromMouse(_Cursor.x, _Cursor.y);
-
-			if (_HoverPopUp)
-			{
-				switch (_HoverPopUp->GetId())
-				{
-				case _ExamplePopUpId:
-				{
-					_Result = HTCAPTION;
-					break;
-				}
-				case BFW::GUI::_NodePopUpId:
-				{
-					_Result = HTCAPTION;
-					break;
-				}
-				default:
-				{
-					break;
-				}
-				}
-			}
-
-			_WndUserData.RenderingMutex->unlock();
-		}
-
-		return _Result;
-	}
 	default:
 	{
 		return DefWindowProc(_hWnd, _Msg, _wParam, _lParam);
