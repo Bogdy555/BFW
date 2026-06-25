@@ -144,19 +144,21 @@ namespace BFW
 			PopUp(PopUp&& _Other) noexcept;
 			~PopUp();
 
-			PopUp& Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData);
-			PopUp& PushLeftPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
-			PopUp& PushRightPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
-			PopUp& PushTopPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
-			PopUp& PushBottomPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
+			PopUp& Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData);
+			PopUp& PushLeftPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
+			PopUp& PushRightPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
+			PopUp& PushTopPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
+			PopUp& PushBottomPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
+			PopUp& PushNode(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
 			const size_t PushPopUpLayer();
-			PopUp& PushPopUp(const size_t _Layer, const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
+			PopUp& PushPopUp(const size_t _Layer, const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused = false);
 			void Render(void* _Global);
 			void SetFocusedPanel(const size_t _FocusedPanel);
+			void SetFocusedNode(const size_t _FocusedNode);
 			void SetId(const uint64_t _Id);
 			void SetPanelType(const uint8_t _PanelType);
-			void SetTrueWidth(const size_t _TrueWidth);
-			void SetTrueHeight(const size_t _TrueHeight);
+			void SetTrueWidth(const size_t _MinWidth);
+			void SetTrueHeight(const size_t _MinHeight);
 			void SetWidth(const size_t _Width);
 			void SetHeight(const size_t _Height);
 			void SetPositionX(const intptr_t _PositionX);
@@ -176,8 +178,9 @@ namespace BFW
 			const size_t GetFocusedPanel() const;
 			Vector<PopUp>& GetPanels();
 			const Vector<PopUp>& GetPanels() const;
-			PopUp* GetNode();
-			const PopUp* GetNode() const;
+			const size_t GetFocusedNode() const;
+			Vector<PopUp>& GetNodes();
+			const Vector<PopUp>& GetNodes() const;
 			Vector<size_t>& GetFocusedPopUps();
 			const Vector<size_t>& GetFocusedPopUps() const;
 			Vector<Vector<PopUp>>& GetPopUps();
@@ -208,7 +211,8 @@ namespace BFW
 
 			size_t FocusedPanel;
 			Vector<PopUp> Panels;
-			PopUp* Node;
+			size_t FocusedNode;
+			Vector<PopUp> Nodes;
 			Vector<size_t> FocusedPopUps;
 			Vector<Vector<PopUp>> PopUps;
 

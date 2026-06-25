@@ -121,7 +121,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 	_NewLayout.Begin
 	(
 		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
-		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
+		0, 0,
 		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
 		0, 0,
 		0, 0,
@@ -136,7 +136,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		_NewLayout.PushLeftPanel
 		(
 			GUI::_ExamplePopUpId,
-			GUI::ExampleMinX, GUI::ExampleMinY * (GUI::ExampleMinY >= _NewLayout.GetTrueHeight()) + _NewLayout.GetTrueHeight() * (GUI::ExampleMinY < _NewLayout.GetTrueHeight()),
+			GUI::ExampleMinX, GUI::ExampleMinY,
 			GUI::ExampleMinX,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
@@ -148,12 +148,10 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		this
 	);
 
-	_NewLayout.GetNode()->Begin
+	_NewLayout.PushNode
 	(
-		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
-		_NewLayout.GetNode()->GetTrueWidth(), _NewLayout.GetNode()->GetTrueHeight(),
-		_NewLayout.GetNode()->GetWidth(), _NewLayout.GetNode()->GetHeight(),
-		_NewLayout.GetNode()->GetPositionX(), _NewLayout.GetNode()->GetPositionY(),
+		BFW::GUI::_NodePopUpId,
+		0, 0,
 		0, 0,
 		GUI::SetupRenderData, GUI::CleanUpRenderData,
 		GUI::RenderGray20, nullptr, nullptr,
@@ -163,10 +161,10 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	GUI::GenerateExample
 	(
-		_NewLayout.GetNode()->PushBottomPanel
+		_NewLayout.GetNodes()[0].PushBottomPanel
 		(
 			GUI::_ExamplePopUpId,
-			GUI::ExampleMinX * (GUI::ExampleMinX >= _NewLayout.GetNode()->GetTrueWidth()) + _NewLayout.GetNode()->GetTrueWidth() * (GUI::ExampleMinX < _NewLayout.GetNode()->GetTrueWidth()), GUI::ExampleMinY,
+			GUI::ExampleMinX, GUI::ExampleMinY,
 			GUI::ExampleMinY,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
@@ -474,10 +472,10 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 			{
 			case GUI::_ExamplePopUpId:
 			{
-				_WndData.Layout.SetTrueWidth(_WndWidth * (_WndWidth >= GUI::ExampleMinX) + GUI::ExampleMinX * (_WndWidth < GUI::ExampleMinX));
-				_WndData.Layout.SetTrueHeight(_WndHeight * (_WndHeight >= GUI::ExampleMinY) + GUI::ExampleMinY * (_WndHeight < GUI::ExampleMinY));
 				_WndData.Layout.SetWidth(_WndWidth);
 				_WndData.Layout.SetHeight(_WndHeight);
+				_WndData.Layout.SetTrueWidth(GUI::ExampleMinX);
+				_WndData.Layout.SetTrueHeight(GUI::ExampleMinY);
 				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX() * (_WndData.Layout.GetScrollX() <= _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) + (_WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) * (_WndData.Layout.GetScrollX() > _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()));
 				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY() * (_WndData.Layout.GetScrollY() <= _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) + (_WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) * (_WndData.Layout.GetScrollY() > _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()));
 
@@ -487,10 +485,10 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 			}
 			case BFW::GUI::_NodePopUpId:
 			{
-				_WndData.Layout.SetTrueWidth(_WndWidth);
-				_WndData.Layout.SetTrueHeight(_WndHeight);
 				_WndData.Layout.SetWidth(_WndWidth);
 				_WndData.Layout.SetHeight(_WndHeight);
+				_WndData.Layout.SetTrueWidth(0);
+				_WndData.Layout.SetTrueHeight(0);
 				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX() * (_WndData.Layout.GetScrollX() <= _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) + (_WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) * (_WndData.Layout.GetScrollX() > _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()));
 				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY() * (_WndData.Layout.GetScrollY() <= _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) + (_WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) * (_WndData.Layout.GetScrollY() > _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()));
 

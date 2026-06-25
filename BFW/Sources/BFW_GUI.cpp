@@ -1372,54 +1372,20 @@ void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, cons
 
 
 
-BFW::GUI::PopUp::PopUp() : FocusedPanel(0), Panels(), Node(nullptr), FocusedPopUps(), PopUps(), Id(_NodePopUpId), PanelType(_NullPanelType), TrueWidth(0), TrueHeight(0), Width(0), Height(0), PositionX(0), PositionY(0), ScrollX(0), ScrollY(0), UserData(nullptr), SetupData(nullptr), CleanUpData(nullptr), RenderBottom(nullptr), RenderMiddle(nullptr), RenderTop(nullptr), Composit(nullptr)
+BFW::GUI::PopUp::PopUp() : FocusedPanel(0), Panels(), FocusedNode(0), Nodes(), FocusedPopUps(), PopUps(), Id(_NodePopUpId), PanelType(_NullPanelType), TrueWidth(0), TrueHeight(0), Width(0), Height(0), PositionX(0), PositionY(0), ScrollX(0), ScrollY(0), UserData(nullptr), SetupData(nullptr), CleanUpData(nullptr), RenderBottom(nullptr), RenderMiddle(nullptr), RenderTop(nullptr), Composit(nullptr)
 {
 
 }
 
-BFW::GUI::PopUp::PopUp(const PopUp& _Other) : FocusedPanel(0), Panels(), Node(nullptr), FocusedPopUps(), PopUps(), Id(_NodePopUpId), PanelType(_NullPanelType), TrueWidth(0), TrueHeight(0), Width(0), Height(0), PositionX(0), PositionY(0), ScrollX(0), ScrollY(0), UserData(nullptr), SetupData(nullptr), CleanUpData(nullptr), RenderBottom(nullptr), RenderMiddle(nullptr), RenderTop(nullptr), Composit(nullptr)
+BFW::GUI::PopUp::PopUp(const PopUp& _Other) : FocusedPanel(_Other.FocusedPanel), Panels(_Other.Panels), FocusedNode(_Other.FocusedNode), Nodes(_Other.Nodes), FocusedPopUps(_Other.FocusedPopUps), PopUps(_Other.PopUps), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(_Other.UserData), SetupData(_Other.SetupData), CleanUpData(_Other.CleanUpData), RenderBottom(_Other.RenderBottom), RenderMiddle(_Other.RenderMiddle), RenderTop(_Other.RenderTop), Composit(_Other.Composit)
 {
-	if (_Other.Node != nullptr)
-	{
-		Node = new PopUp;
 
-		if (!Node)
-		{
-			throw nullptr;
-		}
-
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
-
-		*Node = *_Other.Node;
-	}
-
-	FocusedPanel = _Other.FocusedPanel;
-	Panels = _Other.Panels;
-	FocusedPopUps = _Other.FocusedPopUps;
-	PopUps = _Other.PopUps;
-	Id = _Other.Id;
-	PanelType = _Other.PanelType;
-	TrueWidth = _Other.TrueWidth;
-	TrueHeight = _Other.TrueHeight;
-	Width = _Other.Width;
-	Height = _Other.Height;
-	PositionX = _Other.PositionX;
-	PositionY = _Other.PositionY;
-	ScrollX = _Other.ScrollX;
-	ScrollY = _Other.ScrollY;
-	UserData = _Other.UserData;
-	SetupData = _Other.SetupData;
-	CleanUpData = _Other.CleanUpData;
-	RenderBottom = _Other.RenderBottom;
-	RenderMiddle = _Other.RenderMiddle;
-	RenderTop = _Other.RenderTop;
-	Composit = _Other.Composit;
 }
 
-BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : FocusedPanel(_Other.FocusedPanel), Panels((Vector<PopUp>&&)(_Other.Panels)), Node(_Other.Node), FocusedPopUps((Vector<size_t>&&)(_Other.FocusedPopUps)), PopUps((Vector<Vector<PopUp>>&&)(_Other.PopUps)), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(_Other.UserData), SetupData(_Other.SetupData), CleanUpData(_Other.CleanUpData), RenderBottom(_Other.RenderBottom), RenderMiddle(_Other.RenderMiddle), RenderTop(_Other.RenderTop), Composit(_Other.Composit)
+BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : FocusedPanel(_Other.FocusedPanel), Panels((Vector<PopUp>&&)(_Other.Panels)), FocusedNode(_Other.FocusedNode), Nodes((Vector<PopUp>&&)(_Other.Nodes)), FocusedPopUps((Vector<size_t>&&)(_Other.FocusedPopUps)), PopUps((Vector<Vector<PopUp>>&&)(_Other.PopUps)), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(_Other.UserData), SetupData(_Other.SetupData), CleanUpData(_Other.CleanUpData), RenderBottom(_Other.RenderBottom), RenderMiddle(_Other.RenderMiddle), RenderTop(_Other.RenderTop), Composit(_Other.Composit)
 {
 	_Other.FocusedPanel = 0;
-	_Other.Node = nullptr;
+	_Other.FocusedNode = 0;
 	_Other.Id = _NodePopUpId;
 	_Other.PanelType = _NullPanelType;
 	_Other.TrueWidth = 0;
@@ -1441,31 +1407,24 @@ BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : FocusedPanel(_Other.FocusedPan
 
 BFW::GUI::PopUp::~PopUp()
 {
-	BFW_HEAP_PROFILE_POP(Node);
-	delete Node;
+
 }
 
-BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData)
+BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData)
 {
 	FocusedPanel = 0;
 	Panels.Clear();
-	BFW_HEAP_PROFILE_POP(Node);
-	delete Node;
-	Node = nullptr;
+	FocusedNode = 0;
+	Nodes.Clear();
 	FocusedPopUps.Clear();
 	PopUps.Clear();
 
-	if (_Width > _TrueWidth || _Height > _TrueHeight || _ScrollX > _TrueWidth - _Width || _ScrollY > _TrueHeight - _Height)
-	{
-		throw nullptr;
-	}
-
 	Id = _Id;
 	PanelType = _PanelType;
-	TrueWidth = _TrueWidth;
-	TrueHeight = _TrueHeight;
 	Width = _Width;
 	Height = _Height;
+	SetTrueWidth(_MinWidth);
+	SetTrueHeight(_MinHeight);
 	PositionX = _PositionX;
 	PositionY = _PositionY;
 	ScrollX = _ScrollX;
@@ -1481,204 +1440,156 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _Panel
 	return *this;
 }
 
-BFW::GUI::PopUp& BFW::GUI::PopUp::PushLeftPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
+BFW::GUI::PopUp& BFW::GUI::PopUp::PushLeftPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
 {
 	if (Panels.GetSize() != 0 && Panels[0].PanelType != _LeftPanelType)
 	{
 		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Only constant panel types are supported!"));
-		throw nullptr;
+		return *(PopUp*)(nullptr);
+	}
+
+	if (Panels.GetSize() && (Panels[0].Width != _Width))
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("PopUp size does not respect sibling size!"));
+		return *(PopUp*)(nullptr);
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _LeftPanelType, _TrueWidth, _TrueHeight, _Width, TrueHeight, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _LeftPanelType, _MinWidth, _MinHeight, _Width, TrueHeight, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
 		FocusedPanel = Panels.GetSize() - 1;
 	}
 
-	if (Node == nullptr)
-	{
-		Node = new PopUp;
-
-		if (Node == nullptr)
-		{
-			throw nullptr;
-		}
-
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
-
-		if (_Width <= TrueWidth)
-		{
-			Node->TrueWidth = TrueWidth - _Width;
-			Node->TrueHeight = TrueHeight;
-			Node->Width = TrueWidth - _Width;
-			Node->Height = TrueHeight;
-			Node->PositionX = _Width;
-			Node->PositionY = 0;
-		}
-		else
-		{
-			Node->TrueWidth = 0;
-			Node->TrueHeight = TrueHeight;
-			Node->Width = 0;
-			Node->Height = TrueHeight;
-			Node->PositionX = _Width;
-			Node->PositionY = 0;
-		}
-	}
-
 	return Panels[Panels.GetSize() - 1];
 }
 
-BFW::GUI::PopUp& BFW::GUI::PopUp::PushRightPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
+BFW::GUI::PopUp& BFW::GUI::PopUp::PushRightPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
 {
 	if (Panels.GetSize() != 0 && Panels[0].PanelType != _RightPanelType)
 	{
 		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Only constant panel types are supported!"));
-		throw nullptr;
+		return *(PopUp*)(nullptr);
+	}
+
+	if (Panels.GetSize() && (Panels[0].Width != _Width))
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("PopUp size does not respect sibling size!"));
+		return *(PopUp*)(nullptr);
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _RightPanelType, _TrueWidth, _TrueHeight, _Width, TrueHeight, TrueWidth - _Width, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _RightPanelType, _MinWidth, _MinHeight, _Width, TrueHeight, TrueWidth - _Width, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
 		FocusedPanel = Panels.GetSize() - 1;
 	}
 
-	if (Node == nullptr)
-	{
-		Node = new PopUp;
-
-		if (Node == nullptr)
-		{
-			throw nullptr;
-		}
-
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
-
-		if (_Width <= TrueWidth)
-		{
-			Node->TrueWidth = TrueWidth - _Width;
-			Node->TrueHeight = TrueHeight;
-			Node->Width = TrueWidth - _Width;
-			Node->Height = TrueHeight;
-			Node->PositionX = 0;
-			Node->PositionY = 0;
-		}
-		else
-		{
-			Node->TrueWidth = 0;
-			Node->TrueHeight = TrueHeight;
-			Node->Width = 0;
-			Node->Height = TrueHeight;
-			Node->PositionX = 0;
-			Node->PositionY = 0;
-		}
-	}
-
 	return Panels[Panels.GetSize() - 1];
 }
 
-BFW::GUI::PopUp& BFW::GUI::PopUp::PushTopPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
+BFW::GUI::PopUp& BFW::GUI::PopUp::PushTopPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
 {
 	if (Panels.GetSize() != 0 && Panels[0].PanelType != _TopPanelType)
 	{
 		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Only constant panel types are supported!"));
-		throw nullptr;
+		return *(PopUp*)(nullptr);
+	}
+
+	if (Panels.GetSize() && (Panels[0].Height != _Height))
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("PopUp size does not respect sibling size!"));
+		return *(PopUp*)(nullptr);
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _TopPanelType, _TrueWidth, _TrueHeight, TrueWidth, _Height, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _TopPanelType, _MinWidth, _MinHeight, TrueWidth, _Height, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
 		FocusedPanel = Panels.GetSize() - 1;
-	}
-
-	if (Node == nullptr)
-	{
-		Node = new PopUp;
-
-		if (Node == nullptr)
-		{
-			throw nullptr;
-		}
-
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
-
-		if (_Height <= TrueHeight)
-		{
-			Node->TrueWidth = TrueWidth;
-			Node->TrueHeight = TrueHeight - _Height;
-			Node->Width = TrueWidth;
-			Node->Height = TrueHeight - _Height;
-			Node->PositionX = 0;
-			Node->PositionY = _Height;
-		}
-		else
-		{
-			Node->TrueWidth = TrueWidth;
-			Node->TrueHeight = 0;
-			Node->Width = TrueWidth;
-			Node->Height = 0;
-			Node->PositionX = 0;
-			Node->PositionY = _Height;
-		}
 	}
 
 	return Panels[Panels.GetSize() - 1];
 }
 
-BFW::GUI::PopUp& BFW::GUI::PopUp::PushBottomPanel(const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
+BFW::GUI::PopUp& BFW::GUI::PopUp::PushBottomPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
 {
 	if (Panels.GetSize() != 0 && Panels[0].PanelType != _BottomPanelType)
 	{
 		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Only constant panel types are supported!"));
-		throw nullptr;
+		return *(PopUp*)(nullptr);
+	}
+
+	if (Panels.GetSize() && (Panels[0].Height != _Height))
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("PopUp size does not respect sibling size!"));
+		return *(PopUp*)(nullptr);
 	}
 
 	Panels.PushBack(PopUp());
-	Panels[Panels.GetSize() - 1].Begin(_Id, _BottomPanelType, _TrueWidth, _TrueHeight, TrueWidth, _Height, 0, TrueHeight - _Height, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	Panels[Panels.GetSize() - 1].Begin(_Id, _BottomPanelType, _MinWidth, _MinHeight, TrueWidth, _Height, 0, TrueHeight - _Height, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
 		FocusedPanel = Panels.GetSize() - 1;
 	}
 
-	if (Node == nullptr)
+	return Panels[Panels.GetSize() - 1];
+}
+
+BFW::GUI::PopUp& BFW::GUI::PopUp::PushNode(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
+{
+	if (Panels.GetSize() == 0)
 	{
-		Node = new PopUp;
-
-		if (Node == nullptr)
-		{
-			throw nullptr;
-		}
-
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
-
-		if (_Height <= TrueHeight)
-		{
-			Node->TrueWidth = TrueWidth;
-			Node->TrueHeight = TrueHeight - _Height;
-			Node->Width = TrueWidth;
-			Node->Height = TrueHeight - _Height;
-			Node->PositionX = 0;
-			Node->PositionY = 0;
-		}
-		else
-		{
-			Node->TrueWidth = TrueWidth;
-			Node->TrueHeight = 0;
-			Node->Width = TrueWidth;
-			Node->Height = 0;
-			Node->PositionX = 0;
-			Node->PositionY = 0;
-		}
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't push node with no side window!"));
+		return *(PopUp*)(nullptr);
 	}
 
-	return Panels[Panels.GetSize() - 1];
+	Nodes.PushBack(PopUp());
+
+	switch (Panels[0].GetPanelType())
+	{
+	case _LeftPanelType:
+	{
+		size_t _Remainder = (TrueWidth - Panels[0].Width) * (Panels[0].Width <= TrueWidth);
+		Nodes[Nodes.GetSize() - 1].Begin(_Id, _RightPanelType, _MinWidth, _MinHeight, _Remainder, TrueHeight, Panels[0].Width, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+		break;
+	}
+	case _RightPanelType:
+	{
+		size_t _Remainder = (TrueWidth - Panels[0].Width) * (Panels[0].Width <= TrueWidth);
+		Nodes[Nodes.GetSize() - 1].Begin(_Id, _LeftPanelType, _MinWidth, _MinHeight, _Remainder, TrueHeight, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+		break;
+	}
+	case _TopPanelType:
+	{
+		size_t _Remainder = (TrueHeight - Panels[0].Height) * (Panels[0].Height <= TrueHeight);
+		Nodes[Nodes.GetSize() - 1].Begin(_Id, _BottomPanelType, _MinWidth, _MinHeight, TrueWidth, _Remainder, 0, Panels[0].Height, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+		break;
+	}
+	case _BottomPanelType:
+	{
+		size_t _Remainder = (TrueHeight - Panels[0].Height) * (Panels[0].Height <= TrueHeight);
+		Nodes[Nodes.GetSize() - 1].Begin(_Id, _TopPanelType, _MinWidth, _MinHeight, TrueWidth, _Remainder, 0, 0, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+		break;
+	}
+	default:
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Detected a panel with no panel type!"));
+		Nodes.Erase(Nodes.GetSize() - 1);
+		return *(PopUp*)(nullptr);
+	}
+	}
+
+	if (_Focused)
+	{
+		FocusedNode = Nodes.GetSize() - 1;
+	}
+
+	return Nodes[Nodes.GetSize() - 1];
 }
 
 const size_t BFW::GUI::PopUp::PushPopUpLayer()
@@ -1689,15 +1600,22 @@ const size_t BFW::GUI::PopUp::PushPopUpLayer()
 	return PopUps.GetSize() - 1;
 }
 
-BFW::GUI::PopUp& BFW::GUI::PopUp::PushPopUp(const size_t _Layer, const uint64_t _Id, const size_t _TrueWidth, const size_t _TrueHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
+BFW::GUI::PopUp& BFW::GUI::PopUp::PushPopUp(const size_t _Layer, const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, void* _UserData, const bool _Focused)
 {
 	if (_Layer >= PopUps.GetSize())
 	{
-		throw nullptr;
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("PopUp layer out of bounds!"));
+		return *(PopUp*)(nullptr);
+	}
+
+	if (PopUps[_Layer].GetSize() && (PopUps[_Layer][0].Width != _Width || PopUps[_Layer][0].Height != _Height))
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("PopUp size does not respect sibling size!"));
+		return *(PopUp*)(nullptr);
 	}
 
 	PopUps[_Layer].PushBack(PopUp());
-	PopUps[_Layer][PopUps[_Layer].GetSize() - 1].Begin(_Id, _NullPanelType, _TrueWidth, _TrueHeight, _Width, _Height, _PositionX, _PositionY, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
+	PopUps[_Layer][PopUps[_Layer].GetSize() - 1].Begin(_Id, _NullPanelType, _MinWidth, _MinHeight, _Width, _Height, _PositionX, _PositionY, _ScrollX, _ScrollY, _SetupData, _CleanUpData, _RenderBottom, _RenderMiddle, _RenderTop, _Composit, _UserData);
 
 	if (_Focused)
 	{
@@ -1712,7 +1630,7 @@ void BFW::GUI::PopUp::Render(void* _Global)
 	if (Width > TrueWidth || Height > TrueHeight || ScrollX > TrueWidth - Width || ScrollY > TrueHeight - Height)
 	{
 		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Attempt to render invalid PopUp layout!"));
-		throw nullptr;
+		return;
 	}
 
 	if (RenderBottom)
@@ -1736,19 +1654,19 @@ void BFW::GUI::PopUp::Render(void* _Global)
 		}
 	}
 
-	if (Node != nullptr)
+	if (Nodes.GetSize())
 	{
-		if (Node->SetupData)
+		if (Nodes[FocusedNode].SetupData)
 		{
-			Node->SetupData(Node, this, _Global);
+			Nodes[FocusedNode].SetupData(&Nodes[FocusedNode], this, _Global);
 		}
 
-		Node->Render(_Global);
-		Composit(this, Node, _Global);
+		Nodes[FocusedNode].Render(_Global);
+		Composit(this, &Nodes[FocusedNode], _Global);
 
-		if (Node->CleanUpData)
+		if (Nodes[FocusedNode].CleanUpData)
 		{
-			Node->CleanUpData(Node, _Global);
+			Nodes[FocusedNode].CleanUpData(&Nodes[FocusedNode], _Global);
 		}
 	}
 
@@ -1797,14 +1715,28 @@ void BFW::GUI::PopUp::SetPanelType(const uint8_t _PanelType)
 	PanelType = _PanelType;
 }
 
-void BFW::GUI::PopUp::SetTrueWidth(const size_t _TrueWidth)
+void BFW::GUI::PopUp::SetTrueWidth(const size_t _MinWidth)
 {
-	TrueWidth = _TrueWidth;
+	if (_MinWidth > Width)
+	{
+		TrueWidth = _MinWidth;
+	}
+	else
+	{
+		TrueWidth = Width;
+	}
 }
 
-void BFW::GUI::PopUp::SetTrueHeight(const size_t _TrueHeight)
+void BFW::GUI::PopUp::SetTrueHeight(const size_t _MinHeight)
 {
-	TrueHeight = _TrueHeight;
+	if (_MinHeight > Height)
+	{
+		TrueHeight = _MinHeight;
+	}
+	else
+	{
+		TrueHeight = Height;
+	}
 }
 
 void BFW::GUI::PopUp::SetWidth(const size_t _Width)
@@ -1896,9 +1828,11 @@ BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX, cons
 		}
 	}
 
-	if (Node != nullptr)
+	if (Nodes.GetSize() != 0)
 	{
-		PopUp* _Result = Node->GetChildFromMouse(_MouseX + ScrollX - Node->PositionX, _MouseY + ScrollY - Node->PositionY, _Path);
+		PopUp& _Node = Nodes[FocusedNode];
+
+		PopUp* _Result = _Node.GetChildFromMouse(_MouseX + ScrollX - _Node.PositionX, _MouseY + ScrollY - _Node.PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -1960,9 +1894,11 @@ const BFW::GUI::PopUp* BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX
 		}
 	}
 
-	if (Node != nullptr)
+	if (Nodes.GetSize() != 0)
 	{
-		const PopUp* _Result = Node->GetChildFromMouse(_MouseX + ScrollX - Node->PositionX, _MouseY + ScrollY - Node->PositionY, _Path);
+		const PopUp& _Node = Nodes[FocusedNode];
+
+		const PopUp* _Result = _Node.GetChildFromMouse(_MouseX + ScrollX - _Node.PositionX, _MouseY + ScrollY - _Node.PositionY, _Path);
 
 		if (_Result != nullptr)
 		{
@@ -2015,14 +1951,19 @@ const BFW::Vector<BFW::GUI::PopUp>& BFW::GUI::PopUp::GetPanels() const
 	return Panels;
 }
 
-BFW::GUI::PopUp* BFW::GUI::PopUp::GetNode()
+const size_t BFW::GUI::PopUp::GetFocusedNode() const
 {
-	return Node;
+	return FocusedNode;
 }
 
-const BFW::GUI::PopUp* BFW::GUI::PopUp::GetNode() const
+BFW::Vector<BFW::GUI::PopUp>& BFW::GUI::PopUp::GetNodes()
 {
-	return Node;
+	return Nodes;
+}
+
+const BFW::Vector<BFW::GUI::PopUp>& BFW::GUI::PopUp::GetNodes() const
+{
+	return Nodes;
 }
 
 BFW::Vector<size_t>& BFW::GUI::PopUp::GetFocusedPopUps()
@@ -2142,26 +2083,10 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (const PopUp& _Other)
 		return *this;
 	}
 
-	BFW_HEAP_PROFILE_POP(Node);
-	delete Node;
-	Node = nullptr;
-
-	if (_Other.Node != nullptr)
-	{
-		Node = new PopUp;
-
-		if (!Node)
-		{
-			throw nullptr;
-		}
-
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUp), Node);
-
-		*Node = *_Other.Node;
-	}
-
 	FocusedPanel = _Other.FocusedPanel;
 	Panels = _Other.Panels;
+	FocusedNode = _Other.FocusedNode;
+	Nodes = _Other.Nodes;
 	FocusedPopUps = _Other.FocusedPopUps;
 	PopUps = _Other.PopUps;
 	Id = _Other.Id;
@@ -2192,13 +2117,10 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (PopUp&& _Other) noexcept
 		return *this;
 	}
 
-	BFW_HEAP_PROFILE_POP(Node);
-	delete Node;
-	Node = nullptr;
-
 	FocusedPanel = _Other.FocusedPanel;
 	Panels = (Vector<PopUp>&&)(_Other.Panels);
-	Node = _Other.Node;
+	FocusedNode = _Other.FocusedNode;
+	Nodes = (Vector<PopUp>&&)(_Other.Nodes);
 	FocusedPopUps = (Vector<size_t>&&)(_Other.FocusedPopUps);
 	PopUps = (Vector<Vector<PopUp>>&&)(_Other.PopUps);
 	Id = _Other.Id;
@@ -2220,7 +2142,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (PopUp&& _Other) noexcept
 	Composit = _Other.Composit;
 
 	_Other.FocusedPanel = 0;
-	_Other.Node = nullptr;
+	_Other.FocusedNode = 0;
 	_Other.Id = _NodePopUpId;
 	_Other.PanelType = _NullPanelType;
 	_Other.TrueWidth = 0;
