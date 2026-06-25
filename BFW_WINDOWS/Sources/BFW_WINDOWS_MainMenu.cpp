@@ -481,6 +481,8 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX() * (_WndData.Layout.GetScrollX() <= _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) + (_WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) * (_WndData.Layout.GetScrollX() > _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()));
 				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY() * (_WndData.Layout.GetScrollY() <= _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) + (_WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) * (_WndData.Layout.GetScrollY() > _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()));
 
+				GUI::GenerateExample(_WndData.Layout, this);
+
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -510,9 +512,9 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 	if (_Wnd.GetMousePosition(_MouseX, _MouseY))
 	{
-		if (_WndData.LCapture || _WndData.MCapture || _WndData.RCapture || _WndData.X1Capture || _WndData.X2Capture)
+		if (_WndData.LCapture)
 		{
-			GUI::RenderCursor(_Wnd, BFW::GUI::_NodePopUpId);
+			GUI::RenderCursor(_Wnd, _WndData.LCapturePopUp->GetId());
 		}
 		else
 		{
