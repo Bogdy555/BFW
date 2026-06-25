@@ -476,8 +476,8 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetHeight(_WndHeight);
 				_WndData.Layout.SetTrueWidth(GUI::ExampleMinX);
 				_WndData.Layout.SetTrueHeight(GUI::ExampleMinY);
-				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX() * (_WndData.Layout.GetScrollX() <= _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) + (_WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) * (_WndData.Layout.GetScrollX() > _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()));
-				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY() * (_WndData.Layout.GetScrollY() <= _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) + (_WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) * (_WndData.Layout.GetScrollY() > _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()));
+				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX());
+				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY());
 
 				GUI::GenerateExample(_WndData.Layout, this);
 
@@ -489,8 +489,8 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetHeight(_WndHeight);
 				_WndData.Layout.SetTrueWidth(0);
 				_WndData.Layout.SetTrueHeight(0);
-				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX() * (_WndData.Layout.GetScrollX() <= _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) + (_WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()) * (_WndData.Layout.GetScrollX() > _WndData.Layout.GetTrueWidth() - _WndData.Layout.GetWidth()));
-				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY() * (_WndData.Layout.GetScrollY() <= _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) + (_WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()) * (_WndData.Layout.GetScrollY() > _WndData.Layout.GetTrueHeight() - _WndData.Layout.GetHeight()));
+				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX());
+				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY());
 
 				break;
 			}

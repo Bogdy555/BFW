@@ -702,7 +702,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Panels[_Index].SetTrueHeight(ExampleMinY);
-				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY() * (_Panels[_Index].GetScrollY() <= _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) + (_Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) * (_Panels[_Index].GetScrollY() > _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()));
+				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY());
 				GenerateExample(_Panels[_Index], _Menu);
 				break;
 			}
@@ -710,7 +710,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Panels[_Index].SetTrueHeight(0);
-				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY() * (_Panels[_Index].GetScrollY() <= _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) + (_Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) * (_Panels[_Index].GetScrollY() > _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()));
+				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY());
 				ResizeChilds(_Panels[_Index], _Menu);
 				break;
 			}
@@ -730,7 +730,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Panels[_Index].SetTrueHeight(ExampleMinY);
-				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY() * (_Panels[_Index].GetScrollY() <= _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) + (_Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) * (_Panels[_Index].GetScrollY() > _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()));
+				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY());
 				_Panels[_Index].SetPositionX(_Layout.GetTrueWidth() - _Panels[_Index].GetWidth());
 				GenerateExample(_Panels[_Index], _Menu);
 				break;
@@ -739,7 +739,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Panels[_Index].SetTrueHeight(0);
-				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY() * (_Panels[_Index].GetScrollY() <= _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) + (_Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()) * (_Panels[_Index].GetScrollY() > _Panels[_Index].GetTrueHeight() - _Panels[_Index].GetHeight()));
+				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY());
 				_Panels[_Index].SetPositionX(_Layout.GetTrueWidth() - _Panels[_Index].GetWidth());
 				ResizeChilds(_Panels[_Index], _Menu);
 				break;
@@ -760,7 +760,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Panels[_Index].SetTrueWidth(ExampleMinX);
-				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX() * (_Panels[_Index].GetScrollX() <= _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) + (_Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) * (_Panels[_Index].GetScrollX() > _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()));
+				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX());
 				GenerateExample(_Panels[_Index], _Menu);
 				break;
 			}
@@ -768,7 +768,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Panels[_Index].SetTrueWidth(0);
-				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX() * (_Panels[_Index].GetScrollX() <= _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) + (_Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) * (_Panels[_Index].GetScrollX() > _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()));
+				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX());
 				ResizeChilds(_Panels[_Index], _Menu);
 				break;
 			}
@@ -788,7 +788,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Panels[_Index].SetTrueWidth(ExampleMinX);
-				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX() * (_Panels[_Index].GetScrollX() <= _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) + (_Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) * (_Panels[_Index].GetScrollX() > _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()));
+				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX());
 				_Panels[_Index].SetPositionY(_Layout.GetTrueHeight() - _Panels[_Index].GetHeight());
 				GenerateExample(_Panels[_Index], _Menu);
 				break;
@@ -797,7 +797,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			{
 				_Panels[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Panels[_Index].SetTrueWidth(0);
-				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX() * (_Panels[_Index].GetScrollX() <= _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) + (_Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()) * (_Panels[_Index].GetScrollX() > _Panels[_Index].GetTrueWidth() - _Panels[_Index].GetWidth()));
+				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX());
 				_Panels[_Index].SetPositionY(_Layout.GetTrueHeight() - _Panels[_Index].GetHeight());
 				ResizeChilds(_Panels[_Index], _Menu);
 				break;
@@ -841,8 +841,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(ExampleMinY);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
 				GenerateExample(_Nodes[_Index], _Menu);
 				break;
@@ -861,8 +861,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(0);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
@@ -893,8 +893,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(ExampleMinY);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				GenerateExample(_Nodes[_Index], _Menu);
 				break;
 			}
@@ -912,8 +912,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(0);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
 			}
@@ -943,8 +943,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(ExampleMinX);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
 				GenerateExample(_Nodes[_Index], _Menu);
 				break;
@@ -963,8 +963,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(0);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
@@ -995,8 +995,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(ExampleMinX);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY() * (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				GenerateExample(_Nodes[_Index], _Menu);
 				break;
 			}
@@ -1014,8 +1014,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(0);
-				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX() * (_Nodes[_Index].GetScrollX() <= _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) + (_Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()) * (_Nodes[_Index].GetScrollX() > _Nodes[_Index].GetTrueWidth() - _Nodes[_Index].GetWidth()));
-				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY()* (_Nodes[_Index].GetScrollY() <= _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) + (_Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()) * (_Nodes[_Index].GetScrollY() > _Nodes[_Index].GetTrueHeight() - _Nodes[_Index].GetHeight()));
+				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
+				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
 			}

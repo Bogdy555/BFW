@@ -1742,11 +1742,21 @@ void BFW::GUI::PopUp::SetTrueHeight(const size_t _MinHeight)
 void BFW::GUI::PopUp::SetWidth(const size_t _Width)
 {
 	Width = _Width;
+
+	if (TrueWidth < Width)
+	{
+		TrueWidth = Width;
+	}
 }
 
 void BFW::GUI::PopUp::SetHeight(const size_t _Height)
 {
 	Height = _Height;
+
+	if (TrueHeight < Height)
+	{
+		TrueHeight = Height;
+	}
 }
 
 void BFW::GUI::PopUp::SetPositionX(const intptr_t _PositionX)
@@ -1761,12 +1771,26 @@ void BFW::GUI::PopUp::SetPositionY(const intptr_t _PositionY)
 
 void BFW::GUI::PopUp::SetScrollX(const size_t _ScrollX)
 {
-	ScrollX = _ScrollX;
+	if (_ScrollX < TrueWidth - Width)
+	{
+		ScrollX = _ScrollX;
+	}
+	else
+	{
+		ScrollX = TrueWidth - Width;
+	}
 }
 
 void BFW::GUI::PopUp::SetScrollY(const size_t _ScrollY)
 {
-	ScrollY = _ScrollY;
+	if (_ScrollY < TrueHeight - Height)
+	{
+		ScrollY = _ScrollY;
+	}
+	else
+	{
+		ScrollY = TrueHeight - Height;
+	}
 }
 
 void BFW::GUI::PopUp::SetUserData(void* _UserData)
