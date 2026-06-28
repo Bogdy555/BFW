@@ -328,7 +328,12 @@ const bool BFW::GUI::Window::UpdateContent()
 		return false;
 	}
 
-	return InvalidateRect(Handle, nullptr, false);
+	if (!InvalidateRect(Handle, nullptr, false))
+	{
+		return false;
+	}
+
+	return UpdateWindow(Handle);
 }
 
 const bool BFW::GUI::Window::CheckOn() const

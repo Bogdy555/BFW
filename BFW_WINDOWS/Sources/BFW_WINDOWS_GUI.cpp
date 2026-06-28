@@ -193,7 +193,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM 
 		_WndUserData.RenderingMutex->unlock();
 
 		SelectObject(_HandleDC, _HandleOld);
-		DeleteDC(_WndDC);
+		DeleteDC(_HandleDC);
 		DeleteObject(_HandleBmp);
 
 		EndPaint(_hWnd, &_PaintStruct);
