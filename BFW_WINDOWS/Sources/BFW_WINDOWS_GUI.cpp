@@ -740,9 +740,9 @@ void BFW_WINDOWS::GUI::Composit(void* _ParentWnd, void* _ChildWnd, void* _Global
 	size_t _PositionY = _ChildWndPopUp.GetPositionY();
 	size_t _ScrollX = _ChildWndPopUp.GetScrollX();
 	size_t _ScrollY = _ChildWndPopUp.GetScrollY();
-	size_t _StartX = _PositionX * (_PositionX >= 0);
+	size_t _StartX = _ChildWndPopUp.GetPositionX() * (_ChildWndPopUp.GetPositionX() >= 0);
 	size_t _StartY = _ChildWndPopUp.GetPositionY() * (_ChildWndPopUp.GetPositionY() >= 0);
-	size_t _EndX = _ParentWndPopUpData.Width * (_ParentWndPopUpData.Width <= (_PositionX + _ChildWndPopUp.GetWidth())) + (_PositionX + _ChildWndPopUp.GetWidth()) * (_ParentWndPopUpData.Width > (_PositionX + _ChildWndPopUp.GetWidth()));
+	size_t _EndX = _ParentWndPopUpData.Width * (_ParentWndPopUpData.Width <= (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth())) + (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()) * (_ParentWndPopUpData.Width > (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()));
 	size_t _EndY = _ParentWndPopUpData.Height * (_ParentWndPopUpData.Height <= (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight())) + (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()) * (_ParentWndPopUpData.Height > (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()));
 
 	for (size_t _Y = _StartY; _Y < _EndY; _Y++)
