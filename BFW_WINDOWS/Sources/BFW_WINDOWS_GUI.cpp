@@ -531,6 +531,11 @@ void BFW_WINDOWS::GUI::SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Glob
 	BFW::GUI::PopUp& _ParentWndPopUp = *(BFW::GUI::PopUp*)(_ParentWnd);
 	PopUpData& _ParentWndPopUpData = *(PopUpData*)(_ParentWndPopUp.GetUserData());
 
+	if (_WndPopUp.GetTrueWidth() == 0 || _WndPopUp.GetTrueHeight() == 0)
+	{
+		return;
+	}
+
 	PopUpData* _WndPopUpData = new PopUpData();
 
 	if (!_WndPopUpData)
