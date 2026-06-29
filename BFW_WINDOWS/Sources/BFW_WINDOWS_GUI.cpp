@@ -45,40 +45,35 @@ BFW_WINDOWS::GUI::PopUpData& BFW_WINDOWS::GUI::PopUpData::operator= (PopUpData&&
 
 
 
-BFW_WINDOWS::GUI::WindowData::WindowData() : RenderingMutex(nullptr), Layout(), LCapture(false), LCapturePopUp(nullptr), LCaptureMouseX(0), LCaptureMouseY(0), LCaptureMouseXLastFrame(0), LCaptureMouseYLastFrame(0), MCapture(false), MCapturePopUp(nullptr), MCaptureMouseX(0), MCaptureMouseY(0), MCaptureMouseXLastFrame(0), MCaptureMouseYLastFrame(0), RCapture(false), RCapturePopUp(nullptr), RCaptureMouseX(0), RCaptureMouseY(0), RCaptureMouseXLastFrame(0), RCaptureMouseYLastFrame(0), X1Capture(false), X1CapturePopUp(nullptr), X1CaptureMouseX(0), X1CaptureMouseY(0), X1CaptureMouseXLastFrame(0), X1CaptureMouseYLastFrame(0), X2Capture(false), X2CapturePopUp(nullptr), X2CaptureMouseX(0), X2CaptureMouseY(0), X2CaptureMouseXLastFrame(0), X2CaptureMouseYLastFrame(0)
+BFW_WINDOWS::GUI::WindowData::WindowData() : RenderingMutex(nullptr), Layout(), LCapture(false), LCapturePath(), LCaptureMouseX(0), LCaptureMouseY(0), LCaptureMouseXLastFrame(0), LCaptureMouseYLastFrame(0), MCapture(false), MCapturePath(), MCaptureMouseX(0), MCaptureMouseY(0), MCaptureMouseXLastFrame(0), MCaptureMouseYLastFrame(0), RCapture(false), RCapturePath(), RCaptureMouseX(0), RCaptureMouseY(0), RCaptureMouseXLastFrame(0), RCaptureMouseYLastFrame(0), X1Capture(false), X1CapturePopUp(), X1CaptureMouseX(0), X1CaptureMouseY(0), X1CaptureMouseXLastFrame(0), X1CaptureMouseYLastFrame(0), X2Capture(false), X2CapturePopUp(), X2CaptureMouseX(0), X2CaptureMouseY(0), X2CaptureMouseXLastFrame(0), X2CaptureMouseYLastFrame(0)
 {
 
 }
 
-BFW_WINDOWS::GUI::WindowData::WindowData(WindowData&& _Other) noexcept : RenderingMutex(_Other.RenderingMutex), Layout((BFW::GUI::PopUp&&)(_Other.Layout)), LCapture(_Other.LCapture), LCapturePopUp(_Other.LCapturePopUp), LCaptureMouseX(_Other.LCaptureMouseX), LCaptureMouseY(_Other.LCaptureMouseY), LCaptureMouseXLastFrame(_Other.LCaptureMouseXLastFrame), LCaptureMouseYLastFrame(_Other.LCaptureMouseYLastFrame), MCapture(_Other.MCapture), MCapturePopUp(_Other.MCapturePopUp), MCaptureMouseX(_Other.MCaptureMouseX), MCaptureMouseY(_Other.MCaptureMouseY), MCaptureMouseXLastFrame(_Other.MCaptureMouseXLastFrame), MCaptureMouseYLastFrame(_Other.MCaptureMouseYLastFrame), RCapture(_Other.RCapture), RCapturePopUp(_Other.RCapturePopUp), RCaptureMouseX(_Other.RCaptureMouseX), RCaptureMouseY(_Other.RCaptureMouseY), RCaptureMouseXLastFrame(_Other.RCaptureMouseXLastFrame), RCaptureMouseYLastFrame(_Other.RCaptureMouseYLastFrame), X1Capture(_Other.X1Capture), X1CapturePopUp(_Other.X1CapturePopUp), X1CaptureMouseX(_Other.X1CaptureMouseX), X1CaptureMouseY(_Other.X1CaptureMouseY), X1CaptureMouseXLastFrame(_Other.X1CaptureMouseXLastFrame), X1CaptureMouseYLastFrame(_Other.X1CaptureMouseYLastFrame), X2Capture(_Other.X2Capture), X2CapturePopUp(_Other.X2CapturePopUp), X2CaptureMouseX(_Other.X2CaptureMouseX), X2CaptureMouseY(_Other.X2CaptureMouseY), X2CaptureMouseXLastFrame(_Other.X2CaptureMouseXLastFrame), X2CaptureMouseYLastFrame(_Other.X2CaptureMouseYLastFrame)
+BFW_WINDOWS::GUI::WindowData::WindowData(WindowData&& _Other) noexcept : RenderingMutex(_Other.RenderingMutex), Layout((BFW::GUI::PopUp&&)(_Other.Layout)), LCapture(_Other.LCapture), LCapturePath((BFW::Vector<BFW::GUI::PopUp*>)(_Other.LCapturePath)), LCaptureMouseX(_Other.LCaptureMouseX), LCaptureMouseY(_Other.LCaptureMouseY), LCaptureMouseXLastFrame(_Other.LCaptureMouseXLastFrame), LCaptureMouseYLastFrame(_Other.LCaptureMouseYLastFrame), MCapture(_Other.MCapture), MCapturePath((BFW::Vector<BFW::GUI::PopUp*>)(_Other.MCapturePath)), MCaptureMouseX(_Other.MCaptureMouseX), MCaptureMouseY(_Other.MCaptureMouseY), MCaptureMouseXLastFrame(_Other.MCaptureMouseXLastFrame), MCaptureMouseYLastFrame(_Other.MCaptureMouseYLastFrame), RCapture(_Other.RCapture), RCapturePath((BFW::Vector<BFW::GUI::PopUp*>)(_Other.RCapturePath)), RCaptureMouseX(_Other.RCaptureMouseX), RCaptureMouseY(_Other.RCaptureMouseY), RCaptureMouseXLastFrame(_Other.RCaptureMouseXLastFrame), RCaptureMouseYLastFrame(_Other.RCaptureMouseYLastFrame), X1Capture(_Other.X1Capture), X1CapturePopUp((BFW::Vector<BFW::GUI::PopUp*>)(_Other.X1CapturePopUp)), X1CaptureMouseX(_Other.X1CaptureMouseX), X1CaptureMouseY(_Other.X1CaptureMouseY), X1CaptureMouseXLastFrame(_Other.X1CaptureMouseXLastFrame), X1CaptureMouseYLastFrame(_Other.X1CaptureMouseYLastFrame), X2Capture(_Other.X2Capture), X2CapturePopUp((BFW::Vector<BFW::GUI::PopUp*>)(_Other.X2CapturePopUp)), X2CaptureMouseX(_Other.X2CaptureMouseX), X2CaptureMouseY(_Other.X2CaptureMouseY), X2CaptureMouseXLastFrame(_Other.X2CaptureMouseXLastFrame), X2CaptureMouseYLastFrame(_Other.X2CaptureMouseYLastFrame)
 {
 	_Other.RenderingMutex = nullptr;
 	_Other.LCapture = false;
-	_Other.LCapturePopUp = nullptr;
 	_Other.LCaptureMouseX = 0;
 	_Other.LCaptureMouseY = 0;
 	_Other.LCaptureMouseXLastFrame = 0;
 	_Other.LCaptureMouseYLastFrame = 0;
 	_Other.MCapture = false;
-	_Other.MCapturePopUp = nullptr;
 	_Other.MCaptureMouseX = 0;
 	_Other.MCaptureMouseY = 0;
 	_Other.MCaptureMouseXLastFrame = 0;
 	_Other.MCaptureMouseYLastFrame = 0;
 	_Other.RCapture = false;
-	_Other.RCapturePopUp = nullptr;
 	_Other.RCaptureMouseX = 0;
 	_Other.RCaptureMouseY = 0;
 	_Other.RCaptureMouseXLastFrame = 0;
 	_Other.RCaptureMouseYLastFrame = 0;
 	_Other.X1Capture = false;
-	_Other.X1CapturePopUp = nullptr;
 	_Other.X1CaptureMouseX = 0;
 	_Other.X1CaptureMouseY = 0;
 	_Other.X1CaptureMouseXLastFrame = 0;
 	_Other.X1CaptureMouseYLastFrame = 0;
 	_Other.X2Capture = false;
-	_Other.X2CapturePopUp = nullptr;
 	_Other.X2CaptureMouseX = 0;
 	_Other.X2CaptureMouseY = 0;
 	_Other.X2CaptureMouseXLastFrame = 0;
@@ -95,31 +90,31 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 	RenderingMutex = _Other.RenderingMutex;
 	Layout = (BFW::GUI::PopUp&&)(_Other.Layout);
 	LCapture = _Other.LCapture;
-	LCapturePopUp = _Other.LCapturePopUp;
+	LCapturePath = (BFW::Vector<BFW::GUI::PopUp*>)(_Other.LCapturePath);
 	LCaptureMouseX = _Other.LCaptureMouseX;
 	LCaptureMouseY = _Other.LCaptureMouseY;
 	LCaptureMouseXLastFrame = _Other.LCaptureMouseXLastFrame;
 	LCaptureMouseYLastFrame = _Other.LCaptureMouseYLastFrame;
 	MCapture = _Other.MCapture;
-	MCapturePopUp = _Other.MCapturePopUp;
+	MCapturePath = (BFW::Vector<BFW::GUI::PopUp*>)(_Other.MCapturePath);
 	MCaptureMouseX = _Other.MCaptureMouseX;
 	MCaptureMouseY = _Other.MCaptureMouseY;
 	MCaptureMouseXLastFrame = _Other.MCaptureMouseXLastFrame;
 	MCaptureMouseYLastFrame = _Other.MCaptureMouseYLastFrame;
 	RCapture = _Other.RCapture;
-	RCapturePopUp = _Other.RCapturePopUp;
+	RCapturePath = (BFW::Vector<BFW::GUI::PopUp*>)(_Other.RCapturePath);
 	RCaptureMouseX = _Other.RCaptureMouseX;
 	RCaptureMouseY = _Other.RCaptureMouseY;
 	RCaptureMouseXLastFrame = _Other.RCaptureMouseXLastFrame;
 	RCaptureMouseYLastFrame = _Other.RCaptureMouseYLastFrame;
 	X1Capture = _Other.X1Capture;
-	X1CapturePopUp = _Other.X1CapturePopUp;
+	X1CapturePopUp = (BFW::Vector<BFW::GUI::PopUp*>)(_Other.X1CapturePopUp);
 	X1CaptureMouseX = _Other.X1CaptureMouseX;
 	X1CaptureMouseY = _Other.X1CaptureMouseY;
 	X1CaptureMouseXLastFrame = _Other.X1CaptureMouseXLastFrame;
 	X1CaptureMouseYLastFrame = _Other.X1CaptureMouseYLastFrame;
 	X2Capture = _Other.X2Capture;
-	X2CapturePopUp = _Other.X2CapturePopUp;
+	X2CapturePopUp = (BFW::Vector<BFW::GUI::PopUp*>)(_Other.X2CapturePopUp);
 	X2CaptureMouseX = _Other.X2CaptureMouseX;
 	X2CaptureMouseY = _Other.X2CaptureMouseY;
 	X2CaptureMouseXLastFrame = _Other.X2CaptureMouseXLastFrame;
@@ -127,31 +122,26 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 
 	_Other.RenderingMutex = nullptr;
 	_Other.LCapture = false;
-	_Other.LCapturePopUp = nullptr;
 	_Other.LCaptureMouseX = 0;
 	_Other.LCaptureMouseY = 0;
 	_Other.LCaptureMouseXLastFrame = 0;
 	_Other.LCaptureMouseYLastFrame = 0;
 	_Other.MCapture = false;
-	_Other.MCapturePopUp = nullptr;
 	_Other.MCaptureMouseX = 0;
 	_Other.MCaptureMouseY = 0;
 	_Other.MCaptureMouseXLastFrame = 0;
 	_Other.MCaptureMouseYLastFrame = 0;
 	_Other.RCapture = false;
-	_Other.RCapturePopUp = nullptr;
 	_Other.RCaptureMouseX = 0;
 	_Other.RCaptureMouseY = 0;
 	_Other.RCaptureMouseXLastFrame = 0;
 	_Other.RCaptureMouseYLastFrame = 0;
 	_Other.X1Capture = false;
-	_Other.X1CapturePopUp = nullptr;
 	_Other.X1CaptureMouseX = 0;
 	_Other.X1CaptureMouseY = 0;
 	_Other.X1CaptureMouseXLastFrame = 0;
 	_Other.X1CaptureMouseYLastFrame = 0;
 	_Other.X2Capture = false;
-	_Other.X2CapturePopUp = nullptr;
 	_Other.X2CaptureMouseX = 0;
 	_Other.X2CaptureMouseY = 0;
 	_Other.X2CaptureMouseXLastFrame = 0;

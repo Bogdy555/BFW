@@ -228,7 +228,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		{
 			_WndData.LCapture = true;
 			_WndData.RenderingMutex->lock();
-			_WndData.LCapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.LCapturePath);
 			_WndData.RenderingMutex->unlock();
 			_WndData.LCaptureMouseX = _MouseX;
 			_WndData.LCaptureMouseY = _MouseY;
@@ -240,7 +240,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		{
 			_WndData.MCapture = true;
 			_WndData.RenderingMutex->lock();
-			_WndData.MCapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.MCapturePath);
 			_WndData.RenderingMutex->unlock();
 			_WndData.MCaptureMouseX = _MouseX;
 			_WndData.MCaptureMouseY = _MouseY;
@@ -252,7 +252,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		{
 			_WndData.RCapture = true;
 			_WndData.RenderingMutex->lock();
-			_WndData.RCapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.RCapturePath);
 			_WndData.RenderingMutex->unlock();
 			_WndData.RCaptureMouseX = _MouseX;
 			_WndData.RCaptureMouseY = _MouseY;
@@ -264,7 +264,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		{
 			_WndData.X1Capture = true;
 			_WndData.RenderingMutex->lock();
-			_WndData.X1CapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.X1CapturePopUp);
 			_WndData.RenderingMutex->unlock();
 			_WndData.X1CaptureMouseX = _MouseX;
 			_WndData.X1CaptureMouseY = _MouseY;
@@ -276,7 +276,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		{
 			_WndData.X2Capture = true;
 			_WndData.RenderingMutex->lock();
-			_WndData.X2CapturePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.X2CapturePopUp);
 			_WndData.RenderingMutex->unlock();
 			_WndData.X2CaptureMouseX = _MouseX;
 			_WndData.X2CaptureMouseY = _MouseY;
@@ -295,35 +295,35 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteMouseCaptureInputs(BFW::GUI::Window& 
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
 	_WndData.LCapture = false;
-	_WndData.LCapturePopUp = nullptr;
+	_WndData.LCapturePath.Clear();
 	_WndData.LCaptureMouseX = 0;
 	_WndData.LCaptureMouseY = 0;
 	_WndData.LCaptureMouseXLastFrame = 0;
 	_WndData.LCaptureMouseYLastFrame = 0;
 
 	_WndData.MCapture = false;
-	_WndData.MCapturePopUp = nullptr;
+	_WndData.MCapturePath.Clear();
 	_WndData.MCaptureMouseX = 0;
 	_WndData.MCaptureMouseY = 0;
 	_WndData.MCaptureMouseXLastFrame = 0;
 	_WndData.MCaptureMouseYLastFrame = 0;
 
 	_WndData.RCapture = false;
-	_WndData.RCapturePopUp = nullptr;
+	_WndData.RCapturePath.Clear();
 	_WndData.RCaptureMouseX = 0;
 	_WndData.RCaptureMouseY = 0;
 	_WndData.RCaptureMouseXLastFrame = 0;
 	_WndData.RCaptureMouseYLastFrame = 0;
 
 	_WndData.X1Capture = false;
-	_WndData.X1CapturePopUp = nullptr;
+	_WndData.X1CapturePopUp.Clear();
 	_WndData.X1CaptureMouseX = 0;
 	_WndData.X1CaptureMouseY = 0;
 	_WndData.X1CaptureMouseXLastFrame = 0;
 	_WndData.X1CaptureMouseYLastFrame = 0;
 
 	_WndData.X2Capture = false;
-	_WndData.X2CapturePopUp = nullptr;
+	_WndData.X2CapturePopUp.Clear();
 	_WndData.X2CaptureMouseX = 0;
 	_WndData.X2CaptureMouseY = 0;
 	_WndData.X2CaptureMouseXLastFrame = 0;
@@ -359,6 +359,53 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 		if (_WndData.LCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
+
+			_WndData.RenderingMutex->lock();
+
+			switch (_WndData.LCapturePath[0]->GetId())
+			{
+			case GUI::_LeftResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_RightResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_TopResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_BottomResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_LeftTopResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_LeftBottomResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_RightTopResizePopUpId:
+			{
+				break;
+			}
+			case GUI::_RightBottomResizePopUpId:
+			{
+				break;
+			}
+			default:
+			{
+				break;
+			}
+			}
+
+			_WndData.RenderingMutex->unlock();
+
 			_WndData.LCaptureMouseXLastFrame = _MouseX;
 			_WndData.LCaptureMouseYLastFrame = _MouseY;
 		}
@@ -418,7 +465,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 			BFW::GUI::PopUp* _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
-			if (_ReleasePopUp && _ReleasePopUp->GetId() == _WndData.LCapturePopUp->GetId())
+			if (_ReleasePopUp && _ReleasePopUp->GetId() == _WndData.LCapturePath[0]->GetId())
 			{
 				switch (_ReleasePopUp->GetId())
 				{
@@ -476,7 +523,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		}
 
 		_WndData.LCapture = false;
-		_WndData.LCapturePopUp = nullptr;
+		_WndData.LCapturePath.Clear();
 		_WndData.LCaptureMouseX = 0;
 		_WndData.LCaptureMouseY = 0;
 		_WndData.LCaptureMouseXLastFrame = 0;
@@ -486,7 +533,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	if (_Wnd.GetKeys()[VK_MBUTTON].JustReleased())
 	{
 		_WndData.MCapture = false;
-		_WndData.MCapturePopUp = nullptr;
+		_WndData.MCapturePath.Clear();
 		_WndData.MCaptureMouseX = 0;
 		_WndData.MCaptureMouseY = 0;
 		_WndData.MCaptureMouseXLastFrame = 0;
@@ -496,7 +543,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	if (_Wnd.GetKeys()[VK_RBUTTON].JustReleased())
 	{
 		_WndData.RCapture = false;
-		_WndData.RCapturePopUp = nullptr;
+		_WndData.RCapturePath.Clear();
 		_WndData.RCaptureMouseX = 0;
 		_WndData.RCaptureMouseY = 0;
 		_WndData.RCaptureMouseXLastFrame = 0;
@@ -506,7 +553,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	if (_Wnd.GetKeys()[VK_XBUTTON1].JustReleased())
 	{
 		_WndData.X1Capture = false;
-		_WndData.X1CapturePopUp = nullptr;
+		_WndData.X1CapturePopUp.Clear();
 		_WndData.X1CaptureMouseX = 0;
 		_WndData.X1CaptureMouseY = 0;
 		_WndData.X1CaptureMouseXLastFrame = 0;
@@ -516,7 +563,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	if (_Wnd.GetKeys()[VK_XBUTTON2].JustReleased())
 	{
 		_WndData.X2Capture = false;
-		_WndData.X2CapturePopUp = nullptr;
+		_WndData.X2CapturePopUp.Clear();
 		_WndData.X2CaptureMouseX = 0;
 		_WndData.X2CaptureMouseY = 0;
 		_WndData.X2CaptureMouseXLastFrame = 0;
@@ -604,7 +651,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 	{
 		if (_WndData.LCapture)
 		{
-			GUI::RenderCursor(_Wnd, _WndData.LCapturePopUp->GetId());
+			GUI::RenderCursor(_Wnd, _WndData.LCapturePath[0]->GetId());
 		}
 		else
 		{

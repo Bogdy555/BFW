@@ -51,35 +51,35 @@ namespace BFW_WINDOWS
 			BFW::GUI::PopUp Layout;
 
 			bool LCapture;
-			BFW::GUI::PopUp* LCapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> LCapturePath;
 			intptr_t LCaptureMouseX;
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
 			intptr_t LCaptureMouseYLastFrame;
 
 			bool MCapture;
-			BFW::GUI::PopUp* MCapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> MCapturePath;
 			intptr_t MCaptureMouseX;
 			intptr_t MCaptureMouseY;
 			intptr_t MCaptureMouseXLastFrame;
 			intptr_t MCaptureMouseYLastFrame;
 
 			bool RCapture;
-			BFW::GUI::PopUp* RCapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> RCapturePath;
 			intptr_t RCaptureMouseX;
 			intptr_t RCaptureMouseY;
 			intptr_t RCaptureMouseXLastFrame;
 			intptr_t RCaptureMouseYLastFrame;
 
 			bool X1Capture;
-			BFW::GUI::PopUp* X1CapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> X1CapturePopUp;
 			intptr_t X1CaptureMouseX;
 			intptr_t X1CaptureMouseY;
 			intptr_t X1CaptureMouseXLastFrame;
 			intptr_t X1CaptureMouseYLastFrame;
 
 			bool X2Capture;
-			BFW::GUI::PopUp* X2CapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> X2CapturePopUp;
 			intptr_t X2CaptureMouseX;
 			intptr_t X2CaptureMouseY;
 			intptr_t X2CaptureMouseXLastFrame;
