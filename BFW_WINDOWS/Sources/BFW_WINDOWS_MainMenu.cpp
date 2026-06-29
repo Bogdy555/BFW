@@ -232,6 +232,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 			_WndData.RenderingMutex->unlock();
 			_WndData.LCaptureMouseX = _MouseX;
 			_WndData.LCaptureMouseY = _MouseY;
+			_WndData.LCaptureMouseXLastFrame = _MouseX;
+			_WndData.LCaptureMouseYLastFrame = _MouseY;
 		}
 
 		if (_Wnd.GetKeys()[VK_MBUTTON].JustPressed())
@@ -242,6 +244,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 			_WndData.RenderingMutex->unlock();
 			_WndData.MCaptureMouseX = _MouseX;
 			_WndData.MCaptureMouseY = _MouseY;
+			_WndData.MCaptureMouseXLastFrame = _MouseX;
+			_WndData.MCaptureMouseYLastFrame = _MouseY;
 		}
 
 		if (_Wnd.GetKeys()[VK_RBUTTON].JustPressed())
@@ -252,6 +256,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 			_WndData.RenderingMutex->unlock();
 			_WndData.RCaptureMouseX = _MouseX;
 			_WndData.RCaptureMouseY = _MouseY;
+			_WndData.RCaptureMouseXLastFrame = _MouseX;
+			_WndData.RCaptureMouseYLastFrame = _MouseY;
 		}
 
 		if (_Wnd.GetKeys()[VK_XBUTTON1].JustPressed())
@@ -262,6 +268,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 			_WndData.RenderingMutex->unlock();
 			_WndData.X1CaptureMouseX = _MouseX;
 			_WndData.X1CaptureMouseY = _MouseY;
+			_WndData.X1CaptureMouseXLastFrame = _MouseX;
+			_WndData.X1CaptureMouseYLastFrame = _MouseY;
 		}
 
 		if (_Wnd.GetKeys()[VK_XBUTTON2].JustPressed())
@@ -272,6 +280,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 			_WndData.RenderingMutex->unlock();
 			_WndData.X2CaptureMouseX = _MouseX;
 			_WndData.X2CaptureMouseY = _MouseY;
+			_WndData.X2CaptureMouseXLastFrame = _MouseX;
+			_WndData.X2CaptureMouseYLastFrame = _MouseY;
 		}
 	}
 }
@@ -288,26 +298,36 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteMouseCaptureInputs(BFW::GUI::Window& 
 	_WndData.LCapturePopUp = nullptr;
 	_WndData.LCaptureMouseX = 0;
 	_WndData.LCaptureMouseY = 0;
+	_WndData.LCaptureMouseXLastFrame = 0;
+	_WndData.LCaptureMouseYLastFrame = 0;
 
 	_WndData.MCapture = false;
 	_WndData.MCapturePopUp = nullptr;
 	_WndData.MCaptureMouseX = 0;
 	_WndData.MCaptureMouseY = 0;
+	_WndData.MCaptureMouseXLastFrame = 0;
+	_WndData.MCaptureMouseYLastFrame = 0;
 
 	_WndData.RCapture = false;
 	_WndData.RCapturePopUp = nullptr;
 	_WndData.RCaptureMouseX = 0;
 	_WndData.RCaptureMouseY = 0;
+	_WndData.RCaptureMouseXLastFrame = 0;
+	_WndData.RCaptureMouseYLastFrame = 0;
 
 	_WndData.X1Capture = false;
 	_WndData.X1CapturePopUp = nullptr;
 	_WndData.X1CaptureMouseX = 0;
 	_WndData.X1CaptureMouseY = 0;
+	_WndData.X1CaptureMouseXLastFrame = 0;
+	_WndData.X1CaptureMouseYLastFrame = 0;
 
 	_WndData.X2Capture = false;
 	_WndData.X2CapturePopUp = nullptr;
 	_WndData.X2CaptureMouseX = 0;
 	_WndData.X2CaptureMouseY = 0;
+	_WndData.X2CaptureMouseXLastFrame = 0;
+	_WndData.X2CaptureMouseYLastFrame = 0;
 }
 
 void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const bool _IsMainWindow)
@@ -333,6 +353,61 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		}
 	}
 
+	if (_Wnd.GetKeys()[VK_LBUTTON].IsPressed())
+	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.LCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			_WndData.LCaptureMouseXLastFrame = _MouseX;
+			_WndData.LCaptureMouseYLastFrame = _MouseY;
+		}
+	}
+
+	if (_Wnd.GetKeys()[VK_MBUTTON].IsPressed())
+	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.MCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			_WndData.MCaptureMouseXLastFrame = _MouseX;
+			_WndData.MCaptureMouseYLastFrame = _MouseY;
+		}
+	}
+
+	if (_Wnd.GetKeys()[VK_RBUTTON].IsPressed())
+	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.RCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			_WndData.RCaptureMouseXLastFrame = _MouseX;
+			_WndData.RCaptureMouseYLastFrame = _MouseY;
+		}
+	}
+
+	if (_Wnd.GetKeys()[VK_XBUTTON1].IsPressed())
+	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.X1Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			_WndData.X1CaptureMouseXLastFrame = _MouseX;
+			_WndData.X1CaptureMouseYLastFrame = _MouseY;
+		}
+	}
+
+	if (_Wnd.GetKeys()[VK_XBUTTON2].IsPressed())
+	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.X2Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			_WndData.X2CaptureMouseXLastFrame = _MouseX;
+			_WndData.X2CaptureMouseYLastFrame = _MouseY;
+		}
+	}
+
 	if (_Wnd.GetKeys()[VK_LBUTTON].JustReleased())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
@@ -354,7 +429,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 						break;
 					}
 
-					if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, 0, 0, (int32_t)(GUI::ExampleMinX), (int32_t)(GUI::ExampleMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
+					if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, 0, 0, (int32_t)(GUI::ChildMinX), (int32_t)(GUI::ChildMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
 					{
 						_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
 						break;
@@ -404,6 +479,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.LCapturePopUp = nullptr;
 		_WndData.LCaptureMouseX = 0;
 		_WndData.LCaptureMouseY = 0;
+		_WndData.LCaptureMouseXLastFrame = 0;
+		_WndData.LCaptureMouseYLastFrame = 0;
 	}
 
 	if (_Wnd.GetKeys()[VK_MBUTTON].JustReleased())
@@ -412,6 +489,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.MCapturePopUp = nullptr;
 		_WndData.MCaptureMouseX = 0;
 		_WndData.MCaptureMouseY = 0;
+		_WndData.MCaptureMouseXLastFrame = 0;
+		_WndData.MCaptureMouseYLastFrame = 0;
 	}
 
 	if (_Wnd.GetKeys()[VK_RBUTTON].JustReleased())
@@ -420,6 +499,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.RCapturePopUp = nullptr;
 		_WndData.RCaptureMouseX = 0;
 		_WndData.RCaptureMouseY = 0;
+		_WndData.RCaptureMouseXLastFrame = 0;
+		_WndData.RCaptureMouseYLastFrame = 0;
 	}
 
 	if (_Wnd.GetKeys()[VK_XBUTTON1].JustReleased())
@@ -428,6 +509,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.X1CapturePopUp = nullptr;
 		_WndData.X1CaptureMouseX = 0;
 		_WndData.X1CaptureMouseY = 0;
+		_WndData.X1CaptureMouseXLastFrame = 0;
+		_WndData.X1CaptureMouseYLastFrame = 0;
 	}
 
 	if (_Wnd.GetKeys()[VK_XBUTTON2].JustReleased())
@@ -436,6 +519,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.X2CapturePopUp = nullptr;
 		_WndData.X2CaptureMouseX = 0;
 		_WndData.X2CaptureMouseY = 0;
+		_WndData.X2CaptureMouseXLastFrame = 0;
+		_WndData.X2CaptureMouseYLastFrame = 0;
 	}
 
 	_Wnd.CleanEvents();
@@ -486,8 +571,6 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetHeight(_WndHeight);
 				_WndData.Layout.SetTrueWidth(GUI::ExampleMinX);
 				_WndData.Layout.SetTrueHeight(GUI::ExampleMinY);
-				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX());
-				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY());
 
 				GUI::GenerateExample(_WndData.Layout, this, true);
 
@@ -499,8 +582,6 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetHeight(_WndHeight);
 				_WndData.Layout.SetTrueWidth(0);
 				_WndData.Layout.SetTrueHeight(0);
-				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX());
-				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY());
 
 				GUI::ResizeChilds(_WndData.Layout, this);
 
@@ -509,7 +590,6 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 			default:
 			{
 				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
-
 				break;
 			}
 			}

@@ -1432,8 +1432,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _Panel
 	SetTrueHeight(_MinHeight);
 	PositionX = _PositionX;
 	PositionY = _PositionY;
-	ScrollX = _ScrollX;
-	ScrollY = _ScrollY;
+	SetScrollX(_ScrollX);
+	SetScrollY(_ScrollY);
 	UserData = _UserData;
 	SetupData = _SetupData;
 	CleanUpData = _CleanUpData;
@@ -1730,6 +1730,8 @@ void BFW::GUI::PopUp::SetTrueWidth(const size_t _MinWidth)
 	{
 		TrueWidth = Width;
 	}
+
+	SetScrollX(ScrollX);
 }
 
 void BFW::GUI::PopUp::SetTrueHeight(const size_t _MinHeight)
@@ -1742,6 +1744,8 @@ void BFW::GUI::PopUp::SetTrueHeight(const size_t _MinHeight)
 	{
 		TrueHeight = Height;
 	}
+
+	SetScrollY(ScrollY);
 }
 
 void BFW::GUI::PopUp::SetWidth(const size_t _Width)
@@ -1752,6 +1756,8 @@ void BFW::GUI::PopUp::SetWidth(const size_t _Width)
 	{
 		TrueWidth = Width;
 	}
+
+	SetScrollX(ScrollX);
 }
 
 void BFW::GUI::PopUp::SetHeight(const size_t _Height)
@@ -1762,6 +1768,8 @@ void BFW::GUI::PopUp::SetHeight(const size_t _Height)
 	{
 		TrueHeight = Height;
 	}
+
+	SetScrollY(ScrollY);
 }
 
 void BFW::GUI::PopUp::SetPositionX(const intptr_t _PositionX)
