@@ -24,8 +24,12 @@ namespace BFW_WINDOWS
 			_LeftBottomResizePopUpId = 6,
 			_RightTopResizePopUpId = 7,
 			_RightBottomResizePopUpId = 8,
-			_ExamplePopUpId = 9,
-			_SpawnButtonPopUpId = 10
+			_HScrollWindowPopUpId = 9,
+			_HScrollButtonPopUpId = 10,
+			_VScrollWindowPopUpId = 11,
+			_VScrollButtonPopUpId = 12,
+			_ExamplePopUpId = 13,
+			_SpawnButtonPopUpId = 14
 		};
 
 		struct PopUpData

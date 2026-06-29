@@ -1210,26 +1210,26 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
-					Composit,
-					nullptr,
-					true
-					);
+				Composit,
+				nullptr,
+				true
+			);
 
-					_Layer = _Parent.PushPopUpLayer();
+			_Layer = _Parent.PushPopUpLayer();
 
-					_Parent.PushPopUp
-					(
-						_Layer, _RightBottomResizePopUpId,
-						0, 0,
-						ResizeSize, ResizeSize,
-						(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
-						0, 0,
-						SetupRenderData, CleanUpRenderData,
-						RenderGray40, nullptr, nullptr,
-						Composit,
-						nullptr,
-						true
-					);
+			_Parent.PushPopUp
+			(
+				_Layer, _RightBottomResizePopUpId,
+				0, 0,
+				ResizeSize, ResizeSize,
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
 		}
 
 		if (_Parent.GetPanelType() == BFW::GUI::_LeftPanelType)
@@ -1370,6 +1370,26 @@ void BFW_WINDOWS::GUI::RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopU
 	case _RightBottomResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENWSE));
+		break;
+	}
+	case _HScrollWindowPopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
+		break;
+	}
+	case _HScrollButtonPopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
+		break;
+	}
+	case _VScrollWindowPopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
+		break;
+	}
+	case _VScrollButtonPopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
 		break;
 	}
 	case _ExamplePopUpId:

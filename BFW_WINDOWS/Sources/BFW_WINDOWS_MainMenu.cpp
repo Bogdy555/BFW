@@ -291,6 +291,63 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 	}
 }
 
+const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
+{
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
+	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
+
+	POINT _Cursor = { 0 };
+
+	if (!GetCursorPos(&_Cursor))
+	{
+		return false;
+	}
+
+	if (!_ApplicationObj.AddChildWindow())
+	{
+		return false;
+	}
+
+	if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, _Cursor.x - (int32_t)(GUI::ChildMinX / 2), _Cursor.y - (int32_t)(GUI::ChildMinY / 2), (int32_t)(GUI::ChildMinX), (int32_t)(GUI::ChildMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
+	{
+		_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
+		return false;
+	}
+
+	if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Show(SW_SHOW))
+	{
+		_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
+		return false;
+	}
+
+	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->lock();
+
+	GUI::GenerateExample
+	(
+		_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.Begin
+		(
+			GUI::_ExamplePopUpId, BFW::GUI::_NullPanelType,
+			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::ExampleMinX, GUI::ExampleMinY,
+			0, 0,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.GetUserData()
+		),
+		this,
+		true
+	);
+
+	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->unlock();
+
+	return true;
+}
+
 void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const uint64_t _ResizePopUpId, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY)
 {
 	bool _IsPanel = false;
@@ -966,45 +1023,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 				{
 				case GUI::_SpawnButtonPopUpId:
 				{
-					if (!_ApplicationObj.AddChildWindow())
-					{
-						break;
-					}
-
-					if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, 0, 0, (int32_t)(GUI::ChildMinX), (int32_t)(GUI::ChildMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
-					{
-						_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
-						break;
-					}
-
-					if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Show(SW_SHOW))
-					{
-						_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
-						break;
-					}
-
-					_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->lock();
-
-					GUI::GenerateExample
-					(
-						_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.Begin
-						(
-							GUI::_ExamplePopUpId, BFW::GUI::_NullPanelType,
-							GUI::ExampleMinX, GUI::ExampleMinY,
-							GUI::ExampleMinX, GUI::ExampleMinY,
-							0, 0,
-							0, 0,
-							GUI::SetupRenderData, GUI::CleanUpRenderData,
-							GUI::RenderGray30, nullptr, nullptr,
-							GUI::Composit,
-							_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.GetUserData()
-						),
-						this,
-						true
-					);
-
-					_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->unlock();
-
+					SpawnButtonCallBack();
 					break;
 				}
 				default:
