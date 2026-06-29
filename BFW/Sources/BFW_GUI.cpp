@@ -1169,8 +1169,8 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 
 		_Wnd->WindowMutex->lock();
 		_Wnd->HasMouse = true;
-		_Wnd->MouseX = LOWORD(_lParam);
-		_Wnd->MouseY = HIWORD(_lParam);
+		_Wnd->MouseX = (int16_t)(LOWORD(_lParam));
+		_Wnd->MouseY = (int16_t)(HIWORD(_lParam));
 		_Wnd->WindowMutex->unlock();
 
 		break;

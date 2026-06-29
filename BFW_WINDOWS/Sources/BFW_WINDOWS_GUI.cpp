@@ -1099,225 +1099,225 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 		_Parent.GetUserData()
 	);
 
-	size_t _Layer = _Parent.PushPopUpLayer();
-
-	_Parent.PushPopUp
-	(
-		_Layer, _SpawnButtonPopUpId,
-		0, 0,
-		_Parent.GetTrueWidth() / 2, 20,
-		_Parent.GetTrueWidth() / 4, 10,
-		0, 0,
-		SetupRenderData, CleanUpRenderData,
-		RenderGray40, nullptr, nullptr,
-		Composit,
-		nullptr,
-		true
-	);
-
-	if (_IsNode)
+	if (!_IsNode)
 	{
-		return;
+		if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
+		{
+			size_t _Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _LeftResizePopUpId,
+				0, 0,
+				ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
+				0, ResizeSize,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+
+			_Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _RightResizePopUpId,
+				0, 0,
+				ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), ResizeSize,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+
+			_Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _TopResizePopUpId,
+				0, 0,
+				(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
+				ResizeSize, 0,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+
+			_Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _BottomResizePopUpId,
+				0, 0,
+				(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
+				ResizeSize, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+
+			_Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _LeftTopResizePopUpId,
+				0, 0,
+				ResizeSize, ResizeSize,
+				0, 0,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+
+			_Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _LeftBottomResizePopUpId,
+				0, 0,
+				ResizeSize, ResizeSize,
+				0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+
+			_Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _RightTopResizePopUpId,
+				0, 0,
+				ResizeSize, ResizeSize,
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+					Composit,
+					nullptr,
+					true
+					);
+
+					_Layer = _Parent.PushPopUpLayer();
+
+					_Parent.PushPopUp
+					(
+						_Layer, _RightBottomResizePopUpId,
+						0, 0,
+						ResizeSize, ResizeSize,
+						(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+						0, 0,
+						SetupRenderData, CleanUpRenderData,
+						RenderGray40, nullptr, nullptr,
+						Composit,
+						nullptr,
+						true
+					);
+		}
+
+		if (_Parent.GetPanelType() == BFW::GUI::_LeftPanelType)
+		{
+			size_t _Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _RightResizePopUpId,
+				0, 0,
+				ResizeSize, _Parent.GetHeight(),
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+		}
+
+		if (_Parent.GetPanelType() == BFW::GUI::_RightPanelType)
+		{
+			size_t _Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _LeftResizePopUpId,
+				0, 0,
+				ResizeSize, _Parent.GetHeight(),
+				0, 0,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+		}
+
+		if (_Parent.GetPanelType() == BFW::GUI::_TopPanelType)
+		{
+			size_t _Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _BottomResizePopUpId,
+				0, 0,
+				_Parent.GetWidth(), ResizeSize,
+				0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+		}
+
+		if (_Parent.GetPanelType() == BFW::GUI::_BottomPanelType)
+		{
+			size_t _Layer = _Parent.PushPopUpLayer();
+
+			_Parent.PushPopUp
+			(
+				_Layer, _TopResizePopUpId,
+				0, 0,
+				_Parent.GetWidth(), ResizeSize,
+				0, 0,
+				0, 0,
+				SetupRenderData, CleanUpRenderData,
+				RenderGray40, nullptr, nullptr,
+				Composit,
+				nullptr,
+				true
+			);
+		}
 	}
 
-	if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
 	{
-		_Layer = _Parent.PushPopUpLayer();
+		size_t _Layer = _Parent.PushPopUpLayer();
 
 		_Parent.PushPopUp
 		(
-			_Layer, _LeftResizePopUpId,
+			_Layer, _SpawnButtonPopUpId,
 			0, 0,
-			ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
-			0, ResizeSize,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _RightResizePopUpId,
-			0, 0,
-			ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
-			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), ResizeSize,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _TopResizePopUpId,
-			0, 0,
-			(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
-			ResizeSize, 0,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _BottomResizePopUpId,
-			0, 0,
-			(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
-			ResizeSize, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _LeftTopResizePopUpId,
-			0, 0,
-			ResizeSize, ResizeSize,
-			0, 0,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _LeftBottomResizePopUpId,
-			0, 0,
-			ResizeSize, ResizeSize,
-			0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _RightTopResizePopUpId,
-			0, 0,
-			ResizeSize, ResizeSize,
-			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _RightBottomResizePopUpId,
-			0, 0,
-			ResizeSize, ResizeSize,
-			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-	}
-
-	if (_Parent.GetPanelType() == BFW::GUI::_LeftPanelType)
-	{
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _RightResizePopUpId,
-			0, 0,
-			ResizeSize, _Parent.GetHeight(),
-			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-	}
-
-	if (_Parent.GetPanelType() == BFW::GUI::_RightPanelType)
-	{
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _LeftResizePopUpId,
-			0, 0,
-			ResizeSize, _Parent.GetHeight(),
-			0, 0,
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-	}
-
-	if (_Parent.GetPanelType() == BFW::GUI::_TopPanelType)
-	{
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _BottomResizePopUpId,
-			0, 0,
-			_Parent.GetWidth(), ResizeSize,
-			0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
-			0, 0,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray40, nullptr, nullptr,
-			Composit,
-			nullptr,
-			true
-		);
-	}
-
-	if (_Parent.GetPanelType() == BFW::GUI::_BottomPanelType)
-	{
-		_Layer = _Parent.PushPopUpLayer();
-
-		_Parent.PushPopUp
-		(
-			_Layer, _TopResizePopUpId,
-			0, 0,
-			_Parent.GetWidth(), ResizeSize,
-			0, 0,
+			_Parent.GetTrueWidth() / 2, 20,
+			_Parent.GetTrueWidth() / 4, 10,
 			0, 0,
 			SetupRenderData, CleanUpRenderData,
 			RenderGray40, nullptr, nullptr,
