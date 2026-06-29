@@ -116,9 +116,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	GUI::PopUpData& _MainWindowPopUpData = *(GUI::PopUpData*)(_MainWindowData.Layout.GetUserData());
 
-	BFW::GUI::PopUp _NewLayout;
-
-	_NewLayout.Begin
+	_MainWindowData.Layout.Begin
 	(
 		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
 		0, 0,
@@ -133,7 +131,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	GUI::GenerateExample
 	(
-		_NewLayout.PushLeftPanel
+		_MainWindowData.Layout.PushLeftPanel
 		(
 			GUI::_ExamplePopUpId,
 			GUI::ExampleMinX, GUI::ExampleMinY,
@@ -145,10 +143,11 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			nullptr,
 			true
 		),
-		this
+		this,
+		false
 	);
 
-	_NewLayout.PushNode
+	_MainWindowData.Layout.PushNode
 	(
 		BFW::GUI::_NodePopUpId,
 		0, 0,
@@ -156,12 +155,12 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		GUI::SetupRenderData, GUI::CleanUpRenderData,
 		GUI::RenderGray20, nullptr, nullptr,
 		GUI::Composit,
-		_MainWindowData.Layout.GetUserData()
+		nullptr
 	);
 
 	GUI::GenerateExample
 	(
-		_NewLayout.GetNodes()[0].PushBottomPanel
+		_MainWindowData.Layout.GetNodes()[0].PushBottomPanel
 		(
 			GUI::_ExamplePopUpId,
 			GUI::ExampleMinX, GUI::ExampleMinY,
@@ -173,10 +172,9 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			nullptr,
 			true
 		),
-		this
+		this,
+		false
 	);
-
-	_MainWindowData.Layout = _NewLayout;
 
 	_MainWindowData.RenderingMutex->unlock();
 }
@@ -191,9 +189,20 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 
 	_MainWindowData.RenderingMutex->lock();
 
-	BFW::GUI::PopUp _NewLayout;
-	_NewLayout.SetUserData(_MainWindowData.Layout.GetUserData());
-	_MainWindowData.Layout = _NewLayout;
+	GUI::PopUpData& _MainWindowPopUpData = *(GUI::PopUpData*)(_MainWindowData.Layout.GetUserData());
+
+	_MainWindowData.Layout.Begin
+	(
+		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
+		0, 0,
+		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
+		0, 0,
+		0, 0,
+		nullptr, nullptr,
+		nullptr, nullptr, nullptr,
+		nullptr,
+		_MainWindowData.Layout.GetUserData()
+	);
 
 	_MainWindowData.RenderingMutex->unlock();
 
@@ -373,7 +382,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 							GUI::Composit,
 							_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.GetUserData()
 						),
-						this
+						this,
+						true
 					);
 
 					_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->unlock();
@@ -479,7 +489,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX());
 				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY());
 
-				GUI::GenerateExample(_WndData.Layout, this);
+				GUI::GenerateExample(_WndData.Layout, this, true);
 
 				break;
 			}
@@ -492,15 +502,17 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetScrollX(_WndData.Layout.GetScrollX());
 				_WndData.Layout.SetScrollY(_WndData.Layout.GetScrollY());
 
+				GUI::ResizeChilds(_WndData.Layout, this);
+
 				break;
 			}
 			default:
 			{
-				throw nullptr;
-			}
-			}
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
 
-			GUI::ResizeChilds(_WndData.Layout, this);
+				break;
+			}
+			}
 		}
 	}
 

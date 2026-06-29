@@ -2,6 +2,7 @@
 
 
 
+const size_t BFW_WINDOWS::GUI::ResizeSize = 3;
 const size_t BFW_WINDOWS::GUI::ExampleMinX = 200;
 const size_t BFW_WINDOWS::GUI::ExampleMinY = 200;
 
@@ -379,8 +380,8 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 	{
 		LPMINMAXINFO _MinMaxInfo = (LPMINMAXINFO)(_lParam);
 
-		_MinMaxInfo->ptMinTrackSize.x = 300;
-		_MinMaxInfo->ptMinTrackSize.y = 300;
+		_MinMaxInfo->ptMinTrackSize.x = 200;
+		_MinMaxInfo->ptMinTrackSize.y = 200;
 
 		break;
 	}
@@ -708,7 +709,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Panels[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Panels[_Index].SetTrueHeight(ExampleMinY);
 				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY());
-				GenerateExample(_Panels[_Index], _Menu);
+				GenerateExample(_Panels[_Index], _Menu, false);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -737,7 +738,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Panels[_Index].SetTrueHeight(ExampleMinY);
 				_Panels[_Index].SetScrollY(_Panels[_Index].GetScrollY());
 				_Panels[_Index].SetPositionX(_Layout.GetTrueWidth() - _Panels[_Index].GetWidth());
-				GenerateExample(_Panels[_Index], _Menu);
+				GenerateExample(_Panels[_Index], _Menu, false);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -766,7 +767,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Panels[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Panels[_Index].SetTrueWidth(ExampleMinX);
 				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX());
-				GenerateExample(_Panels[_Index], _Menu);
+				GenerateExample(_Panels[_Index], _Menu, false);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -795,7 +796,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Panels[_Index].SetTrueWidth(ExampleMinX);
 				_Panels[_Index].SetScrollX(_Panels[_Index].GetScrollX());
 				_Panels[_Index].SetPositionY(_Layout.GetTrueHeight() - _Panels[_Index].GetHeight());
-				GenerateExample(_Panels[_Index], _Menu);
+				GenerateExample(_Panels[_Index], _Menu, false);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -849,7 +850,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
 				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
-				GenerateExample(_Nodes[_Index], _Menu);
+				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -900,7 +901,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Nodes[_Index].SetTrueHeight(ExampleMinY);
 				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
 				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
-				GenerateExample(_Nodes[_Index], _Menu);
+				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -951,7 +952,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
 				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
 				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
-				GenerateExample(_Nodes[_Index], _Menu);
+				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -1002,7 +1003,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 				_Nodes[_Index].SetTrueWidth(ExampleMinX);
 				_Nodes[_Index].SetScrollX(_Nodes[_Index].GetScrollX());
 				_Nodes[_Index].SetScrollY(_Nodes[_Index].GetScrollY());
-				GenerateExample(_Nodes[_Index], _Menu);
+				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
 			case BFW::GUI::_NodePopUpId:
@@ -1036,7 +1037,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 	}
 }
 
-void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu)
+void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu, const bool _IsNode)
 {
 	_Parent.Begin
 	(
@@ -1066,12 +1067,264 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 		nullptr,
 		true
 	);
+
+	if (_IsNode)
+	{
+		return;
+	}
+
+	if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
+	{
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _LeftResizePopUpId,
+			0, 0,
+			ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
+			0, ResizeSize,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _RightResizePopUpId,
+			0, 0,
+			ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
+			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), ResizeSize,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _TopResizePopUpId,
+			0, 0,
+			(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
+			ResizeSize, 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _BottomResizePopUpId,
+			0, 0,
+			(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
+			ResizeSize, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _LeftTopResizePopUpId,
+			0, 0,
+			ResizeSize, ResizeSize,
+			0, 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _LeftBottomResizePopUpId,
+			0, 0,
+			ResizeSize, ResizeSize,
+			0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _RightTopResizePopUpId,
+			0, 0,
+			ResizeSize, ResizeSize,
+			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _RightBottomResizePopUpId,
+			0, 0,
+			ResizeSize, ResizeSize,
+			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetPanelType() == BFW::GUI::_LeftPanelType)
+	{
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _RightResizePopUpId,
+			0, 0,
+			ResizeSize, _Parent.GetHeight(),
+			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetPanelType() == BFW::GUI::_RightPanelType)
+	{
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _LeftResizePopUpId,
+			0, 0,
+			ResizeSize, _Parent.GetHeight(),
+			0, 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetPanelType() == BFW::GUI::_TopPanelType)
+	{
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _BottomResizePopUpId,
+			0, 0,
+			_Parent.GetWidth(), ResizeSize,
+			0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetPanelType() == BFW::GUI::_BottomPanelType)
+	{
+		_Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _TopResizePopUpId,
+			0, 0,
+			_Parent.GetWidth(), ResizeSize,
+			0, 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
 }
 
 void BFW_WINDOWS::GUI::RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId)
 {
 	switch (_PopUpId)
 	{
+	case _LeftResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEWE));
+		break;
+	}
+	case _RightResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEWE));
+		break;
+	}
+	case _TopResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENS));
+		break;
+	}
+	case _BottomResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENS));
+		break;
+	}
+	case _LeftTopResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENWSE));
+		break;
+	}
+	case _LeftBottomResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENESW));
+		break;
+	}
+	case _RightTopResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENESW));
+		break;
+	}
+	case _RightBottomResizePopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENWSE));
+		break;
+	}
 	case _ExamplePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_ARROW));
