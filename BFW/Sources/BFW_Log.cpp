@@ -53,7 +53,6 @@ void BFW_API BFW::Log::Stop()
 	SetConsoleAttribute(DefaultAttribute);
 	DefaultAttribute = 0;
 
-	CloseHandle(ConsoleHandle);
 	ConsoleHandle = INVALID_HANDLE_VALUE;
 }
 
