@@ -93,6 +93,7 @@ namespace BFW_WINDOWS
 			void CleanUpGUI();
 
 			void MouseCaptureResize(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const uint64_t _ResizePopUpId, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
+			void MouseCaptureMove(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
 
 			void MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 			void DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);

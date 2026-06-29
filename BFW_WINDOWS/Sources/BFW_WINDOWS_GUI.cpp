@@ -886,7 +886,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 	for (size_t _Index = 0; _Index < _Nodes.GetSize(); _Index++)
 	{
-		switch (_Panels[0].GetPanelType())
+		switch (_Nodes[_Index].GetPanelType())
 		{
 		case BFW::GUI::_LeftPanelType:
 		{
@@ -906,7 +906,6 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(ExampleMinY);
-				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
 				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
@@ -924,7 +923,6 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(0);
-				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
 			}
@@ -954,6 +952,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(ExampleMinY);
+				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
 				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
@@ -971,6 +970,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetHeight(_Layout.GetTrueHeight());
 				_Nodes[_Index].SetTrueHeight(0);
+				_Nodes[_Index].SetPositionX(_Layout.GetTrueWidth() - _Nodes[_Index].GetWidth());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
 			}
@@ -1000,7 +1000,6 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(ExampleMinX);
-				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
 				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
@@ -1018,7 +1017,6 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(0);
-				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
 			}
@@ -1048,6 +1046,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(ExampleMinX);
+				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
 				GenerateExample(_Nodes[_Index], _Menu, true);
 				break;
 			}
@@ -1065,6 +1064,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 
 				_Nodes[_Index].SetWidth(_Layout.GetTrueWidth());
 				_Nodes[_Index].SetTrueWidth(0);
+				_Nodes[_Index].SetPositionY(_Layout.GetTrueHeight() - _Nodes[_Index].GetHeight());
 				ResizeChilds(_Nodes[_Index], _Menu);
 				break;
 			}

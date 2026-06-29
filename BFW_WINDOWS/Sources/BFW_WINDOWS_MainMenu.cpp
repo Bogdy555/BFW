@@ -176,6 +176,85 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		false
 	);
 
+	_MainWindowData.Layout.GetNodes()[0].PushNode
+	(
+		BFW::GUI::_NodePopUpId,
+		0, 0,
+		0, 0,
+		GUI::SetupRenderData, GUI::CleanUpRenderData,
+		GUI::RenderGray20, nullptr, nullptr,
+		GUI::Composit,
+		nullptr
+	);
+
+	GUI::GenerateExample
+	(
+		_MainWindowData.Layout.GetNodes()[0].GetNodes()[0].PushRightPanel
+		(
+			GUI::_ExamplePopUpId,
+			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::ExampleMinX,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			nullptr,
+			true
+		),
+		this,
+		false
+	);
+
+	_MainWindowData.Layout.GetNodes()[0].GetNodes()[0].PushNode
+	(
+		BFW::GUI::_NodePopUpId,
+		0, 0,
+		0, 0,
+		GUI::SetupRenderData, GUI::CleanUpRenderData,
+		GUI::RenderGray20, nullptr, nullptr,
+		GUI::Composit,
+		nullptr
+	);
+
+	GUI::GenerateExample
+	(
+		_MainWindowData.Layout.GetNodes()[0].GetNodes()[0].GetNodes()[0].PushTopPanel
+		(
+			GUI::_ExamplePopUpId,
+			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::ExampleMinY,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			nullptr,
+			true
+		),
+		this,
+		false
+	);
+
+	size_t _Layer = _MainWindowData.Layout.PushPopUpLayer();
+
+	GUI::GenerateExample
+	(
+		_MainWindowData.Layout.PushPopUp
+		(
+			_Layer, GUI::_ExamplePopUpId,
+			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::ExampleMinX * 2, GUI::ExampleMinY * 2,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			nullptr,
+			true
+		),
+		this,
+		false
+	);
+
 	_MainWindowData.RenderingMutex->unlock();
 }
 
@@ -236,43 +315,59 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 				case GUI::_LeftResizePopUpId:
 				{
-					if (_MouseDeltaX > 0 || (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) > (size_t)(-_MouseDeltaX))
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) < (size_t)(_MouseDeltaX))
 					{
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() + _MouseDeltaX);
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::ExampleMinX);
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetPositionX(_WndData.LCapturePath[2]->GetPanels()[_Index].GetPositionX() + _MouseDeltaX);
+						_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize);
 					}
+
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - _TrueMouseDeltaX);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::ExampleMinX);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetPositionX(_WndData.LCapturePath[2]->GetPanels()[_Index].GetPositionX() + _TrueMouseDeltaX);
 
 					break;
 				}
 				case GUI::_RightResizePopUpId:
 				{
-					if (_MouseDeltaX > 0 || (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) > (size_t)(-_MouseDeltaX))
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) < (size_t)(-_MouseDeltaX))
 					{
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() + _MouseDeltaX);
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::ExampleMinX);
+						_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize));
 					}
+
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() + _TrueMouseDeltaX);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::ExampleMinX);
 
 					break;
 				}
 				case GUI::_TopResizePopUpId:
 				{
-					if (_MouseDeltaY > 0 || (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) > (size_t)(-_MouseDeltaY))
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) < (size_t)(_MouseDeltaY))
 					{
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() + _MouseDeltaY);
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::ExampleMinY);
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetPositionY(_WndData.LCapturePath[2]->GetPanels()[_Index].GetPositionY() + _MouseDeltaY);
+						_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize);
 					}
+
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - _TrueMouseDeltaY);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::ExampleMinY);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetPositionY(_WndData.LCapturePath[2]->GetPanels()[_Index].GetPositionY() + _TrueMouseDeltaY);
 
 					break;
 				}
 				case GUI::_BottomResizePopUpId:
 				{
-					if (_MouseDeltaY > 0 || (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) > (size_t)(-_MouseDeltaY))
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) < (size_t)(-_MouseDeltaY))
 					{
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() + _MouseDeltaY);
-						_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::ExampleMinY);
+						_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize));
 					}
+
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() + _TrueMouseDeltaY);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::ExampleMinY);
 
 					break;
 				}
@@ -338,12 +433,167 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 				case GUI::_ExamplePopUpId:
 				{
-					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth());
-					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight());
-					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
-					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
-					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX());
-					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY());
+					switch (_ResizePopUpId)
+					{
+					case GUI::_LeftResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+						if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaX))
+						{
+							_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2);
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _TrueMouseDeltaX);
+
+						break;
+					}
+					case GUI::_RightResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+						if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaX))
+						{
+							_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2));
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+
+						break;
+					}
+					case GUI::_TopResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+						if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaY))
+						{
+							_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2);
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _TrueMouseDeltaY);
+
+						break;
+					}
+					case GUI::_BottomResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+						if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaY))
+						{
+							_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2));
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+
+						break;
+					}
+					case GUI::_LeftTopResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+						if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaX))
+						{
+							_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2);
+						}
+
+						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+						if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaY))
+						{
+							_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2);
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _TrueMouseDeltaY);
+
+						break;
+					}
+					case GUI::_LeftBottomResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+						if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaX))
+						{
+							_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2);
+						}
+
+						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+						if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaY))
+						{
+							_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2));
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _TrueMouseDeltaX);
+
+						break;
+					}
+					case GUI::_RightTopResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+						if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaX))
+						{
+							_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2));
+						}
+
+						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+						if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaY))
+						{
+							_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2);
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _TrueMouseDeltaY);
+
+						break;
+					}
+					case GUI::_RightBottomResizePopUpId:
+					{
+						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+						if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaX))
+						{
+							_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2));
+						}
+
+						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+						if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaY))
+						{
+							_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2));
+						}
+
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+
+						break;
+					}
+					default:
+					{
+						break;
+					}
+					}
 
 					GUI::GenerateExample(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index], this, false);
 
@@ -370,37 +620,37 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 					case GUI::_RightResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][1];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[1][0];
 						break;
 					}
 					case GUI::_TopResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][2];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[2][0];
 						break;
 					}
 					case GUI::_BottomResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][3];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[3][0];
 						break;
 					}
 					case GUI::_LeftTopResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][4];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[4][0];
 						break;
 					}
 					case GUI::_LeftBottomResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][5];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[5][0];
 						break;
 					}
 					case GUI::_RightTopResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][6];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[6][0];
 						break;
 					}
 					case GUI::_RightBottomResizePopUpId:
 					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][7];
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[7][0];
 						break;
 					}
 					default:
@@ -409,6 +659,36 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 					}
 				}
+			}
+		}
+	}
+}
+
+void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureMove(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY)
+{
+	if (_WndData.LCapturePath.GetSize() < 2)
+	{
+		return;
+	}
+
+	for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[1]->GetPopUps().GetSize(); _Layer++)
+	{
+		bool _IsPopUp = false;
+
+		for (size_t _Index = 0; _Index < _WndData.LCapturePath[1]->GetPopUps()[_Layer].GetSize(); _Index++)
+		{
+			if (_WndData.LCapturePath[0] == &_WndData.LCapturePath[1]->GetPopUps()[_Layer][_Index])
+			{
+				_IsPopUp = true;
+			}
+		}
+
+		if (_IsPopUp)
+		{
+			for (size_t _Index = 0; _Index < _WndData.LCapturePath[1]->GetPopUps()[_Layer].GetSize(); _Index++)
+			{
+				_WndData.LCapturePath[1]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[1]->GetPopUps()[_Layer][_Index].GetPositionX() + _MouseDeltaX);
+				_WndData.LCapturePath[1]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[1]->GetPopUps()[_Layer][_Index].GetPositionY() + _MouseDeltaY);
 			}
 		}
 	}
@@ -606,6 +886,11 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			case GUI::_RightBottomResizePopUpId:
 			{
 				MouseCaptureResize(_Wnd, _WndData, GUI::_RightBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+				break;
+			}
+			case GUI::_ExamplePopUpId:
+			{
+				MouseCaptureMove(_Wnd, _WndData, _MouseDeltaX, _MouseDeltaY);
 				break;
 			}
 			default:
