@@ -418,8 +418,8 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		POINT _Cursor = { 0 };
 
-		_Cursor.x = LOWORD(_lParam);
-		_Cursor.y = HIWORD(_lParam);
+		_Cursor.x = (int16_t)(LOWORD(_lParam));
+		_Cursor.y = (int16_t)(HIWORD(_lParam));
 
 		if (ScreenToClient(_hWnd, &_Cursor))
 		{

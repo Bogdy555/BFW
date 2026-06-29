@@ -990,7 +990,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	{
 		_Wnd->WindowMutex->lock();
 		_Wnd->RawKeys[VK_LBUTTON] = false;
-		_Wnd->LClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->LClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
 		{
 			ReleaseCapture();
@@ -1015,7 +1015,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	{
 		_Wnd->WindowMutex->lock();
 		_Wnd->RawKeys[VK_RBUTTON] = false;
-		_Wnd->RClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->RClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
 		{
 			ReleaseCapture();
@@ -1040,7 +1040,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	{
 		_Wnd->WindowMutex->lock();
 		_Wnd->RawKeys[VK_MBUTTON] = false;
-		_Wnd->MClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->MClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
 		{
 			ReleaseCapture();
@@ -1078,7 +1078,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 		if (HIWORD(_wParam) == XBUTTON1)
 		{
 			_Wnd->RawKeys[VK_XBUTTON1] = false;
-			_Wnd->X1Clicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+			_Wnd->X1Clicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 			if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
 			{
 				ReleaseCapture();
@@ -1087,7 +1087,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 		else
 		{
 			_Wnd->RawKeys[VK_XBUTTON2] = false;
-			_Wnd->X2Clicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+			_Wnd->X2Clicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 			if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
 			{
 				ReleaseCapture();
@@ -1100,7 +1100,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_LBUTTONDBLCLK:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->LDblClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->LDblClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -1108,7 +1108,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_RBUTTONDBLCLK:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->RDblClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->RDblClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -1116,7 +1116,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_MBUTTONDBLCLK:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->MDblClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->MDblClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -1126,11 +1126,11 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 		_Wnd->WindowMutex->lock();
 		if (HIWORD(_wParam) == XBUTTON1)
 		{
-			_Wnd->X1DblClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+			_Wnd->X1DblClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		}
 		else
 		{
-			_Wnd->X2DblClicks.PushBack(Input::ClickEvent((size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+			_Wnd->X2DblClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		}
 		_Wnd->WindowMutex->unlock();
 
@@ -1139,7 +1139,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_MOUSEWHEEL:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->WheelEvents.PushBack(Input::WheelEvent((intptr_t)(-(int16_t)(HIWORD(_wParam))), (size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->WheelEvents.PushBack(Input::WheelEvent((intptr_t)(-(int16_t)(HIWORD(_wParam))), (int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -1147,7 +1147,7 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_MOUSEHWHEEL:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->HWheelEvents.PushBack(Input::WheelEvent((intptr_t)((int16_t)(HIWORD(_wParam))), (size_t)(LOWORD(_lParam)), (size_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->HWheelEvents.PushBack(Input::WheelEvent((intptr_t)((int16_t)(HIWORD(_wParam))), (int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
