@@ -434,42 +434,42 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 			if (_Wnd.GetClientSize(_Width, _Height))
 			{
-				if (_Cursor.x >= (_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < _Width && _Cursor.y >= (_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < _Height)
+				if (_Cursor.x >= (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < (int32_t)(_Width) && _Cursor.y >= (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < (int32_t)(_Height))
 				{
 					return HTBOTTOMRIGHT;
 				}
 
-				if (_Cursor.x >= 0 && _Cursor.x < ResizeSize && _Cursor.y >= (_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < _Height)
+				if (_Cursor.x >= 0 && _Cursor.x < (int32_t)(ResizeSize) && _Cursor.y >= (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < (int32_t)(_Height))
 				{
 					return HTBOTTOMLEFT;
 				}
 
-				if (_Cursor.x >= (_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < _Width && _Cursor.y >= 0 && _Cursor.y < ResizeSize)
+				if (_Cursor.x >= (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < (int32_t)(_Width) && _Cursor.y >= 0 && _Cursor.y < (int32_t)(ResizeSize))
 				{
 					return HTTOPRIGHT;
 				}
 
-				if (_Cursor.x >= 0 && _Cursor.x < ResizeSize && _Cursor.y >= 0 && _Cursor.y < ResizeSize)
+				if (_Cursor.x >= 0 && _Cursor.x < (int32_t)(ResizeSize) && _Cursor.y >= 0 && _Cursor.y < (int32_t)(ResizeSize))
 				{
 					return HTTOPLEFT;
 				}
 
-				if (_Cursor.x >= ResizeSize && _Cursor.x < (_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.y >= (_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < _Height)
+				if (_Cursor.x >= (int32_t)(ResizeSize) && _Cursor.x < (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.y >= (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < (int32_t)(_Height))
 				{
 					return HTBOTTOM;
 				}
 
-				if (_Cursor.x >= ResizeSize && _Cursor.x < (_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.y >= 0 && _Cursor.y < ResizeSize)
+				if (_Cursor.x >= (int32_t)(ResizeSize) && _Cursor.x < (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.y >= 0 && _Cursor.y < (int32_t)(ResizeSize))
 				{
 					return HTTOP;
 				}
 
-				if (_Cursor.x >= (_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < _Width && _Cursor.y >= ResizeSize && _Cursor.y < (_Height - ResizeSize) * (_Height > ResizeSize))
+				if (_Cursor.x >= (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < (int32_t)(_Width) && _Cursor.y >= (int32_t)(ResizeSize) && _Cursor.y < (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize))
 				{
 					return HTRIGHT;
 				}
 
-				if (_Cursor.x >= 0 && _Cursor.x < ResizeSize && _Cursor.y >= ResizeSize && _Cursor.y < (_Height - ResizeSize) * (_Height > ResizeSize))
+				if (_Cursor.x >= 0 && _Cursor.x < (int32_t)(ResizeSize) && _Cursor.y >= (int32_t)(ResizeSize) && _Cursor.y < (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize))
 				{
 					return HTLEFT;
 				}
