@@ -374,9 +374,30 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
-					if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) < (size_t)(_MouseDeltaX))
+					if (_MouseDeltaX > 0)
 					{
+						_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX < _MouseDeltaX);
+						_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
+					}
+
+					if (_TrueMouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) < (size_t)(_TrueMouseDeltaX))
+					{
+						intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
 						_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize);
+						_WndData.ResizeAccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX < 0)
+					{
+						_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX < -_MouseDeltaX);
+						_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX > -_MouseDeltaX);
+					}
+
+					if (_TrueMouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetWidth() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()) * (_WndData.LCapturePath[2]->GetWidth() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()) < (size_t)(-_TrueMouseDeltaX))
+					{
+						intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+						_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetWidth() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()) * (_WndData.LCapturePath[2]->GetWidth() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()));
+						_WndData.ResizeAccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - _TrueMouseDeltaX);
@@ -389,9 +410,30 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
-					if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) < (size_t)(-_MouseDeltaX))
+					if (_MouseDeltaX < 0)
 					{
+						_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX < -_MouseDeltaX);
+						_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX > -_MouseDeltaX);
+					}
+
+					if (_TrueMouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize) < (size_t)(-_TrueMouseDeltaX))
+					{
+						intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
 						_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() > GUI::ResizeSize));
+						_WndData.ResizeAccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX > 0)
+					{
+						_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX < _MouseDeltaX);
+						_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
+					}
+
+					if (_TrueMouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetWidth() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()) * (_WndData.LCapturePath[2]->GetWidth() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()) < (size_t)(_TrueMouseDeltaX))
+					{
+						intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+						_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetWidth() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth()) * (_WndData.LCapturePath[2]->GetWidth() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth());
+						_WndData.ResizeAccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() + _TrueMouseDeltaX);
@@ -403,9 +445,30 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
 
-					if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) < (size_t)(_MouseDeltaY))
+					if (_MouseDeltaY > 0)
 					{
+						_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY < _MouseDeltaY);
+						_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY > _MouseDeltaY);
+					}
+
+					if (_TrueMouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) < (size_t)(_TrueMouseDeltaY))
+					{
+						intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
 						_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize);
+						_WndData.ResizeAccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY < 0)
+					{
+						_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY < -_MouseDeltaY);
+						_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY > -_MouseDeltaY);
+					}
+
+					if (_TrueMouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetHeight() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()) * (_WndData.LCapturePath[2]->GetHeight() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()) < (size_t)(-_TrueMouseDeltaY))
+					{
+						intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+						_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetHeight() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()) * (_WndData.LCapturePath[2]->GetHeight() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()));
+						_WndData.ResizeAccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - _TrueMouseDeltaY);
@@ -418,9 +481,30 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
 
-					if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) < (size_t)(-_MouseDeltaY))
+					if (_MouseDeltaY < 0)
 					{
+						_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY < -_MouseDeltaY);
+						_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY > -_MouseDeltaY);
+					}
+
+					if (_TrueMouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize) < (size_t)(-_TrueMouseDeltaY))
+					{
+						intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
 						_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - GUI::ResizeSize) * (_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() > GUI::ResizeSize));
+						_WndData.ResizeAccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY > 0)
+					{
+						_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY < _MouseDeltaY);
+						_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY > _MouseDeltaY);
+					}
+
+					if (_TrueMouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetHeight() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()) * (_WndData.LCapturePath[2]->GetHeight() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()) < (size_t)(_TrueMouseDeltaY))
+					{
+						intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+						_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetHeight() - _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight()) * (_WndData.LCapturePath[2]->GetHeight() > _WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight());
+						_WndData.ResizeAccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() + _TrueMouseDeltaY);
@@ -519,6 +603,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaX))
 						{
 							_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2);
+							_WndData.ResizeAccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+						}
+
+						if (_MouseDeltaX < 0)
+						{
+							_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX < -_MouseDeltaX);
+							_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX > -_MouseDeltaX);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
@@ -534,6 +625,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaX))
 						{
 							_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2));
+							_WndData.ResizeAccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+						}
+
+						if (_MouseDeltaX > 0)
+						{
+							_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX < _MouseDeltaX);
+							_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
@@ -548,6 +646,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaY))
 						{
 							_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2);
+							_WndData.ResizeAccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+						}
+
+						if (_MouseDeltaY < 0)
+						{
+							_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY < -_MouseDeltaY);
+							_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY > -_MouseDeltaY);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
@@ -563,6 +668,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaY))
 						{
 							_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2));
+							_WndData.ResizeAccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+						}
+
+						if (_MouseDeltaY > 0)
+						{
+							_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY < _MouseDeltaY);
+							_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY > _MouseDeltaY);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
@@ -577,6 +689,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaX))
 						{
 							_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2);
+							_WndData.ResizeAccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+						}
+
+						if (_MouseDeltaX < 0)
+						{
+							_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX < -_MouseDeltaX);
+							_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX > -_MouseDeltaX);
 						}
 
 						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
@@ -584,6 +703,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaY))
 						{
 							_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2);
+							_WndData.ResizeAccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+						}
+
+						if (_MouseDeltaY < 0)
+						{
+							_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY < -_MouseDeltaY);
+							_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY > -_MouseDeltaY);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
@@ -602,6 +728,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaX > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaX))
 						{
 							_TrueMouseDeltaX = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2);
+							_WndData.ResizeAccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+						}
+
+						if (_MouseDeltaX < 0)
+						{
+							_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX < -_MouseDeltaX);
+							_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX > -_MouseDeltaX);
 						}
 
 						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
@@ -609,6 +742,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaY))
 						{
 							_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2));
+							_WndData.ResizeAccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+						}
+
+						if (_MouseDeltaY > 0)
+						{
+							_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY < _MouseDeltaY);
+							_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY > _MouseDeltaY);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
@@ -626,6 +766,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaX))
 						{
 							_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2));
+							_WndData.ResizeAccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+						}
+
+						if (_MouseDeltaX > 0)
+						{
+							_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX < _MouseDeltaX);
+							_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
 						}
 
 						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
@@ -633,6 +780,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaY > 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(_MouseDeltaY))
 						{
 							_TrueMouseDeltaY = (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2);
+							_WndData.ResizeAccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+						}
+
+						if (_MouseDeltaY < 0)
+						{
+							_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY < -_MouseDeltaY);
+							_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY > -_MouseDeltaY);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
@@ -650,6 +804,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaX < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaX))
 						{
 							_TrueMouseDeltaX = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() > GUI::ResizeSize * 2));
+							_WndData.ResizeAccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+						}
+
+						if (_MouseDeltaX > 0)
+						{
+							_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX < _MouseDeltaX);
+							_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
 						}
 
 						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
@@ -657,6 +818,13 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						if (_MouseDeltaY < 0 && (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2) < (size_t)(-_MouseDeltaY))
 						{
 							_TrueMouseDeltaY = -(intptr_t)((_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - GUI::ResizeSize * 2) * (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() > GUI::ResizeSize * 2));
+							_WndData.ResizeAccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+						}
+
+						if (_MouseDeltaY > 0)
+						{
+							_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY < _MouseDeltaY);
+							_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY > _MouseDeltaY);
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
@@ -1062,6 +1230,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.LCaptureMouseY = 0;
 		_WndData.LCaptureMouseXLastFrame = 0;
 		_WndData.LCaptureMouseYLastFrame = 0;
+		_WndData.ResizeAccumulationX = 0;
+		_WndData.ResizeAccumulationY = 0;
 	}
 
 	if (_Wnd.GetKeys()[VK_MBUTTON].JustReleased())

@@ -60,6 +60,8 @@ namespace BFW_WINDOWS
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
 			intptr_t LCaptureMouseYLastFrame;
+			intptr_t ResizeAccumulationX;
+			intptr_t ResizeAccumulationY;
 
 			bool MCapture;
 			BFW::Vector<BFW::GUI::PopUp*> MCapturePath;
