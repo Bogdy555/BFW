@@ -428,6 +428,26 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
+				case GUI::_LeftTopResizePopUpId:
+				{
+					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
+					break;
+				}
+				case GUI::_LeftBottomResizePopUpId:
+				{
+					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
+					break;
+				}
+				case GUI::_RightTopResizePopUpId:
+				{
+					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
+					break;
+				}
+				case GUI::_RightBottomResizePopUpId:
+				{
+					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
+					break;
+				}
 				default:
 				{
 					break;

@@ -207,6 +207,9 @@ namespace BFW
 			PopUp& operator= (const PopUp& _Other);
 			PopUp& operator= (PopUp&& _Other) noexcept;
 
+			static void GlobalToLocal(intptr_t& _X, intptr_t& _Y, const Vector<PopUp*>& _Path);
+			static void LocalToGlobal(intptr_t& _X, intptr_t& _Y, const Vector<PopUp*>& _Path);
+
 		private:
 
 			size_t FocusedPanel;
