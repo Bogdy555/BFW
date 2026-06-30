@@ -5,6 +5,9 @@
 const size_t BFW_WINDOWS::GUI::ChildMinX = 200;
 const size_t BFW_WINDOWS::GUI::ChildMinY = 200;
 const size_t BFW_WINDOWS::GUI::ResizeSize = 5;
+const size_t BFW_WINDOWS::GUI::ScrollSize = 15;
+const size_t BFW_WINDOWS::GUI::Padding = 30;
+const size_t BFW_WINDOWS::GUI::ScrollPadding = 10;
 const size_t BFW_WINDOWS::GUI::ExampleMinX = 200;
 const size_t BFW_WINDOWS::GUI::ExampleMinY = 200;
 
@@ -666,7 +669,7 @@ void BFW_WINDOWS::GUI::CleanUpRenderData(void* _Wnd, void* _Global)
 	_WndPopUp.SetUserData(nullptr);
 }
 
-void BFW_WINDOWS::GUI::RenderGray20(void* _Wnd, void* _Global)
+void BFW_WINDOWS::GUI::RenderGray25(void* _Wnd, void* _Global)
 {
 	BFW::GUI::PopUp& _WndPopUp = *(BFW::GUI::PopUp*)(_Wnd);
 	PopUpData& _WndPopUpData = *(PopUpData*)(_WndPopUp.GetUserData());
@@ -680,9 +683,9 @@ void BFW_WINDOWS::GUI::RenderGray20(void* _Wnd, void* _Global)
 	{
 		for (size_t _X = 0; _X < _WndPopUpData.Width; _X++)
 		{
-			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 0] = 20;
-			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 1] = 20;
-			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 2] = 20;
+			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 0] = 25;
+			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 1] = 25;
+			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 2] = 25;
 			_WndPopUpData.Pixels[(_X + _Y * _WndPopUpData.Width) * 4 + 3] = 255;
 		}
 	}
@@ -795,7 +798,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -823,7 +827,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -849,7 +854,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -877,7 +883,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -885,7 +892,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 		}
 		default:
 		{
-			throw nullptr;
+			BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown panel type!"));
+			break;
 		}
 		}
 	}
@@ -936,7 +944,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -984,7 +993,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -1030,7 +1040,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -1078,7 +1089,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 			}
 			default:
 			{
-				throw nullptr;
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+				break;
 			}
 			}
 
@@ -1086,7 +1098,8 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu
 		}
 		default:
 		{
-			throw nullptr;
+			BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown panel type!"));
+			break;
 		}
 		}
 	}
@@ -1118,7 +1131,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _LeftResizePopUpId,
 				0, 0,
 				ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
-				0, ResizeSize,
+				_Parent.GetScrollX(), ResizeSize + _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1134,7 +1147,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _RightResizePopUpId,
 				0, 0,
 				ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
-				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), ResizeSize,
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), ResizeSize + _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1150,7 +1163,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _TopResizePopUpId,
 				0, 0,
 				(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
-				ResizeSize, 0,
+				ResizeSize + _Parent.GetScrollX(), _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1166,7 +1179,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _BottomResizePopUpId,
 				0, 0,
 				(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
-				ResizeSize, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				ResizeSize + _Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1182,7 +1195,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _LeftTopResizePopUpId,
 				0, 0,
 				ResizeSize, ResizeSize,
-				0, 0,
+				_Parent.GetScrollX(), _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1198,7 +1211,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _LeftBottomResizePopUpId,
 				0, 0,
 				ResizeSize, ResizeSize,
-				0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				_Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1214,7 +1227,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _RightTopResizePopUpId,
 				0, 0,
 				ResizeSize, ResizeSize,
-				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1230,7 +1243,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _RightBottomResizePopUpId,
 				0, 0,
 				ResizeSize, ResizeSize,
-				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1249,7 +1262,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _RightResizePopUpId,
 				0, 0,
 				ResizeSize, _Parent.GetHeight(),
-				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize), 0,
+				(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1268,7 +1281,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _LeftResizePopUpId,
 				0, 0,
 				ResizeSize, _Parent.GetHeight(),
-				0, 0,
+				_Parent.GetScrollX(), _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1287,7 +1300,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _BottomResizePopUpId,
 				0, 0,
 				_Parent.GetWidth(), ResizeSize,
-				0, (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize),
+				_Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1306,7 +1319,7 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 				_Layer, _TopResizePopUpId,
 				0, 0,
 				_Parent.GetWidth(), ResizeSize,
-				0, 0,
+				_Parent.GetScrollX(), _Parent.GetScrollY(),
 				0, 0,
 				SetupRenderData, CleanUpRenderData,
 				RenderGray40, nullptr, nullptr,
@@ -1324,11 +1337,100 @@ void BFW_WINDOWS::GUI::GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::M
 		(
 			_Layer, _SpawnButtonPopUpId,
 			0, 0,
-			_Parent.GetTrueWidth() / 2, 20,
-			_Parent.GetTrueWidth() / 4, 10,
+			_Parent.GetTrueWidth() - Padding * 2, 20,
+			Padding, Padding,
 			0, 0,
 			SetupRenderData, CleanUpRenderData,
 			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetWidth() < _Parent.GetTrueWidth())
+	{
+		size_t _Layer = _Parent.PushPopUpLayer();
+
+		BFW::GUI::PopUp& _ScrollWindow = _Parent.PushPopUp
+		(
+			_Layer, _HScrollWindowPopUpId,
+			0, 0,
+			(_Parent.GetWidth() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetWidth() > ScrollPadding * 2 + ScrollSize), ScrollSize,
+			ScrollPadding + _Parent.GetScrollX(), _Parent.GetHeight() - (ScrollPadding + ScrollSize) + _Parent.GetScrollY(),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray25, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _ScrollWindow.PushPopUpLayer();
+
+		_ScrollWindow.PushPopUp
+		(
+			_Layer, _HScrollButtonPopUpId,
+			0, 0,
+			_ScrollWindow.GetWidth() * _Parent.GetWidth() / _Parent.GetTrueWidth(), ScrollSize,
+			_Parent.GetScrollX() * (_ScrollWindow.GetWidth() - _ScrollWindow.GetWidth() * _Parent.GetWidth() / _Parent.GetTrueWidth()) / (_Parent.GetTrueWidth() - _Parent.GetWidth()), 0,
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetHeight() < _Parent.GetTrueHeight())
+	{
+		size_t _Layer = _Parent.PushPopUpLayer();
+
+		BFW::GUI::PopUp& _ScrollWindow = _Parent.PushPopUp
+		(
+			_Layer, _VScrollWindowPopUpId,
+			0, 0,
+			ScrollSize, (_Parent.GetHeight() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetHeight() > ScrollPadding * 2 + ScrollSize),
+			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), ScrollPadding + _Parent.GetScrollY(),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray25, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = _ScrollWindow.PushPopUpLayer();
+
+		_ScrollWindow.PushPopUp
+		(
+			_Layer, _VScrollButtonPopUpId,
+			0, 0,
+			ScrollSize, _ScrollWindow.GetHeight() * _Parent.GetHeight() / _Parent.GetTrueHeight(),
+			0, _Parent.GetScrollY() * (_ScrollWindow.GetHeight() - _ScrollWindow.GetHeight() * _Parent.GetHeight() / _Parent.GetTrueHeight()) / (_Parent.GetTrueHeight() - _Parent.GetHeight()),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (_Parent.GetWidth() < _Parent.GetTrueWidth() || _Parent.GetHeight() < _Parent.GetTrueHeight())
+	{
+		size_t _Layer = _Parent.PushPopUpLayer();
+
+		_Parent.PushPopUp
+		(
+			_Layer, _ScrollCornerPopUpId,
+			0, 0,
+			ScrollSize, ScrollSize,
+			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), _Parent.GetHeight() - (ScrollPadding + ScrollSize) + _Parent.GetScrollY(),
+			0, 0,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray25, nullptr, nullptr,
 			Composit,
 			nullptr,
 			true
@@ -1398,6 +1500,11 @@ void BFW_WINDOWS::GUI::RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopU
 	case _VScrollButtonPopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
+		break;
+	}
+	case _ScrollCornerPopUpId:
+	{
+		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_ARROW));
 		break;
 	}
 	case _ExamplePopUpId:

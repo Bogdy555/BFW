@@ -28,8 +28,9 @@ namespace BFW_WINDOWS
 			_HScrollButtonPopUpId = 10,
 			_VScrollWindowPopUpId = 11,
 			_VScrollButtonPopUpId = 12,
-			_ExamplePopUpId = 13,
-			_SpawnButtonPopUpId = 14
+			_ScrollCornerPopUpId = 13,
+			_ExamplePopUpId = 14,
+			_SpawnButtonPopUpId = 15
 		};
 
 		struct PopUpData
@@ -103,6 +104,9 @@ namespace BFW_WINDOWS
 		extern const size_t ChildMinY;
 
 		extern const size_t ResizeSize;
+		extern const size_t ScrollSize;
+		extern const size_t Padding;
+		extern const size_t ScrollPadding;
 
 		extern const size_t ExampleMinX;
 		extern const size_t ExampleMinY;
@@ -121,7 +125,7 @@ namespace BFW_WINDOWS
 
 		void SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Global);
 		void CleanUpRenderData(void* _Wnd, void* _Global);
-		void RenderGray20(void* _Wnd, void* _Global);
+		void RenderGray25(void* _Wnd, void* _Global);
 		void RenderGray30(void* _Wnd, void* _Global);
 		void RenderGray40(void* _Wnd, void* _Global);
 		void Composit(void* _ParentWnd, void* _ChildWnd, void* _Global);
