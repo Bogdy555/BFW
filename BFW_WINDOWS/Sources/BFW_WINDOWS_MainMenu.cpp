@@ -939,6 +939,110 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureMove(BFW::GUI::Window& _Wnd, GU
 	}
 }
 
+void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScrollX(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX)
+{
+	intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+	if (_MouseDeltaX < 0)
+	{
+		_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX < -_MouseDeltaX);
+		_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (_WndData.ResizeAccumulationX > -_MouseDeltaX);
+	}
+
+	if (_TrueMouseDeltaX < 0 && _WndData.LCapturePath[0]->GetPositionX() < -_TrueMouseDeltaX)
+	{
+		intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+		_TrueMouseDeltaX = -_WndData.LCapturePath[0]->GetPositionX();
+		_WndData.ResizeAccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+	}
+
+	if (_MouseDeltaX > 0)
+	{
+		_TrueMouseDeltaX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX < _MouseDeltaX);
+		_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
+	}
+
+	if (_TrueMouseDeltaX > 0 && (_WndData.LCapturePath[1]->GetWidth() - (_WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth())) * (_WndData.LCapturePath[1]->GetWidth() > _WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth()) < _TrueMouseDeltaX)
+	{
+		intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+		_TrueMouseDeltaX = (_WndData.LCapturePath[1]->GetWidth() - (_WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth())) * (_WndData.LCapturePath[1]->GetWidth() > _WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth());
+		_WndData.ResizeAccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+	}
+
+	_WndData.LCapturePath[0]->SetPositionX(_WndData.LCapturePath[0]->GetPositionX() + _TrueMouseDeltaX);
+
+	intptr_t _ScrollDelta = _WndData.LCapturePath[2]->GetScrollX();
+
+	_WndData.LCapturePath[2]->SetScrollX(_WndData.LCapturePath[0]->GetPositionX() * (_WndData.LCapturePath[2]->GetTrueWidth() - _WndData.LCapturePath[2]->GetWidth()) / (_WndData.LCapturePath[1]->GetWidth() - _WndData.LCapturePath[1]->GetWidth() * _WndData.LCapturePath[2]->GetWidth() / _WndData.LCapturePath[2]->GetTrueWidth()));
+
+	_ScrollDelta = _WndData.LCapturePath[2]->GetScrollX() - _ScrollDelta;
+
+	for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[2]->GetPopUps().GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < _WndData.LCapturePath[2]->GetPopUps()[_Layer].GetSize(); _Index++)
+		{
+			uint64_t _Id = _WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetId();
+
+			if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
+			{
+				_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _ScrollDelta);
+			}
+		}
+	}
+}
+
+void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScrollY(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaY)
+{
+	intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+	if (_MouseDeltaY < 0)
+	{
+		_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY < -_MouseDeltaY);
+		_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (_WndData.ResizeAccumulationY > -_MouseDeltaY);
+	}
+
+	if (_TrueMouseDeltaY < 0 && _WndData.LCapturePath[0]->GetPositionY() < -_TrueMouseDeltaY)
+	{
+		intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+		_TrueMouseDeltaY = -_WndData.LCapturePath[0]->GetPositionY();
+		_WndData.ResizeAccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+	}
+
+	if (_MouseDeltaY > 0)
+	{
+		_TrueMouseDeltaY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY < _MouseDeltaY);
+		_WndData.ResizeAccumulationY = (_WndData.ResizeAccumulationY + _MouseDeltaY) * (-_WndData.ResizeAccumulationY > _MouseDeltaY);
+	}
+
+	if (_TrueMouseDeltaY > 0 && (_WndData.LCapturePath[1]->GetHeight() - (_WndData.LCapturePath[0]->GetPositionY() + _WndData.LCapturePath[0]->GetHeight())) * (_WndData.LCapturePath[1]->GetHeight() > _WndData.LCapturePath[0]->GetPositionY() + _WndData.LCapturePath[0]->GetHeight()) < (size_t)(_TrueMouseDeltaY))
+	{
+		intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+		_TrueMouseDeltaY = (_WndData.LCapturePath[1]->GetHeight() - (_WndData.LCapturePath[0]->GetPositionY() + _WndData.LCapturePath[0]->GetHeight())) * (_WndData.LCapturePath[1]->GetHeight() > _WndData.LCapturePath[0]->GetPositionY() + _WndData.LCapturePath[0]->GetHeight());
+		_WndData.ResizeAccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+	}
+
+	_WndData.LCapturePath[0]->SetPositionY(_WndData.LCapturePath[0]->GetPositionY() + _TrueMouseDeltaY);
+
+	intptr_t _ScrollDelta = _WndData.LCapturePath[2]->GetScrollY();
+
+	_WndData.LCapturePath[2]->SetScrollY(_WndData.LCapturePath[0]->GetPositionY() * (_WndData.LCapturePath[2]->GetTrueHeight() - _WndData.LCapturePath[2]->GetHeight()) / (_WndData.LCapturePath[1]->GetHeight() - _WndData.LCapturePath[1]->GetHeight() * _WndData.LCapturePath[2]->GetHeight() / _WndData.LCapturePath[2]->GetTrueHeight()));
+
+	_ScrollDelta = _WndData.LCapturePath[2]->GetScrollY() - _ScrollDelta;
+
+	for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[2]->GetPopUps().GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < _WndData.LCapturePath[2]->GetPopUps()[_Layer].GetSize(); _Index++)
+		{
+			uint64_t _Id = _WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetId();
+
+			if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
+			{
+				_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _ScrollDelta);
+			}
+		}
+	}
+}
+
 void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData)
 {
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
@@ -1139,26 +1243,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			}
 			case GUI::_HScrollButtonPopUpId:
 			{
-				intptr_t _DeltaScroll = _WndData.LCapturePath[2]->GetScrollX();
-
-				_WndData.LCapturePath[0]->SetPositionX(_WndData.LCapturePath[0]->GetPositionX() + _MouseDeltaX);
-				_WndData.LCapturePath[2]->SetScrollX(_WndData.LCapturePath[0]->GetPositionX() * (_WndData.LCapturePath[2]->GetTrueWidth() - _WndData.LCapturePath[2]->GetWidth()) / (_WndData.LCapturePath[1]->GetWidth() - _WndData.LCapturePath[1]->GetWidth() * _WndData.LCapturePath[2]->GetWidth() / _WndData.LCapturePath[2]->GetTrueWidth()));
-
-				_DeltaScroll = _WndData.LCapturePath[2]->GetScrollX() - _DeltaScroll;
-
-				for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[2]->GetPopUps().GetSize(); _Layer++)
-				{
-					for (size_t _Index = 0; _Index < _WndData.LCapturePath[2]->GetPopUps()[_Layer].GetSize(); _Index++)
-					{
-						uint64_t _Id = _WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetId();
-
-						if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
-						{
-							_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _DeltaScroll);
-						}
-					}
-				}
-
+				MouseCaptureScrollX(_Wnd, _WndData, _MouseDeltaX);
 				break;
 			}
 			case GUI::_VScrollWindowPopUpId:
@@ -1167,26 +1252,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			}
 			case GUI::_VScrollButtonPopUpId:
 			{
-				intptr_t _DeltaScroll = _WndData.LCapturePath[2]->GetScrollY();
-
-				_WndData.LCapturePath[0]->SetPositionY(_WndData.LCapturePath[0]->GetPositionY() + _MouseDeltaY);
-				_WndData.LCapturePath[2]->SetScrollY(_WndData.LCapturePath[0]->GetPositionY() * (_WndData.LCapturePath[2]->GetTrueHeight() - _WndData.LCapturePath[2]->GetHeight()) / (_WndData.LCapturePath[1]->GetHeight() - _WndData.LCapturePath[1]->GetHeight() * _WndData.LCapturePath[2]->GetHeight() / _WndData.LCapturePath[2]->GetTrueHeight()));
-
-				_DeltaScroll = _WndData.LCapturePath[2]->GetScrollY() - _DeltaScroll;
-
-				for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[2]->GetPopUps().GetSize(); _Layer++)
-				{
-					for (size_t _Index = 0; _Index < _WndData.LCapturePath[2]->GetPopUps()[_Layer].GetSize(); _Index++)
-					{
-						uint64_t _Id = _WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetId();
-
-						if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
-						{
-							_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _DeltaScroll);
-						}
-					}
-				}
-
+				MouseCaptureScrollY(_Wnd, _WndData, _MouseDeltaY);
 				break;
 			}
 			case GUI::_ExamplePopUpId:
