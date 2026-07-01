@@ -962,7 +962,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScrollX(BFW::GUI::Window& _Wnd,
 		_WndData.ResizeAccumulationX = (_WndData.ResizeAccumulationX + _MouseDeltaX) * (-_WndData.ResizeAccumulationX > _MouseDeltaX);
 	}
 
-	if (_TrueMouseDeltaX > 0 && (_WndData.LCapturePath[1]->GetWidth() - (_WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth())) * (_WndData.LCapturePath[1]->GetWidth() > _WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth()) < _TrueMouseDeltaX)
+	if (_TrueMouseDeltaX > 0 && (_WndData.LCapturePath[1]->GetWidth() - (_WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth())) * (_WndData.LCapturePath[1]->GetWidth() > _WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth()) < (size_t)(_TrueMouseDeltaX))
 	{
 		intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
 		_TrueMouseDeltaX = (_WndData.LCapturePath[1]->GetWidth() - (_WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth())) * (_WndData.LCapturePath[1]->GetWidth() > _WndData.LCapturePath[0]->GetPositionX() + _WndData.LCapturePath[0]->GetWidth());
@@ -1239,6 +1239,31 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			}
 			case GUI::_HScrollWindowPopUpId:
 			{
+				intptr_t _LocalMouseX = _MouseX;
+				intptr_t _LocalMouseY = _MouseY;
+
+				BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
+
+				_WndData.LCapturePath.PushBack(nullptr);
+
+				for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+				{
+					_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
+				}
+
+				_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+
+				if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+				{
+					MouseCaptureScrollX(_Wnd, _WndData, _LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2);
+				}
+				else
+				{
+					MouseCaptureScrollX(_Wnd, _WndData, _MouseDeltaX);
+				}
+
+				_WndData.LCapturePath.Erase(0);
+
 				break;
 			}
 			case GUI::_HScrollButtonPopUpId:
@@ -1248,6 +1273,31 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			}
 			case GUI::_VScrollWindowPopUpId:
 			{
+				intptr_t _LocalMouseX = _MouseX;
+				intptr_t _LocalMouseY = _MouseY;
+
+				BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
+
+				_WndData.LCapturePath.PushBack(nullptr);
+
+				for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+				{
+					_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
+				}
+
+				_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+
+				if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+				{
+					MouseCaptureScrollY(_Wnd, _WndData, _LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2);
+				}
+				else
+				{
+					MouseCaptureScrollY(_Wnd, _WndData, _MouseDeltaY);
+				}
+
+				_WndData.LCapturePath.Erase(0);
+
 				break;
 			}
 			case GUI::_VScrollButtonPopUpId:
