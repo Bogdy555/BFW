@@ -97,6 +97,8 @@ namespace BFW_WINDOWS
 			void MouseCaptureMove(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
 			void MouseCaptureScrollX(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX);
 			void MouseCaptureScrollY(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaY);
+			void WheelScrollX(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _Delta);
+			void WheelScrollY(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _Delta);
 
 			void MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 			void DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);

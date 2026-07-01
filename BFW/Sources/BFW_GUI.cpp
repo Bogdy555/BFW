@@ -1138,16 +1138,36 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	}
 	case WM_MOUSEWHEEL:
 	{
+		POINT _Cursor = { 0 };
+
+		_Cursor.x = (int16_t)(LOWORD(_lParam));
+		_Cursor.y = (int16_t)(HIWORD(_lParam));
+
+		if (!ScreenToClient(_hWnd, &_Cursor))
+		{
+			break;
+		}
+
 		_Wnd->WindowMutex->lock();
-		_Wnd->WheelEvents.PushBack(Input::WheelEvent((intptr_t)(-(int16_t)(HIWORD(_wParam))), (int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->WheelEvents.PushBack(Input::WheelEvent((intptr_t)(-(int16_t)(HIWORD(_wParam))), _Cursor.x, _Cursor.y, (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
 	}
 	case WM_MOUSEHWHEEL:
 	{
+		POINT _Cursor = { 0 };
+
+		_Cursor.x = (int16_t)(LOWORD(_lParam));
+		_Cursor.y = (int16_t)(HIWORD(_lParam));
+
+		if (!ScreenToClient(_hWnd, &_Cursor))
+		{
+			break;
+		}
+
 		_Wnd->WindowMutex->lock();
-		_Wnd->HWheelEvents.PushBack(Input::WheelEvent((intptr_t)((int16_t)(HIWORD(_wParam))), (int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
+		_Wnd->HWheelEvents.PushBack(Input::WheelEvent((intptr_t)((int16_t)(HIWORD(_wParam))), _Cursor.x, _Cursor.y, (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
 		_Wnd->WindowMutex->unlock();
 
 		break;
