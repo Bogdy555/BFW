@@ -114,13 +114,23 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	_MainWindowData.RenderingMutex->lock();
 
+	size_t _WndWidth = 0, _WndHeight = 0;
+
+	_MainWindow.GetClientSize(_WndWidth, _WndHeight);
+
 	GUI::PopUpData& _MainWindowPopUpData = *(GUI::PopUpData*)(_MainWindowData.Layout.GetUserData());
+
+	if (_WndWidth == 0 || _WndHeight == 0)
+	{
+		_WndWidth = _MainWindowPopUpData.Width;
+		_WndHeight = _MainWindowPopUpData.Height;
+	}
 
 	_MainWindowData.Layout.Begin
 	(
 		BFW::GUI::_NodePopUpId, BFW::GUI::_NullPanelType,
 		0, 0,
-		_MainWindowPopUpData.Width, _MainWindowPopUpData.Height,
+		_WndHeight, _WndWidth,
 		0, 0,
 		0, 0,
 		GUI::SetupRenderData, GUI::CleanUpRenderData,
@@ -311,7 +321,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 		return false;
 	}
 
-	if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, _Cursor.x - (int32_t)(GUI::ChildMinX / 2), _Cursor.y - (int32_t)(GUI::ChildMinY / 2), (int32_t)(GUI::ChildMinX), (int32_t)(GUI::ChildMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
+	if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, _Cursor.x - (int32_t)(GUI::ChildWindowMinX / 2), _Cursor.y - (int32_t)(GUI::ChildWindowMinY / 2), (int32_t)(GUI::ChildWindowMinX), (int32_t)(GUI::ChildWindowMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
 	{
 		_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
 		return false;
@@ -331,7 +341,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 		(
 			GUI::_ExamplePopUpId, BFW::GUI::_NullPanelType,
 			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::ChildWindowMinX, GUI::ChildWindowMinY,
 			0, 0,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
@@ -1169,21 +1179,6 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
-	if (_IsMainWindow)
-	{
-		if (_Wnd.GetKeys()[VK_F11].JustPressed())
-		{
-			if (_Wnd.IsFullScreen())
-			{
-				_Wnd.GoWindowed();
-			}
-			else
-			{
-				_Wnd.GoFullScreen();
-			}
-		}
-	}
-
 	if (_Wnd.GetKeys()[VK_LBUTTON].IsPressed())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
@@ -1446,17 +1441,26 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.X2CaptureMouseYLastFrame = 0;
 	}
 
+	if (_IsMainWindow)
+	{
+		if (_Wnd.GetKeys()[VK_F11].JustPressed())
+		{
+			if (_Wnd.IsFullScreen())
+			{
+				_Wnd.GoWindowed();
+			}
+			else
+			{
+				_Wnd.GoFullScreen();
+			}
+		}
+	}
+
 	_Wnd.CleanEvents();
 }
 
 void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData)
 {
-	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
-	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
-	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
-	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
-	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
-
 	_WndData.RenderingMutex->lock();
 
 	size_t _WndWidth = 0, _WndHeight = 0;
@@ -1471,20 +1475,61 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 		_WndHeight = _WndPopUpData.Height;
 	}
 
-	if (_WndWidth != _WndPopUpData.Width || _WndHeight != _WndPopUpData.Height)
+	size_t _TrueWidth = _WndWidth, _TrueHeight = _WndHeight;
+
+	switch (_WndData.Layout.GetId())
 	{
-		uint8_t* _Pixels = new uint8_t[_WndWidth * _WndHeight * 4];
+	case GUI::_ExamplePopUpId:
+	{
+		if (_TrueWidth < GUI::ExampleMinX)
+		{
+			_TrueWidth = GUI::ExampleMinX;
+		}
+
+		if (_TrueHeight < GUI::ExampleMinY)
+		{
+			_TrueHeight = GUI::ExampleMinY;
+		}
+
+		break;
+	}
+	case BFW::GUI::_NodePopUpId:
+	{
+		break;
+	}
+	default:
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize unknown window type!"));
+		break;
+	}
+	}
+
+	if (_WndWidth != _WndData.Layout.GetWidth() || _WndHeight != _WndData.Layout.GetHeight() || _TrueWidth != _WndPopUpData.Width || _TrueHeight != _WndPopUpData.Height)
+	{
+		uint8_t* _Pixels = nullptr;
+
+		if (_TrueWidth != _WndPopUpData.Width || _TrueHeight != _WndPopUpData.Height)
+		{
+			_Pixels = new uint8_t[_TrueWidth * _TrueHeight * 4];
+		}
+		else
+		{
+			_Pixels = _WndPopUpData.Pixels;
+		}
 
 		if (_Pixels)
 		{
-			BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _WndWidth * _WndHeight * 4, _Pixels);
+			if (_Pixels != _WndPopUpData.Pixels)
+			{
+				BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _WndWidth * _WndHeight * 4, _Pixels);
 
-			BFW_HEAP_PROFILE_POP(_WndPopUpData.Pixels);
-			delete[] _WndPopUpData.Pixels;
+				BFW_HEAP_PROFILE_POP(_WndPopUpData.Pixels);
+				delete[] _WndPopUpData.Pixels;
 
-			_WndPopUpData.Width = _WndWidth;
-			_WndPopUpData.Height = _WndHeight;
-			_WndPopUpData.Pixels = _Pixels;
+				_WndPopUpData.Width = _TrueWidth;
+				_WndPopUpData.Height = _TrueHeight;
+				_WndPopUpData.Pixels = _Pixels;
+			}
 
 			switch (_WndData.Layout.GetId())
 			{

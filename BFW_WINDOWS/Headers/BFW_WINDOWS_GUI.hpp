@@ -100,8 +100,10 @@ namespace BFW_WINDOWS
 
 		};
 
-		extern const size_t ChildMinX;
-		extern const size_t ChildMinY;
+		extern const size_t MainWindowMinX;
+		extern const size_t MainWindowMinY;
+		extern const size_t ChildWindowMinX;
+		extern const size_t ChildWindowMinY;
 
 		extern const size_t ResizeSize;
 		extern const size_t ScrollSize;

@@ -2,8 +2,10 @@
 
 
 
-const size_t BFW_WINDOWS::GUI::ChildMinX = 200;
-const size_t BFW_WINDOWS::GUI::ChildMinY = 200;
+const size_t BFW_WINDOWS::GUI::MainWindowMinX = 700;
+const size_t BFW_WINDOWS::GUI::MainWindowMinY = 400;
+const size_t BFW_WINDOWS::GUI::ChildWindowMinX = 200;
+const size_t BFW_WINDOWS::GUI::ChildWindowMinY = 200;
 const size_t BFW_WINDOWS::GUI::ResizeSize = 5;
 const size_t BFW_WINDOWS::GUI::ScrollSize = 15;
 const size_t BFW_WINDOWS::GUI::Padding = 30;
@@ -211,7 +213,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM 
 
 		if (!_HandleBmp)
 		{
-			DeleteDC(_WndDC);
+			DeleteDC(_HandleDC);
 			_WndUserData.RenderingMutex->unlock();
 			EndPaint(_hWnd, &_PaintStruct);
 			break;
@@ -236,8 +238,8 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM 
 	{
 		LPMINMAXINFO _MinMaxInfo = (LPMINMAXINFO)(_lParam);
 
-		_MinMaxInfo->ptMinTrackSize.x = 700;
-		_MinMaxInfo->ptMinTrackSize.y = 400;
+		_MinMaxInfo->ptMinTrackSize.x = MainWindowMinX;
+		_MinMaxInfo->ptMinTrackSize.y = MainWindowMinY;
 
 		break;
 	}
@@ -287,8 +289,8 @@ const bool BFW_WINDOWS::GUI::MainWindowInit(BFW::GUI::Window* _Wnd)
 
 	_WndUserData.Layout.SetUserData(_PopUpData);
 
-	_PopUpData->Width = 700;
-	_PopUpData->Height = 400;
+	_PopUpData->Width = MainWindowMinX;
+	_PopUpData->Height = MainWindowMinY;
 	_PopUpData->Pixels = new uint8_t[_PopUpData->Width * _PopUpData->Height * 4];
 	_PopUpData->Wnd = _Wnd;
 
@@ -387,7 +389,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		if (!_HandleBmp)
 		{
-			DeleteDC(_WndDC);
+			DeleteDC(_HandleDC);
 			_WndUserData.RenderingMutex->unlock();
 			EndPaint(_hWnd, &_PaintStruct);
 			break;
@@ -401,7 +403,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 		_WndUserData.RenderingMutex->unlock();
 
 		SelectObject(_HandleDC, _HandleOld);
-		DeleteDC(_WndDC);
+		DeleteDC(_HandleDC);
 		DeleteObject(_HandleBmp);
 
 		EndPaint(_hWnd, &_PaintStruct);
@@ -412,8 +414,8 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 	{
 		LPMINMAXINFO _MinMaxInfo = (LPMINMAXINFO)(_lParam);
 
-		_MinMaxInfo->ptMinTrackSize.x = ChildMinX;
-		_MinMaxInfo->ptMinTrackSize.y = ChildMinY;
+		_MinMaxInfo->ptMinTrackSize.x = ChildWindowMinX;
+		_MinMaxInfo->ptMinTrackSize.y = ChildWindowMinY;
 
 		break;
 	}
@@ -554,8 +556,8 @@ const bool BFW_WINDOWS::GUI::ChildWindowInit(BFW::GUI::Window* _Wnd)
 
 	_WndUserData.Layout.SetUserData(_PopUpData);
 
-	_PopUpData->Width = 700;
-	_PopUpData->Height = 400;
+	_PopUpData->Width = ChildWindowMinX;
+	_PopUpData->Height = ChildWindowMinX;
 	_PopUpData->Pixels = new uint8_t[_PopUpData->Width * _PopUpData->Height * 4];
 	_PopUpData->Wnd = _Wnd;
 
