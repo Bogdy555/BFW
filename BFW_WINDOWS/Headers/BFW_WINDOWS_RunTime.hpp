@@ -89,17 +89,14 @@ namespace BFW_WINDOWS
 			void Update() override;
 			void Stop() override;
 
+			void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, const bool _IsNode);
+
 			void InitGUI();
 			void CleanUpGUI();
 
 			const bool SpawnButtonCallBack();
 			void MouseCaptureResize(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const uint64_t _ResizePopUpId, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
 			void MouseCaptureMove(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
-			void MouseCaptureScroll(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const size_t _WindowIndex, const intptr_t _MouseX, const intptr_t _MouseY);
-			void MouseCaptureScrollX(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX);
-			void MouseCaptureScrollY(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaY);
-			void WheelScrollX(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _Delta);
-			void WheelScrollY(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _Delta);
 
 			void MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 			void DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);

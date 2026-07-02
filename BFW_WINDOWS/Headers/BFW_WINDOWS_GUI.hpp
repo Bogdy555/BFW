@@ -61,8 +61,8 @@ namespace BFW_WINDOWS
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
 			intptr_t LCaptureMouseYLastFrame;
-			intptr_t ResizeAccumulationX;
-			intptr_t ResizeAccumulationY;
+			intptr_t ScrollAccumulationX;
+			intptr_t ScrollAccumulationY;
 
 			bool MCapture;
 			BFW::Vector<BFW::GUI::PopUp*> MCapturePath;
@@ -135,8 +135,18 @@ namespace BFW_WINDOWS
 		void RenderGray40(void* _Wnd, void* _Global);
 		void Composit(void* _ParentWnd, void* _ChildWnd, void* _Global);
 
-		void ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu* _Menu);
-		void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu, const bool _IsNode);
+		const size_t GetMinX(const uint64_t _PopUpId);
+		const size_t GetMinY(const uint64_t _PopUpId);
+		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::PopUp*>& _Path);
+		const bool FindHScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent);
+		const bool FindVScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent);
+		void ResizeChilds(BFW::GUI::PopUp& _Parnet);
+		void GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _HasHScroll, const bool _HasVScroll);
+		void GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _IsNode);
+		void ScrollWindowX(BFW::GUI::PopUp& _ScrollableWindow, const intptr_t _Delta);
+		void ScrollWindowY(BFW::GUI::PopUp& _ScrollableWindow, const intptr_t _Delta);
+		void ScrollWindowWithMouseX(BFW::GUI::PopUp& _ScrollableWindow, intptr_t& _ScrollAccumulationX, const intptr_t _MouseDeltaX);
+		void ScrollWindowWithMouseY(BFW::GUI::PopUp& _ScrollableWindow, intptr_t& _ScrollAccumulationY, const intptr_t _MouseDeltaY);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 	}
