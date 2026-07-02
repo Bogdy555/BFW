@@ -949,6 +949,65 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureMove(BFW::GUI::Window& _Wnd, GU
 	}
 }
 
+void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScroll(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const size_t _WindowIndex)
+{
+	BFW::GUI::PopUp& _ScrolledWindow = *_WndData.MCapturePath[_WindowIndex];
+
+	bool _FoundHScrollWindow = false;
+	size_t _HScrollWindowIndex = 0;
+
+	while (_HScrollWindowIndex < _ScrolledWindow.GetPopUps().GetSize())
+	{
+		bool _ShouldBreak = false;
+
+		if (_ScrolledWindow.GetPopUps()[_HScrollWindowIndex][0].GetId() == GUI::_HScrollWindowPopUpId)
+		{
+			_FoundHScrollWindow = true;
+			_ShouldBreak = true;
+		}
+
+		if (_ShouldBreak)
+		{
+			break;
+		}
+
+		_HScrollWindowIndex++;
+	}
+
+	if (_FoundHScrollWindow)
+	{
+		BFW::GUI::PopUp& _HScrollWindow = _ScrolledWindow.GetPopUps()[_HScrollWindowIndex][0];
+		BFW::GUI::PopUp& _HScrollButton = _HScrollWindow.GetPopUps()[0][0];
+	}
+
+	bool _FoundVScrollWindow = false;
+	size_t _VScrollWindowIndex = 0;
+
+	while (_VScrollWindowIndex < _ScrolledWindow.GetPopUps().GetSize())
+	{
+		bool _ShouldBreak = false;
+
+		if (_ScrolledWindow.GetPopUps()[_VScrollWindowIndex][0].GetId() == GUI::_VScrollWindowPopUpId)
+		{
+			_FoundVScrollWindow = true;
+			_ShouldBreak = true;
+		}
+
+		if (_ShouldBreak)
+		{
+			break;
+		}
+
+		_VScrollWindowIndex++;
+	}
+
+	if (_FoundVScrollWindow)
+	{
+		BFW::GUI::PopUp& _VScrollWindow = _ScrolledWindow.GetPopUps()[_VScrollWindowIndex][0];
+		BFW::GUI::PopUp& _VScrollButton = _VScrollWindow.GetPopUps()[0][0];
+	}
+}
+
 void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScrollX(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX)
 {
 	intptr_t _TrueMouseDeltaX = _MouseDeltaX;
@@ -1544,6 +1603,48 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 		if (_WndData.MCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.MCaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.MCaptureMouseYLastFrame;
+
+			_WndData.RenderingMutex->lock();
+
+			bool _FoundScrolledWindow = false;
+
+			size_t _WindowIndex = 0;
+
+			while (_WindowIndex < _WndData.MCapturePath.GetSize())
+			{
+				bool _ShouldBreak = false;
+
+				switch (_WndData.MCapturePath[_WindowIndex]->GetId())
+				{
+				case GUI::_ExamplePopUpId:
+				{
+					_FoundScrolledWindow = true;
+					_ShouldBreak = true;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
+
+				if (_ShouldBreak)
+				{
+					break;
+				}
+
+				_WindowIndex++;
+			}
+
+			if (_FoundScrolledWindow)
+			{
+				MouseCaptureScroll(_Wnd, _WndData, _WindowIndex);
+			}
+
+			_WndData.RenderingMutex->unlock();
+
 			_WndData.MCaptureMouseXLastFrame = _MouseX;
 			_WndData.MCaptureMouseYLastFrame = _MouseY;
 		}
@@ -1555,6 +1656,9 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 		if (_WndData.RCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.RCaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.RCaptureMouseYLastFrame;
+
 			_WndData.RCaptureMouseXLastFrame = _MouseX;
 			_WndData.RCaptureMouseYLastFrame = _MouseY;
 		}
@@ -1566,6 +1670,9 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 		if (_WndData.X1Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.X1CaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.X1CaptureMouseYLastFrame;
+
 			_WndData.X1CaptureMouseXLastFrame = _MouseX;
 			_WndData.X1CaptureMouseYLastFrame = _MouseY;
 		}
@@ -1577,6 +1684,9 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 		if (_WndData.X2Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.X2CaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.X2CaptureMouseYLastFrame;
+
 			_WndData.X2CaptureMouseXLastFrame = _MouseX;
 			_WndData.X2CaptureMouseYLastFrame = _MouseY;
 		}
@@ -1588,6 +1698,9 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 		if (_WndData.LCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
+
 			_WndData.RenderingMutex->lock();
 
 			BFW::GUI::PopUp* _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
@@ -1623,6 +1736,14 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 	if (_Wnd.GetKeys()[VK_MBUTTON].JustReleased())
 	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.MCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.MCaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.MCaptureMouseYLastFrame;
+		}
+
 		_WndData.MCapture = false;
 		_WndData.MCapturePath.Clear();
 		_WndData.MCaptureMouseX = 0;
@@ -1633,6 +1754,14 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 	if (_Wnd.GetKeys()[VK_RBUTTON].JustReleased())
 	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.RCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.RCaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.RCaptureMouseYLastFrame;
+		}
+
 		_WndData.RCapture = false;
 		_WndData.RCapturePath.Clear();
 		_WndData.RCaptureMouseX = 0;
@@ -1643,6 +1772,14 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 	if (_Wnd.GetKeys()[VK_XBUTTON1].JustReleased())
 	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.X1Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.X1CaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.X1CaptureMouseYLastFrame;
+		}
+
 		_WndData.X1Capture = false;
 		_WndData.X1CapturePopUp.Clear();
 		_WndData.X1CaptureMouseX = 0;
@@ -1653,6 +1790,14 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 	if (_Wnd.GetKeys()[VK_XBUTTON2].JustReleased())
 	{
+		intptr_t _MouseX = 0, _MouseY = 0;
+
+		if (_WndData.X2Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		{
+			intptr_t _MouseDeltaX = _MouseX - _WndData.X2CaptureMouseXLastFrame;
+			intptr_t _MouseDeltaY = _MouseY - _WndData.X2CaptureMouseYLastFrame;
+		}
+
 		_WndData.X2Capture = false;
 		_WndData.X2CapturePopUp.Clear();
 		_WndData.X2CaptureMouseX = 0;
@@ -1804,12 +1949,57 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 	if (_Wnd.GetMousePosition(_MouseX, _MouseY))
 	{
-		if (_WndData.LCapture)
+		bool _CursorSet = false;
+
+		if (!_CursorSet && _WndData.MCapture)
 		{
+			bool _FoundScrolledWindow = false;
+
+			size_t _WindowIndex = 0;
+
+			while (_WindowIndex < _WndData.MCapturePath.GetSize())
+			{
+				bool _ShouldBreak = false;
+
+				switch (_WndData.MCapturePath[_WindowIndex]->GetId())
+				{
+				case GUI::_ExamplePopUpId:
+				{
+					_FoundScrolledWindow = true;
+					_ShouldBreak = true;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
+
+				if (_ShouldBreak)
+				{
+					break;
+				}
+
+				_WindowIndex++;
+			}
+
+			if (_FoundScrolledWindow)
+			{
+				_CursorSet = true;
+				_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEALL));
+			}
+		}
+
+		if (!_CursorSet && _WndData.LCapture)
+		{
+			_CursorSet = true;
 			GUI::RenderCursor(_Wnd, _WndData.LCapturePath[0]->GetId());
 		}
-		else
+
+		if (!_CursorSet)
 		{
+			_CursorSet = true;
+
 			BFW::GUI::PopUp* _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
 			if (_HoverPopUp)
@@ -1850,13 +2040,26 @@ void BFW_WINDOWS::RunTime::MainMenu::Input()
 	_ApplicationObj.GetController(2).UpdateState(2);
 	_ApplicationObj.GetController(3).UpdateState(3);
 
-	bool _Focus = _MainWindow.HasFocus();
+	bool _Focus = false;
+
+	if (_MainWindow.HasFocus())
+	{
+		_Focus = true;
+	}
+	else
+	{
+		DeleteMouseCaptureInputs(_MainWindow, _MainWindowData);
+	}
 
 	for (size_t _Index = 0; _Index < _ChildWindows.GetSize(); _Index++)
 	{
 		if (_ChildWindows[_Index]->HasFocus())
 		{
 			_Focus = true;
+		}
+		else
+		{
+			DeleteMouseCaptureInputs(*_ChildWindows[_Index], *_ChildWindowsData[_Index]);
 		}
 	}
 
