@@ -29,7 +29,7 @@ namespace BFW_WINDOWS
 			_VScrollWindowPopUpId = 11,
 			_VScrollButtonPopUpId = 12,
 			_ScrollCornerPopUpId = 13,
-			_ExamplePopUpId = 14,
+			_DebugWindowPopUpId = 14,
 			_SpawnButtonPopUpId = 15
 		};
 
@@ -52,7 +52,7 @@ namespace BFW_WINDOWS
 		struct WindowData
 		{
 
-			std::mutex* RenderingMutex;
+			std::mutex* LayoutMutex;
 			BFW::GUI::PopUp Layout;
 
 			bool LCapture;
@@ -79,14 +79,14 @@ namespace BFW_WINDOWS
 			intptr_t RCaptureMouseYLastFrame;
 
 			bool X1Capture;
-			BFW::Vector<BFW::GUI::PopUp*> X1CapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> X1CapturePath;
 			intptr_t X1CaptureMouseX;
 			intptr_t X1CaptureMouseY;
 			intptr_t X1CaptureMouseXLastFrame;
 			intptr_t X1CaptureMouseYLastFrame;
 
 			bool X2Capture;
-			BFW::Vector<BFW::GUI::PopUp*> X2CapturePopUp;
+			BFW::Vector<BFW::GUI::PopUp*> X2CapturePath;
 			intptr_t X2CaptureMouseX;
 			intptr_t X2CaptureMouseY;
 			intptr_t X2CaptureMouseXLastFrame;
@@ -100,6 +100,9 @@ namespace BFW_WINDOWS
 
 		};
 
+		extern const float MouseCaptureScrollSpeed;
+		extern const size_t MouseCaptureScrollScale;
+
 		extern const size_t MainWindowMinX;
 		extern const size_t MainWindowMinY;
 		extern const size_t ChildWindowMinX;
@@ -110,8 +113,8 @@ namespace BFW_WINDOWS
 		extern const size_t Padding;
 		extern const size_t ScrollPadding;
 
-		extern const size_t ExampleMinX;
-		extern const size_t ExampleMinY;
+		extern const size_t DebugWindowMinX;
+		extern const size_t DebugWindowMinY;
 
 		LRESULT CALLBACK MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM _wParam, LPARAM _lParam);
 		const bool MainWindowThreadInit(void* _UserData);
@@ -133,7 +136,7 @@ namespace BFW_WINDOWS
 		void Composit(void* _ParentWnd, void* _ChildWnd, void* _Global);
 
 		void ResizeChilds(BFW::GUI::PopUp& _Layout, BFW::RunTime::Menu* _Menu);
-		void GenerateExample(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu, const bool _IsNode);
+		void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, BFW::RunTime::Menu* _Menu, const bool _IsNode);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 	}

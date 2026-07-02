@@ -112,7 +112,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
-	_MainWindowData.RenderingMutex->lock();
+	_MainWindowData.LayoutMutex->lock();
 
 	size_t _WndWidth = 0, _WndHeight = 0;
 
@@ -139,13 +139,13 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		_MainWindowData.Layout.GetUserData()
 	);
 
-	GUI::GenerateExample
+	GUI::GenerateDebugWindow
 	(
 		_MainWindowData.Layout.PushLeftPanel
 		(
-			GUI::_ExamplePopUpId,
-			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinX,
+			GUI::_DebugWindowPopUpId,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinX,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
 			GUI::RenderGray30, nullptr, nullptr,
@@ -168,13 +168,13 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		nullptr
 	);
 
-	GUI::GenerateExample
+	GUI::GenerateDebugWindow
 	(
 		_MainWindowData.Layout.GetNodes()[0].PushBottomPanel
 		(
-			GUI::_ExamplePopUpId,
-			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinY,
+			GUI::_DebugWindowPopUpId,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinY,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
 			GUI::RenderGray30, nullptr, nullptr,
@@ -197,13 +197,13 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		nullptr
 	);
 
-	GUI::GenerateExample
+	GUI::GenerateDebugWindow
 	(
 		_MainWindowData.Layout.GetNodes()[0].GetNodes()[0].PushRightPanel
 		(
-			GUI::_ExamplePopUpId,
-			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinX,
+			GUI::_DebugWindowPopUpId,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinX,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
 			GUI::RenderGray30, nullptr, nullptr,
@@ -226,13 +226,13 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		nullptr
 	);
 
-	GUI::GenerateExample
+	GUI::GenerateDebugWindow
 	(
 		_MainWindowData.Layout.GetNodes()[0].GetNodes()[0].GetNodes()[0].PushTopPanel
 		(
-			GUI::_ExamplePopUpId,
-			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinY,
+			GUI::_DebugWindowPopUpId,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinY,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
 			GUI::RenderGray30, nullptr, nullptr,
@@ -246,14 +246,14 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	size_t _Layer = _MainWindowData.Layout.PushPopUpLayer();
 
-	GUI::GenerateExample
+	GUI::GenerateDebugWindow
 	(
 		_MainWindowData.Layout.PushPopUp
 		(
-			_Layer, GUI::_ExamplePopUpId,
-			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinX, GUI::ExampleMinY,
-			GUI::ExampleMinX * 2, GUI::ExampleMinY * 2,
+			_Layer, GUI::_DebugWindowPopUpId,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinX * 2, GUI::DebugWindowMinY * 2,
 			0, 0,
 			GUI::SetupRenderData, GUI::CleanUpRenderData,
 			GUI::RenderGray30, nullptr, nullptr,
@@ -265,7 +265,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		false
 	);
 
-	_MainWindowData.RenderingMutex->unlock();
+	_MainWindowData.LayoutMutex->unlock();
 }
 
 void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
@@ -276,7 +276,7 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 	BFW::Vector<BFW::GUI::Window*>& _ChildWindows = _ApplicationObj.GetChildWindows();
 	BFW::Vector<GUI::WindowData*>& _ChildWindowsData = _ApplicationObj.GetChildWindowsData();
 
-	_MainWindowData.RenderingMutex->lock();
+	_MainWindowData.LayoutMutex->lock();
 
 	GUI::PopUpData& _MainWindowPopUpData = *(GUI::PopUpData*)(_MainWindowData.Layout.GetUserData());
 
@@ -293,7 +293,7 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 		_MainWindowData.Layout.GetUserData()
 	);
 
-	_MainWindowData.RenderingMutex->unlock();
+	_MainWindowData.LayoutMutex->unlock();
 
 	while (_ChildWindows.GetSize())
 	{
@@ -333,14 +333,14 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 		return false;
 	}
 
-	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->lock();
+	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->LayoutMutex->lock();
 
-	GUI::GenerateExample
+	GUI::GenerateDebugWindow
 	(
 		_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.Begin
 		(
-			GUI::_ExamplePopUpId, BFW::GUI::_NullPanelType,
-			GUI::ExampleMinX, GUI::ExampleMinY,
+			GUI::_DebugWindowPopUpId, BFW::GUI::_NullPanelType,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
 			GUI::ChildWindowMinX, GUI::ChildWindowMinY,
 			0, 0,
 			0, 0,
@@ -353,7 +353,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 		true
 	);
 
-	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->RenderingMutex->unlock();
+	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->LayoutMutex->unlock();
 
 	return true;
 }
@@ -376,7 +376,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 		{
 			switch (_WndData.LCapturePath[2]->GetPanels()[_Index].GetId())
 			{
-			case GUI::_ExamplePopUpId:
+			case GUI::_DebugWindowPopUpId:
 			{
 				switch (_ResizePopUpId)
 				{
@@ -411,7 +411,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() - _TrueMouseDeltaX);
-					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::ExampleMinX);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::DebugWindowMinX);
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetPositionX(_WndData.LCapturePath[2]->GetPanels()[_Index].GetPositionX() + _TrueMouseDeltaX);
 
 					break;
@@ -447,7 +447,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetWidth(_WndData.LCapturePath[2]->GetPanels()[_Index].GetWidth() + _TrueMouseDeltaX);
-					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::ExampleMinX);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueWidth(GUI::DebugWindowMinX);
 
 					break;
 				}
@@ -482,7 +482,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() - _TrueMouseDeltaY);
-					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::ExampleMinY);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::DebugWindowMinY);
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetPositionY(_WndData.LCapturePath[2]->GetPanels()[_Index].GetPositionY() + _TrueMouseDeltaY);
 
 					break;
@@ -518,7 +518,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 
 					_WndData.LCapturePath[2]->GetPanels()[_Index].SetHeight(_WndData.LCapturePath[2]->GetPanels()[_Index].GetHeight() + _TrueMouseDeltaY);
-					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::ExampleMinY);
+					_WndData.LCapturePath[2]->GetPanels()[_Index].SetTrueHeight(GUI::DebugWindowMinY);
 
 					break;
 				}
@@ -564,7 +564,15 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 		{
 			if (_WndData.LCapturePath[1] == &_WndData.LCapturePath[2]->GetPanels()[_Index])
 			{
-				_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPanels()[_Index].GetPopUps()[0][0];
+				for (size_t _BarLayer = 0; _BarLayer < _WndData.LCapturePath[2]->GetPanels()[_Index].GetPopUps().GetSize(); _BarLayer++)
+				{
+					uint64_t _Id = _WndData.LCapturePath[2]->GetPanels()[_Index].GetPopUps()[_BarLayer][0].GetId();
+
+					if (_Id == _ResizePopUpId)
+					{
+						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPanels()[_Index].GetPopUps()[_BarLayer][0];
+					}
+				}
 			}
 		}
 	}
@@ -602,7 +610,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 			{
 				switch (_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetId())
 				{
-				case GUI::_ExamplePopUpId:
+				case GUI::_DebugWindowPopUpId:
 				{
 					switch (_ResizePopUpId)
 					{
@@ -623,7 +631,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::DebugWindowMinX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _TrueMouseDeltaX);
 
 						break;
@@ -645,7 +653,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::DebugWindowMinX);
 
 						break;
 					}
@@ -666,7 +674,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::DebugWindowMinY);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _TrueMouseDeltaY);
 
 						break;
@@ -688,7 +696,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 						}
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::DebugWindowMinY);
 
 						break;
 					}
@@ -724,8 +732,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::DebugWindowMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::DebugWindowMinY);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _TrueMouseDeltaX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _TrueMouseDeltaY);
 
@@ -763,8 +771,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() - _TrueMouseDeltaX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::DebugWindowMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::DebugWindowMinY);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionX(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionX() + _TrueMouseDeltaX);
 
 						break;
@@ -801,8 +809,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() - _TrueMouseDeltaY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::DebugWindowMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::DebugWindowMinX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetPositionY(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPositionY() + _TrueMouseDeltaY);
 
 						break;
@@ -839,8 +847,8 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetWidth(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetWidth() + _TrueMouseDeltaX);
 						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetHeight(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetHeight() + _TrueMouseDeltaY);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::ExampleMinX);
-						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::ExampleMinY);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueWidth(GUI::DebugWindowMinX);
+						_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].SetTrueHeight(GUI::DebugWindowMinY);
 
 						break;
 					}
@@ -850,7 +858,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 					}
 
-					GUI::GenerateExample(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index], this, false);
+					GUI::GenerateDebugWindow(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index], this, false);
 
 					break;
 				}
@@ -866,52 +874,14 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 			{
 				if (_WndData.LCapturePath[1] == &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index])
 				{
-					switch (_ResizePopUpId)
+					for (size_t _BarLayer = 0; _BarLayer < _WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps().GetSize(); _BarLayer++)
 					{
-					case GUI::_LeftResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[0][0];
-						break;
-					}
-					case GUI::_RightResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[1][0];
-						break;
-					}
-					case GUI::_TopResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[2][0];
-						break;
-					}
-					case GUI::_BottomResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[3][0];
-						break;
-					}
-					case GUI::_LeftTopResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[4][0];
-						break;
-					}
-					case GUI::_LeftBottomResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[5][0];
-						break;
-					}
-					case GUI::_RightTopResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[6][0];
-						break;
-					}
-					case GUI::_RightBottomResizePopUpId:
-					{
-						_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[7][0];
-						break;
-					}
-					default:
-					{
-						break;
-					}
+						uint64_t _Id = _WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[_BarLayer][0].GetId();
+
+						if (_Id == _ResizePopUpId)
+						{
+							_WndData.LCapturePath[0] = &_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].GetPopUps()[_BarLayer][0];
+						}
 					}
 				}
 			}
@@ -979,7 +949,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScroll(BFW::GUI::Window& _Wnd, 
 		BFW::GUI::PopUp& _HScrollWindow = _ScrolledWindow.GetPopUps()[_HScrollWindowIndex][0];
 		BFW::GUI::PopUp& _HScrollButton = _HScrollWindow.GetPopUps()[0][0];
 
-		intptr_t _TrueDelta = _MouseX - _WndData.MCaptureMouseX;
+		intptr_t _TrueDelta = (intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * GetTimeStep());
 
 		if (_TrueDelta < 0 && _HScrollButton.GetPositionX() < -_TrueDelta)
 		{
@@ -1039,7 +1009,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureScroll(BFW::GUI::Window& _Wnd, 
 		BFW::GUI::PopUp& _VScrollWindow = _ScrolledWindow.GetPopUps()[_VScrollWindowIndex][0];
 		BFW::GUI::PopUp& _VScrollButton = _VScrollWindow.GetPopUps()[0][0];
 
-		intptr_t _TrueDelta = _MouseY - _WndData.MCaptureMouseY;
+		intptr_t _TrueDelta = (intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * GetTimeStep());
 
 		if (_TrueDelta < 0 && _VScrollButton.GetPositionY() < -_TrueDelta)
 		{
@@ -1182,12 +1152,7 @@ void BFW_WINDOWS::RunTime::MainMenu::WheelScrollX(BFW::GUI::Window& _Wnd, GUI::W
 {
 	BFW::Vector<BFW::GUI::PopUp*> _Path;
 
-	BFW::GUI::PopUp* _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_Path);
-
-	if (!_HoverPopUp)
-	{
-		return;
-	}
+	_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_Path);
 
 	bool _Found = false;
 	size_t _ScrolledWindowIndex = 0;
@@ -1198,7 +1163,7 @@ void BFW_WINDOWS::RunTime::MainMenu::WheelScrollX(BFW::GUI::Window& _Wnd, GUI::W
 
 		switch (_Path[_ScrolledWindowIndex]->GetId())
 		{
-		case GUI::_ExamplePopUpId:
+		case GUI::_DebugWindowPopUpId:
 		{
 			_Found = true;
 			_ShouldBreak = true;
@@ -1292,12 +1257,7 @@ void BFW_WINDOWS::RunTime::MainMenu::WheelScrollY(BFW::GUI::Window& _Wnd, GUI::W
 {
 	BFW::Vector<BFW::GUI::PopUp*> _Path;
 
-	BFW::GUI::PopUp* _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_Path);
-
-	if (!_HoverPopUp)
-	{
-		return;
-	}
+	_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_Path);
 
 	bool _Found = false;
 	size_t _ScrolledWindowIndex = 0;
@@ -1308,7 +1268,7 @@ void BFW_WINDOWS::RunTime::MainMenu::WheelScrollY(BFW::GUI::Window& _Wnd, GUI::W
 
 		switch (_Path[_ScrolledWindowIndex]->GetId())
 		{
-		case GUI::_ExamplePopUpId:
+		case GUI::_DebugWindowPopUpId:
 		{
 			_Found = true;
 			_ShouldBreak = true;
@@ -1410,60 +1370,60 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 
 	if (_Wnd.GetMousePosition(_MouseX, _MouseY))
 	{
-		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed() && !_WndData.MCapture && !_WndData.RCapture && !_WndData.X1Capture && !_WndData.X2Capture)
 		{
 			_WndData.LCapture = true;
-			_WndData.RenderingMutex->lock();
+			_WndData.LayoutMutex->lock();
 			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.LCapturePath);
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->unlock();
 			_WndData.LCaptureMouseX = _MouseX;
 			_WndData.LCaptureMouseY = _MouseY;
 			_WndData.LCaptureMouseXLastFrame = _MouseX;
 			_WndData.LCaptureMouseYLastFrame = _MouseY;
 		}
 
-		if (_Wnd.GetKeys()[VK_MBUTTON].JustPressed())
+		if (_Wnd.GetKeys()[VK_MBUTTON].JustPressed() && !_WndData.LCapture && !_WndData.RCapture && !_WndData.X1Capture && !_WndData.X2Capture)
 		{
 			_WndData.MCapture = true;
-			_WndData.RenderingMutex->lock();
+			_WndData.LayoutMutex->lock();
 			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.MCapturePath);
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->unlock();
 			_WndData.MCaptureMouseX = _MouseX;
 			_WndData.MCaptureMouseY = _MouseY;
 			_WndData.MCaptureMouseXLastFrame = _MouseX;
 			_WndData.MCaptureMouseYLastFrame = _MouseY;
 		}
 
-		if (_Wnd.GetKeys()[VK_RBUTTON].JustPressed())
+		if (_Wnd.GetKeys()[VK_RBUTTON].JustPressed() && !_WndData.LCapture && !_WndData.MCapture && !_WndData.X1Capture && !_WndData.X2Capture)
 		{
 			_WndData.RCapture = true;
-			_WndData.RenderingMutex->lock();
+			_WndData.LayoutMutex->lock();
 			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.RCapturePath);
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->unlock();
 			_WndData.RCaptureMouseX = _MouseX;
 			_WndData.RCaptureMouseY = _MouseY;
 			_WndData.RCaptureMouseXLastFrame = _MouseX;
 			_WndData.RCaptureMouseYLastFrame = _MouseY;
 		}
 
-		if (_Wnd.GetKeys()[VK_XBUTTON1].JustPressed())
+		if (_Wnd.GetKeys()[VK_XBUTTON1].JustPressed() && !_WndData.LCapture && !_WndData.MCapture && !_WndData.RCapture && !_WndData.X2Capture)
 		{
 			_WndData.X1Capture = true;
-			_WndData.RenderingMutex->lock();
-			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.X1CapturePopUp);
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->lock();
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.X1CapturePath);
+			_WndData.LayoutMutex->unlock();
 			_WndData.X1CaptureMouseX = _MouseX;
 			_WndData.X1CaptureMouseY = _MouseY;
 			_WndData.X1CaptureMouseXLastFrame = _MouseX;
 			_WndData.X1CaptureMouseYLastFrame = _MouseY;
 		}
 
-		if (_Wnd.GetKeys()[VK_XBUTTON2].JustPressed())
+		if (_Wnd.GetKeys()[VK_XBUTTON2].JustPressed() && !_WndData.LCapture && !_WndData.MCapture && !_WndData.RCapture && !_WndData.X1Capture)
 		{
 			_WndData.X2Capture = true;
-			_WndData.RenderingMutex->lock();
-			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.X2CapturePopUp);
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->lock();
+			_WndData.Layout.GetChildFromMouse(_MouseX, _MouseY, &_WndData.X2CapturePath);
+			_WndData.LayoutMutex->unlock();
 			_WndData.X2CaptureMouseX = _MouseX;
 			_WndData.X2CaptureMouseY = _MouseY;
 			_WndData.X2CaptureMouseXLastFrame = _MouseX;
@@ -1502,14 +1462,14 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteMouseCaptureInputs(BFW::GUI::Window& 
 	_WndData.RCaptureMouseYLastFrame = 0;
 
 	_WndData.X1Capture = false;
-	_WndData.X1CapturePopUp.Clear();
+	_WndData.X1CapturePath.Clear();
 	_WndData.X1CaptureMouseX = 0;
 	_WndData.X1CaptureMouseY = 0;
 	_WndData.X1CaptureMouseXLastFrame = 0;
 	_WndData.X1CaptureMouseYLastFrame = 0;
 
 	_WndData.X2Capture = false;
-	_WndData.X2CapturePopUp.Clear();
+	_WndData.X2CapturePath.Clear();
 	_WndData.X2CaptureMouseX = 0;
 	_WndData.X2CaptureMouseY = 0;
 	_WndData.X2CaptureMouseXLastFrame = 0;
@@ -1533,130 +1493,133 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
 
-			_WndData.RenderingMutex->lock();
+			_WndData.LayoutMutex->lock();
 
-			switch (_WndData.LCapturePath[0]->GetId())
+			if (_WndData.LCapturePath.GetSize())
 			{
-			case GUI::_LeftResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_LeftResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_RightResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_RightResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_TopResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_TopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_BottomResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_BottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_LeftTopResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_LeftTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_LeftBottomResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_LeftBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_RightTopResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_RightTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_RightBottomResizePopUpId:
-			{
-				MouseCaptureResize(_Wnd, _WndData, GUI::_RightBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			case GUI::_HScrollWindowPopUpId:
-			{
-				intptr_t _LocalMouseX = _MouseX;
-				intptr_t _LocalMouseY = _MouseY;
-
-				BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
-
-				_WndData.LCapturePath.PushBack(nullptr);
-
-				for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+				switch (_WndData.LCapturePath[0]->GetId())
 				{
-					_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
-				}
-
-				_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
-
-				if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+				case GUI::_LeftResizePopUpId:
 				{
-					MouseCaptureScrollX(_Wnd, _WndData, _LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2);
+					MouseCaptureResize(_Wnd, _WndData, GUI::_LeftResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
 				}
-				else
+				case GUI::_RightResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_RightResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_TopResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_TopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_BottomResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_BottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_LeftTopResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_LeftTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_LeftBottomResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_LeftBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_RightTopResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_RightTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_RightBottomResizePopUpId:
+				{
+					MouseCaptureResize(_Wnd, _WndData, GUI::_RightBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				case GUI::_HScrollWindowPopUpId:
+				{
+					intptr_t _LocalMouseX = _MouseX;
+					intptr_t _LocalMouseY = _MouseY;
+
+					BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
+
+					_WndData.LCapturePath.PushBack(nullptr);
+
+					for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+					{
+						_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
+					}
+
+					_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+
+					if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+					{
+						MouseCaptureScrollX(_Wnd, _WndData, _LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2);
+					}
+					else
+					{
+						MouseCaptureScrollX(_Wnd, _WndData, _MouseDeltaX);
+					}
+
+					_WndData.LCapturePath.Erase(0);
+
+					break;
+				}
+				case GUI::_HScrollButtonPopUpId:
 				{
 					MouseCaptureScrollX(_Wnd, _WndData, _MouseDeltaX);
+					break;
 				}
-
-				_WndData.LCapturePath.Erase(0);
-
-				break;
-			}
-			case GUI::_HScrollButtonPopUpId:
-			{
-				MouseCaptureScrollX(_Wnd, _WndData, _MouseDeltaX);
-				break;
-			}
-			case GUI::_VScrollWindowPopUpId:
-			{
-				intptr_t _LocalMouseX = _MouseX;
-				intptr_t _LocalMouseY = _MouseY;
-
-				BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
-
-				_WndData.LCapturePath.PushBack(nullptr);
-
-				for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+				case GUI::_VScrollWindowPopUpId:
 				{
-					_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
-				}
+					intptr_t _LocalMouseX = _MouseX;
+					intptr_t _LocalMouseY = _MouseY;
 
-				_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+					BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
 
-				if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
-				{
-					MouseCaptureScrollY(_Wnd, _WndData, _LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2);
+					_WndData.LCapturePath.PushBack(nullptr);
+
+					for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+					{
+						_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
+					}
+
+					_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+
+					if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+					{
+						MouseCaptureScrollY(_Wnd, _WndData, _LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2);
+					}
+					else
+					{
+						MouseCaptureScrollY(_Wnd, _WndData, _MouseDeltaY);
+					}
+
+					_WndData.LCapturePath.Erase(0);
+
+					break;
 				}
-				else
+				case GUI::_VScrollButtonPopUpId:
 				{
 					MouseCaptureScrollY(_Wnd, _WndData, _MouseDeltaY);
+					break;
 				}
-
-				_WndData.LCapturePath.Erase(0);
-
-				break;
-			}
-			case GUI::_VScrollButtonPopUpId:
-			{
-				MouseCaptureScrollY(_Wnd, _WndData, _MouseDeltaY);
-				break;
-			}
-			case GUI::_ExamplePopUpId:
-			{
-				MouseCaptureMove(_Wnd, _WndData, _MouseDeltaX, _MouseDeltaY);
-				break;
-			}
-			default:
-			{
-				break;
-			}
+				case GUI::_DebugWindowPopUpId:
+				{
+					MouseCaptureMove(_Wnd, _WndData, _MouseDeltaX, _MouseDeltaY);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+				}
 			}
 
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->unlock();
 
 			_WndData.LCaptureMouseXLastFrame = _MouseX;
 			_WndData.LCaptureMouseYLastFrame = _MouseY;
@@ -1672,7 +1635,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			intptr_t _MouseDeltaX = _MouseX - _WndData.MCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.MCaptureMouseYLastFrame;
 
-			_WndData.RenderingMutex->lock();
+			_WndData.LayoutMutex->lock();
 
 			bool _FoundScrolledWindow = false;
 
@@ -1684,7 +1647,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 				switch (_WndData.MCapturePath[_WindowIndex]->GetId())
 				{
-				case GUI::_ExamplePopUpId:
+				case GUI::_DebugWindowPopUpId:
 				{
 					_FoundScrolledWindow = true;
 					_ShouldBreak = true;
@@ -1709,7 +1672,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 				MouseCaptureScroll(_Wnd, _WndData, _WindowIndex, _MouseX, _MouseY);
 			}
 
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->unlock();
 
 			_WndData.MCaptureMouseXLastFrame = _MouseX;
 			_WndData.MCaptureMouseYLastFrame = _MouseY;
@@ -1767,11 +1730,11 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
 
-			_WndData.RenderingMutex->lock();
+			_WndData.LayoutMutex->lock();
 
 			BFW::GUI::PopUp* _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
-			if (_ReleasePopUp && _ReleasePopUp->GetId() == _WndData.LCapturePath[0]->GetId())
+			if (_ReleasePopUp && _WndData.LCapturePath.GetSize() && _ReleasePopUp->GetId() == _WndData.LCapturePath[0]->GetId())
 			{
 				switch (_ReleasePopUp->GetId())
 				{
@@ -1787,7 +1750,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 				}
 			}
 
-			_WndData.RenderingMutex->unlock();
+			_WndData.LayoutMutex->unlock();
 		}
 
 		_WndData.LCapture = false;
@@ -1847,7 +1810,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		}
 
 		_WndData.X1Capture = false;
-		_WndData.X1CapturePopUp.Clear();
+		_WndData.X1CapturePath.Clear();
 		_WndData.X1CaptureMouseX = 0;
 		_WndData.X1CaptureMouseY = 0;
 		_WndData.X1CaptureMouseXLastFrame = 0;
@@ -1865,7 +1828,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 		}
 
 		_WndData.X2Capture = false;
-		_WndData.X2CapturePopUp.Clear();
+		_WndData.X2CapturePath.Clear();
 		_WndData.X2CaptureMouseX = 0;
 		_WndData.X2CaptureMouseY = 0;
 		_WndData.X2CaptureMouseXLastFrame = 0;
@@ -1906,7 +1869,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData)
 {
-	_WndData.RenderingMutex->lock();
+	_WndData.LayoutMutex->lock();
 
 	size_t _WndWidth = 0, _WndHeight = 0;
 
@@ -1924,16 +1887,16 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 	switch (_WndData.Layout.GetId())
 	{
-	case GUI::_ExamplePopUpId:
+	case GUI::_DebugWindowPopUpId:
 	{
-		if (_TrueWidth < GUI::ExampleMinX)
+		if (_TrueWidth < GUI::DebugWindowMinX)
 		{
-			_TrueWidth = GUI::ExampleMinX;
+			_TrueWidth = GUI::DebugWindowMinX;
 		}
 
-		if (_TrueHeight < GUI::ExampleMinY)
+		if (_TrueHeight < GUI::DebugWindowMinY)
 		{
-			_TrueHeight = GUI::ExampleMinY;
+			_TrueHeight = GUI::DebugWindowMinY;
 		}
 
 		break;
@@ -1978,14 +1941,14 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 			switch (_WndData.Layout.GetId())
 			{
-			case GUI::_ExamplePopUpId:
+			case GUI::_DebugWindowPopUpId:
 			{
 				_WndData.Layout.SetWidth(_WndWidth);
 				_WndData.Layout.SetHeight(_WndHeight);
-				_WndData.Layout.SetTrueWidth(GUI::ExampleMinX);
-				_WndData.Layout.SetTrueHeight(GUI::ExampleMinY);
+				_WndData.Layout.SetTrueWidth(GUI::DebugWindowMinX);
+				_WndData.Layout.SetTrueHeight(GUI::DebugWindowMinY);
 
-				GUI::GenerateExample(_WndData.Layout, this, true);
+				GUI::GenerateDebugWindow(_WndData.Layout, this, true);
 
 				break;
 			}
@@ -2029,7 +1992,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 				switch (_WndData.MCapturePath[_WindowIndex]->GetId())
 				{
-				case GUI::_ExamplePopUpId:
+				case GUI::_DebugWindowPopUpId:
 				{
 					_FoundScrolledWindow = true;
 					_ShouldBreak = true;
@@ -2051,12 +2014,45 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 
 			if (_FoundScrolledWindow)
 			{
-				_CursorSet = true;
-				_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEALL));
+				BFW::GUI::PopUp& _ScrolledWindow = *_WndData.MCapturePath[_WindowIndex];
+
+				bool _FoundHScrollWindow = false;
+				bool _FoundVScrollWindow = false;
+				size_t _ScrollWindowIndex = 0;
+
+				while (_ScrollWindowIndex < _ScrolledWindow.GetPopUps().GetSize())
+				{
+					bool _ShouldBreak = false;
+
+					if (_ScrolledWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == GUI::_HScrollWindowPopUpId)
+					{
+						_FoundHScrollWindow = true;
+						_ShouldBreak = true;
+					}
+
+					if (_ScrolledWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == GUI::_VScrollWindowPopUpId)
+					{
+						_FoundVScrollWindow = true;
+						_ShouldBreak = true;
+					}
+
+					if (_ShouldBreak)
+					{
+						break;
+					}
+
+					_ScrollWindowIndex++;
+				}
+
+				if (_FoundHScrollWindow || _FoundVScrollWindow)
+				{
+					_CursorSet = true;
+					_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEALL));
+				}
 			}
 		}
 
-		if (!_CursorSet && _WndData.LCapture)
+		if (!_CursorSet && _WndData.LCapture && _WndData.LCapturePath.GetSize())
 		{
 			_CursorSet = true;
 			GUI::RenderCursor(_Wnd, _WndData.LCapturePath[0]->GetId());
@@ -2079,7 +2075,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 		}
 	}
 
-	_WndData.RenderingMutex->unlock();
+	_WndData.LayoutMutex->unlock();
 
 	_Wnd.UpdateContent();
 }
