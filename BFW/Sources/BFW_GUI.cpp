@@ -1730,6 +1730,11 @@ void BFW::GUI::PopUp::SetFocusedPanel(const size_t _FocusedPanel)
 	FocusedPanel = _FocusedPanel;
 }
 
+void BFW::GUI::PopUp::SetFocusedNode(const size_t _FocusedNode)
+{
+	FocusedNode = _FocusedNode;
+}
+
 void BFW::GUI::PopUp::SetId(const uint64_t _Id)
 {
 	Id = _Id;
