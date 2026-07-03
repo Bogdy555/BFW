@@ -1660,22 +1660,22 @@ void BFW::GUI::PopUp::Render(void* _Global)
 
 	if (RenderBottom)
 	{
-		RenderBottom(this, _Global);
+		RenderBottom(*this, _Global);
 	}
 
 	if (Panels.GetSize())
 	{
 		if (Panels[FocusedPanel].SetupData)
 		{
-			Panels[FocusedPanel].SetupData(&Panels[FocusedPanel], this, _Global);
+			Panels[FocusedPanel].SetupData(Panels[FocusedPanel], *this, _Global);
 		}
 
 		Panels[FocusedPanel].Render(_Global);
-		Composit(this, &Panels[FocusedPanel], _Global);
+		Composit(*this, Panels[FocusedPanel], _Global);
 
 		if (Panels[FocusedPanel].CleanUpData)
 		{
-			Panels[FocusedPanel].CleanUpData(&Panels[FocusedPanel], _Global);
+			Panels[FocusedPanel].CleanUpData(Panels[FocusedPanel], _Global);
 		}
 	}
 
@@ -1683,21 +1683,21 @@ void BFW::GUI::PopUp::Render(void* _Global)
 	{
 		if (Nodes[FocusedNode].SetupData)
 		{
-			Nodes[FocusedNode].SetupData(&Nodes[FocusedNode], this, _Global);
+			Nodes[FocusedNode].SetupData(Nodes[FocusedNode], *this, _Global);
 		}
 
 		Nodes[FocusedNode].Render(_Global);
-		Composit(this, &Nodes[FocusedNode], _Global);
+		Composit(*this, Nodes[FocusedNode], _Global);
 
 		if (Nodes[FocusedNode].CleanUpData)
 		{
-			Nodes[FocusedNode].CleanUpData(&Nodes[FocusedNode], _Global);
+			Nodes[FocusedNode].CleanUpData(Nodes[FocusedNode], _Global);
 		}
 	}
 
 	if (RenderMiddle)
 	{
-		RenderMiddle(this, _Global);
+		RenderMiddle(*this, _Global);
 	}
 
 	for (size_t _Index = 0; _Index < PopUps.GetSize(); _Index++)
@@ -1706,22 +1706,22 @@ void BFW::GUI::PopUp::Render(void* _Global)
 		{
 			if (PopUps[_Index][FocusedPopUps[_Index]].SetupData)
 			{
-				PopUps[_Index][FocusedPopUps[_Index]].SetupData(&PopUps[_Index][FocusedPopUps[_Index]], this, _Global);
+				PopUps[_Index][FocusedPopUps[_Index]].SetupData(PopUps[_Index][FocusedPopUps[_Index]], *this, _Global);
 			}
 
 			PopUps[_Index][FocusedPopUps[_Index]].Render(_Global);
-			Composit(this, &PopUps[_Index][FocusedPopUps[_Index]], _Global);
+			Composit(*this, PopUps[_Index][FocusedPopUps[_Index]], _Global);
 
 			if (PopUps[_Index][FocusedPopUps[_Index]].CleanUpData)
 			{
-				PopUps[_Index][FocusedPopUps[_Index]].CleanUpData(&PopUps[_Index][FocusedPopUps[_Index]], _Global);
+				PopUps[_Index][FocusedPopUps[_Index]].CleanUpData(PopUps[_Index][FocusedPopUps[_Index]], _Global);
 			}
 		}
 	}
 
 	if (RenderTop)
 	{
-		RenderTop(this, _Global);
+		RenderTop(*this, _Global);
 	}
 }
 

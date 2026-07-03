@@ -658,13 +658,11 @@ void BFW_WINDOWS::GUI::ChildWindowCleanUp(BFW::GUI::Window* _Wnd)
 
 
 
-void BFW_WINDOWS::GUI::SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Global)
+void BFW_WINDOWS::GUI::SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _ParentWnd, void* _Global)
 {
-	BFW::GUI::PopUp& _WndPopUp = *(BFW::GUI::PopUp*)(_Wnd);
-	BFW::GUI::PopUp& _ParentWndPopUp = *(BFW::GUI::PopUp*)(_ParentWnd);
-	PopUpData& _ParentWndPopUpData = *(PopUpData*)(_ParentWndPopUp.GetUserData());
+	PopUpData& _ParentWndPopUpData = *(PopUpData*)(_ParentWnd.GetUserData());
 
-	if (_WndPopUp.GetTrueWidth() == 0 || _WndPopUp.GetTrueHeight() == 0 || _ParentWndPopUp.GetUserData() == nullptr)
+	if (_Wnd.GetTrueWidth() == 0 || _Wnd.GetTrueHeight() == 0 || _ParentWnd.GetUserData() == nullptr)
 	{
 		return;
 	}
@@ -678,8 +676,8 @@ void BFW_WINDOWS::GUI::SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Glob
 
 	BFW_HEAP_PROFILE_PUSH(sizeof(PopUpData), _WndPopUpData);
 
-	_WndPopUpData->Width = _WndPopUp.GetTrueWidth();
-	_WndPopUpData->Height = _WndPopUp.GetTrueHeight();
+	_WndPopUpData->Width = _Wnd.GetTrueWidth();
+	_WndPopUpData->Height = _Wnd.GetTrueHeight();
 	_WndPopUpData->Pixels = new uint8_t[_WndPopUpData->Width * _WndPopUpData->Height * 4];
 	_WndPopUpData->Wnd = _ParentWndPopUpData.Wnd;
 
@@ -703,32 +701,30 @@ void BFW_WINDOWS::GUI::SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Glob
 		}
 	}
 
-	_WndPopUp.SetUserData(_WndPopUpData);
+	_Wnd.SetUserData(_WndPopUpData);
 }
 
-void BFW_WINDOWS::GUI::CleanUpRenderData(void* _Wnd, void* _Global)
+void BFW_WINDOWS::GUI::CleanUpRenderData(BFW::GUI::PopUp& _Wnd, void* _Global)
 {
-	BFW::GUI::PopUp& _WndPopUp = *(BFW::GUI::PopUp*)(_Wnd);
-	PopUpData& _WndPopUpData = *(PopUpData*)(_WndPopUp.GetUserData());
+	PopUpData& _WndPopUpData = *(PopUpData*)(_Wnd.GetUserData());
 
-	if (!_WndPopUp.GetUserData())
+	if (!_Wnd.GetUserData())
 	{
 		return;
 	}
 
 	BFW_HEAP_PROFILE_POP(_WndPopUpData.Pixels);
 	delete _WndPopUpData.Pixels;
-	BFW_HEAP_PROFILE_POP(_WndPopUp.GetUserData());
-	delete _WndPopUp.GetUserData();
-	_WndPopUp.SetUserData(nullptr);
+	BFW_HEAP_PROFILE_POP(_Wnd.GetUserData());
+	delete _Wnd.GetUserData();
+	_Wnd.SetUserData(nullptr);
 }
 
-void BFW_WINDOWS::GUI::RenderGray25(void* _Wnd, void* _Global)
+void BFW_WINDOWS::GUI::RenderGray25(BFW::GUI::PopUp& _Wnd, void* _Global)
 {
-	BFW::GUI::PopUp& _WndPopUp = *(BFW::GUI::PopUp*)(_Wnd);
-	PopUpData& _WndPopUpData = *(PopUpData*)(_WndPopUp.GetUserData());
+	PopUpData& _WndPopUpData = *(PopUpData*)(_Wnd.GetUserData());
 
-	if (!_WndPopUp.GetUserData())
+	if (!_Wnd.GetUserData())
 	{
 		return;
 	}
@@ -745,12 +741,11 @@ void BFW_WINDOWS::GUI::RenderGray25(void* _Wnd, void* _Global)
 	}
 }
 
-void BFW_WINDOWS::GUI::RenderGray30(void* _Wnd, void* _Global)
+void BFW_WINDOWS::GUI::RenderGray30(BFW::GUI::PopUp& _Wnd, void* _Global)
 {
-	BFW::GUI::PopUp& _WndPopUp = *(BFW::GUI::PopUp*)(_Wnd);
-	PopUpData& _WndPopUpData = *(PopUpData*)(_WndPopUp.GetUserData());
+	PopUpData& _WndPopUpData = *(PopUpData*)(_Wnd.GetUserData());
 
-	if (!_WndPopUp.GetUserData())
+	if (!_Wnd.GetUserData())
 	{
 		return;
 	}
@@ -767,12 +762,11 @@ void BFW_WINDOWS::GUI::RenderGray30(void* _Wnd, void* _Global)
 	}
 }
 
-void BFW_WINDOWS::GUI::RenderGray40(void* _Wnd, void* _Global)
+void BFW_WINDOWS::GUI::RenderGray40(BFW::GUI::PopUp& _Wnd, void* _Global)
 {
-	BFW::GUI::PopUp& _WndPopUp = *(BFW::GUI::PopUp*)(_Wnd);
-	PopUpData& _WndPopUpData = *(PopUpData*)(_WndPopUp.GetUserData());
+	PopUpData& _WndPopUpData = *(PopUpData*)(_Wnd.GetUserData());
 
-	if (!_WndPopUp.GetUserData())
+	if (!_Wnd.GetUserData())
 	{
 		return;
 	}
@@ -789,26 +783,24 @@ void BFW_WINDOWS::GUI::RenderGray40(void* _Wnd, void* _Global)
 	}
 }
 
-void BFW_WINDOWS::GUI::Composit(void* _ParentWnd, void* _ChildWnd, void* _Global)
+void BFW_WINDOWS::GUI::Composit(BFW::GUI::PopUp& _ParentWnd, BFW::GUI::PopUp& _ChildWnd, void* _Global)
 {
-	BFW::GUI::PopUp& _ParentWndPopUp = *(BFW::GUI::PopUp*)(_ParentWnd);
-	PopUpData& _ParentWndPopUpData = *(PopUpData*)(_ParentWndPopUp.GetUserData());
-	BFW::GUI::PopUp& _ChildWndPopUp = *(BFW::GUI::PopUp*)(_ChildWnd);
-	PopUpData& _ChildWndPopUpData = *(PopUpData*)(_ChildWndPopUp.GetUserData());
+	PopUpData& _ParentWndPopUpData = *(PopUpData*)(_ParentWnd.GetUserData());
+	PopUpData& _ChildWndPopUpData = *(PopUpData*)(_ChildWnd.GetUserData());
 
-	if (!_ParentWndPopUp.GetUserData() || !_ChildWndPopUp.GetUserData())
+	if (!_ParentWnd.GetUserData() || !_ChildWnd.GetUserData())
 	{
 		return;
 	}
 
-	size_t _PositionX = _ChildWndPopUp.GetPositionX();
-	size_t _PositionY = _ChildWndPopUp.GetPositionY();
-	size_t _ScrollX = _ChildWndPopUp.GetScrollX();
-	size_t _ScrollY = _ChildWndPopUp.GetScrollY();
-	size_t _StartX = _ChildWndPopUp.GetPositionX() * (_ChildWndPopUp.GetPositionX() >= 0);
-	size_t _StartY = _ChildWndPopUp.GetPositionY() * (_ChildWndPopUp.GetPositionY() >= 0);
-	size_t _EndX = _ParentWndPopUpData.Width * (_ParentWndPopUpData.Width <= (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth())) + (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()) * (_ParentWndPopUpData.Width > (_ChildWndPopUp.GetPositionX() + _ChildWndPopUp.GetWidth()));
-	size_t _EndY = _ParentWndPopUpData.Height * (_ParentWndPopUpData.Height <= (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight())) + (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()) * (_ParentWndPopUpData.Height > (_ChildWndPopUp.GetPositionY() + _ChildWndPopUp.GetHeight()));
+	size_t _PositionX = _ChildWnd.GetPositionX();
+	size_t _PositionY = _ChildWnd.GetPositionY();
+	size_t _ScrollX = _ChildWnd.GetScrollX();
+	size_t _ScrollY = _ChildWnd.GetScrollY();
+	size_t _StartX = _ChildWnd.GetPositionX() * (_ChildWnd.GetPositionX() >= 0);
+	size_t _StartY = _ChildWnd.GetPositionY() * (_ChildWnd.GetPositionY() >= 0);
+	size_t _EndX = _ParentWndPopUpData.Width * (_ParentWndPopUpData.Width <= (_ChildWnd.GetPositionX() + _ChildWnd.GetWidth())) + (_ChildWnd.GetPositionX() + _ChildWnd.GetWidth()) * (_ParentWndPopUpData.Width > (_ChildWnd.GetPositionX() + _ChildWnd.GetWidth()));
+	size_t _EndY = _ParentWndPopUpData.Height * (_ParentWndPopUpData.Height <= (_ChildWnd.GetPositionY() + _ChildWnd.GetHeight())) + (_ChildWnd.GetPositionY() + _ChildWnd.GetHeight()) * (_ParentWndPopUpData.Height > (_ChildWnd.GetPositionY() + _ChildWnd.GetHeight()));
 
 #ifdef BFW_WINDOWS_ENABLE_ALPHA
 

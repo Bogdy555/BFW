@@ -128,12 +128,12 @@ namespace BFW_WINDOWS
 		const bool ChildWindowInit(BFW::GUI::Window* _Wnd);
 		void ChildWindowCleanUp(BFW::GUI::Window* _Wnd);
 
-		void SetupRenderData(void* _Wnd, void* _ParentWnd, void* _Global);
-		void CleanUpRenderData(void* _Wnd, void* _Global);
-		void RenderGray25(void* _Wnd, void* _Global);
-		void RenderGray30(void* _Wnd, void* _Global);
-		void RenderGray40(void* _Wnd, void* _Global);
-		void Composit(void* _ParentWnd, void* _ChildWnd, void* _Global);
+		void SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _ParentWnd, void* _Global);
+		void CleanUpRenderData(BFW::GUI::PopUp& _Wnd, void* _Global);
+		void RenderGray25(BFW::GUI::PopUp& _Wnd, void* _Global);
+		void RenderGray30(BFW::GUI::PopUp& _Wnd, void* _Global);
+		void RenderGray40(BFW::GUI::PopUp& _Wnd, void* _Global);
+		void Composit(BFW::GUI::PopUp& _ParentWnd, BFW::GUI::PopUp& _ChildWnd, void* _Global);
 
 		const size_t GetMinX(const uint64_t _PopUpId);
 		const size_t GetMinY(const uint64_t _PopUpId);

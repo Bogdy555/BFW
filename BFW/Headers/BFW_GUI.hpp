@@ -129,11 +129,6 @@ namespace BFW
 			_BottomPanelType = 4
 		};
 
-		typedef void (*SetupRenderDataFnc)(void* _Wnd, void* _ParentWnd, void* _Global);
-		typedef void (*CleanUpRenderDataFnc)(void* _Wnd, void* _Global);
-		typedef void (*RenderFnc)(void* _Wnd, void* _Global);
-		typedef void (*CompositFnc)(void* _ParentWnd, void* _ChildWnd, void* _Global);
-
 		class BFW_API PopUp
 		{
 

@@ -68,8 +68,6 @@ namespace BFW
 
 		};
 
-		typedef void (*LogScopeTimeFnc)(const float _ScopeTime);
-
 		class BFW_API ScopeTimer
 		{
 

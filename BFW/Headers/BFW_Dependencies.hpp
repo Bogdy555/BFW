@@ -181,12 +181,12 @@ namespace BFW
 
 		enum BFW_API PanelTypes : const uint8_t;
 
-		typedef void (*SetupRenderDataFnc)(void* _Wnd, void* _ParentWnd, void* _Global);
-		typedef void (*CleanUpRenderDataFnc)(void* _Wnd, void* _Global);
-		typedef void (*RenderFnc)(void* _Wnd, void* _Global);
-		typedef void (*CompositFnc)(void* _ParentWnd, void* _ChildWnd, void* _Global);
-
 		class BFW_API PopUp;
+
+		typedef void (*SetupRenderDataFnc)(PopUp& _Wnd, PopUp& _ParentWnd, void* _Global);
+		typedef void (*CleanUpRenderDataFnc)(PopUp& _Wnd, void* _Global);
+		typedef void (*RenderFnc)(PopUp& _Wnd, void* _Global);
+		typedef void (*CompositFnc)(PopUp& _ParentWnd, PopUp& _ChildWnd, void* _Global);
 
 	}
 
