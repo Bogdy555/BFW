@@ -292,7 +292,7 @@ const bool BFW_WINDOWS::GUI::MainWindowInit(BFW::GUI::Window* _Wnd)
 {
 	WindowData& _WndUserData = *(WindowData*)(_Wnd->GetUserData());
 
-	_WndUserData.LayoutMutex = new std::mutex();
+	_WndUserData.LayoutMutex = new std::mutex;
 
 	if (!_WndUserData.LayoutMutex)
 	{
@@ -301,7 +301,7 @@ const bool BFW_WINDOWS::GUI::MainWindowInit(BFW::GUI::Window* _Wnd)
 
 	BFW_HEAP_PROFILE_PUSH(sizeof(std::mutex), _WndUserData.LayoutMutex);
 
-	PopUpData* _PopUpData = new PopUpData();
+	PopUpData* _PopUpData = new PopUpData;
 
 	if (!_PopUpData)
 	{
@@ -585,7 +585,7 @@ const bool BFW_WINDOWS::GUI::ChildWindowInit(BFW::GUI::Window* _Wnd)
 {
 	WindowData& _WndUserData = *(WindowData*)(_Wnd->GetUserData());
 
-	_WndUserData.LayoutMutex = new std::mutex();
+	_WndUserData.LayoutMutex = new std::mutex;
 
 	if (!_WndUserData.LayoutMutex)
 	{
@@ -594,7 +594,7 @@ const bool BFW_WINDOWS::GUI::ChildWindowInit(BFW::GUI::Window* _Wnd)
 
 	BFW_HEAP_PROFILE_PUSH(sizeof(std::mutex), _WndUserData.LayoutMutex);
 
-	PopUpData* _PopUpData = new PopUpData();
+	PopUpData* _PopUpData = new PopUpData;
 
 	if (!_PopUpData)
 	{
@@ -667,7 +667,7 @@ void BFW_WINDOWS::GUI::SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _
 		return;
 	}
 
-	PopUpData* _WndPopUpData = new PopUpData();
+	PopUpData* _WndPopUpData = new PopUpData;
 
 	if (!_WndPopUpData)
 	{

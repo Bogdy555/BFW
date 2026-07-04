@@ -14,7 +14,7 @@ BFW_WINDOWS::RunTime::Application::~Application()
 
 const bool BFW_WINDOWS::RunTime::Application::AddChildWindow()
 {
-	ChildWindowsData.PushBack(new GUI::WindowData());
+	ChildWindowsData.PushBack(new GUI::WindowData);
 
 	if (ChildWindowsData[ChildWindowsData.GetSize() - 1] == nullptr)
 	{
@@ -24,7 +24,7 @@ const bool BFW_WINDOWS::RunTime::Application::AddChildWindow()
 
 	BFW_HEAP_PROFILE_PUSH(sizeof(GUI::WindowData), ChildWindowsData[ChildWindowsData.GetSize() - 1]);
 
-	ChildWindows.PushBack(new BFW::GUI::Window());
+	ChildWindows.PushBack(new BFW::GUI::Window);
 
 	if (ChildWindows[ChildWindows.GetSize() - 1] == nullptr)
 	{

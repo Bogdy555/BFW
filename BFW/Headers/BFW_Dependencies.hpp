@@ -18,14 +18,6 @@
 #include "BFW_WinTargetVer.hpp"
 #include <Windows.h>
 #include <Xinput.h>
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <chrono>
-#include <ctime>
-#include <cstdint>
-#include <thread>
-#include <mutex>
 
 #endif
 
@@ -38,6 +30,16 @@
 #include <fcntl.h>
 #include <semaphore.h>
 #include <linux/joystick.h>
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+#include <Arduino.h>
+
+#endif
+
+#include <type_traits>
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -46,17 +48,6 @@
 #include <cstdint>
 #include <thread>
 #include <mutex>
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-#include <Arduino.h>
-#include <string>
-#include <cmath>
-#include <cstdint>
-
-#endif
 
 
 

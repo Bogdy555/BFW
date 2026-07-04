@@ -28,8 +28,6 @@ BFW_EXTERN template class BFW_API std::chrono::time_point<std::chrono::system_cl
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::ClickEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::WheelEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::PopUp>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::PopUp*>;
-BFW_EXTERN template class BFW_API BFW::Vector<const BFW::GUI::PopUp*>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Vector<BFW::GUI::PopUp>>;
 
 #endif

@@ -16,6 +16,9 @@ namespace BFW
 
 	public:
 
+		using Type = std::remove_const_t<T>;
+		using ConstType = std::add_const_t<T>;
+
 		Vector() : Size(0), Capacity(0), Data(nullptr)
 		{
 
@@ -30,7 +33,7 @@ namespace BFW
 
 			Size = _Other.Size;
 			Capacity = _Other.Capacity;
-			Data = new T[Capacity];
+			Data = new Type[Capacity];
 
 			if (!Data)
 			{
@@ -57,11 +60,11 @@ namespace BFW
 			delete[] Data;
 		}
 
-		void PushBack(const T& _Object)
+		void PushBack(ConstType& _Object)
 		{
 			if (Size == 0)
 			{
-				Data = new T[1];
+				Data = new Type[1];
 
 				if (!Data)
 				{
@@ -80,7 +83,7 @@ namespace BFW
 				Size++;
 				Capacity *= 2;
 
-				T* _NewData = new T[Capacity];
+				Type* _NewData = new Type[Capacity];
 
 				if (!_NewData)
 				{
@@ -91,7 +94,7 @@ namespace BFW
 
 				for (size_t _Index = 0; _Index < Size - 1; _Index++)
 				{
-					_NewData[_Index] = (T&&)(Data[_Index]);
+					_NewData[_Index] = (Type&&)(Data[_Index]);
 				}
 
 				delete[] Data;
@@ -106,11 +109,11 @@ namespace BFW
 			Data[Size - 1] = _Object;
 		}
 
-		void EmplaceBack(T&& _Object)
+		void EmplaceBack(Type&& _Object)
 		{
 			if (Size == 0)
 			{
-				Data = new T[1];
+				Data = new Type[1];
 
 				if (!Data)
 				{
@@ -119,7 +122,7 @@ namespace BFW
 
 				Size = 1;
 				Capacity = 1;
-				Data[0] = (T&&)(_Object);
+				Data[0] = (Type&&)(_Object);
 
 				return;
 			}
@@ -129,7 +132,7 @@ namespace BFW
 				Size++;
 				Capacity *= 2;
 
-				T* _NewData = new T[Capacity];
+				Type* _NewData = new Type[Capacity];
 
 				if (!_NewData)
 				{
@@ -140,19 +143,19 @@ namespace BFW
 
 				for (size_t _Index = 0; _Index < Size - 1; _Index++)
 				{
-					_NewData[_Index] = (T&&)(Data[_Index]);
+					_NewData[_Index] = (Type&&)(Data[_Index]);
 				}
 
 				delete[] Data;
 				Data = _NewData;
 
-				_NewData[Size - 1] = (T&&)(_Object);
+				_NewData[Size - 1] = (Type&&)(_Object);
 
 				return;
 			}
 
 			Size++;
-			Data[Size - 1] = (T&&)(_Object);
+			Data[Size - 1] = (Type&&)(_Object);
 		}
 
 		void Erase(const size_t _EraseIndex)
@@ -173,7 +176,7 @@ namespace BFW
 				Size--;
 				Capacity /= 2;
 
-				T* _NewData = new T[Capacity];
+				Type* _NewData = new Type[Capacity];
 
 				if (!_NewData)
 				{
@@ -184,7 +187,7 @@ namespace BFW
 
 				for (size_t _Index = 0; _Index < Capacity; _Index++)
 				{
-					_NewData[_Index] = (T&&)(Data[_Index + (size_t)(_Index >= _EraseIndex)]);
+					_NewData[_Index] = (Type&&)(Data[_Index + (size_t)(_Index >= _EraseIndex)]);
 				}
 
 				delete[] Data;
@@ -197,12 +200,12 @@ namespace BFW
 
 			for (size_t _Index = _EraseIndex; _Index < Size; _Index++)
 			{
-				Data[_Index] = (T&&)(Data[_Index + 1]);
+				Data[_Index] = (Type&&)(Data[_Index + 1]);
 			}
 
 			if (_EraseIndex == Size)
 			{
-				Data[Size] = T();
+				Data[Size] = Type();
 			}
 		}
 
@@ -224,52 +227,52 @@ namespace BFW
 			return Capacity;
 		}
 
-		T* GetData()
+		Type* GetData() requires (!std::is_const_v<T>)
 		{
 			return Data;
 		}
 
-		const T* GetData() const
+		ConstType* GetData() const
 		{
 			return Data;
 		}
 
-		explicit operator T* ()
+		explicit operator Type* () requires (!std::is_const_v<T>)
 		{
 			return Data;
 		}
 
-		explicit operator const T* () const
+		explicit operator ConstType* () const
 		{
 			return Data;
 		}
 
-		T* operator-> ()
+		Type* operator-> () requires (!std::is_const_v<T>)
 		{
 			return Data;
 		}
 
-		const T* operator-> () const
+		ConstType* operator-> () const
 		{
 			return Data;
 		}
 
-		T& operator* ()
+		Type& operator* () requires (!std::is_const_v<T>)
 		{
 			return *Data;
 		}
 
-		const T& operator* () const
+		ConstType& operator* () const
 		{
 			return *Data;
 		}
 
-		T& operator[] (const size_t _Index)
+		Type& operator[] (const size_t _Index) requires (!std::is_const_v<T>)
 		{
 			return Data[_Index];
 		}
 
-		const T& operator[] (const size_t _Index) const
+		ConstType& operator[] (const size_t _Index) const
 		{
 			return Data[_Index];
 		}
@@ -293,7 +296,7 @@ namespace BFW
 
 			Size = _Other.Size;
 			Capacity = _Other.Capacity;
-			Data = new T[Capacity];
+			Data = new Type[Capacity];
 
 			if (!Data)
 			{
@@ -334,7 +337,7 @@ namespace BFW
 
 		size_t Size;
 		size_t Capacity;
-		T* Data;
+		Type* Data;
 
 	};
 
