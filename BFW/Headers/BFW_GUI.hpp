@@ -202,10 +202,10 @@ namespace BFW
 			PopUp& operator= (const PopUp& _Other);
 			PopUp& operator= (PopUp&& _Other) noexcept;
 
-			static void GlobalToLocal(intptr_t& _X, intptr_t& _Y, const Vector<PopUp*>& _Path);
-			static void GlobalToLocal(intptr_t& _X, intptr_t& _Y, const Vector<const PopUp*>& _Path);
-			static void LocalToGlobal(intptr_t& _X, intptr_t& _Y, const Vector<PopUp*>& _Path);
-			static void LocalToGlobal(intptr_t& _X, intptr_t& _Y, const Vector<const PopUp*>& _Path);
+			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<PopUp*>& _Path);
+			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const PopUp*>& _Path);
+			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<PopUp*>& _Path);
+			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const PopUp*>& _Path);
 
 		private:
 

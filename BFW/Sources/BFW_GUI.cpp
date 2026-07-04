@@ -2226,38 +2226,38 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (PopUp&& _Other) noexcept
 	return *this;
 }
 
-void BFW::GUI::PopUp::GlobalToLocal(intptr_t& _X, intptr_t& _Y, const Vector<PopUp*>& _Path)
+void BFW::GUI::PopUp::GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<PopUp*>& _Path)
 {
 	for (size_t _Index = 1; _Index < _Path.GetSize(); _Index++)
 	{
-		_X += _Path[_Path.GetSize() - 1 - _Index]->ScrollX - _Path[_Path.GetSize() - 1 - _Index]->PositionX;
-		_Y += _Path[_Path.GetSize() - 1 - _Index]->ScrollY - _Path[_Path.GetSize() - 1 - _Index]->PositionY;
+		_PositionX += _Path[_Path.GetSize() - 1 - _Index]->ScrollX - _Path[_Path.GetSize() - 1 - _Index]->PositionX;
+		_PositionY += _Path[_Path.GetSize() - 1 - _Index]->ScrollY - _Path[_Path.GetSize() - 1 - _Index]->PositionY;
 	}
 }
 
-void BFW::GUI::PopUp::GlobalToLocal(intptr_t& _X, intptr_t& _Y, const Vector<const PopUp*>& _Path)
+void BFW::GUI::PopUp::GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const PopUp*>& _Path)
 {
 	for (size_t _Index = 1; _Index < _Path.GetSize(); _Index++)
 	{
-		_X += _Path[_Path.GetSize() - 1 - _Index]->ScrollX - _Path[_Path.GetSize() - 1 - _Index]->PositionX;
-		_Y += _Path[_Path.GetSize() - 1 - _Index]->ScrollY - _Path[_Path.GetSize() - 1 - _Index]->PositionY;
+		_PositionX += _Path[_Path.GetSize() - 1 - _Index]->ScrollX - _Path[_Path.GetSize() - 1 - _Index]->PositionX;
+		_PositionY += _Path[_Path.GetSize() - 1 - _Index]->ScrollY - _Path[_Path.GetSize() - 1 - _Index]->PositionY;
 	}
 }
 
-void BFW::GUI::PopUp::LocalToGlobal(intptr_t& _X, intptr_t& _Y, const Vector<PopUp*>& _Path)
+void BFW::GUI::PopUp::LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<PopUp*>& _Path)
 {
 	for (size_t _Index = 0; _Index < _Path.GetSize() - 1; _Index++)
 	{
-		_X -= _Path[_Index]->ScrollX - _Path[_Index]->PositionX;
-		_Y -= _Path[_Index]->ScrollY - _Path[_Index]->PositionY;
+		_PositionX -= _Path[_Index]->ScrollX - _Path[_Index]->PositionX;
+		_PositionY -= _Path[_Index]->ScrollY - _Path[_Index]->PositionY;
 	}
 }
 
-void BFW::GUI::PopUp::LocalToGlobal(intptr_t& _X, intptr_t& _Y, const Vector<const PopUp*>& _Path)
+void BFW::GUI::PopUp::LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const PopUp*>& _Path)
 {
 	for (size_t _Index = 0; _Index < _Path.GetSize() - 1; _Index++)
 	{
-		_X -= _Path[_Index]->ScrollX - _Path[_Index]->PositionX;
-		_Y -= _Path[_Index]->ScrollY - _Path[_Index]->PositionY;
+		_PositionX -= _Path[_Index]->ScrollX - _Path[_Index]->PositionX;
+		_PositionY -= _Path[_Index]->ScrollY - _Path[_Index]->PositionY;
 	}
 }
