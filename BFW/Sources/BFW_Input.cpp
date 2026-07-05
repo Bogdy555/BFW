@@ -114,14 +114,12 @@ BFW::Input::Key& BFW::Input::Key::operator= (Key&& _Other) noexcept
 
 
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
 BFW::Input::ClickEvent::ClickEvent() : X(0), Y(0), Control(false), Shift(false)
 {
 
 }
 
-BFW::Input::ClickEvent::ClickEvent(const intptr_t _X, const intptr_t _Y, const bool _Control, const bool _Shift) : X(_X), Y(_Y), Control(_Control), Shift(_Shift)
+BFW::Input::ClickEvent::ClickEvent(const intptr_t _PositionX, const intptr_t _PositionY, const bool _Control, const bool _Shift) : X(_PositionX), Y(_PositionY), Control(_Control), Shift(_Shift)
 {
 
 }
@@ -161,7 +159,7 @@ BFW::Input::WheelEvent::WheelEvent() : Delta(0), X(0), Y(0), Control(false), Shi
 
 }
 
-BFW::Input::WheelEvent::WheelEvent(const intptr_t _Delta, const intptr_t _X, const intptr_t _Y, const bool _Control, const bool _Shift) : Delta(_Delta), X(_X), Y(_Y), Control(_Control), Shift(_Shift)
+BFW::Input::WheelEvent::WheelEvent(const intptr_t _Delta, const intptr_t _PositionX, const intptr_t _PositionY, const bool _Control, const bool _Shift) : Delta(_Delta), X(_PositionX), Y(_PositionY), Control(_Control), Shift(_Shift)
 {
 
 }
@@ -198,6 +196,8 @@ BFW::Input::WheelEvent& BFW::Input::WheelEvent::operator= (WheelEvent&& _Other) 
 }
 
 
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 #ifdef BFW_WINDOWS_PLATFORM
 

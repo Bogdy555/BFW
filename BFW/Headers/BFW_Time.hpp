@@ -36,14 +36,10 @@ namespace BFW
 			void SubtractMicroSecondsFromBegin(const uint64_t _MicroSeconds);
 			void SubtractMicroSecondsFromEnd(const uint64_t _MicroSeconds);
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
 			const tm GetUTCBegin() const;
 			const tm GetUTCEnd() const;
 			const tm GetLocalBegin() const;
 			const tm GetLocalEnd() const;
-
-#endif
 
 			operator const float () const;
 
@@ -52,19 +48,8 @@ namespace BFW
 
 		private:
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
 			std::chrono::system_clock::time_point Begin;
 			std::chrono::system_clock::time_point End;
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-			uint32_t Begin;
-			uint32_t End;
-
-#endif
 
 		};
 
@@ -97,12 +82,8 @@ namespace BFW
 
 		void BFW_API Sleep(const uint64_t _MicroSeconds);
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
 		const tm BFW_API GetUTCTime();
 		const tm BFW_API GetLocalTime();
-
-#endif
 
 #ifdef BFW_WINDOWS_PLATFORM
 

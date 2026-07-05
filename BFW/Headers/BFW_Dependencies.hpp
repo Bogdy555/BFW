@@ -147,11 +147,11 @@ namespace BFW
 
 		class BFW_API Key;
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
 		struct BFW_API ClickEvent;
 
 		struct BFW_API WheelEvent;
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 		class BFW_API Controller;
 
