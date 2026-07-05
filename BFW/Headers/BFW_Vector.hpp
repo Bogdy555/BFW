@@ -14,10 +14,12 @@ namespace BFW
 	template <typename T> class Vector
 	{
 
-	public:
+	private:
 
 		using Type = std::remove_const_t<T>;
 		using ConstType = std::add_const_t<T>;
+
+	public:
 
 		Vector() : Size(0), Capacity(0), Data(nullptr)
 		{

@@ -14,10 +14,12 @@ namespace BFW
 	template <typename T> class UniquePointer
 	{
 
-	public:
+	private:
 
 		using Type = std::remove_const_t<T>;
 		using ConstType = std::add_const_t<T>;
+
+	public:
 
 		UniquePointer() : Size(0), Pointer(nullptr)
 		{
@@ -220,26 +222,31 @@ namespace BFW
 	template <typename T> class SharedPointer
 	{
 
-	public:
+	private:
 
 		using Type = std::remove_const_t<T>;
 		using ConstType = std::add_const_t<T>;
 
-		SharedPointer() : RefCount(nullptr), Size(0), Pointer(nullptr)
+	public:
+
+		SharedPointer() : Mutex(nullptr), RefCount(nullptr), Size(0), Pointer(nullptr)
 		{
 
 		}
 
-		SharedPointer(const SharedPointer& _Other) : RefCount(_Other.RefCount), Size(_Other.Size), Pointer(_Other.Pointer)
+		SharedPointer(const SharedPointer& _Other) : Mutex(_Other.Mutex), RefCount(_Other.RefCount), Size(_Other.Size), Pointer(_Other.Pointer)
 		{
-			if (RefCount)
+			if (Mutex)
 			{
+				Mutex->lock();
 				(*RefCount)++;
+				Mutex->unlock();
 			}
 		}
 
-		SharedPointer(SharedPointer&& _Other) noexcept : RefCount(_Other.RefCount), Size(_Other.Size), Pointer(_Other.Pointer)
+		SharedPointer(SharedPointer&& _Other) noexcept : Mutex(_Other.Mutex), RefCount(_Other.RefCount), Size(_Other.Size), Pointer(_Other.Pointer)
 		{
+			_Other.Mutex = nullptr;
 			_Other.RefCount = nullptr;
 			_Other.Size = 0;
 			_Other.Pointer = nullptr;
@@ -247,31 +254,50 @@ namespace BFW
 
 		~SharedPointer()
 		{
-			if (RefCount)
+			if (Mutex)
 			{
+				Mutex->lock();
+
 				(*RefCount)--;
 
 				if (*RefCount == 0)
 				{
+					Mutex->unlock();
+
+					delete Mutex;
 					delete RefCount;
 					delete[] Pointer;
+				}
+				else
+				{
+					Mutex->unlock();
 				}
 			}
 		}
 
 		void Release()
 		{
-			if (RefCount)
+			if (Mutex)
 			{
+				Mutex->lock();
+
 				(*RefCount)--;
 
 				if (*RefCount == 0)
 				{
+					Mutex->unlock();
+
+					delete Mutex;
 					delete RefCount;
 					delete[] Pointer;
 				}
+				else
+				{
+					Mutex->unlock();
+				}
 			}
 
+			Mutex = nullptr;
 			RefCount = nullptr;
 			Size = 0;
 			Pointer = nullptr;
@@ -339,24 +365,36 @@ namespace BFW
 				return *this;
 			}
 
-			if (RefCount)
+			if (Mutex)
 			{
+				Mutex->lock();
+
 				(*RefCount)--;
 
 				if (*RefCount == 0)
 				{
+					Mutex->unlock();
+
+					delete Mutex;
 					delete RefCount;
 					delete[] Pointer;
 				}
+				else
+				{
+					Mutex->unlock();
+				}
 			}
 
+			Mutex = _Other.Mutex;
 			RefCount = _Other.RefCount;
 			Size = _Other.Size;
 			Pointer = _Other.Pointer;
 
-			if (RefCount)
+			if (Mutex)
 			{
+				Mutex->lock();
 				(*RefCount)++;
+				Mutex->unlock();
 			}
 
 			return *this;
@@ -369,21 +407,32 @@ namespace BFW
 				return *this;
 			}
 
-			if (RefCount)
+			if (Mutex)
 			{
+				Mutex->lock();
+
 				(*RefCount)--;
 
 				if (*RefCount == 0)
 				{
+					Mutex->unlock();
+
+					delete Mutex;
 					delete RefCount;
 					delete[] Pointer;
 				}
+				else
+				{
+					Mutex->unlock();
+				}
 			}
 
+			Mutex = _Other.Mutex;
 			RefCount = _Other.RefCount;
 			Size = _Other.Size;
 			Pointer = _Other.Pointer;
 
+			_Other.Mutex = nullptr;
 			_Other.RefCount = nullptr;
 			_Other.Size = 0;
 			_Other.Pointer = nullptr;
@@ -395,12 +444,15 @@ namespace BFW
 		{
 			SharedPointer _Result;
 
+			_Result.Mutex = new std::mutex;
 			_Result.RefCount = new size_t;
 			_Result.Size = 1;
 			_Result.Pointer = new Type[1];
 
-			if (!_Result.RefCount || !_Result.Pointer)
+			if (!_Result.Mutex || !_Result.RefCount || !_Result.Pointer)
 			{
+				delete _Result.Mutex;
+				_Result.Mutex = nullptr;
 				delete _Result.RefCount;
 				_Result.RefCount = nullptr;
 				_Result.Size = 0;
@@ -424,12 +476,15 @@ namespace BFW
 
 			SharedPointer _Result;
 
+			_Result.Mutex = new std::mutex;
 			_Result.RefCount = new size_t;
 			_Result.Size = _Size;
 			_Result.Pointer = new Type[_Size];
 
-			if (!_Result.RefCount || !_Result.Pointer)
+			if (!_Result.Mutex || !_Result.RefCount || !_Result.Pointer)
 			{
+				delete _Result.Mutex;
+				_Result.Mutex = nullptr;
 				delete _Result.RefCount;
 				_Result.RefCount = nullptr;
 				_Result.Size = 0;
@@ -445,6 +500,7 @@ namespace BFW
 
 	private:
 
+		std::mutex* Mutex;
 		size_t* RefCount;
 		size_t Size;
 		Type* Pointer;
