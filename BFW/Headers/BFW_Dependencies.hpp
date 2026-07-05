@@ -172,6 +172,8 @@ namespace BFW
 
 		enum BFW_API PanelTypes : const uint8_t;
 
+		class BFW_API SafePopUpPointer;
+
 		class BFW_API PopUp;
 
 		typedef void (*SetupRenderDataFnc)(PopUp& _Wnd, PopUp& _ParentWnd, void* _Global);

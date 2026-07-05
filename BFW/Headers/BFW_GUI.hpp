@@ -129,6 +129,38 @@ namespace BFW
 			_BottomPanelType = 4
 		};
 
+		class BFW_API SafePopUpPointer
+		{
+
+		public:
+
+			SafePopUpPointer();
+			SafePopUpPointer(PopUp* _Pointer);
+			SafePopUpPointer(const SafePopUpPointer& _Other);
+			SafePopUpPointer(SafePopUpPointer&& _Other) noexcept;
+			~SafePopUpPointer();
+
+			operator PopUp* ();
+			operator const PopUp* () const;
+
+			PopUp* operator-> ();
+			const PopUp* operator-> () const;
+
+			PopUp& operator* ();
+			const PopUp& operator* () const;
+
+			SafePopUpPointer& operator= (PopUp* _Pointer);
+			SafePopUpPointer& operator= (const SafePopUpPointer& _Other);
+			SafePopUpPointer& operator= (SafePopUpPointer&& _Other) noexcept;
+
+		private:
+
+			friend PopUp;
+
+			PopUp* Pointer;
+
+		};
+
 		class BFW_API PopUp
 		{
 
@@ -168,8 +200,8 @@ namespace BFW
 			void SetRenderTop(const RenderFnc _RenderTop);
 			void SetComposit(const CompositFnc _Composit);
 
-			PopUp* GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<PopUp*>* _Path = nullptr);
-			const PopUp* GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<const PopUp*>* _Path = nullptr) const;
+			SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<SafePopUpPointer>* _Path = nullptr);
+			const SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<const SafePopUpPointer>* _Path = nullptr) const;
 			const size_t GetFocusedPanel() const;
 			Vector<PopUp>& GetPanels();
 			const Vector<PopUp>& GetPanels() const;
@@ -202,12 +234,14 @@ namespace BFW
 			PopUp& operator= (const PopUp& _Other);
 			PopUp& operator= (PopUp&& _Other) noexcept;
 
-			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<PopUp*>& _Path);
-			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const PopUp*>& _Path);
-			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<PopUp*>& _Path);
-			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const PopUp*>& _Path);
+			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<SafePopUpPointer>& _Path);
+			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const SafePopUpPointer>& _Path);
+			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<SafePopUpPointer>& _Path);
+			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const SafePopUpPointer>& _Path);
 
 		private:
+
+			friend SafePopUpPointer;
 
 			size_t FocusedPanel;
 			Vector<PopUp> Panels;
@@ -215,6 +249,8 @@ namespace BFW
 			Vector<PopUp> Nodes;
 			Vector<size_t> FocusedPopUps;
 			Vector<Vector<PopUp>> PopUps;
+
+			mutable Vector<SafePopUpPointer*> SafePointers;
 
 			uint64_t Id;
 			uint8_t PanelType;

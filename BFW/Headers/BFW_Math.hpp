@@ -91,10 +91,10 @@ namespace BFW
 			Vec3(const float _x, const float _y, const float _z);
 			Vec3(const Vec3& _Other);
 			Vec3(Vec3&& _Other) noexcept;
-			explicit Vec3(const Vec2& _Other, const float _z);
+			Vec3(const Vec2& _Other, const float _z);
 			~Vec3();
 
-			explicit operator const Vec2 () const;
+			operator const Vec2 () const;
 
 			float* Data();
 			const float* Data() const;
@@ -161,12 +161,12 @@ namespace BFW
 			Vec4(const float _x, const float _y, const float _z, const float _w);
 			Vec4(const Vec4& _Other);
 			Vec4(Vec4&& _Other) noexcept;
-			explicit Vec4(const Vec2& _Other, const float _z, const float _w);
-			explicit Vec4(const Vec3& _Other, const float _w);
+			Vec4(const Vec2& _Other, const float _z, const float _w);
+			Vec4(const Vec3& _Other, const float _w);
 			~Vec4();
 
-			explicit operator const Vec2 () const;
-			explicit operator const Vec3 () const;
+			operator const Vec2 () const;
+			operator const Vec3 () const;
 
 			float* Data();
 			const float* Data() const;
@@ -298,10 +298,10 @@ namespace BFW
 			Mat3(const Mat3& _Other);
 			Mat3(Mat3&& _Other) noexcept;
 			Mat3(const Vec3& _Ox, const Vec3& _Oy, const Vec3& _Oz);
-			explicit Mat3(const Mat2& _Other);
+			Mat3(const Mat2& _Other);
 			~Mat3();
 
-			explicit operator const Mat2 () const;
+			operator const Mat2 () const;
 
 			float* Data();
 			const float* Data() const;
@@ -370,12 +370,12 @@ namespace BFW
 			Mat4(const Mat4& _Other);
 			Mat4(Mat4&& _Other) noexcept;
 			Mat4(const Vec3& _Ox, const Vec3& _Oy, const Vec3& _Oz);
-			explicit Mat4(const Mat2& _Other);
-			explicit Mat4(const Mat3& _Other);
+			Mat4(const Mat2& _Other);
+			Mat4(const Mat3& _Other);
 			~Mat4();
 
-			explicit operator const Mat2 () const;
-			explicit operator const Mat3 () const;
+			operator const Mat2 () const;
+			operator const Mat3 () const;
 
 			float* Data();
 			const float* Data() const;
