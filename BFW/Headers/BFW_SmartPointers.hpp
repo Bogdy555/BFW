@@ -219,6 +219,8 @@ namespace BFW
 
 	};
 
+	template <typename T> class WeakPointer;
+
 	template <typename T> class SharedPointer
 	{
 
@@ -229,12 +231,12 @@ namespace BFW
 
 	public:
 
-		SharedPointer() : Mutex(nullptr), RefCount(nullptr), Size(0), Pointer(nullptr)
+		SharedPointer() : Mutex(nullptr), RefCount(nullptr), WeakPointers(nullptr), Size(0), Pointer(nullptr)
 		{
 
 		}
 
-		SharedPointer(const SharedPointer& _Other) : Mutex(_Other.Mutex), RefCount(_Other.RefCount), Size(_Other.Size), Pointer(_Other.Pointer)
+		SharedPointer(const SharedPointer& _Other) : Mutex(_Other.Mutex), RefCount(_Other.RefCount), WeakPointers(_Other.WeakPointers), Size(_Other.Size), Pointer(_Other.Pointer)
 		{
 			if (Mutex)
 			{
@@ -244,35 +246,18 @@ namespace BFW
 			}
 		}
 
-		SharedPointer(SharedPointer&& _Other) noexcept : Mutex(_Other.Mutex), RefCount(_Other.RefCount), Size(_Other.Size), Pointer(_Other.Pointer)
+		SharedPointer(SharedPointer&& _Other) noexcept : Mutex(_Other.Mutex), RefCount(_Other.RefCount), WeakPointers(_Other.WeakPointers), Size(_Other.Size), Pointer(_Other.Pointer)
 		{
 			_Other.Mutex = nullptr;
 			_Other.RefCount = nullptr;
+			_Other.WeakPointers = nullptr;
 			_Other.Size = 0;
 			_Other.Pointer = nullptr;
 		}
 
 		~SharedPointer()
 		{
-			if (Mutex)
-			{
-				Mutex->lock();
-
-				(*RefCount)--;
-
-				if (*RefCount == 0)
-				{
-					Mutex->unlock();
-
-					delete Mutex;
-					delete RefCount;
-					delete[] Pointer;
-				}
-				else
-				{
-					Mutex->unlock();
-				}
-			}
+			Release();
 		}
 
 		void Release()
@@ -285,10 +270,20 @@ namespace BFW
 
 				if (*RefCount == 0)
 				{
+					for (size_t _Index = 0; _Index < WeakPointers->GetSize(); _Index++)
+					{
+						(*WeakPointers)[_Index]->Mutex = nullptr;
+						(*WeakPointers)[_Index]->RefCount = nullptr;
+						(*WeakPointers)[_Index]->WeakPointers = nullptr;
+						(*WeakPointers)[_Index]->Size = 0;
+						(*WeakPointers)[_Index]->Pointer = nullptr;
+					}
+
 					Mutex->unlock();
 
 					delete Mutex;
 					delete RefCount;
+					delete WeakPointers;
 					delete[] Pointer;
 				}
 				else
@@ -299,6 +294,7 @@ namespace BFW
 
 			Mutex = nullptr;
 			RefCount = nullptr;
+			WeakPointers = nullptr;
 			Size = 0;
 			Pointer = nullptr;
 		}
@@ -365,28 +361,11 @@ namespace BFW
 				return *this;
 			}
 
-			if (Mutex)
-			{
-				Mutex->lock();
-
-				(*RefCount)--;
-
-				if (*RefCount == 0)
-				{
-					Mutex->unlock();
-
-					delete Mutex;
-					delete RefCount;
-					delete[] Pointer;
-				}
-				else
-				{
-					Mutex->unlock();
-				}
-			}
+			Release();
 
 			Mutex = _Other.Mutex;
 			RefCount = _Other.RefCount;
+			WeakPointers = _Other.WeakPointers;
 			Size = _Other.Size;
 			Pointer = _Other.Pointer;
 
@@ -407,33 +386,17 @@ namespace BFW
 				return *this;
 			}
 
-			if (Mutex)
-			{
-				Mutex->lock();
-
-				(*RefCount)--;
-
-				if (*RefCount == 0)
-				{
-					Mutex->unlock();
-
-					delete Mutex;
-					delete RefCount;
-					delete[] Pointer;
-				}
-				else
-				{
-					Mutex->unlock();
-				}
-			}
+			Release();
 
 			Mutex = _Other.Mutex;
 			RefCount = _Other.RefCount;
+			WeakPointers = _Other.WeakPointers;
 			Size = _Other.Size;
 			Pointer = _Other.Pointer;
 
 			_Other.Mutex = nullptr;
 			_Other.RefCount = nullptr;
+			_Other.WeakPointers = nullptr;
 			_Other.Size = 0;
 			_Other.Pointer = nullptr;
 
@@ -446,15 +409,18 @@ namespace BFW
 
 			_Result.Mutex = new std::mutex;
 			_Result.RefCount = new size_t;
+			_Result.WeakPointers = new Vector<WeakPointer<T>*>;
 			_Result.Size = 1;
 			_Result.Pointer = new Type[1];
 
-			if (!_Result.Mutex || !_Result.RefCount || !_Result.Pointer)
+			if (!_Result.Mutex || !_Result.RefCount || !_Result.WeakPointers || !_Result.Pointer)
 			{
 				delete _Result.Mutex;
 				_Result.Mutex = nullptr;
 				delete _Result.RefCount;
 				_Result.RefCount = nullptr;
+				delete _Result.WeakPointers;
+				_Result.WeakPointers = nullptr;
 				_Result.Size = 0;
 				delete[] _Result.Pointer;
 				_Result.Pointer = nullptr;
@@ -478,15 +444,18 @@ namespace BFW
 
 			_Result.Mutex = new std::mutex;
 			_Result.RefCount = new size_t;
+			_Result.WeakPointers = new Vector<WeakPointer<T>*>;
 			_Result.Size = _Size;
 			_Result.Pointer = new Type[_Size];
 
-			if (!_Result.Mutex || !_Result.RefCount || !_Result.Pointer)
+			if (!_Result.Mutex || !_Result.RefCount || !_Result.WeakPointers || !_Result.Pointer)
 			{
 				delete _Result.Mutex;
 				_Result.Mutex = nullptr;
 				delete _Result.RefCount;
 				_Result.RefCount = nullptr;
+				delete _Result.WeakPointers;
+				_Result.WeakPointers = nullptr;
 				_Result.Size = 0;
 				delete[] _Result.Pointer;
 				_Result.Pointer = nullptr;
@@ -500,8 +469,242 @@ namespace BFW
 
 	private:
 
+		friend WeakPointer<T>;
+
 		std::mutex* Mutex;
 		size_t* RefCount;
+		Vector<WeakPointer<T>*>* WeakPointers;
+		size_t Size;
+		Type* Pointer;
+
+	};
+
+	template <typename T> class WeakPointer
+	{
+
+	private:
+
+		using Type = std::remove_const_t<T>;
+		using ConstType = std::add_const_t<T>;
+
+	public:
+
+		WeakPointer() : Mutex(nullptr), RefCount(nullptr), WeakPointers(nullptr), Size(0), Pointer(nullptr)
+		{
+
+		}
+
+		WeakPointer(const SharedPointer<T>& _SharedPointer) noexcept : Mutex(_SharedPointer.Mutex), RefCount(_SharedPointer.RefCount), WeakPointers(_SharedPointer.WeakPointers), Size(_SharedPointer.Size), Pointer(_SharedPointer.Pointer)
+		{
+			if (Mutex)
+			{
+				Mutex->lock();
+				(*WeakPointers).PushBack(this);
+				Mutex->unlock();
+			}
+		}
+
+		WeakPointer(const WeakPointer& _Other) : Mutex(_Other.Mutex), RefCount(_Other.RefCount), WeakPointers(_Other.WeakPointers), Size(_Other.Size), Pointer(_Other.Pointer)
+		{
+			if (Mutex)
+			{
+				Mutex->lock();
+				(*WeakPointers).PushBack(this);
+				Mutex->unlock();
+			}
+		}
+
+		WeakPointer(WeakPointer&& _Other) noexcept : Mutex(_Other.Mutex), RefCount(_Other.RefCount), WeakPointers(_Other.WeakPointers), Size(_Other.Size), Pointer(_Other.Pointer)
+		{
+			if (Mutex)
+			{
+				Mutex->lock();
+
+				for (size_t _Index = 0; _Index < WeakPointers->GetSize(); _Index++)
+				{
+					if ((*WeakPointers)[_Index] == &_Other)
+					{
+						(*WeakPointers)[_Index] = this;
+						break;
+					}
+				}
+
+				Mutex->unlock();
+			}
+
+			_Other.Mutex = nullptr;
+			_Other.RefCount = nullptr;
+			_Other.WeakPointers = nullptr;
+			_Other.Size = 0;
+			_Other.Pointer = nullptr;
+		}
+
+		~WeakPointer()
+		{
+			Release();
+		}
+
+		SharedPointer<T> Lock() requires (!std::is_const_v<T>)
+		{
+			SharedPointer<T> _Result;
+
+			if (Mutex)
+			{
+				Mutex->lock();
+
+				_Result.Mutex = Mutex;
+				_Result.RefCount = RefCount;
+				_Result.WeakPointers = WeakPointers;
+				_Result.Size = Size;
+				_Result.Pointer = Pointer;
+
+				(*_Result.RefCount)++;
+
+				Mutex->unlock();
+			}
+
+			return _Result;
+		}
+
+		const SharedPointer<T> Lock() const
+		{
+			SharedPointer<T> _Result;
+
+			if (Mutex)
+			{
+				Mutex->lock();
+
+				_Result.Mutex = Mutex;
+				_Result.RefCount = RefCount;
+				_Result.WeakPointers = WeakPointers;
+				_Result.Size = Size;
+				_Result.Pointer = Pointer;
+
+				(*_Result.RefCount)++;
+
+				Mutex->unlock();
+			}
+
+			return _Result;
+		}
+
+		void Release()
+		{
+			if (Mutex)
+			{
+				Mutex->lock();
+
+				for (size_t _Index = 0; _Index < (*WeakPointers).GetSize(); _Index++)
+				{
+					if ((*WeakPointers)[_Index] == this)
+					{
+						(*WeakPointers).Erase(_Index);
+						break;
+					}
+				}
+
+				Mutex->unlock();
+			}
+
+			Mutex = nullptr;
+			RefCount = nullptr;
+			WeakPointers = nullptr;
+			Size = 0;
+			Pointer = nullptr;
+		}
+
+		WeakPointer& operator= (const SharedPointer<T>& _SharedPointer) noexcept
+		{
+			Release();
+
+			Mutex = _SharedPointer.Mutex;
+			RefCount = _SharedPointer.RefCount;
+			WeakPointers = _SharedPointer.WeakPointers;
+			Size = _SharedPointer.Size;
+			Pointer = _SharedPointer.Pointer;
+
+			if (Mutex)
+			{
+				Mutex->lock();
+				(*WeakPointers).PushBack(this);
+				Mutex->unlock();
+			}
+
+			return *this;
+		}
+
+		WeakPointer& operator= (const WeakPointer& _Other)
+		{
+			if (this == &_Other)
+			{
+				return *this;
+			}
+
+			Release();
+
+			Mutex = _Other.Mutex;
+			RefCount = _Other.RefCount;
+			WeakPointers = _Other.WeakPointers;
+			Size = _Other.Size;
+			Pointer = _Other.Pointer;
+
+			if (Mutex)
+			{
+				Mutex->lock();
+				(*WeakPointers).PushBack(this);
+				Mutex->unlock();
+			}
+
+			return *this;
+		}
+
+		WeakPointer& operator= (WeakPointer&& _Other) noexcept
+		{
+			if (this == &_Other)
+			{
+				return *this;
+			}
+
+			Release();
+
+			Mutex = _Other.Mutex;
+			RefCount = _Other.RefCount;
+			WeakPointers = _Other.WeakPointers;
+			Size = _Other.Size;
+			Pointer = _Other.Pointer;
+
+			if (Mutex)
+			{
+				Mutex->lock();
+
+				for (size_t _Index = 0; _Index < (*WeakPointers).GetSize(); _Index++)
+				{
+					if ((*WeakPointers)[_Index] == &_Other)
+					{
+						(*WeakPointers)[_Index] = this;
+						break;
+					}
+				}
+
+				Mutex->unlock();
+			}
+
+			_Other.Mutex = nullptr;
+			_Other.RefCount = nullptr;
+			_Other.WeakPointers = nullptr;
+			_Other.Size = 0;
+			_Other.Pointer = nullptr;
+
+			return *this;
+		}
+
+	private:
+
+		friend SharedPointer<T>;
+
+		std::mutex* Mutex;
+		size_t* RefCount;
+		Vector<WeakPointer<T>*>* WeakPointers;
 		size_t Size;
 		Type* Pointer;
 
