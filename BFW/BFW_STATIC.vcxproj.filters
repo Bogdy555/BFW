@@ -90,6 +90,9 @@
     <ClInclude Include="Headers\BFW_GUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\BFW_SmartPointers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Resources\Manifests\BFW_MainManifest.manifest" />

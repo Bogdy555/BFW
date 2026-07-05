@@ -208,6 +208,7 @@
     <ClInclude Include="Headers\BFW_MultiProcessing.hpp" />
     <ClInclude Include="Headers\BFW_Resources.hpp" />
     <ClInclude Include="Headers\BFW_RunTime.hpp" />
+    <ClInclude Include="Headers\BFW_SmartPointers.hpp" />
     <ClInclude Include="Headers\BFW_Templates.hpp" />
     <ClInclude Include="Headers\BFW_Time.hpp" />
     <ClInclude Include="Headers\BFW_Vector.hpp" />

@@ -10,6 +10,8 @@
 
 #include "BFW_Vector.hpp"
 
+#include "BFW_SmartPointers.hpp"
+
 #include "BFW_Animation.hpp"
 
 
