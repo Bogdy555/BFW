@@ -56,7 +56,7 @@ namespace BFW_WINDOWS
 			BFW::GUI::PopUp Layout;
 
 			bool LCapture;
-			BFW::Vector<BFW::GUI::PopUp*> LCapturePath;
+			BFW::Vector<BFW::GUI::SafePopUpPointer> LCapturePath;
 			intptr_t LCaptureMouseX;
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
@@ -65,28 +65,28 @@ namespace BFW_WINDOWS
 			intptr_t ScrollAccumulationY;
 
 			bool MCapture;
-			BFW::Vector<BFW::GUI::PopUp*> MCapturePath;
+			BFW::Vector<BFW::GUI::SafePopUpPointer> MCapturePath;
 			intptr_t MCaptureMouseX;
 			intptr_t MCaptureMouseY;
 			intptr_t MCaptureMouseXLastFrame;
 			intptr_t MCaptureMouseYLastFrame;
 
 			bool RCapture;
-			BFW::Vector<BFW::GUI::PopUp*> RCapturePath;
+			BFW::Vector<BFW::GUI::SafePopUpPointer> RCapturePath;
 			intptr_t RCaptureMouseX;
 			intptr_t RCaptureMouseY;
 			intptr_t RCaptureMouseXLastFrame;
 			intptr_t RCaptureMouseYLastFrame;
 
 			bool X1Capture;
-			BFW::Vector<BFW::GUI::PopUp*> X1CapturePath;
+			BFW::Vector<BFW::GUI::SafePopUpPointer> X1CapturePath;
 			intptr_t X1CaptureMouseX;
 			intptr_t X1CaptureMouseY;
 			intptr_t X1CaptureMouseXLastFrame;
 			intptr_t X1CaptureMouseYLastFrame;
 
 			bool X2Capture;
-			BFW::Vector<BFW::GUI::PopUp*> X2CapturePath;
+			BFW::Vector<BFW::GUI::SafePopUpPointer> X2CapturePath;
 			intptr_t X2CaptureMouseX;
 			intptr_t X2CaptureMouseY;
 			intptr_t X2CaptureMouseXLastFrame;
@@ -137,7 +137,7 @@ namespace BFW_WINDOWS
 
 		const size_t GetMinX(const uint64_t _PopUpId);
 		const size_t GetMinY(const uint64_t _PopUpId);
-		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::PopUp*>& _Path);
+		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
 		const bool FindHScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent);
 		const bool FindVScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent);
 		void ResizeChilds(BFW::GUI::PopUp& _Parnet);

@@ -1450,12 +1450,12 @@ BFW::GUI::SafePopUpPointer::~SafePopUpPointer()
 	}
 }
 
-BFW::GUI::SafePopUpPointer::operator PopUp* ()
+BFW::GUI::SafePopUpPointer::operator BFW::GUI::PopUp* ()
 {
 	return Pointer;
 }
 
-BFW::GUI::SafePopUpPointer::operator const PopUp* () const
+BFW::GUI::SafePopUpPointer::operator const BFW::GUI::PopUp* () const
 {
 	return Pointer;
 }
