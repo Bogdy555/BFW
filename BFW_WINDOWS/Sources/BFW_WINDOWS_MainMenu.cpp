@@ -1393,16 +1393,21 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		BFW::Vector<BFW::GUI::SafePopUpPointer> _Path;
 
+		_WndData.LayoutMutex->lock();
+
 		_WndData.Layout.GetChildFromMouse(_WheelEventsX[_Index].X, _WheelEventsX[_Index].Y, &_Path);
 
 		size_t _ScrollableWindowIndex = 0;
 
 		if (!GUI::FindScrollableWindow(_ScrollableWindowIndex, _Path))
 		{
+			_WndData.LayoutMutex->unlock();
 			continue;
 		}
 
 		GUI::ScrollWindowX(*_Path[_ScrollableWindowIndex], _WheelEventsX[_Index].Delta);
+
+		_WndData.LayoutMutex->unlock();
 	}
 
 	BFW::Vector<BFW::Input::WheelEvent> _WheelEventsY = _Wnd.GetWheelEvents();
@@ -1411,16 +1416,21 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		BFW::Vector<BFW::GUI::SafePopUpPointer> _Path;
 
+		_WndData.LayoutMutex->lock();
+
 		_WndData.Layout.GetChildFromMouse(_WheelEventsY[_Index].X, _WheelEventsY[_Index].Y, &_Path);
 
 		size_t _ScrollableWindowIndex = 0;
 
 		if (!GUI::FindScrollableWindow(_ScrollableWindowIndex, _Path))
 		{
+			_WndData.LayoutMutex->unlock();
 			return;
 		}
 
 		GUI::ScrollWindowY(*_Path[_ScrollableWindowIndex], _WheelEventsY[_Index].Delta);
+
+		_WndData.LayoutMutex->unlock();
 	}
 
 	_Wnd.CleanEvents();

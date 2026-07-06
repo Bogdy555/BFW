@@ -238,6 +238,8 @@ namespace BFW
 			static void GlobalToLocal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const SafePopUpPointer>& _Path);
 			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<SafePopUpPointer>& _Path);
 			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const SafePopUpPointer>& _Path);
+			static const bool IsValidPath(const Vector<SafePopUpPointer>& _Path);
+			static const bool IsValidPath(const Vector<const SafePopUpPointer>& _Path);
 
 		private:
 

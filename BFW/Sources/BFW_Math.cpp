@@ -10,7 +10,7 @@ const float BFW_API BFW::Math::RadiansToDegrees = 180.0f / 3.14159265f;
 
 const float BFW_API BFW::Math::Mix(const float& _AVal, const float& _BVal, const float _Percentage)
 {
-	return _AVal + (_BVal - _AVal) * _Percentage;
+	return _AVal * (1.0f - _Percentage) + _BVal * _Percentage;
 }
 
 const float BFW_API BFW::Math::Clamp(const float& _Value, const float& _Min, const float& _Max)

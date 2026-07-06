@@ -2451,3 +2451,75 @@ void BFW::GUI::PopUp::LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, 
 		_PositionY -= _Path[_Index]->ScrollY - _Path[_Index]->PositionY;
 	}
 }
+
+const bool BFW::GUI::PopUp::IsValidPath(const Vector<SafePopUpPointer>& _Path)
+{
+	for (size_t _Index = 0; _Index < _Path.GetSize(); _Index++)
+	{
+		if (!_Path)
+		{
+			return false;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _Path.GetSize() - 1; _Index++)
+	{
+		for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
+		{
+			if (_Path[_Index] == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
+			{
+				continue;
+			}
+		}
+
+		if (_Path[_Index] == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
+		{
+			continue;
+		}
+
+		if (_Path[_Index] == &_Path[_Index + 1]->Panels[_Path[_Index + 1]->FocusedPanel])
+		{
+			continue;
+		}
+
+		return false;
+	}
+
+	return true;
+}
+
+const bool BFW::GUI::PopUp::IsValidPath(const Vector<const SafePopUpPointer>& _Path)
+{
+	for (size_t _Index = 0; _Index < _Path.GetSize(); _Index++)
+	{
+		if (!_Path)
+		{
+			return false;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _Path.GetSize() - 1; _Index++)
+	{
+		for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
+		{
+			if (_Path[_Index] == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
+			{
+				continue;
+			}
+		}
+
+		if (_Path[_Index] == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
+		{
+			continue;
+		}
+
+		if (_Path[_Index] == &_Path[_Index + 1]->Panels[_Path[_Index + 1]->FocusedPanel])
+		{
+			continue;
+		}
+
+		return false;
+	}
+
+	return true;
+}

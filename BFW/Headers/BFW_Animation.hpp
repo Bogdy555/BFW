@@ -36,9 +36,9 @@ namespace BFW
 			_Other.End = 0.0f;
 		}
 
-		AnimationState& operator= (const AnimationState& _Other) = default;
+		AnimationState& operator= (const AnimationState& _Other) requires (!std::is_const_v<T>) = default;
 
-		AnimationState& operator= (AnimationState&& _Other) noexcept
+		AnimationState& operator= (AnimationState&& _Other) noexcept requires (!std::is_const_v<T>)
 		{
 			if (this == &_Other)
 			{
@@ -60,6 +60,11 @@ namespace BFW
 	template <typename T> class Animation
 	{
 
+	private:
+
+		using Type = std::remove_const_t<T>;
+		using ConstType = std::add_const_t<T>;
+
 	public:
 
 		Animation() : Time(0.0f), Loop(true), AnimationStates()
@@ -72,7 +77,7 @@ namespace BFW
 
 		}
 
-		Animation(Animation&& _Other) noexcept : Time(_Other.Time), Loop(_Other.Loop), AnimationStates((Vector<AnimationState<T>>&&)(_Other.AnimationStates))
+		Animation(Animation&& _Other) noexcept : Time(_Other.Time), Loop(_Other.Loop), AnimationStates((Vector<AnimationState<Type>>&&)(_Other.AnimationStates))
 		{
 			_Other.Time = 0.0f;
 			_Other.Loop = true;
@@ -113,7 +118,7 @@ namespace BFW
 			Loop = _Loop;
 		}
 
-		virtual const T GetCurrentState() const = 0;
+		virtual ConstType GetCurrentState() const = 0;
 
 		const size_t GetCurrentStateIndex() const
 		{
@@ -143,12 +148,12 @@ namespace BFW
 			return Loop;
 		}
 
-		Vector<AnimationState<T>>& GetAnimationStates()
+		Vector<AnimationState<Type>>& GetAnimationStates() requires (!std::is_const_v<T>)
 		{
 			return AnimationStates;
 		}
 
-		const Vector<AnimationState<T>>& GetAnimationStates() const
+		const Vector<AnimationState<Type>>& GetAnimationStates() const
 		{
 			return AnimationStates;
 		}
@@ -176,7 +181,7 @@ namespace BFW
 
 			Time = _Other.Time;
 			Loop = _Other.Loop;
-			AnimationStates = (Vector<AnimationState<T>>&&)(_Other.AnimationStates);
+			AnimationStates = (Vector<AnimationState<Type>>&&)(_Other.AnimationStates);
 
 			_Other.Time = 0.0f;
 			_Other.Loop = true;
@@ -188,12 +193,17 @@ namespace BFW
 
 		float Time;
 		bool Loop;
-		Vector<AnimationState<T>> AnimationStates;
+		Vector<AnimationState<Type>> AnimationStates;
 
 	};
 
 	template <typename T> class StepAnimation : public Animation<T>
 	{
+
+	private:
+
+		using Type = std::remove_const_t<T>;
+		using ConstType = std::add_const_t<T>;
 
 	public:
 
@@ -217,7 +227,7 @@ namespace BFW
 
 		}
 
-		const T GetCurrentState() const override
+		ConstType GetCurrentState() const override
 		{
 			for (size_t _Index = 0; _Index < AnimationStates.GetSize(); _Index++)
 			{
@@ -232,7 +242,7 @@ namespace BFW
 				return AnimationStates[AnimationStates.GetSize() - 1].State;
 			}
 
-			return T();
+			return Type();
 		}
 
 		StepAnimation& operator= (const StepAnimation& _Other)
@@ -267,8 +277,13 @@ namespace BFW
 
 	};
 
-	template <typename T, const T (*Lerper)(const T&, const T&, const float)> class LinearAnimation : public Animation<T>
+	template <typename T, std::add_const_t<T> (*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearAnimation : public Animation<T>
 	{
+
+	private:
+
+		using Type = std::remove_const_t<T>;
+		using ConstType = std::add_const_t<T>;
 
 	public:
 
@@ -292,7 +307,7 @@ namespace BFW
 
 		}
 
-		const T GetCurrentState() const override
+		ConstType GetCurrentState() const override
 		{
 			for (size_t _Index = 0; _Index < AnimationStates.GetSize(); _Index++)
 			{
@@ -321,7 +336,7 @@ namespace BFW
 				return AnimationStates[AnimationStates.GetSize() - 1].State;
 			}
 
-			return T();
+			return Type();
 		}
 
 		LinearAnimation& operator= (const LinearAnimation& _Other)

@@ -877,13 +877,13 @@ const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vec
 {
 	_Index = 0;
 
+	if (!BFW::GUI::PopUp::IsValidPath(_Path))
+	{
+		return false;
+	}
+
 	while (_Index < _Path.GetSize())
 	{
-		if (!_Path[_Index])
-		{
-			return false;
-		}
-
 		switch (_Path[_Index]->GetId())
 		{
 		case _DebugWindowPopUpId:
