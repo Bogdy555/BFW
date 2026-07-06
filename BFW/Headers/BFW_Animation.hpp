@@ -267,7 +267,7 @@ namespace BFW
 
 	};
 
-	template <typename T, const T (*Lerper)(const T, const T, const float)> class LinearAnimation : public Animation<T>
+	template <typename T, const T (*Lerper)(const T&, const T&, const float)> class LinearAnimation : public Animation<T>
 	{
 
 	public:

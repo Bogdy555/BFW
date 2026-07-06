@@ -511,10 +511,10 @@ namespace BFW
 		extern const float BFW_API DegreesToRadians;
 		extern const float BFW_API RadiansToDegrees;
 
-		const float BFW_API Mix(const float _AVal, const float _BVal, const float _Percentage);
-		const float BFW_API Clamp(const float _Value, const float _Min, const float _Max);
-		const float BFW_API Min(const float _AVal, const float _BVal);
-		const float BFW_API Max(const float _AVal, const float _BVal);
+		const float BFW_API Mix(const float& _AVal, const float& _BVal, const float _Percentage);
+		const float BFW_API Clamp(const float& _Value, const float& _Min, const float& _Max);
+		const float BFW_API Min(const float& _AVal, const float& _BVal);
+		const float BFW_API Max(const float& _AVal, const float& _BVal);
 
 	}
 
