@@ -1052,7 +1052,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.LCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.LCapture && BFW::GUI::PopUp::IsValidPath(_WndData.LCapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
@@ -1194,7 +1194,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.MCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.MCapture && BFW::GUI::PopUp::IsValidPath(_WndData.MCapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.MCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.MCaptureMouseYLastFrame;
@@ -1220,7 +1220,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.RCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.RCapture && BFW::GUI::PopUp::IsValidPath(_WndData.RCapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.RCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.RCaptureMouseYLastFrame;
@@ -1234,7 +1234,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.X1Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.X1Capture && BFW::GUI::PopUp::IsValidPath(_WndData.X1CapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.X1CaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.X1CaptureMouseYLastFrame;
@@ -1248,7 +1248,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.X2Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.X2Capture && BFW::GUI::PopUp::IsValidPath(_WndData.X2CapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.X2CaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.X2CaptureMouseYLastFrame;
@@ -1262,7 +1262,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.LCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.LCapture && BFW::GUI::PopUp::IsValidPath(_WndData.LCapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
@@ -1304,7 +1304,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.MCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.MCapture && BFW::GUI::PopUp::IsValidPath(_WndData.MCapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.MCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.MCaptureMouseYLastFrame;
@@ -1322,7 +1322,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.RCapture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.RCapture && BFW::GUI::PopUp::IsValidPath(_WndData.RCapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.RCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.RCaptureMouseYLastFrame;
@@ -1340,7 +1340,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.X1Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.X1Capture && BFW::GUI::PopUp::IsValidPath(_WndData.X1CapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.X1CaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.X1CaptureMouseYLastFrame;
@@ -1358,7 +1358,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
-		if (_WndData.X2Capture && _Wnd.GetMousePosition(_MouseX, _MouseY))
+		if (_WndData.X2Capture && BFW::GUI::PopUp::IsValidPath(_WndData.X2CapturePath) && _Wnd.GetMousePosition(_MouseX, _MouseY))
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.X2CaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.X2CaptureMouseYLastFrame;
@@ -1549,7 +1549,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 	{
 		bool _CursorSet = false;
 
-		if (!_CursorSet && _WndData.MCapture)
+		if (!_CursorSet && _WndData.MCapture && BFW::GUI::PopUp::IsValidPath(_WndData.MCapturePath))
 		{
 			bool _FoundScrollableWindow = false;
 
@@ -1621,7 +1621,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 			}
 		}
 
-		if (!_CursorSet && _WndData.LCapture && _WndData.LCapturePath.GetSize())
+		if (!_CursorSet && _WndData.LCapture && BFW::GUI::PopUp::IsValidPath(_WndData.LCapturePath) && _WndData.LCapturePath.GetSize())
 		{
 			_CursorSet = true;
 			GUI::RenderCursor(_Wnd, _WndData.LCapturePath[0]->GetId());
