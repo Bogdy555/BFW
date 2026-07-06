@@ -1578,7 +1578,7 @@ BFW::GUI::PopUp::PopUp() : FocusedPanel(0), Panels(), FocusedNode(0), Nodes(), F
 
 }
 
-BFW::GUI::PopUp::PopUp(const PopUp& _Other) : FocusedPanel(_Other.FocusedPanel), Panels(_Other.Panels), FocusedNode(_Other.FocusedNode), Nodes(_Other.Nodes), FocusedPopUps(_Other.FocusedPopUps), PopUps(_Other.PopUps), SafePointers(), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(_Other.UserData), SetupData(_Other.SetupData), CleanUpData(_Other.CleanUpData), RenderBottom(_Other.RenderBottom), RenderMiddle(_Other.RenderMiddle), RenderTop(_Other.RenderTop), Composit(_Other.Composit)
+BFW::GUI::PopUp::PopUp(const PopUp& _Other) : FocusedPanel(_Other.FocusedPanel), Panels(_Other.Panels), FocusedNode(_Other.FocusedNode), Nodes(_Other.Nodes), FocusedPopUps(_Other.FocusedPopUps), PopUps(_Other.PopUps), SafePointers(), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(nullptr), SetupData(_Other.SetupData), CleanUpData(_Other.CleanUpData), RenderBottom(_Other.RenderBottom), RenderMiddle(_Other.RenderMiddle), RenderTop(_Other.RenderTop), Composit(_Other.Composit)
 {
 
 }
@@ -2345,7 +2345,7 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (const PopUp& _Other)
 	PositionY = _Other.PositionY;
 	ScrollX = _Other.ScrollX;
 	ScrollY = _Other.ScrollY;
-	UserData = _Other.UserData;
+	UserData = nullptr;
 	SetupData = _Other.SetupData;
 	CleanUpData = _Other.CleanUpData;
 	RenderBottom = _Other.RenderBottom;
