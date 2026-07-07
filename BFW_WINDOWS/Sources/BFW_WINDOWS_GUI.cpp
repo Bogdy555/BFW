@@ -4,14 +4,19 @@
 
 const float BFW_WINDOWS::GUI::MouseCaptureScrollSpeed = 30.0f;
 const size_t BFW_WINDOWS::GUI::MouseCaptureScrollScale = 10;
+
 const size_t BFW_WINDOWS::GUI::MainWindowMinX = 700;
 const size_t BFW_WINDOWS::GUI::MainWindowMinY = 400;
 const size_t BFW_WINDOWS::GUI::ChildWindowMinX = 200;
 const size_t BFW_WINDOWS::GUI::ChildWindowMinY = 200;
+
 const size_t BFW_WINDOWS::GUI::ResizeSize = 5;
 const size_t BFW_WINDOWS::GUI::ScrollSize = 15;
+const size_t BFW_WINDOWS::GUI::TopPadding = 45;
 const size_t BFW_WINDOWS::GUI::Padding = 30;
+const size_t BFW_WINDOWS::GUI::ScrollTopPadding = 25;
 const size_t BFW_WINDOWS::GUI::ScrollPadding = 10;
+
 const size_t BFW_WINDOWS::GUI::DebugWindowMinX = 200;
 const size_t BFW_WINDOWS::GUI::DebugWindowMinY = 200;
 
@@ -1235,18 +1240,18 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			if (_Parent.GetHeight() < _Parent.GetTrueHeight())
 			{
-				_PopUp.SetHeight((_Parent.GetHeight() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetHeight() > ScrollPadding * 2 + ScrollSize));
+				_PopUp.SetHeight((_Parent.GetHeight() - (ScrollTopPadding + ScrollPadding + ScrollSize)) * (_Parent.GetHeight() > ScrollTopPadding + ScrollPadding + ScrollSize));
 				_PopUp.SetPositionX(_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX());
-				_PopUp.SetPositionY(ScrollPadding + _Parent.GetScrollY());
+				_PopUp.SetPositionY(ScrollTopPadding + _Parent.GetScrollY());
 
 				_PopUp.GetPopUps()[0][0].SetHeight(_PopUp.GetHeight() * _Parent.GetHeight() / _Parent.GetTrueHeight());
 				_PopUp.GetPopUps()[0][0].SetPositionY(_Parent.GetScrollY() * (_PopUp.GetHeight() - _PopUp.GetHeight() * _Parent.GetHeight() / _Parent.GetTrueHeight()) / (_Parent.GetTrueHeight() - _Parent.GetHeight()));
 			}
 			else if (ForceVScroll(_Parent.GetId()))
 			{
-				_PopUp.SetHeight((_Parent.GetHeight() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetHeight() > ScrollPadding * 2 + ScrollSize));
+				_PopUp.SetHeight((_Parent.GetHeight() - (ScrollTopPadding + ScrollPadding + ScrollSize)) * (_Parent.GetHeight() > ScrollTopPadding + ScrollPadding + ScrollSize));
 				_PopUp.SetPositionX(_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX());
-				_PopUp.SetPositionY(ScrollPadding + _Parent.GetScrollY());
+				_PopUp.SetPositionY(ScrollTopPadding + _Parent.GetScrollY());
 
 				_PopUp.GetPopUps()[0][0].SetHeight(_PopUp.GetHeight());
 				_PopUp.GetPopUps()[0][0].SetPositionY(0);
@@ -1368,8 +1373,8 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 		(
 			_Layer, BFW::GUI::_VScrollWindowPopUpId,
 			0, 0,
-			ScrollSize, (_Parent.GetHeight() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetHeight() > ScrollPadding * 2 + ScrollSize),
-			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), ScrollPadding + _Parent.GetScrollY(),
+			ScrollSize, (_Parent.GetHeight() - (ScrollTopPadding + ScrollPadding + ScrollSize)) * (_Parent.GetHeight() > ScrollTopPadding + ScrollPadding + ScrollSize),
+			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), ScrollTopPadding + _Parent.GetScrollY(),
 			0, 0,
 			SetupRenderData, CleanUpRenderData,
 			RenderGray25, nullptr, nullptr,
@@ -1402,8 +1407,8 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 		(
 			_Layer, BFW::GUI::_VScrollWindowPopUpId,
 			0, 0,
-			ScrollSize, (_Parent.GetHeight() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetHeight() > ScrollPadding * 2 + ScrollSize),
-			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), ScrollPadding + _Parent.GetScrollY(),
+			ScrollSize, (_Parent.GetHeight() - (ScrollTopPadding + ScrollPadding + ScrollSize)) * (_Parent.GetHeight() > ScrollTopPadding + ScrollPadding + ScrollSize),
+			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), ScrollTopPadding + _Parent.GetScrollY(),
 			0, 0,
 			SetupRenderData, CleanUpRenderData,
 			RenderGray25, nullptr, nullptr,

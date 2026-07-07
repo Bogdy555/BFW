@@ -97,7 +97,9 @@ namespace BFW_WINDOWS
 
 		extern const size_t ResizeSize;
 		extern const size_t ScrollSize;
+		extern const size_t TopPadding;
 		extern const size_t Padding;
+		extern const size_t ScrollTopPadding;
 		extern const size_t ScrollPadding;
 
 		extern const size_t DebugWindowMinX;

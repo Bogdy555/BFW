@@ -126,7 +126,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		_Layer, GUI::_SpawnButtonPopUpId,
 		0, 0,
 		_Parent.GetTrueWidth() - GUI::Padding * 2, 20,
-		GUI::Padding, GUI::Padding,
+		GUI::Padding, GUI::TopPadding,
 		0, 0,
 		GUI::SetupRenderData, GUI::CleanUpRenderData,
 		GUI::RenderGray40, nullptr, nullptr,
