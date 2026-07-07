@@ -1918,7 +1918,7 @@ void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const bool (*_IgnoreScroll)
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_HScrollWindowPopUpId))
+	if (!FindPopUpLayer(_ScrollWindowIndex, _HScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -1969,7 +1969,7 @@ void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const bool (*_IgnoreScroll)
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_VScrollWindowPopUpId))
+	if (!FindPopUpLayer(_ScrollWindowIndex, _VScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -2020,7 +2020,7 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollA
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_HScrollWindowPopUpId))
+	if (!FindPopUpLayer(_ScrollWindowIndex, _HScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -2087,7 +2087,7 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollA
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_VScrollWindowPopUpId))
+	if (!FindPopUpLayer(_ScrollWindowIndex, _VScrollWindowPopUpId))
 	{
 		return;
 	}
