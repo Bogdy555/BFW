@@ -894,44 +894,6 @@ const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vec
 	return false;
 }
 
-const bool BFW_WINDOWS::GUI::FindHScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent)
-{
-	_Index = 0;
-
-	while (_Index < _Parent.GetPopUps().GetSize())
-	{
-		if (_Parent.GetPopUps()[_Index][0].GetId() == _HScrollWindowPopUpId)
-		{
-			return true;
-		}
-
-		_Index++;
-	}
-
-	_Index = 0;
-
-	return false;
-}
-
-const bool BFW_WINDOWS::GUI::FindVScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent)
-{
-	_Index = 0;
-
-	while (_Index < _Parent.GetPopUps().GetSize())
-	{
-		if (_Parent.GetPopUps()[_Index][0].GetId() == _VScrollWindowPopUpId)
-		{
-			return true;
-		}
-
-		_Index++;
-	}
-
-	_Index = 0;
-
-	return false;
-}
-
 void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 {
 	BFW::Vector<BFW::GUI::PopUp>& _Panels = _Parent.GetPanels();
@@ -1093,7 +1055,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _LeftResizePopUpId:
+		case BFW::GUI::_LeftResizePopUpId:
 		{
 			if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
 			{
@@ -1110,7 +1072,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _RightResizePopUpId:
+		case BFW::GUI::_RightResizePopUpId:
 		{
 			if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
 			{
@@ -1127,7 +1089,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _TopResizePopUpId:
+		case BFW::GUI::_TopResizePopUpId:
 		{
 			if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
 			{
@@ -1144,7 +1106,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _BottomResizePopUpId:
+		case BFW::GUI::_BottomResizePopUpId:
 		{
 			if (_Parent.GetPanelType() == BFW::GUI::_NullPanelType)
 			{
@@ -1161,35 +1123,35 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _LeftTopResizePopUpId:
+		case BFW::GUI::_LeftTopResizePopUpId:
 		{
 			_PopUp.SetPositionX(_Parent.GetScrollX());
 			_PopUp.SetPositionY(_Parent.GetScrollY());
 
 			break;
 		}
-		case _LeftBottomResizePopUpId:
+		case BFW::GUI::_LeftBottomResizePopUpId:
 		{
 			_PopUp.SetPositionX(_Parent.GetScrollX());
 			_PopUp.SetPositionY((_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY());
 
 			break;
 		}
-		case _RightTopResizePopUpId:
+		case BFW::GUI::_RightTopResizePopUpId:
 		{
 			_PopUp.SetPositionX((_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX());
 			_PopUp.SetPositionY(_Parent.GetScrollY());
 
 			break;
 		}
-		case _RightBottomResizePopUpId:
+		case BFW::GUI::_RightBottomResizePopUpId:
 		{
 			_PopUp.SetPositionX((_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX());
 			_PopUp.SetPositionY((_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY());
 
 			break;
 		}
-		case _HScrollWindowPopUpId:
+		case BFW::GUI::_HScrollWindowPopUpId:
 		{
 			_HasHScroll = true;
 
@@ -1210,7 +1172,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _VScrollWindowPopUpId:
+		case BFW::GUI::_VScrollWindowPopUpId:
 		{
 			_HasVScroll = true;
 
@@ -1231,7 +1193,7 @@ void BFW_WINDOWS::GUI::ResizeChilds(BFW::GUI::PopUp& _Parent)
 
 			break;
 		}
-		case _ScrollCornerPopUpId:
+		case BFW::GUI::_ScrollCornerPopUpId:
 		{
 			if (_Parent.GetWidth() < _Parent.GetTrueWidth() || _Parent.GetHeight() < _Parent.GetTrueHeight())
 			{
@@ -1264,7 +1226,7 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		BFW::GUI::PopUp& _ScrollWindow = _Parent.PushPopUp
 		(
-			_Layer, _HScrollWindowPopUpId,
+			_Layer, BFW::GUI::_HScrollWindowPopUpId,
 			0, 0,
 			(_Parent.GetWidth() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetWidth() > ScrollPadding * 2 + ScrollSize), ScrollSize,
 			ScrollPadding + _Parent.GetScrollX(), _Parent.GetHeight() - (ScrollPadding + ScrollSize) + _Parent.GetScrollY(),
@@ -1280,7 +1242,7 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_ScrollWindow.PushPopUp
 		(
-			_Layer, _HScrollButtonPopUpId,
+			_Layer, BFW::GUI::_HScrollButtonPopUpId,
 			0, 0,
 			_ScrollWindow.GetWidth() * _Parent.GetWidth() / _Parent.GetTrueWidth(), ScrollSize,
 			_Parent.GetScrollX() * (_ScrollWindow.GetWidth() - _ScrollWindow.GetWidth() * _Parent.GetWidth() / _Parent.GetTrueWidth()) / (_Parent.GetTrueWidth() - _Parent.GetWidth()), 0,
@@ -1299,7 +1261,7 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		BFW::GUI::PopUp& _ScrollWindow = _Parent.PushPopUp
 		(
-			_Layer, _VScrollWindowPopUpId,
+			_Layer, BFW::GUI::_VScrollWindowPopUpId,
 			0, 0,
 			ScrollSize, (_Parent.GetHeight() - (ScrollPadding * 2 + ScrollSize)) * (_Parent.GetHeight() > ScrollPadding * 2 + ScrollSize),
 			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), ScrollPadding + _Parent.GetScrollY(),
@@ -1315,7 +1277,7 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_ScrollWindow.PushPopUp
 		(
-			_Layer, _VScrollButtonPopUpId,
+			_Layer, BFW::GUI::_VScrollButtonPopUpId,
 			0, 0,
 			ScrollSize, _ScrollWindow.GetHeight() * _Parent.GetHeight() / _Parent.GetTrueHeight(),
 			0, _Parent.GetScrollY() * (_ScrollWindow.GetHeight() - _ScrollWindow.GetHeight() * _Parent.GetHeight() / _Parent.GetTrueHeight()) / (_Parent.GetTrueHeight() - _Parent.GetHeight()),
@@ -1334,7 +1296,7 @@ void BFW_WINDOWS::GUI::GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _ScrollCornerPopUpId,
+			_Layer, BFW::GUI::_ScrollCornerPopUpId,
 			0, 0,
 			ScrollSize, ScrollSize,
 			_Parent.GetWidth() - (ScrollPadding + ScrollSize) + _Parent.GetScrollX(), _Parent.GetHeight() - (ScrollPadding + ScrollSize) + _Parent.GetScrollY(),
@@ -1361,7 +1323,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _LeftResizePopUpId,
+			_Layer, BFW::GUI::_LeftResizePopUpId,
 			0, 0,
 			ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
 			_Parent.GetScrollX(), ResizeSize + _Parent.GetScrollY(),
@@ -1377,7 +1339,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _RightResizePopUpId,
+			_Layer, BFW::GUI::_RightResizePopUpId,
 			0, 0,
 			ResizeSize, (_Parent.GetHeight() - 2 * ResizeSize) * (_Parent.GetHeight() > 2 * ResizeSize),
 			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), ResizeSize + _Parent.GetScrollY(),
@@ -1393,7 +1355,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _TopResizePopUpId,
+			_Layer, BFW::GUI::_TopResizePopUpId,
 			0, 0,
 			(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
 			ResizeSize + _Parent.GetScrollX(), _Parent.GetScrollY(),
@@ -1409,7 +1371,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _BottomResizePopUpId,
+			_Layer, BFW::GUI::_BottomResizePopUpId,
 			0, 0,
 			(_Parent.GetWidth() - 2 * ResizeSize) * (_Parent.GetWidth() > 2 * ResizeSize), ResizeSize,
 			ResizeSize + _Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
@@ -1425,7 +1387,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _LeftTopResizePopUpId,
+			_Layer, BFW::GUI::_LeftTopResizePopUpId,
 			0, 0,
 			ResizeSize, ResizeSize,
 			_Parent.GetScrollX(), _Parent.GetScrollY(),
@@ -1441,7 +1403,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _LeftBottomResizePopUpId,
+			_Layer, BFW::GUI::_LeftBottomResizePopUpId,
 			0, 0,
 			ResizeSize, ResizeSize,
 			_Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
@@ -1457,7 +1419,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _RightTopResizePopUpId,
+			_Layer, BFW::GUI::_RightTopResizePopUpId,
 			0, 0,
 			ResizeSize, ResizeSize,
 			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), _Parent.GetScrollY(),
@@ -1473,7 +1435,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _RightBottomResizePopUpId,
+			_Layer, BFW::GUI::_RightBottomResizePopUpId,
 			0, 0,
 			ResizeSize, ResizeSize,
 			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
@@ -1492,7 +1454,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _RightResizePopUpId,
+			_Layer, BFW::GUI::_RightResizePopUpId,
 			0, 0,
 			ResizeSize, _Parent.GetHeight(),
 			(_Parent.GetWidth() - ResizeSize) * (_Parent.GetWidth() > ResizeSize) + _Parent.GetScrollX(), _Parent.GetScrollY(),
@@ -1511,7 +1473,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _LeftResizePopUpId,
+			_Layer, BFW::GUI::_LeftResizePopUpId,
 			0, 0,
 			ResizeSize, _Parent.GetHeight(),
 			_Parent.GetScrollX(), _Parent.GetScrollY(),
@@ -1530,7 +1492,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _BottomResizePopUpId,
+			_Layer, BFW::GUI::_BottomResizePopUpId,
 			0, 0,
 			_Parent.GetWidth(), ResizeSize,
 			_Parent.GetScrollX(), (_Parent.GetHeight() - ResizeSize) * (_Parent.GetHeight() > ResizeSize) + _Parent.GetScrollY(),
@@ -1549,7 +1511,7 @@ void BFW_WINDOWS::GUI::GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _
 
 		_Parent.PushPopUp
 		(
-			_Layer, _TopResizePopUpId,
+			_Layer, BFW::GUI::_TopResizePopUpId,
 			0, 0,
 			_Parent.GetWidth(), ResizeSize,
 			_Parent.GetScrollX(), _Parent.GetScrollY(),
@@ -1567,7 +1529,7 @@ void BFW_WINDOWS::GUI::ScrollWindowX(BFW::GUI::PopUp& _ScrollableWindow, const i
 {
 	size_t _HScrollWindowIndex = 0;
 
-	if (!GUI::FindHScrollWindow(_HScrollWindowIndex, _ScrollableWindow))
+	if (!_ScrollableWindow.FindPopUpLayer(_HScrollWindowIndex, BFW::GUI::_HScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -1601,7 +1563,7 @@ void BFW_WINDOWS::GUI::ScrollWindowX(BFW::GUI::PopUp& _ScrollableWindow, const i
 		{
 			uint64_t _Id = _ScrollableWindow.GetPopUps()[_Layer][_Index].GetId();
 
-			if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
+			if (_Id == BFW::GUI::_LeftResizePopUpId || _Id == BFW::GUI::_RightResizePopUpId || _Id == BFW::GUI::_TopResizePopUpId || _Id == BFW::GUI::_BottomResizePopUpId || _Id == BFW::GUI::_LeftTopResizePopUpId || _Id == BFW::GUI::_LeftBottomResizePopUpId || _Id == BFW::GUI::_RightTopResizePopUpId || _Id == BFW::GUI::_RightBottomResizePopUpId || _Id == BFW::GUI::_HScrollWindowPopUpId || _Id == BFW::GUI::_VScrollWindowPopUpId || _Id == BFW::GUI::_ScrollCornerPopUpId)
 			{
 				_ScrollableWindow.GetPopUps()[_Layer][_Index].SetPositionX(_ScrollableWindow.GetPopUps()[_Layer][_Index].GetPositionX() + _ScrollDelta);
 			}
@@ -1613,7 +1575,7 @@ void BFW_WINDOWS::GUI::ScrollWindowY(BFW::GUI::PopUp& _ScrollableWindow, const i
 {
 	size_t _VScrollWindowIndex = 0;
 
-	if (!GUI::FindVScrollWindow(_VScrollWindowIndex, _ScrollableWindow))
+	if (!_ScrollableWindow.FindPopUpLayer(_VScrollWindowIndex, BFW::GUI::_VScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -1647,7 +1609,7 @@ void BFW_WINDOWS::GUI::ScrollWindowY(BFW::GUI::PopUp& _ScrollableWindow, const i
 		{
 			uint64_t _Id = _ScrollableWindow.GetPopUps()[_Layer][_Index].GetId();
 
-			if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
+			if (_Id == BFW::GUI::_LeftResizePopUpId || _Id == BFW::GUI::_RightResizePopUpId || _Id == BFW::GUI::_TopResizePopUpId || _Id == BFW::GUI::_BottomResizePopUpId || _Id == BFW::GUI::_LeftTopResizePopUpId || _Id == BFW::GUI::_LeftBottomResizePopUpId || _Id == BFW::GUI::_RightTopResizePopUpId || _Id == BFW::GUI::_RightBottomResizePopUpId || _Id == BFW::GUI::_HScrollWindowPopUpId || _Id == BFW::GUI::_VScrollWindowPopUpId || _Id == BFW::GUI::_ScrollCornerPopUpId)
 			{
 				_ScrollableWindow.GetPopUps()[_Layer][_Index].SetPositionY(_ScrollableWindow.GetPopUps()[_Layer][_Index].GetPositionY() + _ScrollDelta);
 			}
@@ -1659,7 +1621,7 @@ void BFW_WINDOWS::GUI::ScrollWindowWithMouseX(BFW::GUI::PopUp& _ScrollableWindow
 {
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindHScrollWindow(_ScrollWindowIndex, _ScrollableWindow))
+	if (!_ScrollableWindow.FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_HScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -1709,7 +1671,7 @@ void BFW_WINDOWS::GUI::ScrollWindowWithMouseX(BFW::GUI::PopUp& _ScrollableWindow
 		{
 			uint64_t _Id = _ScrollableWindow.GetPopUps()[_Layer][_Index].GetId();
 
-			if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
+			if (_Id == BFW::GUI::_LeftResizePopUpId || _Id == BFW::GUI::_RightResizePopUpId || _Id == BFW::GUI::_TopResizePopUpId || _Id == BFW::GUI::_BottomResizePopUpId || _Id == BFW::GUI::_LeftTopResizePopUpId || _Id == BFW::GUI::_LeftBottomResizePopUpId || _Id == BFW::GUI::_RightTopResizePopUpId || _Id == BFW::GUI::_RightBottomResizePopUpId || _Id == BFW::GUI::_HScrollWindowPopUpId || _Id == BFW::GUI::_VScrollWindowPopUpId || _Id == BFW::GUI::_ScrollCornerPopUpId)
 			{
 				_ScrollableWindow.GetPopUps()[_Layer][_Index].SetPositionX(_ScrollableWindow.GetPopUps()[_Layer][_Index].GetPositionX() + _ScrollDelta);
 			}
@@ -1721,7 +1683,7 @@ void BFW_WINDOWS::GUI::ScrollWindowWithMouseY(BFW::GUI::PopUp& _ScrollableWindow
 {
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindVScrollWindow(_ScrollWindowIndex, _ScrollableWindow))
+	if (!_ScrollableWindow.FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_VScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -1771,7 +1733,7 @@ void BFW_WINDOWS::GUI::ScrollWindowWithMouseY(BFW::GUI::PopUp& _ScrollableWindow
 		{
 			uint64_t _Id = _ScrollableWindow.GetPopUps()[_Layer][_Index].GetId();
 
-			if (_Id == GUI::_LeftResizePopUpId || _Id == GUI::_RightResizePopUpId || _Id == GUI::_TopResizePopUpId || _Id == GUI::_BottomResizePopUpId || _Id == GUI::_LeftTopResizePopUpId || _Id == GUI::_LeftBottomResizePopUpId || _Id == GUI::_RightTopResizePopUpId || _Id == GUI::_RightBottomResizePopUpId || _Id == GUI::_HScrollWindowPopUpId || _Id == GUI::_VScrollWindowPopUpId || _Id == GUI::_ScrollCornerPopUpId)
+			if (_Id == BFW::GUI::_LeftResizePopUpId || _Id == BFW::GUI::_RightResizePopUpId || _Id == BFW::GUI::_TopResizePopUpId || _Id == BFW::GUI::_BottomResizePopUpId || _Id == BFW::GUI::_LeftTopResizePopUpId || _Id == BFW::GUI::_LeftBottomResizePopUpId || _Id == BFW::GUI::_RightTopResizePopUpId || _Id == BFW::GUI::_RightBottomResizePopUpId || _Id == BFW::GUI::_HScrollWindowPopUpId || _Id == BFW::GUI::_VScrollWindowPopUpId || _Id == BFW::GUI::_ScrollCornerPopUpId)
 			{
 				_ScrollableWindow.GetPopUps()[_Layer][_Index].SetPositionY(_ScrollableWindow.GetPopUps()[_Layer][_Index].GetPositionY() + _ScrollDelta);
 			}
@@ -1783,67 +1745,67 @@ void BFW_WINDOWS::GUI::RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopU
 {
 	switch (_PopUpId)
 	{
-	case _LeftResizePopUpId:
+	case BFW::GUI::_LeftResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEWE));
 		break;
 	}
-	case _RightResizePopUpId:
+	case BFW::GUI::_RightResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEWE));
 		break;
 	}
-	case _TopResizePopUpId:
+	case BFW::GUI::_TopResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENS));
 		break;
 	}
-	case _BottomResizePopUpId:
+	case BFW::GUI::_BottomResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENS));
 		break;
 	}
-	case _LeftTopResizePopUpId:
+	case BFW::GUI::_LeftTopResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENWSE));
 		break;
 	}
-	case _LeftBottomResizePopUpId:
+	case BFW::GUI::_LeftBottomResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENESW));
 		break;
 	}
-	case _RightTopResizePopUpId:
+	case BFW::GUI::_RightTopResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENESW));
 		break;
 	}
-	case _RightBottomResizePopUpId:
+	case BFW::GUI::_RightBottomResizePopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZENWSE));
 		break;
 	}
-	case _HScrollWindowPopUpId:
+	case BFW::GUI::_HScrollWindowPopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
 		break;
 	}
-	case _HScrollButtonPopUpId:
+	case BFW::GUI::_HScrollButtonPopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
 		break;
 	}
-	case _VScrollWindowPopUpId:
+	case BFW::GUI::_VScrollWindowPopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
 		break;
 	}
-	case _VScrollButtonPopUpId:
+	case BFW::GUI::_VScrollButtonPopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_HAND));
 		break;
 	}
-	case _ScrollCornerPopUpId:
+	case BFW::GUI::_ScrollCornerPopUpId:
 	{
 		_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_ARROW));
 		break;

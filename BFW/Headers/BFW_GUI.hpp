@@ -117,7 +117,20 @@ namespace BFW
 
 		enum BFW_API PopUpIds : const uint64_t
 		{
-			_NodePopUpId = 0
+			_NodePopUpId = 0,
+			_LeftResizePopUpId = 1,
+			_RightResizePopUpId = 2,
+			_TopResizePopUpId = 3,
+			_BottomResizePopUpId = 4,
+			_LeftTopResizePopUpId = 5,
+			_LeftBottomResizePopUpId = 6,
+			_RightTopResizePopUpId = 7,
+			_RightBottomResizePopUpId = 8,
+			_HScrollWindowPopUpId = 9,
+			_HScrollButtonPopUpId = 10,
+			_VScrollWindowPopUpId = 11,
+			_VScrollButtonPopUpId = 12,
+			_ScrollCornerPopUpId = 13
 		};
 
 		enum BFW_API PanelTypes : const uint8_t
@@ -202,6 +215,7 @@ namespace BFW
 
 			SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<SafePopUpPointer>* _Path = nullptr);
 			const SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<const SafePopUpPointer>* _Path = nullptr) const;
+			const bool FindPopUpLayer(size_t& _Layer, const uint64_t _PopUpId) const;
 			const size_t GetFocusedPanel() const;
 			Vector<PopUp>& GetPanels();
 			const Vector<PopUp>& GetPanels() const;

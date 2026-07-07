@@ -409,7 +409,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 			{
 				switch (_ResizePopUpId)
 				{
-				case GUI::_LeftResizePopUpId:
+				case BFW::GUI::_LeftResizePopUpId:
 				{
 					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -445,7 +445,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
-				case GUI::_RightResizePopUpId:
+				case BFW::GUI::_RightResizePopUpId:
 				{
 					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -480,7 +480,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
-				case GUI::_TopResizePopUpId:
+				case BFW::GUI::_TopResizePopUpId:
 				{
 					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
 
@@ -516,7 +516,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
-				case GUI::_BottomResizePopUpId:
+				case BFW::GUI::_BottomResizePopUpId:
 				{
 					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
 
@@ -551,22 +551,22 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
-				case GUI::_LeftTopResizePopUpId:
+				case BFW::GUI::_LeftTopResizePopUpId:
 				{
 					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
 					break;
 				}
-				case GUI::_LeftBottomResizePopUpId:
+				case BFW::GUI::_LeftBottomResizePopUpId:
 				{
 					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
 					break;
 				}
-				case GUI::_RightTopResizePopUpId:
+				case BFW::GUI::_RightTopResizePopUpId:
 				{
 					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
 					break;
 				}
-				case GUI::_RightBottomResizePopUpId:
+				case BFW::GUI::_RightBottomResizePopUpId:
 				{
 					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Corner resize is not allowed on a panel!"));
 					break;
@@ -627,7 +627,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 				{
 					switch (_ResizePopUpId)
 					{
-					case GUI::_LeftResizePopUpId:
+					case BFW::GUI::_LeftResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -649,7 +649,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_RightResizePopUpId:
+					case BFW::GUI::_RightResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -670,7 +670,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_TopResizePopUpId:
+					case BFW::GUI::_TopResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
 
@@ -692,7 +692,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_BottomResizePopUpId:
+					case BFW::GUI::_BottomResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaY = _MouseDeltaY;
 
@@ -713,7 +713,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_LeftTopResizePopUpId:
+					case BFW::GUI::_LeftTopResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -752,7 +752,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_LeftBottomResizePopUpId:
+					case BFW::GUI::_LeftBottomResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -790,7 +790,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_RightTopResizePopUpId:
+					case BFW::GUI::_RightTopResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -828,7 +828,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 
 						break;
 					}
-					case GUI::_RightBottomResizePopUpId:
+					case BFW::GUI::_RightBottomResizePopUpId:
 					{
 						intptr_t _TrueMouseDeltaX = _MouseDeltaX;
 
@@ -1063,47 +1063,47 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			{
 				switch (_WndData.LCapturePath[0]->GetId())
 				{
-				case GUI::_LeftResizePopUpId:
+				case BFW::GUI::_LeftResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_LeftResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_LeftResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_RightResizePopUpId:
+				case BFW::GUI::_RightResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_RightResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_RightResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_TopResizePopUpId:
+				case BFW::GUI::_TopResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_TopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_TopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_BottomResizePopUpId:
+				case BFW::GUI::_BottomResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_BottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_BottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_LeftTopResizePopUpId:
+				case BFW::GUI::_LeftTopResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_LeftTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_LeftTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_LeftBottomResizePopUpId:
+				case BFW::GUI::_LeftBottomResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_LeftBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_LeftBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_RightTopResizePopUpId:
+				case BFW::GUI::_RightTopResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_RightTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_RightTopResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_RightBottomResizePopUpId:
+				case BFW::GUI::_RightBottomResizePopUpId:
 				{
-					MouseCaptureResize(_Wnd, _WndData, GUI::_RightBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
+					MouseCaptureResize(_Wnd, _WndData, BFW::GUI::_RightBottomResizePopUpId, _MouseDeltaX, _MouseDeltaY);
 					break;
 				}
-				case GUI::_HScrollWindowPopUpId:
+				case BFW::GUI::_HScrollWindowPopUpId:
 				{
 					intptr_t _LocalMouseX = _MouseX;
 					intptr_t _LocalMouseY = _MouseY;
@@ -1132,12 +1132,12 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
-				case GUI::_HScrollButtonPopUpId:
+				case BFW::GUI::_HScrollButtonPopUpId:
 				{
 					GUI::ScrollWindowWithMouseX(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationX, _MouseDeltaX);
 					break;
 				}
-				case GUI::_VScrollWindowPopUpId:
+				case BFW::GUI::_VScrollWindowPopUpId:
 				{
 					intptr_t _LocalMouseX = _MouseX;
 					intptr_t _LocalMouseY = _MouseY;
@@ -1166,7 +1166,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 					break;
 				}
-				case GUI::_VScrollButtonPopUpId:
+				case BFW::GUI::_VScrollButtonPopUpId:
 				{
 					GUI::ScrollWindowWithMouseY(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationY, _MouseDeltaY);
 					break;
@@ -1593,13 +1593,13 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				{
 					bool _ShouldBreak = false;
 
-					if (_ScrollableWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == GUI::_HScrollWindowPopUpId)
+					if (_ScrollableWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == BFW::GUI::_HScrollWindowPopUpId)
 					{
 						_FoundHScrollWindow = true;
 						_ShouldBreak = true;
 					}
 
-					if (_ScrollableWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == GUI::_VScrollWindowPopUpId)
+					if (_ScrollableWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == BFW::GUI::_VScrollWindowPopUpId)
 					{
 						_FoundVScrollWindow = true;
 						_ShouldBreak = true;

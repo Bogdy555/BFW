@@ -2182,6 +2182,25 @@ const BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr
 	return SafePopUpPointer((PopUp*)(this));
 }
 
+const bool BFW::GUI::PopUp::FindPopUpLayer(size_t& _Layer, const uint64_t _PopUpId) const
+{
+	_Layer = 0;
+
+	while (_Layer < PopUps.GetSize())
+	{
+		if (PopUps[_Layer][FocusedPopUps[_Layer]].GetId() == _PopUpId)
+		{
+			return true;
+		}
+
+		_Layer++;
+	}
+
+	_Layer = 0;
+
+	return false;
+}
+
 const size_t BFW::GUI::PopUp::GetFocusedPanel() const
 {
 	return FocusedPanel;

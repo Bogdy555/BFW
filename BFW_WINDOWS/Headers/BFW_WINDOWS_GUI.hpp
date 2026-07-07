@@ -16,19 +16,6 @@ namespace BFW_WINDOWS
 
 		enum PopUpIds : const uint64_t
 		{
-			_LeftResizePopUpId = 1,
-			_RightResizePopUpId = 2,
-			_TopResizePopUpId = 3,
-			_BottomResizePopUpId = 4,
-			_LeftTopResizePopUpId = 5,
-			_LeftBottomResizePopUpId = 6,
-			_RightTopResizePopUpId = 7,
-			_RightBottomResizePopUpId = 8,
-			_HScrollWindowPopUpId = 9,
-			_HScrollButtonPopUpId = 10,
-			_VScrollWindowPopUpId = 11,
-			_VScrollButtonPopUpId = 12,
-			_ScrollCornerPopUpId = 13,
 			_DebugWindowPopUpId = 14,
 			_SpawnButtonPopUpId = 15
 		};
@@ -138,8 +125,6 @@ namespace BFW_WINDOWS
 		const size_t GetMinX(const uint64_t _PopUpId);
 		const size_t GetMinY(const uint64_t _PopUpId);
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
-		const bool FindHScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent);
-		const bool FindVScrollWindow(size_t& _Index, const BFW::GUI::PopUp& _Parent);
 		void ResizeChilds(BFW::GUI::PopUp& _Parnet);
 		void GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _HasHScroll, const bool _HasVScroll);
 		void GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _IsNode);
