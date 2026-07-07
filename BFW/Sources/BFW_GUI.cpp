@@ -1909,6 +1909,242 @@ void BFW::GUI::PopUp::Render(void* _Global)
 	}
 }
 
+void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+{
+	if (TrueWidth == Width)
+	{
+		return;
+	}
+
+	size_t _ScrollWindowIndex = 0;
+
+	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_HScrollWindowPopUpId))
+	{
+		return;
+	}
+
+	BFW::GUI::PopUp& _ScrollWindow = PopUps[_ScrollWindowIndex][0];
+	BFW::GUI::PopUp& _ScrollButton = _ScrollWindow.PopUps[0][0];
+
+	intptr_t _TrueDelta = _Delta;
+
+	if (_TrueDelta < 0 && _ScrollButton.PositionX < -_TrueDelta)
+	{
+		_TrueDelta = -_ScrollButton.PositionX;
+	}
+
+	if (_TrueDelta > 0 && (_ScrollWindow.Width - (_ScrollButton.PositionX + _ScrollButton.Width)) * (_ScrollWindow.Width > _ScrollButton.PositionX + _ScrollButton.Width) < (size_t)(_TrueDelta))
+	{
+		_TrueDelta = (_ScrollWindow.Width - (_ScrollButton.PositionX + _ScrollButton.Width)) * (_ScrollWindow.Width > _ScrollButton.PositionX + _ScrollButton.Width);
+	}
+
+	_ScrollButton.SetPositionX(_ScrollButton.PositionX + _TrueDelta);
+
+	intptr_t _ScrollDelta = ScrollX;
+
+	SetScrollX(_ScrollButton.PositionX * (TrueWidth - Width) / (_ScrollWindow.Width - _ScrollWindow.Width * Width / TrueWidth));
+
+	_ScrollDelta = ScrollX - _ScrollDelta;
+
+	for (size_t _Layer = 0; _Layer < PopUps.GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
+		{
+			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			{
+				PopUps[_Layer][_Index].SetPositionX(PopUps[_Layer][_Index].PositionX + _ScrollDelta);
+			}
+		}
+	}
+}
+
+void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+{
+	if (TrueHeight == Height)
+	{
+		return;
+	}
+
+	size_t _ScrollWindowIndex = 0;
+
+	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_VScrollWindowPopUpId))
+	{
+		return;
+	}
+
+	BFW::GUI::PopUp& _ScrollWindow = PopUps[_ScrollWindowIndex][0];
+	BFW::GUI::PopUp& _ScrollButton = _ScrollWindow.PopUps[0][0];
+
+	intptr_t _TrueDelta = _Delta;
+
+	if (_TrueDelta < 0 && _ScrollButton.PositionY < -_TrueDelta)
+	{
+		_TrueDelta = -_ScrollButton.PositionY;
+	}
+
+	if (_TrueDelta > 0 && (_ScrollWindow.Height - (_ScrollButton.PositionY + _ScrollButton.Height)) * (_ScrollWindow.Height > _ScrollButton.PositionY + _ScrollButton.Height) < (size_t)(_TrueDelta))
+	{
+		_TrueDelta = (_ScrollWindow.Height - (_ScrollButton.PositionY + _ScrollButton.Height)) * (_ScrollWindow.Height > _ScrollButton.PositionY + _ScrollButton.Height);
+	}
+
+	_ScrollButton.SetPositionY(_ScrollButton.PositionY + _TrueDelta);
+
+	intptr_t _ScrollDelta = ScrollY;
+
+	SetScrollY(_ScrollButton.PositionY * (TrueHeight - Height) / (_ScrollWindow.Height - _ScrollWindow.Height * Height / TrueHeight));
+
+	_ScrollDelta = ScrollY - _ScrollDelta;
+
+	for (size_t _Layer = 0; _Layer < PopUps.GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
+		{
+			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			{
+				PopUps[_Layer][_Index].SetPositionY(PopUps[_Layer][_Index].PositionY + _ScrollDelta);
+			}
+		}
+	}
+}
+
+void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+{
+	if (TrueWidth == Width)
+	{
+		return;
+	}
+
+	size_t _ScrollWindowIndex = 0;
+
+	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_HScrollWindowPopUpId))
+	{
+		return;
+	}
+
+	BFW::GUI::PopUp& _ScrollWindow = PopUps[_ScrollWindowIndex][0];
+	BFW::GUI::PopUp& _ScrollButton = _ScrollWindow.PopUps[0][0];
+
+	intptr_t _TrueMouseDeltaX = _Delta;
+
+	if (_Delta < 0)
+	{
+		_TrueMouseDeltaX = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation < -_Delta);
+		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation > -_Delta);
+	}
+
+	if (_TrueMouseDeltaX < 0 && _ScrollButton.PositionX < -_TrueMouseDeltaX)
+	{
+		intptr_t _OldDelta = _TrueMouseDeltaX;
+		_TrueMouseDeltaX = -_ScrollButton.PositionX;
+		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaX;
+	}
+
+	if (_Delta > 0)
+	{
+		_TrueMouseDeltaX = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation < _Delta);
+		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation > _Delta);
+	}
+
+	if (_TrueMouseDeltaX > 0 && (_ScrollWindow.Width - (_ScrollButton.PositionX + _ScrollButton.Width)) * (_ScrollWindow.Width > _ScrollButton.PositionX + _ScrollButton.Width) < (size_t)(_TrueMouseDeltaX))
+	{
+		intptr_t _OldDelta = _TrueMouseDeltaX;
+		_TrueMouseDeltaX = (_ScrollWindow.Width - (_ScrollButton.PositionX + _ScrollButton.Width)) * (_ScrollWindow.Width > _ScrollButton.PositionX + _ScrollButton.Width);
+		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaX;
+	}
+
+	_ScrollButton.SetPositionX(_ScrollButton.PositionX + _TrueMouseDeltaX);
+
+	intptr_t _ScrollDelta = ScrollX;
+
+	SetScrollX(_ScrollButton.PositionX * (TrueWidth - Width) / (_ScrollWindow.Width - _ScrollWindow.Width * Width / TrueWidth));
+
+	_ScrollDelta = ScrollX - _ScrollDelta;
+
+	for (size_t _Layer = 0; _Layer < PopUps.GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
+		{
+			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			{
+				PopUps[_Layer][_Index].SetPositionX(PopUps[_Layer][_Index].PositionX + _ScrollDelta);
+			}
+		}
+	}
+}
+
+void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+{
+	if (TrueHeight == Height)
+	{
+		return;
+	}
+
+	size_t _ScrollWindowIndex = 0;
+
+	if (!FindPopUpLayer(_ScrollWindowIndex, BFW::GUI::_VScrollWindowPopUpId))
+	{
+		return;
+	}
+
+	BFW::GUI::PopUp& _ScrollWindow = PopUps[_ScrollWindowIndex][0];
+	BFW::GUI::PopUp& _ScrollButton = _ScrollWindow.PopUps[0][0];
+
+	intptr_t _TrueMouseDeltaY = _Delta;
+
+	if (_Delta < 0)
+	{
+		_TrueMouseDeltaY = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation < -_Delta);
+		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation > -_Delta);
+	}
+
+	if (_TrueMouseDeltaY < 0 && _ScrollButton.PositionY < -_TrueMouseDeltaY)
+	{
+		intptr_t _OldDelta = _TrueMouseDeltaY;
+		_TrueMouseDeltaY = -_ScrollButton.PositionY;
+		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaY;
+	}
+
+	if (_Delta > 0)
+	{
+		_TrueMouseDeltaY = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation < _Delta);
+		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation > _Delta);
+	}
+
+	if (_TrueMouseDeltaY > 0 && (_ScrollWindow.Height - (_ScrollButton.PositionY + _ScrollButton.Height)) * (_ScrollWindow.Height > _ScrollButton.PositionY + _ScrollButton.Height) < (size_t)(_TrueMouseDeltaY))
+	{
+		intptr_t _OldDelta = _TrueMouseDeltaY;
+		_TrueMouseDeltaY = (_ScrollWindow.Height - (_ScrollButton.PositionY + _ScrollButton.Height)) * (_ScrollWindow.Height > _ScrollButton.PositionY + _ScrollButton.Height);
+		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaY;
+	}
+
+	_ScrollButton.SetPositionY(_ScrollButton.PositionY + _TrueMouseDeltaY);
+
+	intptr_t _ScrollDelta = ScrollY;
+
+	SetScrollY(_ScrollButton.PositionY * (TrueHeight - Height) / (_ScrollWindow.Height - _ScrollWindow.Height * Height / TrueHeight));
+
+	_ScrollDelta = ScrollY - _ScrollDelta;
+
+	for (size_t _Layer = 0; _Layer < PopUps.GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
+		{
+			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			{
+				PopUps[_Layer][_Index].SetPositionY(PopUps[_Layer][_Index].PositionY + _ScrollDelta);
+			}
+		}
+	}
+}
+
 void BFW::GUI::PopUp::SetFocusedPanel(const size_t _FocusedPanel)
 {
 	FocusedPanel = _FocusedPanel;

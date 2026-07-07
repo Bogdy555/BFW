@@ -135,7 +135,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		true
 	);
 
-	GUI::GenerateScrollBars(_Parent, false, false);
+	GUI::GenerateScrollBars(_Parent, false, false, GUI::ForceHScroll(GUI::_DebugWindowPopUpId), GUI::ForceVScroll(GUI::_DebugWindowPopUpId));
 	GUI::GenerateResizeBars(_Parent, _IsNode);
 }
 
@@ -1121,11 +1121,11 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 					if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
 					{
-						GUI::ScrollWindowWithMouseX(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationX, _LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2);
+						_WndData.LCapturePath[2]->ScrollWithMouseH(_LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2, _WndData.ScrollAccumulationX, GUI::IgnoreHScroll);
 					}
 					else
 					{
-						GUI::ScrollWindowWithMouseX(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationX, _MouseDeltaX);
+						_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.ScrollAccumulationX, GUI::IgnoreHScroll);
 					}
 
 					_WndData.LCapturePath.Erase(0);
@@ -1134,7 +1134,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 				}
 				case BFW::GUI::_HScrollButtonPopUpId:
 				{
-					GUI::ScrollWindowWithMouseX(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationX, _MouseDeltaX);
+					_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.ScrollAccumulationX, GUI::IgnoreHScroll);
 					break;
 				}
 				case BFW::GUI::_VScrollWindowPopUpId:
@@ -1155,11 +1155,11 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 					if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
 					{
-						GUI::ScrollWindowWithMouseY(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationY, _LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2);
+						_WndData.LCapturePath[2]->ScrollWithMouseV(_LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2, _WndData.ScrollAccumulationY, GUI::IgnoreVScroll);
 					}
 					else
 					{
-						GUI::ScrollWindowWithMouseY(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationY, _MouseDeltaY);
+						_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.ScrollAccumulationY, GUI::IgnoreVScroll);
 					}
 
 					_WndData.LCapturePath.Erase(0);
@@ -1168,7 +1168,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 				}
 				case BFW::GUI::_VScrollButtonPopUpId:
 				{
-					GUI::ScrollWindowWithMouseY(*_WndData.LCapturePath[2], _WndData.ScrollAccumulationY, _MouseDeltaY);
+					_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.ScrollAccumulationY, GUI::IgnoreVScroll);
 					break;
 				}
 				case GUI::_DebugWindowPopUpId:
@@ -1205,8 +1205,8 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 
 			if (GUI::FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
 			{
-				GUI::ScrollWindowX(*_WndData.MCapturePath[_WindowIndex], (intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed* GetTimeStep()));
-				GUI::ScrollWindowY(*_WndData.MCapturePath[_WindowIndex], (intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed* GetTimeStep()));
+				_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * GetTimeStep()), GUI::IgnoreHScroll);
+				_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * GetTimeStep()), GUI::IgnoreVScroll);
 			}
 
 			_WndData.LayoutMutex->unlock();
@@ -1405,7 +1405,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			continue;
 		}
 
-		GUI::ScrollWindowX(*_Path[_ScrollableWindowIndex], _WheelEventsX[_Index].Delta);
+		_Path[_ScrollableWindowIndex]->ScrollH(_WheelEventsX[_Index].Delta, GUI::IgnoreHScroll);
 
 		_WndData.LayoutMutex->unlock();
 	}
@@ -1428,7 +1428,7 @@ void BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& _Wnd, 
 			return;
 		}
 
-		GUI::ScrollWindowY(*_Path[_ScrollableWindowIndex], _WheelEventsY[_Index].Delta);
+		_Path[_ScrollableWindowIndex]->ScrollV(_WheelEventsY[_Index].Delta, GUI::IgnoreVScroll);
 
 		_WndData.LayoutMutex->unlock();
 	}
