@@ -132,8 +132,7 @@ namespace BFW_WINDOWS
 		const bool IgnoreVScroll(const uint64_t _PopUpId);
 		void* GenerateUserData(BFW::GUI::PopUp& _ParentWnd, void* _Global);
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
-		void ResizeChilds(BFW::GUI::PopUp& _Parnet);
-		void GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll);
+		void ResizeChilds(BFW::GUI::PopUp& _Parnet, void* _Global);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 	}

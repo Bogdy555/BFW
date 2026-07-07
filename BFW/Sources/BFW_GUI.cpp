@@ -2360,6 +2360,184 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 	}
 }
 
+void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottomWindow, const RenderFnc _RenderMiddleWindow, const RenderFnc _RenderTopWindow, const RenderFnc _RenderBottomButton, const RenderFnc _RenderMiddleButton, const RenderFnc _RenderTopButton, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, void* _Global)
+{
+	if (Width < TrueWidth && !_HasHScroll)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PopUp& _ScrollWindow = PushPopUp
+		(
+			_Layer, _HScrollWindowPopUpId,
+			0, 0,
+			(Width - (_ScrollPadding * 2 + _ScrollSize)) * (Width > _ScrollPadding * 2 + _ScrollSize), _ScrollSize,
+			_ScrollPadding + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow,
+			_Composit,
+			_GenerateUserData(*this, _Global),
+			true
+		);
+
+		_Layer = _ScrollWindow.PushPopUpLayer();
+
+		_ScrollWindow.PushPopUp
+		(
+			_Layer, _HScrollButtonPopUpId,
+			0, 0,
+			_ScrollWindow.Width * Width / TrueWidth, _ScrollSize,
+			ScrollX * (_ScrollWindow.Width - _ScrollWindow.Width * Width / TrueWidth) / (TrueWidth - Width), 0,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomButton, _RenderMiddleButton, _RenderTopButton,
+			_Composit,
+			_GenerateUserData(_ScrollWindow, _Global),
+			true
+		);
+	}
+	else if (_ForceHScroll && !_HasHScroll)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PopUp& _ScrollWindow = PushPopUp
+		(
+			_Layer, _HScrollWindowPopUpId,
+			0, 0,
+			(Width - (_ScrollPadding * 2 + _ScrollSize)) * (Width > _ScrollPadding * 2 + _ScrollSize), _ScrollSize,
+			_ScrollPadding + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow,
+			_Composit,
+			_GenerateUserData(*this, _Global),
+			true
+		);
+
+		_Layer = _ScrollWindow.PushPopUpLayer();
+
+		_ScrollWindow.PushPopUp
+		(
+			_Layer, _HScrollButtonPopUpId,
+			0, 0,
+			_ScrollWindow.Width, _ScrollSize,
+			0, 0,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomButton, _RenderMiddleButton, _RenderTopButton,
+			_Composit,
+			_GenerateUserData(_ScrollWindow, _Global),
+			true
+		);
+	}
+
+	if (Height < TrueHeight && !_HasVScroll)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PopUp& _ScrollWindow = PushPopUp
+		(
+			_Layer, _VScrollWindowPopUpId,
+			0, 0,
+			_ScrollSize, (Height - (_ScrollTopPadding + _ScrollPadding + _ScrollSize)) * (Height > _ScrollTopPadding + _ScrollPadding + _ScrollSize),
+			Width - (_ScrollPadding + _ScrollSize) + ScrollX, _ScrollTopPadding + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow,
+			_Composit,
+			_GenerateUserData(*this, _Global),
+			true
+		);
+
+		_Layer = _ScrollWindow.PushPopUpLayer();
+
+		_ScrollWindow.PushPopUp
+		(
+			_Layer, _VScrollButtonPopUpId,
+			0, 0,
+			_ScrollSize, _ScrollWindow.Height * Height / TrueHeight,
+			0, ScrollY * (_ScrollWindow.Height - _ScrollWindow.Height * Height / TrueHeight) / (TrueHeight - Height),
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomButton, _RenderMiddleButton, _RenderTopButton,
+			_Composit,
+			_GenerateUserData(_ScrollWindow, _Global),
+			true
+		);
+	}
+	else if (_ForceVScroll && !_HasVScroll)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PopUp& _ScrollWindow = PushPopUp
+		(
+			_Layer, _VScrollWindowPopUpId,
+			0, 0,
+			_ScrollSize, (Height - (_ScrollTopPadding + _ScrollPadding + _ScrollSize)) * (Height > _ScrollTopPadding + _ScrollPadding + _ScrollSize),
+			Width - (_ScrollPadding + _ScrollSize) + ScrollX, _ScrollTopPadding + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow,
+			_Composit,
+			_GenerateUserData(*this, _Global),
+			true
+		);
+
+		_Layer = _ScrollWindow.PushPopUpLayer();
+
+		_ScrollWindow.PushPopUp
+		(
+			_Layer, _VScrollButtonPopUpId,
+			0, 0,
+			_ScrollSize, _ScrollWindow.Height,
+			0, 0,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomButton, _RenderMiddleButton, _RenderTopButton,
+			_Composit,
+			_GenerateUserData(_ScrollWindow, _Global),
+			true
+		);
+	}
+
+	if ((Width < TrueWidth || Height < TrueHeight) && (!_HasHScroll && !_HasVScroll))
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _ScrollCornerPopUpId,
+			0, 0,
+			_ScrollSize, _ScrollSize,
+			Width - (_ScrollPadding + _ScrollSize) + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow,
+			_Composit,
+			_GenerateUserData(*this, _Global),
+			true
+		);
+	}
+	else if ((_ForceHScroll || _ForceVScroll) && (!_HasHScroll && !_HasVScroll))
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _ScrollCornerPopUpId,
+			0, 0,
+			_ScrollSize, _ScrollSize,
+			Width - (_ScrollPadding + _ScrollSize) + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow,
+			_Composit,
+			_GenerateUserData(*this, _Global),
+			true
+		);
+	}
+}
+
 void BFW::GUI::PopUp::SetFocusedPanel(const size_t _FocusedPanel)
 {
 	FocusedPanel = _FocusedPanel;
