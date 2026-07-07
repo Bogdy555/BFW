@@ -2145,7 +2145,7 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollA
 	}
 }
 
-void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit)
+void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, void* _Global)
 {
 	if (_IsNode)
 	{
@@ -2166,7 +2166,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2182,7 +2182,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2198,7 +2198,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2214,7 +2214,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2230,7 +2230,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2246,7 +2246,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2262,7 +2262,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 
@@ -2278,7 +2278,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 	}
@@ -2297,7 +2297,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 	}
@@ -2316,7 +2316,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 	}
@@ -2335,7 +2335,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 	}
@@ -2354,7 +2354,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			_SetupData, _CleanUpData,
 			_RenderBottom, _RenderMiddle, _RenderTop,
 			_Composit,
-			nullptr,
+			_GenerateUserData(*this, _Global),
 			true
 		);
 	}

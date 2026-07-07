@@ -136,7 +136,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 	);
 
 	GUI::GenerateScrollBars(_Parent, false, false, GUI::ForceHScroll(GUI::_DebugWindowPopUpId), GUI::ForceVScroll(GUI::_DebugWindowPopUpId));
-	_Parent.GenerateResizeBars(_IsNode, GUI::ResizeSize, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray40, nullptr, nullptr, GUI::Composit);
+	_Parent.GenerateResizeBars(_IsNode, GUI::ResizeSize, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray40, nullptr, nullptr, GUI::Composit, GUI::GenerateUserData, this);
 }
 
 void BFW_WINDOWS::RunTime::MainMenu::InitGUI()

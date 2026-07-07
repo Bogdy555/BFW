@@ -916,6 +916,11 @@ const bool BFW_WINDOWS::GUI::IgnoreVScroll(const uint64_t _PopUpId)
 	return false;
 }
 
+void* BFW_WINDOWS::GUI::GenerateUserData(BFW::GUI::PopUp& _ParentWnd, void* _Global)
+{
+	return nullptr;
+}
+
 const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path)
 {
 	_Index = 0;
