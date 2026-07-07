@@ -2462,14 +2462,27 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<SafePopUpPointer>& _Path)
 		}
 	}
 
+	if (!_Path.GetSize())
+	{
+		return true;
+	}
+
 	for (size_t _Index = 0; _Index < _Path.GetSize() - 1; _Index++)
 	{
+		bool _Found = false;
+
 		for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 		{
 			if (_Path[_Index] == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
 			{
-				continue;
+				_Found = true;
+				break;
 			}
+		}
+
+		if (_Found)
+		{
+			continue;
 		}
 
 		if (_Path[_Index] == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
@@ -2492,20 +2505,33 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<const SafePopUpPointer>& _P
 {
 	for (size_t _Index = 0; _Index < _Path.GetSize(); _Index++)
 	{
-		if (!_Path)
+		if (!_Path[_Index])
 		{
 			return false;
 		}
 	}
 
+	if (!_Path.GetSize())
+	{
+		return true;
+	}
+
 	for (size_t _Index = 0; _Index < _Path.GetSize() - 1; _Index++)
 	{
+		bool _Found = false;
+
 		for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 		{
 			if (_Path[_Index] == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
 			{
-				continue;
+				_Found = true;
+				break;
 			}
+		}
+
+		if (_Found)
+		{
+			continue;
 		}
 
 		if (_Path[_Index] == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
