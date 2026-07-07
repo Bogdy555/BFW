@@ -2145,6 +2145,221 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollA
 	}
 }
 
+void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit)
+{
+	if (_IsNode)
+	{
+		return;
+	}
+
+	if (PanelType == _NullPanelType)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _LeftResizePopUpId,
+			0, 0,
+			_ResizeSize, (Height - 2 * _ResizeSize) * (Height > 2 * _ResizeSize),
+			ScrollX, _ResizeSize + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _RightResizePopUpId,
+			0, 0,
+			_ResizeSize, (Height - 2 * _ResizeSize) * (Height > 2 * _ResizeSize),
+			(Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX, _ResizeSize + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _TopResizePopUpId,
+			0, 0,
+			(Width - 2 * _ResizeSize) * (Width > 2 * _ResizeSize), _ResizeSize,
+			_ResizeSize + ScrollX, ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _BottomResizePopUpId,
+			0, 0,
+			(Width - 2 * _ResizeSize) * (Width > 2 * _ResizeSize), _ResizeSize,
+			_ResizeSize + ScrollX, (Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _LeftTopResizePopUpId,
+			0, 0,
+			_ResizeSize, _ResizeSize,
+			ScrollX, ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _LeftBottomResizePopUpId,
+			0, 0,
+			_ResizeSize, _ResizeSize,
+			ScrollX, (Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _RightTopResizePopUpId,
+			0, 0,
+			_ResizeSize, _ResizeSize,
+			(Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX, ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+
+		_Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _RightBottomResizePopUpId,
+			0, 0,
+			_ResizeSize, _ResizeSize,
+			(Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX, (Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (PanelType == _LeftPanelType)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _RightResizePopUpId,
+			0, 0,
+			_ResizeSize, Height,
+			(Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX, ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (PanelType == _RightPanelType)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _LeftResizePopUpId,
+			0, 0,
+			_ResizeSize, Height,
+			ScrollX, ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (PanelType == _TopPanelType)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _BottomResizePopUpId,
+			0, 0,
+			Width, _ResizeSize,
+			ScrollX, (Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+	}
+
+	if (PanelType == _BottomPanelType)
+	{
+		size_t _Layer = PushPopUpLayer();
+
+		PushPopUp
+		(
+			_Layer, _TopResizePopUpId,
+			0, 0,
+			Width, _ResizeSize,
+			ScrollX, ScrollY,
+			0, 0,
+			_SetupData, _CleanUpData,
+			_RenderBottom, _RenderMiddle, _RenderTop,
+			_Composit,
+			nullptr,
+			true
+		);
+	}
+}
+
 void BFW::GUI::PopUp::SetFocusedPanel(const size_t _FocusedPanel)
 {
 	FocusedPanel = _FocusedPanel;

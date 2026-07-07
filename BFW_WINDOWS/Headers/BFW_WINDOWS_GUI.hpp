@@ -133,7 +133,6 @@ namespace BFW_WINDOWS
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
 		void ResizeChilds(BFW::GUI::PopUp& _Parnet);
 		void GenerateScrollBars(BFW::GUI::PopUp& _Parent, const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll);
-		void GenerateResizeBars(BFW::GUI::PopUp& _Parent, const bool _IsNode);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 	}

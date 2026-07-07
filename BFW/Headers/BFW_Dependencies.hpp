@@ -174,12 +174,12 @@ namespace BFW
 
 		class BFW_API SafePopUpPointer;
 
-		class BFW_API PopUp;
-
 		typedef void (*SetupRenderDataFnc)(PopUp& _Wnd, PopUp& _ParentWnd, void* _Global);
 		typedef void (*CleanUpRenderDataFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*RenderFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*CompositFnc)(PopUp& _ParentWnd, PopUp& _ChildWnd, void* _Global);
+
+		class BFW_API PopUp;
 
 	}
 

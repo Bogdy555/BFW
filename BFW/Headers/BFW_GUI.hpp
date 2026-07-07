@@ -197,6 +197,7 @@ namespace BFW
 			void ScrollV(const intptr_t _Delta, const bool (*_IgnoreScroll)(const uint64_t _PopUpId));
 			void ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const bool (*_IgnoreScroll)(const uint64_t _PopUpId));
 			void ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const bool (*_IgnoreScroll)(const uint64_t _PopUpId));
+			void GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit);
 			void SetFocusedPanel(const size_t _FocusedPanel);
 			void SetFocusedNode(const size_t _FocusedNode);
 			void SetId(const uint64_t _Id);

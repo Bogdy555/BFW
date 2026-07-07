@@ -48,12 +48,12 @@ void BFW_WINDOWS::RunTime::MainMenu::SpawnQueuedMenu(const uint64_t _QueuedMenu)
 	{
 	case BFW::RunTime::_NullMenu:
 	{
-		GetApplicationObj()->Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
+		_ApplicationObj.Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
 		break;
 	}
 	default:
 	{
-		GetApplicationObj()->Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
+		_ApplicationObj.Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
 		break;
 	}
 	}
@@ -136,7 +136,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 	);
 
 	GUI::GenerateScrollBars(_Parent, false, false, GUI::ForceHScroll(GUI::_DebugWindowPopUpId), GUI::ForceVScroll(GUI::_DebugWindowPopUpId));
-	GUI::GenerateResizeBars(_Parent, _IsNode);
+	_Parent.GenerateResizeBars(_IsNode, GUI::ResizeSize, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray40, nullptr, nullptr, GUI::Composit);
 }
 
 void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
