@@ -2456,7 +2456,7 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<SafePopUpPointer>& _Path)
 {
 	for (size_t _Index = 0; _Index < _Path.GetSize(); _Index++)
 	{
-		if (!_Path)
+		if (!_Path[_Index])
 		{
 			return false;
 		}
