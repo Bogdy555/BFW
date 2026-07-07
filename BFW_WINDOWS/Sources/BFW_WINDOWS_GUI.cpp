@@ -247,11 +247,6 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::MainWindowProc(HWND _hWnd, UINT _Msg, WPARAM 
 
 		uint32_t _ExStyle = GetWindowLong(_hWnd, GWL_EXSTYLE);
 
-		if (!_ExStyle)
-		{
-			break;
-		}
-
 		RECT _WindowRect = { 0 };
 
 		_WindowRect.right = MainWindowMinX;
@@ -447,15 +442,10 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		uint32_t _ExStyle = GetWindowLong(_hWnd, GWL_EXSTYLE);
 
-		if (!_ExStyle)
-		{
-			break;
-		}
-
 		RECT _WindowRect = { 0 };
 
-		_WindowRect.right = MainWindowMinX;
-		_WindowRect.bottom = MainWindowMinY;
+		_WindowRect.right = ChildWindowMinX;
+		_WindowRect.bottom = ChildWindowMinY;
 
 		if (!AdjustWindowRectEx(&_WindowRect, _Style, GetMenu(_hWnd) != NULL, _ExStyle))
 		{
