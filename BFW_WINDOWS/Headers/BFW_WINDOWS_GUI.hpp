@@ -48,8 +48,8 @@ namespace BFW_WINDOWS
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
 			intptr_t LCaptureMouseYLastFrame;
-			intptr_t ScrollAccumulationX;
-			intptr_t ScrollAccumulationY;
+			intptr_t AccumulationX;
+			intptr_t AccumulationY;
 
 			bool MCapture;
 			BFW::Vector<BFW::GUI::SafePopUpPointer> MCapturePath;

@@ -2011,7 +2011,7 @@ void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const IgnoreScrollFnc _Igno
 	}
 }
 
-void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const IgnoreScrollFnc _IgnoreScroll)
+void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _Accumulation, const IgnoreScrollFnc _IgnoreScroll)
 {
 	if (TrueWidth == Width)
 	{
@@ -2032,28 +2032,28 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollA
 
 	if (_Delta < 0)
 	{
-		_TrueMouseDeltaX = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation < -_Delta);
-		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation > -_Delta);
+		_TrueMouseDeltaX = (_Accumulation + _Delta) * (_Accumulation < -_Delta);
+		_Accumulation = (_Accumulation + _Delta) * (_Accumulation > -_Delta);
 	}
 
 	if (_TrueMouseDeltaX < 0 && _ScrollButton.PositionX < -_TrueMouseDeltaX)
 	{
 		intptr_t _OldDelta = _TrueMouseDeltaX;
 		_TrueMouseDeltaX = -_ScrollButton.PositionX;
-		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaX;
+		_Accumulation += _OldDelta - _TrueMouseDeltaX;
 	}
 
 	if (_Delta > 0)
 	{
-		_TrueMouseDeltaX = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation < _Delta);
-		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation > _Delta);
+		_TrueMouseDeltaX = (_Accumulation + _Delta) * (-_Accumulation < _Delta);
+		_Accumulation = (_Accumulation + _Delta) * (-_Accumulation > _Delta);
 	}
 
 	if (_TrueMouseDeltaX > 0 && (_ScrollWindow.Width - (_ScrollButton.PositionX + _ScrollButton.Width)) * (_ScrollWindow.Width > _ScrollButton.PositionX + _ScrollButton.Width) < (size_t)(_TrueMouseDeltaX))
 	{
 		intptr_t _OldDelta = _TrueMouseDeltaX;
 		_TrueMouseDeltaX = (_ScrollWindow.Width - (_ScrollButton.PositionX + _ScrollButton.Width)) * (_ScrollWindow.Width > _ScrollButton.PositionX + _ScrollButton.Width);
-		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaX;
+		_Accumulation += _OldDelta - _TrueMouseDeltaX;
 	}
 
 	_ScrollButton.SetPositionX(_ScrollButton.PositionX + _TrueMouseDeltaX);
@@ -2078,7 +2078,7 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollA
 	}
 }
 
-void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const IgnoreScrollFnc _IgnoreScroll)
+void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _Accumulation, const IgnoreScrollFnc _IgnoreScroll)
 {
 	if (TrueHeight == Height)
 	{
@@ -2099,28 +2099,28 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollA
 
 	if (_Delta < 0)
 	{
-		_TrueMouseDeltaY = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation < -_Delta);
-		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (_ScrollAccumulation > -_Delta);
+		_TrueMouseDeltaY = (_Accumulation + _Delta) * (_Accumulation < -_Delta);
+		_Accumulation = (_Accumulation + _Delta) * (_Accumulation > -_Delta);
 	}
 
 	if (_TrueMouseDeltaY < 0 && _ScrollButton.PositionY < -_TrueMouseDeltaY)
 	{
 		intptr_t _OldDelta = _TrueMouseDeltaY;
 		_TrueMouseDeltaY = -_ScrollButton.PositionY;
-		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaY;
+		_Accumulation += _OldDelta - _TrueMouseDeltaY;
 	}
 
 	if (_Delta > 0)
 	{
-		_TrueMouseDeltaY = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation < _Delta);
-		_ScrollAccumulation = (_ScrollAccumulation + _Delta) * (-_ScrollAccumulation > _Delta);
+		_TrueMouseDeltaY = (_Accumulation + _Delta) * (-_Accumulation < _Delta);
+		_Accumulation = (_Accumulation + _Delta) * (-_Accumulation > _Delta);
 	}
 
 	if (_TrueMouseDeltaY > 0 && (_ScrollWindow.Height - (_ScrollButton.PositionY + _ScrollButton.Height)) * (_ScrollWindow.Height > _ScrollButton.PositionY + _ScrollButton.Height) < (size_t)(_TrueMouseDeltaY))
 	{
 		intptr_t _OldDelta = _TrueMouseDeltaY;
 		_TrueMouseDeltaY = (_ScrollWindow.Height - (_ScrollButton.PositionY + _ScrollButton.Height)) * (_ScrollWindow.Height > _ScrollButton.PositionY + _ScrollButton.Height);
-		_ScrollAccumulation += _OldDelta - _TrueMouseDeltaY;
+		_Accumulation += _OldDelta - _TrueMouseDeltaY;
 	}
 
 	_ScrollButton.SetPositionY(_ScrollButton.PositionY + _TrueMouseDeltaY);
@@ -2143,6 +2143,487 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollA
 			}
 		}
 	}
+}
+
+void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Parent, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, intptr_t& _AccumulationX, intptr_t& _AccumulationY, const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottomWindow, const RenderFnc _RenderMiddleWindow, const RenderFnc _RenderTopWindow, const RenderFnc _RenderBottomButton, const RenderFnc _RenderMiddleButton, const RenderFnc _RenderTopButton, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+{
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < _Parent.Nodes.GetSize(); _Index++)
+	{
+		if (this == &_Parent.Nodes[_Index])
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (_Found)
+	{
+		BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Mouse capture style resize attempt on node window is not allowed!"));
+		return;
+	}
+
+	for (size_t _Index = 0; _Index < _Parent.Panels.GetSize(); _Index++)
+	{
+		if (this == &_Parent.Panels[_Index])
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (_Found)
+	{
+		for (size_t _Index = 0; _Index < _Parent.Panels.GetSize(); _Index++)
+		{
+			switch (_ResizePopUpId)
+			{
+			case _LeftResizePopUpId:
+			{
+				intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+				if (_MouseDeltaX > 0)
+				{
+					_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX < _MouseDeltaX);
+					_AccumulationX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX > _MouseDeltaX);
+				}
+
+				if (_TrueMouseDeltaX > 0 && (_Parent.Panels[_Index].Width - _ResizeSize) * (_Parent.Panels[_Index].Width > _ResizeSize) < (size_t)(_TrueMouseDeltaX))
+				{
+					intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+					_TrueMouseDeltaX = (_Parent.Panels[_Index].Width - _ResizeSize) * (_Parent.Panels[_Index].Width > _ResizeSize);
+					_AccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+				}
+
+				if (_MouseDeltaX < 0)
+				{
+					_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX < -_MouseDeltaX);
+					_AccumulationX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX > -_MouseDeltaX);
+				}
+
+				if (_TrueMouseDeltaX < 0 && (_Parent.Width - _Parent.Panels[_Index].Width) * (_Parent.Width > _Parent.Panels[_Index].Width) < (size_t)(-_TrueMouseDeltaX))
+				{
+					intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+					_TrueMouseDeltaX = -(intptr_t)((_Parent.Width - _Parent.Panels[_Index].Width) * (_Parent.Width > _Parent.Panels[_Index].Width));
+					_AccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+				}
+
+				_Parent.Panels[_Index].SetWidth(_Parent.Panels[_Index].Width - _TrueMouseDeltaX);
+				_Parent.Panels[_Index].SetTrueWidth(_GetMinX(_Parent.Panels[_Index].Id));
+				_Parent.Panels[_Index].SetPositionX(_Parent.Panels[_Index].PositionX + _TrueMouseDeltaX);
+
+				break;
+			}
+			case _RightResizePopUpId:
+			{
+				intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+				if (_MouseDeltaX < 0)
+				{
+					_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX < -_MouseDeltaX);
+					_AccumulationX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX > -_MouseDeltaX);
+				}
+
+				if (_TrueMouseDeltaX < 0 && (_Parent.Panels[_Index].Width - _ResizeSize) * (_Parent.Panels[_Index].Width > _ResizeSize) < (size_t)(-_TrueMouseDeltaX))
+				{
+					intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+					_TrueMouseDeltaX = -(intptr_t)((_Parent.Panels[_Index].Width - _ResizeSize) * (_Parent.Panels[_Index].Width > _ResizeSize));
+					_AccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+				}
+
+				if (_MouseDeltaX > 0)
+				{
+					_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX < _MouseDeltaX);
+					_AccumulationX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX > _MouseDeltaX);
+				}
+
+				if (_TrueMouseDeltaX > 0 && (_Parent.Width - _Parent.Panels[_Index].Width) * (_Parent.Width > _Parent.Panels[_Index].Width) < (size_t)(_TrueMouseDeltaX))
+				{
+					intptr_t _OldMouseDeltaX = _TrueMouseDeltaX;
+					_TrueMouseDeltaX = (_Parent.Width - _Parent.Panels[_Index].Width) * (_Parent.Width > _Parent.Panels[_Index].Width);
+					_AccumulationX += _OldMouseDeltaX - _TrueMouseDeltaX;
+				}
+
+				_Parent.Panels[_Index].SetWidth(_Parent.Panels[_Index].Width + _TrueMouseDeltaX);
+				_Parent.Panels[_Index].SetTrueWidth(_GetMinX(_Parent.Panels[_Index].Id));
+
+				break;
+			}
+			case _TopResizePopUpId:
+			{
+				intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+				if (_MouseDeltaY > 0)
+				{
+					_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY < _MouseDeltaY);
+					_AccumulationY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY > _MouseDeltaY);
+				}
+
+				if (_TrueMouseDeltaY > 0 && (_Parent.Panels[_Index].Height - _ResizeSize) * (_Parent.Panels[_Index].Height > _ResizeSize) < (size_t)(_TrueMouseDeltaY))
+				{
+					intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+					_TrueMouseDeltaY = (_Parent.Panels[_Index].Height - _ResizeSize) * (_Parent.Panels[_Index].Height > _ResizeSize);
+					_AccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+				}
+
+				if (_MouseDeltaY < 0)
+				{
+					_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY < -_MouseDeltaY);
+					_AccumulationY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY > -_MouseDeltaY);
+				}
+
+				if (_TrueMouseDeltaY < 0 && (_Parent.Height - _Parent.Panels[_Index].Height) * (_Parent.Height > _Parent.Panels[_Index].Height) < (size_t)(-_TrueMouseDeltaY))
+				{
+					intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+					_TrueMouseDeltaY = -(intptr_t)((_Parent.Height - _Parent.Panels[_Index].Height) * (_Parent.Height > _Parent.Panels[_Index].Height));
+					_AccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+				}
+
+				_Parent.Panels[_Index].SetHeight(_Parent.Panels[_Index].Height - _TrueMouseDeltaY);
+				_Parent.Panels[_Index].SetTrueHeight(_GetMinY(_Parent.Panels[_Index].Id));
+				_Parent.Panels[_Index].SetPositionY(_Parent.Panels[_Index].PositionY + _TrueMouseDeltaY);
+
+				break;
+			}
+			case _BottomResizePopUpId:
+			{
+				intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+				if (_MouseDeltaY < 0)
+				{
+					_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY < -_MouseDeltaY);
+					_AccumulationY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY > -_MouseDeltaY);
+				}
+
+				if (_TrueMouseDeltaY < 0 && (_Parent.Panels[_Index].Height - _ResizeSize) * (_Parent.Panels[_Index].Height > _ResizeSize) < (size_t)(-_TrueMouseDeltaY))
+				{
+					intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+					_TrueMouseDeltaY = -(intptr_t)((_Parent.Panels[_Index].Height - _ResizeSize) * (_Parent.Panels[_Index].Height > _ResizeSize));
+					_AccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+				}
+
+				if (_MouseDeltaY > 0)
+				{
+					_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY < _MouseDeltaY);
+					_AccumulationY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY > _MouseDeltaY);
+				}
+
+				if (_TrueMouseDeltaY > 0 && (_Parent.Height - _Parent.Panels[_Index].Height) * (_Parent.Height > _Parent.Panels[_Index].Height) < (size_t)(_TrueMouseDeltaY))
+				{
+					intptr_t _OldMouseDeltaY = _TrueMouseDeltaY;
+					_TrueMouseDeltaY = (_Parent.Height - _Parent.Panels[_Index].Height) * (_Parent.Height > _Parent.Panels[_Index].Height);
+					_AccumulationY += _OldMouseDeltaY - _TrueMouseDeltaY;
+				}
+
+				_Parent.Panels[_Index].SetHeight(_Parent.Panels[_Index].Height + _TrueMouseDeltaY);
+				_Parent.Panels[_Index].SetTrueHeight(_GetMinY(_Parent.Panels[_Index].Id));
+
+				break;
+			}
+			case _LeftTopResizePopUpId:
+			{
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize panel with this resize popup id!"));
+				return;
+			}
+			case _LeftBottomResizePopUpId:
+			{
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize panel with this resize popup id!"));
+				return;
+			}
+			case _RightTopResizePopUpId:
+			{
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize panel with this resize popup id!"));
+				return;
+			}
+			case _RightBottomResizePopUpId:
+			{
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize panel with this resize popup id!"));
+				return;
+			}
+			default:
+			{
+				BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize panel with this resize popup id!"));
+				return;
+			}
+			}
+		}
+
+		_Parent.ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+
+		return;
+	}
+
+	for (size_t _Layer = 0; _Layer < _Parent.PopUps.GetSize(); _Layer++)
+	{
+		for (size_t _Index = 0; _Index < _Parent.PopUps[_Layer].GetSize(); _Index++)
+		{
+			if (this == &_Parent.PopUps[_Layer][_Index])
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (_Found)
+		{
+			for (size_t _Index = 0; _Index < _Parent.PopUps[_Layer].GetSize(); _Index++)
+			{
+				switch (_ResizePopUpId)
+				{
+				case _LeftResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX > 0 && (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2) < (size_t)(_MouseDeltaX))
+					{
+						_TrueMouseDeltaX = (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2);
+						_AccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX < 0)
+					{
+						_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX < -_MouseDeltaX);
+						_AccumulationX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX > -_MouseDeltaX);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width - _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetPositionX(_Parent.PopUps[_Layer][_Index].PositionX + _TrueMouseDeltaX);
+
+					break;
+				}
+				case _RightResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX < 0 && (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2) < (size_t)(-_MouseDeltaX))
+					{
+						_TrueMouseDeltaX = -(intptr_t)((_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2));
+						_AccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX > 0)
+					{
+						_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX < _MouseDeltaX);
+						_AccumulationX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX > _MouseDeltaX);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width + _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+
+					break;
+				}
+				case _TopResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY > 0 && (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2) < (size_t)(_MouseDeltaY))
+					{
+						_TrueMouseDeltaY = (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2);
+						_AccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY < 0)
+					{
+						_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY < -_MouseDeltaY);
+						_AccumulationY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY > -_MouseDeltaY);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height - _TrueMouseDeltaY);
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetPositionY(_Parent.PopUps[_Layer][_Index].PositionY + _TrueMouseDeltaY);
+
+					break;
+				}
+				case _BottomResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY < 0 && (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2) < (size_t)(-_MouseDeltaY))
+					{
+						_TrueMouseDeltaY = -(intptr_t)((_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2));
+						_AccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY > 0)
+					{
+						_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY < _MouseDeltaY);
+						_AccumulationY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY > _MouseDeltaY);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height + _TrueMouseDeltaY);
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+
+					break;
+				}
+				case _LeftTopResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX > 0 && (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2) < (size_t)(_MouseDeltaX))
+					{
+						_TrueMouseDeltaX = (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2);
+						_AccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX < 0)
+					{
+						_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX < -_MouseDeltaX);
+						_AccumulationX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX > -_MouseDeltaX);
+					}
+
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY > 0 && (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2) < (size_t)(_MouseDeltaY))
+					{
+						_TrueMouseDeltaY = (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2);
+						_AccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY < 0)
+					{
+						_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY < -_MouseDeltaY);
+						_AccumulationY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY > -_MouseDeltaY);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width - _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height - _TrueMouseDeltaY);
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetPositionX(_Parent.PopUps[_Layer][_Index].PositionX + _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetPositionY(_Parent.PopUps[_Layer][_Index].PositionY + _TrueMouseDeltaY);
+
+					break;
+				}
+				case _LeftBottomResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX > 0 && (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2) < (size_t)(_MouseDeltaX))
+					{
+						_TrueMouseDeltaX = (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2);
+						_AccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX < 0)
+					{
+						_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX < -_MouseDeltaX);
+						_AccumulationX = (_AccumulationX + _MouseDeltaX) * (_AccumulationX > -_MouseDeltaX);
+					}
+
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY < 0 && (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2) < (size_t)(-_MouseDeltaY))
+					{
+						_TrueMouseDeltaY = -(intptr_t)((_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2));
+						_AccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY > 0)
+					{
+						_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY < _MouseDeltaY);
+						_AccumulationY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY > _MouseDeltaY);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width - _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height + _TrueMouseDeltaY);
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetPositionX(_Parent.PopUps[_Layer][_Index].PositionX + _TrueMouseDeltaX);
+
+					break;
+				}
+				case _RightTopResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX < 0 && (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2) < (size_t)(-_MouseDeltaX))
+					{
+						_TrueMouseDeltaX = -(intptr_t)((_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2));
+						_AccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX > 0)
+					{
+						_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX < _MouseDeltaX);
+						_AccumulationX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX > _MouseDeltaX);
+					}
+
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY > 0 && (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2) < (size_t)(_MouseDeltaY))
+					{
+						_TrueMouseDeltaY = (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2);
+						_AccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY < 0)
+					{
+						_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY < -_MouseDeltaY);
+						_AccumulationY = (_AccumulationY + _MouseDeltaY) * (_AccumulationY > -_MouseDeltaY);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width + _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height - _TrueMouseDeltaY);
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetPositionY(_Parent.PopUps[_Layer][_Index].PositionY + _TrueMouseDeltaY);
+
+					break;
+				}
+				case _RightBottomResizePopUpId:
+				{
+					intptr_t _TrueMouseDeltaX = _MouseDeltaX;
+
+					if (_MouseDeltaX < 0 && (_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2) < (size_t)(-_MouseDeltaX))
+					{
+						_TrueMouseDeltaX = -(intptr_t)((_Parent.PopUps[_Layer][_Index].Width - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Width > _ResizeSize * 2));
+						_AccumulationX += _MouseDeltaX - _TrueMouseDeltaX;
+					}
+
+					if (_MouseDeltaX > 0)
+					{
+						_TrueMouseDeltaX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX < _MouseDeltaX);
+						_AccumulationX = (_AccumulationX + _MouseDeltaX) * (-_AccumulationX > _MouseDeltaX);
+					}
+
+					intptr_t _TrueMouseDeltaY = _MouseDeltaY;
+
+					if (_MouseDeltaY < 0 && (_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2) < (size_t)(-_MouseDeltaY))
+					{
+						_TrueMouseDeltaY = -(intptr_t)((_Parent.PopUps[_Layer][_Index].Height - _ResizeSize * 2) * (_Parent.PopUps[_Layer][_Index].Height > _ResizeSize * 2));
+						_AccumulationY += _MouseDeltaY - _TrueMouseDeltaY;
+					}
+
+					if (_MouseDeltaY > 0)
+					{
+						_TrueMouseDeltaY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY < _MouseDeltaY);
+						_AccumulationY = (_AccumulationY + _MouseDeltaY) * (-_AccumulationY > _MouseDeltaY);
+					}
+
+					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width + _TrueMouseDeltaX);
+					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height + _TrueMouseDeltaY);
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+
+					break;
+				}
+				default:
+				{
+					BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't resize popup with this resize popup id!"));
+					return;
+				}
+				}
+
+				_Parent.PopUps[_Layer][_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+			}
+
+			return;
+		}
+	}
+
+	BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't find the popup in the parent!"));
 }
 
 void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, void* _Global)
