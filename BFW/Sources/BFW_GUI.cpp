@@ -26,7 +26,7 @@ BFW::GUI::Window::~Window()
 	Destroy();
 }
 
-const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const bool (*_ThreadInitFnc)(void* _UserData), void (*_ThreadCleanUpFnc)(void* _UserData), const bool (*_WndInitFnc)(Window* _Wnd), void (*_WndCleanUpFnc)(Window* _Wnd), void* _UserData)
+const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData)
 {
 	Destroy();
 
@@ -47,7 +47,7 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 	bool _Done = false;
 	bool _Fail = false;
 
-	WndThread = new std::thread(WndThreadFnc, std::ref(_Done), std::ref(_Fail), this, _ExStyle, _ClassName, _WindowName, _Style, _X, _Y, _Width, _Height, _ParentHandle, _MenuHandle, _InstanceHandle, _Param, _AccelHandle, _ThreadInitFnc, _ThreadCleanUpFnc, _WndInitFnc, _WndCleanUpFnc, _UserData);
+	WndThread = new std::thread(WndThreadFnc, std::ref(_Done), std::ref(_Fail), this, _ExStyle, _ClassName, _WindowName, _Style, _X, _Y, _Width, _Height, _ParentHandle, _MenuHandle, _InstanceHandle, _Param, _AccelHandle, _ThreadInit, _ThreadCleanUp, _WndInit, _WndCleanUp, _UserData);
 
 	if (!WndThread)
 	{
@@ -1241,11 +1241,11 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	return 0;
 }
 
-void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const bool (*_ThreadInitFnc)(void* _UserData), void (*_ThreadCleanUpFnc)(void* _UserData), const bool (*_WndInitFnc)(Window* _Wnd), void (*_WndCleanUpFnc)(Window* _Wnd), void* _UserData)
+void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData)
 {
-	if (_ThreadInitFnc)
+	if (_ThreadInit)
 	{
-		if (!_ThreadInitFnc(_UserData))
+		if (!_ThreadInit(_UserData))
 		{
 			if (_MenuHandle)
 			{
@@ -1280,9 +1280,9 @@ void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, cons
 	{
 		_Wnd->UserData = nullptr;
 
-		if (_ThreadCleanUpFnc)
+		if (_ThreadCleanUp)
 		{
-			_ThreadCleanUpFnc(_UserData);
+			_ThreadCleanUp(_UserData);
 		}
 
 		if (_MenuHandle)
@@ -1311,9 +1311,9 @@ void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, cons
 			_Wnd->Handle = NULL;
 			_Wnd->UserData = nullptr;
 
-			if (_ThreadCleanUpFnc)
+			if (_ThreadCleanUp)
 			{
-				_ThreadCleanUpFnc(_UserData);
+				_ThreadCleanUp(_UserData);
 			}
 
 			if (_AccelHandle)
@@ -1328,17 +1328,17 @@ void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, cons
 		}
 	}
 
-	if (_WndInitFnc)
+	if (_WndInit)
 	{
-		if (!_WndInitFnc(_Wnd))
+		if (!_WndInit(_Wnd))
 		{
 			DestroyWindow(_Wnd->Handle);
 			_Wnd->Handle = NULL;
 			_Wnd->UserData = nullptr;
 
-			if (_ThreadCleanUpFnc)
+			if (_ThreadCleanUp)
 			{
-				_ThreadCleanUpFnc(_UserData);
+				_ThreadCleanUp(_UserData);
 			}
 
 			if (_AccelHandle)
@@ -1375,16 +1375,16 @@ void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, cons
 	DestroyWindow(_Wnd->Handle);
 	_Wnd->Handle = NULL;
 
-	if (_WndCleanUpFnc)
+	if (_WndCleanUp)
 	{
-		_WndCleanUpFnc(_Wnd);
+		_WndCleanUp(_Wnd);
 	}
 
 	_Wnd->UserData = nullptr;
 
-	if (_ThreadCleanUpFnc)
+	if (_ThreadCleanUp)
 	{
-		_ThreadCleanUpFnc(_UserData);
+		_ThreadCleanUp(_UserData);
 	}
 
 	if (_AccelHandle)

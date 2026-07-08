@@ -26,7 +26,7 @@ namespace BFW
 			Window(Window&& _Other) noexcept = delete;
 			~Window();
 
-			const bool Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const bool (*_ThreadInitFnc)(void* _UserData), void (*_ThreadCleanUpFnc)(void* _UserData), const bool (*_WndInitFnc)(Window* _Wnd), void (*_WndCleanUpFnc)(Window* _Wnd), void* _UserData);
+			const bool Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData);
 			void Destroy();
 			const bool GoFullScreen(const HWND _InsertAfter = HWND_TOP, const uint32_t _Flags = SWP_ASYNCWINDOWPOS);
 			const bool GoWindowed(const uint32_t _Style = WS_OVERLAPPEDWINDOW, const HWND _InsertAfter = HWND_TOP, const uint32_t _Flags = SWP_ASYNCWINDOWPOS);
@@ -76,7 +76,7 @@ namespace BFW
 
 		private:
 
-			static void WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const bool (*_ThreadInitFnc)(void* _UserData), void (*_ThreadCleanUpFnc)(void* _UserData), const bool (*_WndInitFnc)(Window* _Wnd), void (*_WndCleanUpFnc)(Window* _Wnd), void* _UserData);
+			static void WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData);
 
 			HWND Handle;
 			std::thread* WndThread;

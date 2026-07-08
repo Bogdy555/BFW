@@ -166,6 +166,11 @@ namespace BFW
 
 		class BFW_API Window;
 
+		typedef const bool (*ThreadInitFnc)(void* _UserData);
+		typedef void (*ThreadCleanUpFnc)(void* _UserData);
+		typedef const bool (*WndInitFnc)(Window* _Wnd);
+		typedef void (*WndCleanUpFnc)(Window* _Wnd);
+
 #endif
 
 		enum BFW_API PopUpIds : const uint64_t;
