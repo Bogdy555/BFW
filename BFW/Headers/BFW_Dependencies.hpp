@@ -177,10 +177,15 @@ namespace BFW
 		class BFW_API PopUp;
 
 		typedef void* (*GenerateUserDataFnc)(PopUp& _ParentWnd, void* _Global);
+		typedef void (*ReleaseUserDataFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*SetupRenderDataFnc)(PopUp& _Wnd, PopUp& _ParentWnd, void* _Global);
 		typedef void (*CleanUpRenderDataFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*RenderFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*CompositFnc)(PopUp& _ParentWnd, PopUp& _ChildWnd, void* _Global);
+		typedef const size_t (*GetMinFnc)(const uint64_t _PopUpId);
+		typedef const bool (*IgnoreScrollFnc)(const uint64_t _PopUpId);
+		typedef const bool (*ForceScrollFnc)(const uint64_t _PopUpId);
+		typedef void (*ResizePopUpLayerFnc)(PopUp& _Parent, const size_t _Layer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottomWindow, const RenderFnc _RenderMiddleWindow, const RenderFnc _RenderTopWindow, const RenderFnc _RenderBottomButton, const RenderFnc _RenderMiddleButton, const RenderFnc _RenderTopButton, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 
 	}
 

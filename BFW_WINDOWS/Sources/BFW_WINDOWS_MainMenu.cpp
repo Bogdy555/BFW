@@ -587,7 +587,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 			}
 		}
 
-		GUI::ResizeChilds(*_WndData.LCapturePath[2], this);
+		_WndData.LCapturePath[2]->ResizeChilds(GUI::ResizePopUpLayer, GUI::GetMinX, GUI::GetMinY, GUI::ResizeSize, GUI::ForceHScroll, GUI::ForceVScroll, GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray25, nullptr, nullptr, GUI::RenderGray40, nullptr, nullptr, GUI::Composit, GUI::GenerateUserData, GUI::ReleaseUserData, this);
 	}
 
 	bool _IsNode = false;
@@ -871,7 +871,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureResize(BFW::GUI::Window& _Wnd, 
 					}
 					}
 
-					GUI::ResizeChilds(_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index], this);
+					_WndData.LCapturePath[2]->GetPopUps()[_Layer][_Index].ResizeChilds(GUI::ResizePopUpLayer, GUI::GetMinX, GUI::GetMinY, GUI::ResizeSize, GUI::ForceHScroll, GUI::ForceVScroll, GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray25, nullptr, nullptr, GUI::RenderGray40, nullptr, nullptr, GUI::Composit, GUI::GenerateUserData, GUI::ReleaseUserData, this);
 
 					break;
 				}
@@ -1517,7 +1517,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetTrueWidth(GUI::DebugWindowMinX);
 				_WndData.Layout.SetTrueHeight(GUI::DebugWindowMinY);
 
-				GUI::ResizeChilds(_WndData.Layout, this);
+				_WndData.Layout.ResizeChilds(GUI::ResizePopUpLayer, GUI::GetMinX, GUI::GetMinY, GUI::ResizeSize, GUI::ForceHScroll, GUI::ForceVScroll, GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray25, nullptr, nullptr, GUI::RenderGray40, nullptr, nullptr, GUI::Composit, GUI::GenerateUserData, GUI::ReleaseUserData, this);
 
 				break;
 			}
@@ -1528,7 +1528,7 @@ void BFW_WINDOWS::RunTime::MainMenu::RenderWindow(BFW::GUI::Window& _Wnd, GUI::W
 				_WndData.Layout.SetTrueWidth(0);
 				_WndData.Layout.SetTrueHeight(0);
 
-				GUI::ResizeChilds(_WndData.Layout, this);
+				_WndData.Layout.ResizeChilds(GUI::ResizePopUpLayer, GUI::GetMinX, GUI::GetMinY, GUI::ResizeSize, GUI::ForceHScroll, GUI::ForceVScroll, GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding, GUI::SetupRenderData, GUI::CleanUpRenderData, GUI::RenderGray25, nullptr, nullptr, GUI::RenderGray40, nullptr, nullptr, GUI::Composit, GUI::GenerateUserData, GUI::ReleaseUserData, this);
 
 				break;
 			}

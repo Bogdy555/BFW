@@ -1909,7 +1909,7 @@ void BFW::GUI::PopUp::Render(void* _Global)
 	}
 }
 
-void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const IgnoreScrollFnc _IgnoreScroll)
 {
 	if (TrueWidth == Width)
 	{
@@ -1950,7 +1950,7 @@ void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const bool (*_IgnoreScroll)
 	{
 		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
 		{
-			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
 			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
 			{
@@ -1960,7 +1960,7 @@ void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const bool (*_IgnoreScroll)
 	}
 }
 
-void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const IgnoreScrollFnc _IgnoreScroll)
 {
 	if (TrueHeight == Height)
 	{
@@ -2001,7 +2001,7 @@ void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const bool (*_IgnoreScroll)
 	{
 		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
 		{
-			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
 			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
 			{
@@ -2011,7 +2011,7 @@ void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const bool (*_IgnoreScroll)
 	}
 }
 
-void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const IgnoreScrollFnc _IgnoreScroll)
 {
 	if (TrueWidth == Width)
 	{
@@ -2068,7 +2068,7 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollA
 	{
 		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
 		{
-			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
 			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
 			{
@@ -2078,7 +2078,7 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _ScrollA
 	}
 }
 
-void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const bool (*_IgnoreScroll)(const uint64_t _PopUpId))
+void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollAccumulation, const IgnoreScrollFnc _IgnoreScroll)
 {
 	if (TrueHeight == Height)
 	{
@@ -2135,7 +2135,7 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _ScrollA
 	{
 		for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
 		{
-			uint64_t _Id = PopUps[_Layer][_Index].GetId();
+			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
 			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
 			{
@@ -2538,6 +2538,335 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 	}
 }
 
+void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottomWindow, const RenderFnc _RenderMiddleWindow, const RenderFnc _RenderTopWindow, const RenderFnc _RenderBottomButton, const RenderFnc _RenderMiddleButton, const RenderFnc _RenderTopButton, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+{
+	for (size_t _Index = 0; _Index < Panels.GetSize(); _Index++)
+	{
+		switch (Panels[_Index].PanelType)
+		{
+		case _LeftPanelType:
+		{
+			Panels[_Index].SetHeight(TrueHeight);
+			Panels[_Index].SetTrueHeight(_GetMinY(Panels[_Index].Id));
+
+			break;
+		}
+		case _RightPanelType:
+		{
+			Panels[_Index].SetHeight(TrueHeight);
+			Panels[_Index].SetTrueHeight(_GetMinY(Panels[_Index].Id));
+			Panels[_Index].SetPositionX(TrueWidth - Panels[_Index].Width);
+
+			break;
+		}
+		case _TopPanelType:
+		{
+			Panels[_Index].SetWidth(TrueWidth);
+			Panels[_Index].SetTrueWidth(_GetMinX(Panels[_Index].Id));
+
+			break;
+		}
+		case _BottomPanelType:
+		{
+			Panels[_Index].SetWidth(TrueWidth);
+			Panels[_Index].SetTrueWidth(_GetMinX(Panels[_Index].Id));
+			Panels[_Index].SetPositionY(TrueHeight - Panels[_Index].Height);
+
+			break;
+		}
+		default:
+		{
+			BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Detected a panel with no panel type!"));
+			break;
+		}
+		}
+
+		Panels[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+	}
+
+	for (size_t _Index = 0; _Index < Nodes.GetSize(); _Index++)
+	{
+		switch (Nodes[_Index].PanelType)
+		{
+		case _LeftPanelType:
+		{
+			if (Panels[0].Width < TrueWidth)
+			{
+				Nodes[_Index].SetWidth(TrueWidth - Panels[0].Width);
+			}
+			else
+			{
+				Nodes[_Index].SetWidth(0);
+			}
+
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetHeight(TrueHeight);
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+
+			break;
+		}
+		case _RightPanelType:
+		{
+			if (Panels[0].Width < TrueWidth)
+			{
+				Nodes[_Index].SetWidth(TrueWidth - Panels[0].Width);
+			}
+			else
+			{
+				Nodes[_Index].SetWidth(0);
+			}
+
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetHeight(TrueHeight);
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetPositionX(TrueWidth - Nodes[_Index].Width);
+
+			break;
+		}
+		case _TopPanelType:
+		{
+			if (Panels[0].Height < TrueHeight)
+			{
+				Nodes[_Index].SetHeight(TrueHeight - Panels[0].Height);
+			}
+			else
+			{
+				Nodes[_Index].SetHeight(0);
+			}
+
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetWidth(TrueWidth);
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+
+			break;
+		}
+		case _BottomPanelType:
+		{
+			if (Panels[0].Height < TrueHeight)
+			{
+				Nodes[_Index].SetHeight(TrueHeight - Panels[0].Height);
+			}
+			else
+			{
+				Nodes[_Index].SetHeight(0);
+			}
+
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetWidth(TrueWidth);
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetPositionY(TrueHeight - Nodes[_Index].Height);
+
+			break;
+		}
+		default:
+		{
+			BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Detected a node with no panel type!"));
+			break;
+		}
+		}
+
+		Nodes[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+	}
+
+	bool _HasHScroll = false, _HasVScroll = false;
+
+	for (size_t _Layer = 0; _Layer < PopUps.GetSize(); _Layer++)
+	{
+		switch (PopUps[_Layer][0].Id)
+		{
+		case _LeftResizePopUpId:
+		{
+			if (PanelType == _NullPanelType)
+			{
+				PopUps[_Layer][0].SetHeight((Height - 2 * _ResizeSize) * (Height > 2 * _ResizeSize));
+				PopUps[_Layer][0].SetPositionX(ScrollX);
+				PopUps[_Layer][0].SetPositionY(_ResizeSize + ScrollY);
+			}
+			else
+			{
+				PopUps[_Layer][0].SetHeight(Height);
+				PopUps[_Layer][0].SetPositionX(ScrollX);
+				PopUps[_Layer][0].SetPositionY(ScrollY);
+			}
+
+			break;
+		}
+		case _RightResizePopUpId:
+		{
+			if (PanelType == _NullPanelType)
+			{
+				PopUps[_Layer][0].SetHeight((Height - 2 * _ResizeSize) * (Height > 2 * _ResizeSize));
+				PopUps[_Layer][0].SetPositionX((Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX);
+				PopUps[_Layer][0].SetPositionY(_ResizeSize + ScrollY);
+			}
+			else
+			{
+				PopUps[_Layer][0].SetHeight(Height);
+				PopUps[_Layer][0].SetPositionX((Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX);
+				PopUps[_Layer][0].SetPositionY(ScrollY);
+			}
+
+			break;
+		}
+		case _TopResizePopUpId:
+		{
+			if (PanelType == _NullPanelType)
+			{
+				PopUps[_Layer][0].SetWidth((Width - 2 * _ResizeSize) * (Width > 2 * _ResizeSize));
+				PopUps[_Layer][0].SetPositionX(_ResizeSize + ScrollX);
+				PopUps[_Layer][0].SetPositionY(ScrollY);
+			}
+			else
+			{
+				PopUps[_Layer][0].SetWidth(Width);
+				PopUps[_Layer][0].SetPositionX(ScrollX);
+				PopUps[_Layer][0].SetPositionY(ScrollY);
+			}
+
+			break;
+		}
+		case _BottomResizePopUpId:
+		{
+			if (PanelType == _NullPanelType)
+			{
+				PopUps[_Layer][0].SetWidth((Width - 2 * _ResizeSize) * (Width > 2 * _ResizeSize));
+				PopUps[_Layer][0].SetPositionX(_ResizeSize + ScrollX);
+				PopUps[_Layer][0].SetPositionY((Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY);
+			}
+			else
+			{
+				PopUps[_Layer][0].SetWidth(Width);
+				PopUps[_Layer][0].SetPositionX(ScrollX);
+				PopUps[_Layer][0].SetPositionY((Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY);
+			}
+
+			break;
+		}
+		case _LeftTopResizePopUpId:
+		{
+			PopUps[_Layer][0].SetPositionX(ScrollX);
+			PopUps[_Layer][0].SetPositionY(ScrollY);
+
+			break;
+		}
+		case _LeftBottomResizePopUpId:
+		{
+			PopUps[_Layer][0].SetPositionX(ScrollX);
+			PopUps[_Layer][0].SetPositionY((Height - _ResizeSize)* (Height > _ResizeSize) + ScrollY);
+
+			break;
+		}
+		case _RightTopResizePopUpId:
+		{
+			PopUps[_Layer][0].SetPositionX((Width - _ResizeSize)* (Width > _ResizeSize) + ScrollX);
+			PopUps[_Layer][0].SetPositionY(ScrollY);
+
+			break;
+		}
+		case _RightBottomResizePopUpId:
+		{
+			PopUps[_Layer][0].SetPositionX((Width - _ResizeSize)* (Width > _ResizeSize) + ScrollX);
+			PopUps[_Layer][0].SetPositionY((Height - _ResizeSize)* (Height > _ResizeSize) + ScrollY);
+
+			break;
+		}
+		case _HScrollWindowPopUpId:
+		{
+			_HasHScroll = true;
+
+			if (Width < TrueWidth)
+			{
+				PopUps[_Layer][0].SetWidth((Width - (_ScrollPadding * 2 + _ScrollSize)) * (Width > _ScrollPadding * 2 + _ScrollSize));
+				PopUps[_Layer][0].SetPositionX(_ScrollPadding + ScrollX);
+				PopUps[_Layer][0].SetPositionY(Height - (_ScrollPadding + _ScrollSize) + ScrollY);
+
+				PopUps[_Layer][0].PopUps[0][0].SetWidth(PopUps[_Layer][0].Width * Width / TrueWidth);
+				PopUps[_Layer][0].PopUps[0][0].SetPositionX(ScrollX * (PopUps[_Layer][0].Width - PopUps[_Layer][0].Width * Width / TrueWidth) / (TrueWidth - Width));
+			}
+			else if (_ForceHScroll(Id))
+			{
+				PopUps[_Layer][0].SetWidth((Width - (_ScrollPadding * 2 + _ScrollSize)) * (Width > _ScrollPadding * 2 + _ScrollSize));
+				PopUps[_Layer][0].SetPositionX(_ScrollPadding + ScrollX);
+				PopUps[_Layer][0].SetPositionY(Height - (_ScrollPadding + _ScrollSize) + ScrollY);
+
+				PopUps[_Layer][0].PopUps[0][0].SetWidth(PopUps[_Layer][0].Width);
+				PopUps[_Layer][0].PopUps[0][0].SetPositionX(0);
+			}
+			else
+			{
+				_ReleaseUserData(PopUps[_Layer][0].PopUps[0][0], _Global);
+				_ReleaseUserData(PopUps[_Layer][0], _Global);
+				PopUps.Erase(_Layer);
+				_Layer--;
+			}
+
+			break;
+		}
+		case _VScrollWindowPopUpId:
+		{
+			_HasVScroll = true;
+
+			if (Height < TrueHeight)
+			{
+				PopUps[_Layer][0].SetHeight((Height - (_ScrollTopPadding + _ScrollPadding + _ScrollSize)) * (Height > _ScrollTopPadding + _ScrollPadding + _ScrollSize));
+				PopUps[_Layer][0].SetPositionX(Width - (_ScrollPadding + _ScrollSize) + ScrollX);
+				PopUps[_Layer][0].SetPositionY(_ScrollTopPadding + ScrollY);
+
+				PopUps[_Layer][0].PopUps[0][0].SetHeight(PopUps[_Layer][0].Height * Height / TrueHeight);
+				PopUps[_Layer][0].PopUps[0][0].SetPositionY(ScrollY * (PopUps[_Layer][0].Height - PopUps[_Layer][0].Height * Height / TrueHeight) / (TrueHeight - Height));
+			}
+			else if (_ForceVScroll(Id))
+			{
+				PopUps[_Layer][0].SetHeight((Height - (_ScrollTopPadding + _ScrollPadding + _ScrollSize)) * (Height > _ScrollTopPadding + _ScrollPadding + _ScrollSize));
+				PopUps[_Layer][0].SetPositionX(Width - (_ScrollPadding + _ScrollSize) + ScrollX);
+				PopUps[_Layer][0].SetPositionY(_ScrollTopPadding + ScrollY);
+
+				PopUps[_Layer][0].PopUps[0][0].SetHeight(PopUps[_Layer][0].Height);
+				PopUps[_Layer][0].PopUps[0][0].SetPositionY(0);
+			}
+			else
+			{
+				_ReleaseUserData(PopUps[_Layer][0].PopUps[0][0], _Global);
+				_ReleaseUserData(PopUps[_Layer][0], _Global);
+				PopUps.Erase(_Layer);
+				_Layer--;
+			}
+
+			break;
+		}
+		case _ScrollCornerPopUpId:
+		{
+			if (Width < TrueWidth || Height < TrueHeight)
+			{
+				PopUps[_Layer][0].SetPositionX(Width - (_ScrollPadding + _ScrollSize) + ScrollX);
+				PopUps[_Layer][0].SetPositionY(Height - (_ScrollPadding + _ScrollSize) + ScrollY);
+			}
+			else if (_ForceHScroll(Id) || _ForceVScroll(Id))
+			{
+				PopUps[_Layer][0].SetPositionX(Width - (_ScrollPadding + _ScrollSize) + ScrollX);
+				PopUps[_Layer][0].SetPositionY(Height - (_ScrollPadding + _ScrollSize) + ScrollY);
+			}
+			else
+			{
+				_ReleaseUserData(PopUps[_Layer][0], _Global);
+				PopUps.Erase(_Layer);
+				_Layer--;
+			}
+
+			break;
+		}
+		default:
+		{
+			_ResizePopUpLayer(*this, _Layer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+
+			break;
+		}
+		}
+	}
+
+	GenerateScrollBars(_HasHScroll, _HasVScroll, _ForceHScroll(Id), _ForceVScroll(Id), _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _Global);
+}
+
 void BFW::GUI::PopUp::SetFocusedPanel(const size_t _FocusedPanel)
 {
 	FocusedPanel = _FocusedPanel;
@@ -2817,7 +3146,7 @@ const bool BFW::GUI::PopUp::FindPopUpLayer(size_t& _Layer, const uint64_t _PopUp
 
 	while (_Layer < PopUps.GetSize())
 	{
-		if (PopUps[_Layer][FocusedPopUps[_Layer]].GetId() == _PopUpId)
+		if (PopUps[_Layer][FocusedPopUps[_Layer]].Id == _PopUpId)
 		{
 			return true;
 		}

@@ -94,7 +94,7 @@ namespace BFW
 			Vec3(const Vec2& _Other, const float _z);
 			~Vec3();
 
-			operator const Vec2 () const;
+			explicit operator const Vec2 () const;
 
 			float* Data();
 			const float* Data() const;
@@ -165,8 +165,8 @@ namespace BFW
 			Vec4(const Vec3& _Other, const float _w);
 			~Vec4();
 
-			operator const Vec2 () const;
-			operator const Vec3 () const;
+			explicit operator const Vec2 () const;
+			explicit operator const Vec3 () const;
 
 			float* Data();
 			const float* Data() const;
@@ -301,7 +301,7 @@ namespace BFW
 			Mat3(const Mat2& _Other);
 			~Mat3();
 
-			operator const Mat2 () const;
+			explicit operator const Mat2 () const;
 
 			float* Data();
 			const float* Data() const;
@@ -374,8 +374,8 @@ namespace BFW
 			Mat4(const Mat3& _Other);
 			~Mat4();
 
-			operator const Mat2 () const;
-			operator const Mat3 () const;
+			explicit operator const Mat2 () const;
+			explicit operator const Mat3 () const;
 
 			float* Data();
 			const float* Data() const;

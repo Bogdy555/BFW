@@ -117,6 +117,8 @@ namespace BFW_WINDOWS
 		const bool ChildWindowInit(BFW::GUI::Window* _Wnd);
 		void ChildWindowCleanUp(BFW::GUI::Window* _Wnd);
 
+		void* GenerateUserData(BFW::GUI::PopUp& _ParentWnd, void* _Global);
+		void ReleaseUserData(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _ParentWnd, void* _Global);
 		void CleanUpRenderData(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void RenderGray25(BFW::GUI::PopUp& _Wnd, void* _Global);
@@ -130,9 +132,8 @@ namespace BFW_WINDOWS
 		const bool ForceVScroll(const uint64_t _PopUpId);
 		const bool IgnoreHScroll(const uint64_t _PopUpId);
 		const bool IgnoreVScroll(const uint64_t _PopUpId);
-		void* GenerateUserData(BFW::GUI::PopUp& _ParentWnd, void* _Global);
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
-		void ResizeChilds(BFW::GUI::PopUp& _Parnet, void* _Global);
+		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::SetupRenderDataFnc _SetupData, const BFW::GUI::CleanUpRenderDataFnc _CleanUpData, const BFW::GUI::RenderFnc _RenderBottomWindow, const BFW::GUI::RenderFnc _RenderMiddleWindow, const BFW::GUI::RenderFnc _RenderTopWindow, const BFW::GUI::RenderFnc _RenderBottomButton, const BFW::GUI::RenderFnc _RenderMiddleButton, const BFW::GUI::RenderFnc _RenderTopButton, const BFW::GUI::CompositFnc _Composit, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 	}
