@@ -295,6 +295,26 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 		false
 	);
 
+	_Layer = _MainWindowData.Layout.PushPopUpLayer();
+
+	GenerateDebugWindow
+	(
+		_MainWindowData.Layout.PushPopUp
+		(
+			_Layer, GUI::_DebugWindowPopUpId,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinX, GUI::DebugWindowMinY,
+			GUI::DebugWindowMinX * 3, GUI::DebugWindowMinY + GUI::DebugWindowMinY / 2,
+			0, 0,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray30, nullptr, nullptr,
+			GUI::Composit,
+			nullptr,
+			true
+		),
+		false
+	);
+
 	_MainWindowData.LayoutMutex->unlock();
 }
 
