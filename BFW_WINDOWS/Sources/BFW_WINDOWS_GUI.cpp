@@ -965,6 +965,12 @@ void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _
 
 		switch (_PopUp.GetId())
 		{
+		case _DebugWindowPopUpId:
+		{
+			_PopUp.ResizeChilds(ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+
+			break;
+		}
 		case _SpawnButtonPopUpId:
 		{
 			_PopUp.SetWidth(_Parent.GetTrueWidth() - Padding * 2);
