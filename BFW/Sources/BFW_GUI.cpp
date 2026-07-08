@@ -2865,6 +2865,164 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 	}
 
 	GenerateScrollBars(_HasHScroll, _HasVScroll, _ForceHScroll(Id), _ForceVScroll(Id), _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _Global);
+	MoveControlsOnTop();
+}
+
+void BFW::GUI::PopUp::MoveControlsOnTop()
+{
+	size_t _HScrollWindowIndex = 0;
+
+	if (FindPopUpLayer(_HScrollWindowIndex, _HScrollWindowPopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_HScrollWindowIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_HScrollWindowIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_HScrollWindowIndex);
+		PopUps.Erase(_HScrollWindowIndex);
+	}
+
+	size_t _VScrollWindowIndex = 0;
+
+	if (FindPopUpLayer(_VScrollWindowIndex, _VScrollWindowPopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_VScrollWindowIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_VScrollWindowIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_VScrollWindowIndex);
+		PopUps.Erase(_VScrollWindowIndex);
+	}
+
+	size_t _ScrollCornerIndex = 0;
+
+	if (FindPopUpLayer(_ScrollCornerIndex, _ScrollCornerPopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_ScrollCornerIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_ScrollCornerIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_ScrollCornerIndex);
+		PopUps.Erase(_ScrollCornerIndex);
+	}
+
+	size_t _LeftResizeIndex = 0;
+
+	if (FindPopUpLayer(_LeftResizeIndex, _LeftResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_LeftResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_LeftResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_LeftResizeIndex);
+		PopUps.Erase(_LeftResizeIndex);
+	}
+
+	size_t _RightResizeIndex = 0;
+
+	if (FindPopUpLayer(_RightResizeIndex, _RightResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_RightResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_RightResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_RightResizeIndex);
+		PopUps.Erase(_RightResizeIndex);
+	}
+
+	size_t _TopResizeIndex = 0;
+
+	if (FindPopUpLayer(_TopResizeIndex, _TopResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_TopResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_TopResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_TopResizeIndex);
+		PopUps.Erase(_TopResizeIndex);
+	}
+
+	size_t _BottomResizeIndex = 0;
+
+	if (FindPopUpLayer(_BottomResizeIndex, _BottomResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_BottomResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_BottomResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_BottomResizeIndex);
+		PopUps.Erase(_BottomResizeIndex);
+	}
+
+	size_t _LeftTopResizeIndex = 0;
+
+	if (FindPopUpLayer(_LeftTopResizeIndex, _LeftTopResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_LeftTopResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_LeftTopResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_LeftTopResizeIndex);
+		PopUps.Erase(_LeftTopResizeIndex);
+	}
+
+	size_t _LeftBottomResizeIndex = 0;
+
+	if (FindPopUpLayer(_LeftBottomResizeIndex, _LeftBottomResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_LeftBottomResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_LeftBottomResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_LeftBottomResizeIndex);
+		PopUps.Erase(_LeftBottomResizeIndex);
+	}
+
+	size_t _RightTopResizeIndex = 0;
+
+	if (FindPopUpLayer(_RightTopResizeIndex, _RightTopResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_RightTopResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_RightTopResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_RightTopResizeIndex);
+		PopUps.Erase(_RightTopResizeIndex);
+	}
+
+	size_t _RightBottomResizeIndex = 0;
+
+	if (FindPopUpLayer(_RightBottomResizeIndex, _RightBottomResizePopUpId))
+	{
+		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_RightBottomResizeIndex]);
+		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_RightBottomResizeIndex]);
+
+		FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+		PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+		FocusedPopUps.Erase(_RightBottomResizeIndex);
+		PopUps.Erase(_RightBottomResizeIndex);
+	}
 }
 
 void BFW::GUI::PopUp::SetFocusedPanel(const size_t _FocusedPanel)
