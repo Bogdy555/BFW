@@ -455,7 +455,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 		return false;
 	}
 
-	if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_POPUP, _Cursor.x - (int32_t)(GUI::ChildWindowMinX / 2), _Cursor.y - (int32_t)(GUI::ChildWindowMinY / 2), (int32_t)(GUI::ChildWindowMinX), (int32_t)(GUI::ChildWindowMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
+	if (!_ChildWindows[_ChildWindows.GetSize() - 1]->Create(NULL, BFW_WINDOWS_CHILD_WINDOW_CLASS, nullptr, WS_OVERLAPPEDWINDOW, _Cursor.x - (int32_t)(GUI::ChildWindowMinX / 2), _Cursor.y - (int32_t)(GUI::ChildWindowMinY / 2), (int32_t)(GUI::ChildWindowMinX), (int32_t)(GUI::ChildWindowMinY), _MainWindow, NULL, _ApplicationObj.GetInstanceHandle(), nullptr, NULL, GUI::ChildWindowThreadInit, GUI::ChildWindowThreadCleanUp, GUI::ChildWindowInit, GUI::ChildWindowCleanUp, _ChildWindowsData[_ChildWindowsData.GetSize() - 1]))
 	{
 		_ApplicationObj.RemoveChildWindow(_ChildWindows.GetSize() - 1);
 		return false;

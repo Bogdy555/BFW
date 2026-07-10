@@ -526,77 +526,16 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		if (!ScreenToClient(_hWnd, &_Cursor))
 		{
-			break;
-		}
-
-		size_t _Width = 0, _Height = 0;
-
-		if (_Wnd.GetClientSize(_Width, _Height))
-		{
-			if (_Cursor.x >= (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < (int32_t)(_Width) && _Cursor.y >= (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < (int32_t)(_Height))
-			{
-				return HTBOTTOMRIGHT;
-			}
-
-			if (_Cursor.x >= (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < (int32_t)(_Width) && _Cursor.y >= 0 && _Cursor.y < (int32_t)(ResizeSize))
-			{
-				return HTTOPRIGHT;
-			}
-
-			if (_Cursor.x >= 0 && _Cursor.x < (int32_t)(ResizeSize) && _Cursor.y >= (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < (int32_t)(_Height))
-			{
-				return HTBOTTOMLEFT;
-			}
-
-			if (_Cursor.x >= 0 && _Cursor.x < (int32_t)(ResizeSize) && _Cursor.y >= 0 && _Cursor.y < (int32_t)(ResizeSize))
-			{
-				return HTTOPLEFT;
-			}
-
-			if (_Cursor.x >= (int32_t)(ResizeSize) && _Cursor.x < (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.y >= (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize) && _Cursor.y < (int32_t)(_Height))
-			{
-				return HTBOTTOM;
-			}
-
-			if (_Cursor.x >= (int32_t)(ResizeSize) && _Cursor.x < (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.y >= 0 && _Cursor.y < (int32_t)(ResizeSize))
-			{
-				return HTTOP;
-			}
-
-			if (_Cursor.x >= (int32_t)(_Width - ResizeSize) * (_Width > ResizeSize) && _Cursor.x < (int32_t)(_Width) && _Cursor.y >= (int32_t)(ResizeSize) && _Cursor.y < (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize))
-			{
-				return HTRIGHT;
-			}
-
-			if (_Cursor.x >= 0 && _Cursor.x < (int32_t)(ResizeSize) && _Cursor.y >= (int32_t)(ResizeSize) && _Cursor.y < (int32_t)(_Height - ResizeSize) * (_Height > ResizeSize))
-			{
-				return HTLEFT;
-			}
+			return _Result;
 		}
 
 		_WndData.LayoutMutex->lock();
 
 		BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_Cursor.x, _Cursor.y);
 
-		if (_HoverPopUp)
+		if (_HoverPopUp && IsMovable(_HoverPopUp->GetId()))
 		{
-			switch (_HoverPopUp->GetId())
-			{
-			case _DebugWindowPopUpId:
-			{
-				_Result = HTCAPTION;
-				break;
-			}
-			case BFW::GUI::_NodeWindowPopUpId:
-			{
-				_Result = HTCAPTION;
-				break;
-			}
-			default:
-			{
-				break;
-			}
-			}
+			_Result = HTCAPTION;
 		}
 
 		_WndData.LayoutMutex->unlock();
@@ -1098,16 +1037,16 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 			_WndData.LCapturePath[0]->GetId(), *_WndData.LCapturePath[2],
 			_MouseDeltaX, _MouseDeltaY,
 			_WndData.LAccumulationX, _WndData.LAccumulationY,
-			GUI::ResizePopUpLayer,
-			GUI::GetMinX, GUI::GetMinY,
-			GUI::ResizeSize,
-			GUI::ForceHScroll, GUI::ForceVScroll,
-			GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding,
-			GUI::SetupRenderData, GUI::CleanUpRenderData,
-			GUI::RenderGray25, nullptr, nullptr,
-			GUI::RenderGray40, nullptr, nullptr,
-			GUI::Composit,
-			GUI::GenerateUserData, GUI::ReleaseUserData,
+			ResizePopUpLayer,
+			GetMinX, GetMinY,
+			ResizeSize,
+			ForceHScroll, ForceVScroll,
+			ScrollSize, ScrollTopPadding, ScrollPadding,
+			SetupRenderData, CleanUpRenderData,
+			RenderGray25, nullptr, nullptr,
+			RenderGray40, nullptr, nullptr,
+			Composit,
+			GenerateUserData, ReleaseUserData,
 			_Menu
 		);
 
@@ -1132,11 +1071,11 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
 		{
-			_WndData.LCapturePath[2]->ScrollWithMouseH(_LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2, _WndData.LAccumulationX, GUI::IgnoreHScroll);
+			_WndData.LCapturePath[2]->ScrollWithMouseH(_LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2, _WndData.LAccumulationX, IgnoreHScroll);
 		}
 		else
 		{
-			_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.LAccumulationX, GUI::IgnoreHScroll);
+			_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.LAccumulationX, IgnoreHScroll);
 		}
 
 		_WndData.LCapturePath.Erase(0);
@@ -1146,7 +1085,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_HScrollButtonPopUpId)
 	{
-		_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.LAccumulationX, GUI::IgnoreHScroll);
+		_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.LAccumulationX, IgnoreHScroll);
 
 		return true;
 	}
@@ -1169,11 +1108,11 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
 		{
-			_WndData.LCapturePath[2]->ScrollWithMouseV(_LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2, _WndData.LAccumulationY, GUI::IgnoreVScroll);
+			_WndData.LCapturePath[2]->ScrollWithMouseV(_LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2, _WndData.LAccumulationY, IgnoreVScroll);
 		}
 		else
 		{
-			_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.LAccumulationY, GUI::IgnoreVScroll);
+			_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.LAccumulationY, IgnoreVScroll);
 		}
 
 		_WndData.LCapturePath.Erase(0);
@@ -1183,7 +1122,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_VScrollButtonPopUpId)
 	{
-		_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.LAccumulationY, GUI::IgnoreVScroll);
+		_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.LAccumulationY, IgnoreVScroll);
 
 		return true;
 	}
@@ -1221,10 +1160,10 @@ const bool BFW_WINDOWS::GUI::HandleDefaultMCaptureDrag(const intptr_t _MouseX, c
 
 	size_t _WindowIndex = 0;
 
-	if (GUI::FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
+	if (FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
 	{
-		_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), GUI::IgnoreHScroll);
-		_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), GUI::IgnoreVScroll);
+		_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), IgnoreHScroll);
+		_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), IgnoreVScroll);
 
 		return true;
 	}
@@ -1236,24 +1175,24 @@ void BFW_WINDOWS::GUI::HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _E
 {
 	size_t _ScrollableWindowIndex = 0;
 
-	if (!GUI::FindScrollableWindow(_ScrollableWindowIndex, _Path))
+	if (!FindScrollableWindow(_ScrollableWindowIndex, _Path))
 	{
 		return;
 	}
 
-	_Path[_ScrollableWindowIndex]->ScrollH(_Event.Delta, GUI::IgnoreHScroll);
+	_Path[_ScrollableWindowIndex]->ScrollH(_Event.Delta, IgnoreHScroll);
 }
 
 void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
 	size_t _ScrollableWindowIndex = 0;
 
-	if (!GUI::FindScrollableWindow(_ScrollableWindowIndex, _Path))
+	if (!FindScrollableWindow(_ScrollableWindowIndex, _Path))
 	{
 		return;
 	}
 
-	_Path[_ScrollableWindowIndex]->ScrollV(_Event.Delta, GUI::IgnoreVScroll);
+	_Path[_ScrollableWindowIndex]->ScrollV(_Event.Delta, IgnoreVScroll);
 }
 
 void BFW_WINDOWS::GUI::HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
@@ -1482,96 +1421,39 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 
 		if (!_CursorSet && _WndData.MCapture && BFW::GUI::PopUp::IsValidPath(_WndData.MCapturePath))
 		{
-			bool _FoundScrollableWindow = false;
-
 			size_t _WindowIndex = 0;
 
-			while (_WindowIndex < _WndData.MCapturePath.GetSize())
+			if (FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
 			{
-				bool _ShouldBreak = false;
-
-				switch (_WndData.MCapturePath[_WindowIndex]->GetId())
-				{
-				case GUI::_DebugWindowPopUpId:
-				{
-					_FoundScrollableWindow = true;
-					_ShouldBreak = true;
-					break;
-				}
-				default:
-				{
-					break;
-				}
-				}
-
-				if (_ShouldBreak)
-				{
-					break;
-				}
-
-				_WindowIndex++;
-			}
-
-			if (_FoundScrollableWindow)
-			{
-				BFW::GUI::PopUp& _ScrollableWindow = *_WndData.MCapturePath[_WindowIndex];
-
-				bool _FoundHScrollWindow = false;
-				bool _FoundVScrollWindow = false;
-				size_t _ScrollWindowIndex = 0;
-
-				while (_ScrollWindowIndex < _ScrollableWindow.GetPopUps().GetSize())
-				{
-					bool _ShouldBreak = false;
-
-					if (_ScrollableWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == BFW::GUI::_HScrollWindowPopUpId)
-					{
-						_FoundHScrollWindow = true;
-						_ShouldBreak = true;
-					}
-
-					if (_ScrollableWindow.GetPopUps()[_ScrollWindowIndex][0].GetId() == BFW::GUI::_VScrollWindowPopUpId)
-					{
-						_FoundVScrollWindow = true;
-						_ShouldBreak = true;
-					}
-
-					if (_ShouldBreak)
-					{
-						break;
-					}
-
-					_ScrollWindowIndex++;
-				}
-
-				if (_FoundHScrollWindow || _FoundVScrollWindow)
-				{
-					_CursorSet = true;
-					_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEALL));
-				}
+				_CursorSet = true;
+				_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEALL));
 			}
 		}
 
-		if (!_CursorSet && _WndData.LCapture && BFW::GUI::PopUp::IsValidPath(_WndData.LCapturePath) && _WndData.LCapturePath.GetSize())
+		if (!_CursorSet && _WndData.LCapture && BFW::GUI::PopUp::IsValidPath(_WndData.LCapturePath))
 		{
-			_CursorSet = true;
-			GUI::RenderCursor(_Wnd, _WndData.LCapturePath[0]->GetId());
+			if (_WndData.LCapturePath.GetSize())
+			{
+				_CursorSet = true;
+				RenderCursor(_Wnd, _WndData.LCapturePath[0]->GetId());
+			}
+		}
+
+		if (!_CursorSet)
+		{
+			BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+
+			if (_HoverPopUp)
+			{
+				_CursorSet = true;
+				RenderCursor(_Wnd, _HoverPopUp->GetId());
+			}
 		}
 
 		if (!_CursorSet)
 		{
 			_CursorSet = true;
-
-			BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
-
-			if (_HoverPopUp)
-			{
-				GUI::RenderCursor(_Wnd, _HoverPopUp->GetId());
-			}
-			else
-			{
-				GUI::RenderCursor(_Wnd, BFW::GUI::_NodeWindowPopUpId);
-			}
+			RenderCursor(_Wnd, BFW::GUI::_NodeWindowPopUpId);
 		}
 	}
 
