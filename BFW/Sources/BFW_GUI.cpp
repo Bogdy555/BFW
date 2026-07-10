@@ -2626,6 +2626,15 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 	BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Can't find the popup in the parent!"));
 }
 
+void BFW::GUI::PopUp::MoveLayerWithMouse(const size_t _Layer, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY)
+{
+	for (size_t _Index = 0; _Index < PopUps[_Layer].GetSize(); _Index++)
+	{
+		PopUps[_Layer][_Index].PositionX += _MouseDeltaX;
+		PopUps[_Layer][_Index].PositionY += _MouseDeltaY;
+	}
+}
+
 void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottom, const RenderFnc _RenderMiddle, const RenderFnc _RenderTop, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, void* _Global)
 {
 	if (_IsNode)

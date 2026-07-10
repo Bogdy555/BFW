@@ -984,6 +984,26 @@ const bool BFW_WINDOWS::GUI::IgnoreVScroll(const uint64_t _PopUpId)
 	return false;
 }
 
+const bool BFW_WINDOWS::GUI::IsMovable(const uint64_t _PopUpId)
+{
+	bool _Movable = 0;
+
+	switch (_PopUpId)
+	{
+	case _DebugWindowPopUpId:
+	{
+		_Movable = true;
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	return _Movable;
+}
+
 
 
 const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path)
@@ -1001,7 +1021,14 @@ const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vec
 		{
 		case _DebugWindowPopUpId:
 		{
-			return true;
+			size_t _Layer = 0;
+
+			if (_Path[_Index]->FindPopUpLayer(_Layer, BFW::GUI::_ScrollCornerPopUpId))
+			{
+				return true;
+			}
+
+			break;
 		}
 		default:
 		{
@@ -1032,7 +1059,14 @@ const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vec
 		{
 		case _DebugWindowPopUpId:
 		{
-			return true;
+			size_t _Layer = 0;
+
+			if (_Path[_Index]->FindPopUpLayer(_Layer, BFW::GUI::_ScrollCornerPopUpId))
+			{
+				return true;
+			}
+
+			break;
 		}
 		default:
 		{
@@ -1046,6 +1080,221 @@ const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vec
 	_Index = 0;
 
 	return false;
+}
+
+
+
+const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (!_WndData.LCapturePath.GetSize())
+	{
+		return true;
+	}
+
+	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_LeftResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_RightResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_TopResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_BottomResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_LeftTopResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_LeftBottomResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_RightTopResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_RightBottomResizePopUpId)
+	{
+		_WndData.LCapturePath[1]->ResizeWithMouse
+		(
+			_WndData.LCapturePath[0]->GetId(), *_WndData.LCapturePath[2],
+			_MouseDeltaX, _MouseDeltaY,
+			_WndData.LAccumulationX, _WndData.LAccumulationY,
+			GUI::ResizePopUpLayer,
+			GUI::GetMinX, GUI::GetMinY,
+			GUI::ResizeSize,
+			GUI::ForceHScroll, GUI::ForceVScroll,
+			GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding,
+			GUI::SetupRenderData, GUI::CleanUpRenderData,
+			GUI::RenderGray25, nullptr, nullptr,
+			GUI::RenderGray40, nullptr, nullptr,
+			GUI::Composit,
+			GUI::GenerateUserData, GUI::ReleaseUserData,
+			_Menu
+		);
+
+		return  true;
+	}
+
+	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_HScrollWindowPopUpId)
+	{
+		intptr_t _LocalMouseX = _MouseX;
+		intptr_t _LocalMouseY = _MouseY;
+
+		BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
+
+		_WndData.LCapturePath.PushBack(nullptr);
+
+		for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+		{
+			_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
+		}
+
+		_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+
+		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+		{
+			_WndData.LCapturePath[2]->ScrollWithMouseH(_LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2, _WndData.LAccumulationX, GUI::IgnoreHScroll);
+		}
+		else
+		{
+			_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.LAccumulationX, GUI::IgnoreHScroll);
+		}
+
+		_WndData.LCapturePath.Erase(0);
+
+		return true;
+	}
+
+	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_HScrollButtonPopUpId)
+	{
+		_WndData.LCapturePath[2]->ScrollWithMouseH(_MouseDeltaX, _WndData.LAccumulationX, GUI::IgnoreHScroll);
+
+		return true;
+	}
+
+	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_VScrollWindowPopUpId)
+	{
+		intptr_t _LocalMouseX = _MouseX;
+		intptr_t _LocalMouseY = _MouseY;
+
+		BFW::GUI::PopUp::GlobalToLocal(_LocalMouseX, _LocalMouseY, _WndData.LCapturePath);
+
+		_WndData.LCapturePath.PushBack(nullptr);
+
+		for (size_t _Index = 0; _Index < _WndData.LCapturePath.GetSize() - 1; _Index++)
+		{
+			_WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index] = _WndData.LCapturePath[_WndData.LCapturePath.GetSize() - 1 - _Index - 1];
+		}
+
+		_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
+
+		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+		{
+			_WndData.LCapturePath[2]->ScrollWithMouseV(_LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2, _WndData.LAccumulationY, GUI::IgnoreVScroll);
+		}
+		else
+		{
+			_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.LAccumulationY, GUI::IgnoreVScroll);
+		}
+
+		_WndData.LCapturePath.Erase(0);
+
+		return true;
+	}
+
+	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_VScrollButtonPopUpId)
+	{
+		_WndData.LCapturePath[2]->ScrollWithMouseV(_MouseDeltaY, _WndData.LAccumulationY, GUI::IgnoreVScroll);
+
+		return true;
+	}
+
+	if (IsMovable(_WndData.LCapturePath[0]->GetId()) && _WndData.LCapturePath.GetSize() >= 2)
+	{
+		bool _Found = false;
+
+		for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[1]->GetPopUps().GetSize(); _Layer++)
+		{
+			if (_WndData.LCapturePath[0] != &_WndData.LCapturePath[1]->GetPopUps()[_Layer][_WndData.LCapturePath[1]->GetFocusedPopUps()[_Layer]])
+			{
+				continue;
+			}
+
+			_Found = true;
+
+			_WndData.LCapturePath[1]->MoveLayerWithMouse(_Layer, _MouseDeltaX, _MouseDeltaY);
+
+			break;
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+const bool BFW_WINDOWS::GUI::HandleDefaultMCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (!_WndData.MCapturePath.GetSize())
+	{
+		return true;
+	}
+
+	size_t _WindowIndex = 0;
+
+	if (GUI::FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
+	{
+		_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), GUI::IgnoreHScroll);
+		_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(GUI::MouseCaptureScrollScale)) * GUI::MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), GUI::IgnoreVScroll);
+
+		return true;
+	}
+
+	return false;
+}
+
+void BFW_WINDOWS::GUI::HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	size_t _ScrollableWindowIndex = 0;
+
+	if (!GUI::FindScrollableWindow(_ScrollableWindowIndex, _Path))
+	{
+		return;
+	}
+
+	_Path[_ScrollableWindowIndex]->ScrollH(_Event.Delta, GUI::IgnoreHScroll);
+}
+
+void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	size_t _ScrollableWindowIndex = 0;
+
+	if (!GUI::FindScrollableWindow(_ScrollableWindowIndex, _Path))
+	{
+		return;
+	}
+
+	_Path[_ScrollableWindowIndex]->ScrollV(_Event.Delta, GUI::IgnoreVScroll);
+}
+
+void BFW_WINDOWS::GUI::HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (_IsMainWindow)
+	{
+		if (_Wnd.GetKeys()[VK_F11].JustPressed())
+		{
+			if (_Wnd.IsFullScreen())
+			{
+				_Wnd.GoWindowed();
+			}
+			else
+			{
+				_Wnd.GoFullScreen();
+			}
+		}
+	}
+}
+
+void BFW_WINDOWS::GUI::HandleDefaultControllers(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (!_Wnd.HasFocus())
+	{
+		return;
+	}
+
+	if (_IsMainWindow)
+	{
+		if (_ApplicationObj.GetController(0).GetStart().JustPressed())
+		{
+			if (_Wnd.IsFullScreen())
+			{
+				_Wnd.GoWindowed();
+			}
+			else
+			{
+				_Wnd.GoFullScreen();
+			}
+		}
+	}
 }
 
 void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::SetupRenderDataFnc _SetupData, const BFW::GUI::CleanUpRenderDataFnc _CleanUpData, const BFW::GUI::RenderFnc _RenderBottomWindow, const BFW::GUI::RenderFnc _RenderMiddleWindow, const BFW::GUI::RenderFnc _RenderTopWindow, const BFW::GUI::RenderFnc _RenderBottomButton, const BFW::GUI::RenderFnc _RenderMiddleButton, const BFW::GUI::RenderFnc _RenderTopButton, const BFW::GUI::CompositFnc _Composit, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global)
