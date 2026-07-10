@@ -915,12 +915,40 @@ const bool BFW_WINDOWS::GUI::ForceVScroll(const uint64_t _PopUpId)
 
 const bool BFW_WINDOWS::GUI::IgnoreHScroll(const uint64_t _PopUpId)
 {
-	return false;
+	bool _Ignore = false;
+
+	switch (_PopUpId)
+	{
+	case _SpawnButtonPopUpId:
+	{
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	return _Ignore;
 }
 
 const bool BFW_WINDOWS::GUI::IgnoreVScroll(const uint64_t _PopUpId)
 {
-	return false;
+	bool _Ignore = false;
+
+	switch (_PopUpId)
+	{
+	case _SpawnButtonPopUpId:
+	{
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	return _Ignore;
 }
 
 const bool BFW_WINDOWS::GUI::IsMovable(const uint64_t _PopUpId)

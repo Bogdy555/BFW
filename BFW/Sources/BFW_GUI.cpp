@@ -3242,21 +3242,21 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		case _LeftBottomResizePopUpId:
 		{
 			PopUps[_Layer][0].SetPositionX(ScrollX);
-			PopUps[_Layer][0].SetPositionY((Height - _ResizeSize)* (Height > _ResizeSize) + ScrollY);
+			PopUps[_Layer][0].SetPositionY((Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY);
 
 			break;
 		}
 		case _RightTopResizePopUpId:
 		{
-			PopUps[_Layer][0].SetPositionX((Width - _ResizeSize)* (Width > _ResizeSize) + ScrollX);
+			PopUps[_Layer][0].SetPositionX((Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX);
 			PopUps[_Layer][0].SetPositionY(ScrollY);
 
 			break;
 		}
 		case _RightBottomResizePopUpId:
 		{
-			PopUps[_Layer][0].SetPositionX((Width - _ResizeSize)* (Width > _ResizeSize) + ScrollX);
-			PopUps[_Layer][0].SetPositionY((Height - _ResizeSize)* (Height > _ResizeSize) + ScrollY);
+			PopUps[_Layer][0].SetPositionX((Width - _ResizeSize) * (Width > _ResizeSize) + ScrollX);
+			PopUps[_Layer][0].SetPositionY((Height - _ResizeSize) * (Height > _ResizeSize) + ScrollY);
 
 			break;
 		}

@@ -56,7 +56,7 @@ const bool BFW::MultiProcessing::Process::Create(const BFW_CHAR_TYPE* _Path, con
 	SHELLEXECUTEINFO _ShellExecuteInfo = { 0 };
 
 	_ShellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-	_ShellExecuteInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	_ShellExecuteInfo.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
 	_ShellExecuteInfo.lpFile = _Path;
 	_ShellExecuteInfo.lpDirectory = _WorkingDir;
 	_ShellExecuteInfo.lpParameters = _CmdLine;
@@ -89,7 +89,7 @@ const bool BFW::MultiProcessing::Process::CreateElevated(const BFW_CHAR_TYPE* _P
 	SHELLEXECUTEINFO _ShellExecuteInfo = { 0 };
 
 	_ShellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-	_ShellExecuteInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	_ShellExecuteInfo.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
 	_ShellExecuteInfo.lpVerb = BFW_STRING_PREFIX("runas");
 	_ShellExecuteInfo.lpFile = _Path;
 	_ShellExecuteInfo.lpDirectory = _WorkingDir;
