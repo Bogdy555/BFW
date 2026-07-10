@@ -100,7 +100,6 @@ namespace BFW_WINDOWS
 			void MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 			void DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 			const bool HandleWindowInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const bool _IsMainWindow);
-			void RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 
 			void Input();
 			void DeleteInputs();
