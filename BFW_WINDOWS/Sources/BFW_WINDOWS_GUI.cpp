@@ -801,8 +801,8 @@ void BFW_WINDOWS::GUI::Composit(BFW::GUI::PopUp& _Parent, BFW::GUI::PopUp& _Chil
 	size_t _ScrollY = _Child.GetScrollY();
 	size_t _StartX = _PositionX * (_PositionX > 0);
 	size_t _StartY = _PositionY * (_PositionY > 0);
-	size_t _EndX = _ParentPopUpData.Width * (_ParentPopUpData.Width <= _PositionX + _Width) + (_PositionX + _Width) * (_ParentPopUpData.Width > _PositionX + _Width);
-	size_t _EndY = _ParentPopUpData.Height * (_ParentPopUpData.Height <= _PositionY + _Height) + (_PositionY + _Height) * (_ParentPopUpData.Height > _PositionY + _Height);
+	size_t _EndX = (_ParentPopUpData.Width * (_ParentPopUpData.Width <= _PositionX + _Width) + (_PositionX + _Width) * (_ParentPopUpData.Width > _PositionX + _Width)) * ((intptr_t)(_Width) > -_PositionX);
+	size_t _EndY = (_ParentPopUpData.Height * (_ParentPopUpData.Height <= _PositionY + _Height) + (_PositionY + _Height) * (_ParentPopUpData.Height > _PositionY + _Height)) * ((intptr_t)(_Height) > -_PositionY);
 
 #ifdef BFW_WINDOWS_ENABLE_ALPHA
 
