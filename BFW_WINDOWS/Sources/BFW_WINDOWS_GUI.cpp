@@ -1283,7 +1283,7 @@ void BFW_WINDOWS::GUI::HandleDefaultControllers(RunTime::Application& _Applicati
 
 	if (_IsMainWindow)
 	{
-		if (_ApplicationObj.GetController(0).GetStart().JustPressed())
+		if (_ApplicationObj.GetController(0).GetStart().JustPressed() || _ApplicationObj.GetController(1).GetStart().JustPressed() || _ApplicationObj.GetController(2).GetStart().JustPressed() || _ApplicationObj.GetController(3).GetStart().JustPressed())
 		{
 			if (_Wnd.IsFullScreen())
 			{
