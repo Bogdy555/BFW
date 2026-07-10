@@ -181,12 +181,12 @@ namespace BFW
 
 		class BFW_API PopUp;
 
-		typedef void* (*GenerateUserDataFnc)(PopUp& _ParentWnd, void* _Global);
+		typedef void* (*GenerateUserDataFnc)(PopUp& _Parent, const uint64_t _PopUpId, void* _Global);
 		typedef void (*ReleaseUserDataFnc)(PopUp& _Wnd, void* _Global);
-		typedef void (*SetupRenderDataFnc)(PopUp& _Wnd, PopUp& _ParentWnd, void* _Global);
+		typedef void (*SetupRenderDataFnc)(PopUp& _Wnd, PopUp& _Parent, void* _Global);
 		typedef void (*CleanUpRenderDataFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*RenderFnc)(PopUp& _Wnd, void* _Global);
-		typedef void (*CompositFnc)(PopUp& _ParentWnd, PopUp& _ChildWnd, void* _Global);
+		typedef void (*CompositFnc)(PopUp& _Parent, PopUp& _ChildWnd, void* _Global);
 		typedef const size_t (*GetMinFnc)(const uint64_t _PopUpId);
 		typedef const bool (*IgnoreScrollFnc)(const uint64_t _PopUpId);
 		typedef const bool (*ForceScrollFnc)(const uint64_t _PopUpId);

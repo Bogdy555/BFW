@@ -117,7 +117,7 @@ namespace BFW
 
 		enum BFW_API PopUpIds : const uint64_t
 		{
-			_NodePopUpId = 0,
+			_NodeWindowPopUpId = 0,
 			_LeftResizePopUpId = 1,
 			_RightResizePopUpId = 2,
 			_TopResizePopUpId = 3,

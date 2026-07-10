@@ -48,8 +48,8 @@ namespace BFW_WINDOWS
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
 			intptr_t LCaptureMouseYLastFrame;
-			intptr_t AccumulationX;
-			intptr_t AccumulationY;
+			intptr_t LAccumulationX;
+			intptr_t LAccumulationY;
 
 			bool MCapture;
 			BFW::Vector<BFW::GUI::SafePopUpPointer> MCapturePath;
@@ -57,6 +57,8 @@ namespace BFW_WINDOWS
 			intptr_t MCaptureMouseY;
 			intptr_t MCaptureMouseXLastFrame;
 			intptr_t MCaptureMouseYLastFrame;
+			intptr_t MAccumulationX;
+			intptr_t MAccumulationY;
 
 			bool RCapture;
 			BFW::Vector<BFW::GUI::SafePopUpPointer> RCapturePath;
@@ -64,6 +66,8 @@ namespace BFW_WINDOWS
 			intptr_t RCaptureMouseY;
 			intptr_t RCaptureMouseXLastFrame;
 			intptr_t RCaptureMouseYLastFrame;
+			intptr_t RAccumulationX;
+			intptr_t RAccumulationY;
 
 			bool X1Capture;
 			BFW::Vector<BFW::GUI::SafePopUpPointer> X1CapturePath;
@@ -71,6 +75,8 @@ namespace BFW_WINDOWS
 			intptr_t X1CaptureMouseY;
 			intptr_t X1CaptureMouseXLastFrame;
 			intptr_t X1CaptureMouseYLastFrame;
+			intptr_t X1AccumulationX;
+			intptr_t X1AccumulationY;
 
 			bool X2Capture;
 			BFW::Vector<BFW::GUI::SafePopUpPointer> X2CapturePath;
@@ -78,6 +84,8 @@ namespace BFW_WINDOWS
 			intptr_t X2CaptureMouseY;
 			intptr_t X2CaptureMouseXLastFrame;
 			intptr_t X2CaptureMouseYLastFrame;
+			intptr_t X2AccumulationX;
+			intptr_t X2AccumulationY;
 
 			WindowData();
 			WindowData(const WindowData& _Other) = default;
@@ -97,10 +105,10 @@ namespace BFW_WINDOWS
 
 		extern const size_t ResizeSize;
 		extern const size_t ScrollSize;
-		extern const size_t TopPadding;
-		extern const size_t Padding;
 		extern const size_t ScrollTopPadding;
 		extern const size_t ScrollPadding;
+		extern const size_t TopPadding;
+		extern const size_t Padding;
 
 		extern const size_t DebugWindowMinX;
 		extern const size_t DebugWindowMinY;
@@ -117,14 +125,14 @@ namespace BFW_WINDOWS
 		const bool ChildWindowInit(BFW::GUI::Window* _Wnd);
 		void ChildWindowCleanUp(BFW::GUI::Window* _Wnd);
 
-		void* GenerateUserData(BFW::GUI::PopUp& _ParentWnd, void* _Global);
+		void* GenerateUserData(BFW::GUI::PopUp& _Parent, const uint64_t _PopUpId, void* _Global);
 		void ReleaseUserData(BFW::GUI::PopUp& _Wnd, void* _Global);
-		void SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _ParentWnd, void* _Global);
+		void SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _Parent, void* _Global);
 		void CleanUpRenderData(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void RenderGray25(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void RenderGray30(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void RenderGray40(BFW::GUI::PopUp& _Wnd, void* _Global);
-		void Composit(BFW::GUI::PopUp& _ParentWnd, BFW::GUI::PopUp& _ChildWnd, void* _Global);
+		void Composit(BFW::GUI::PopUp& _Parent, BFW::GUI::PopUp& _Child, void* _Global);
 
 		const size_t GetMinX(const uint64_t _PopUpId);
 		const size_t GetMinY(const uint64_t _PopUpId);
@@ -132,7 +140,9 @@ namespace BFW_WINDOWS
 		const bool ForceVScroll(const uint64_t _PopUpId);
 		const bool IgnoreHScroll(const uint64_t _PopUpId);
 		const bool IgnoreVScroll(const uint64_t _PopUpId);
+
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
+		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<const BFW::GUI::SafePopUpPointer>& _Path);
 		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::SetupRenderDataFnc _SetupData, const BFW::GUI::CleanUpRenderDataFnc _CleanUpData, const BFW::GUI::RenderFnc _RenderBottomWindow, const BFW::GUI::RenderFnc _RenderMiddleWindow, const BFW::GUI::RenderFnc _RenderTopWindow, const BFW::GUI::RenderFnc _RenderBottomButton, const BFW::GUI::RenderFnc _RenderMiddleButton, const BFW::GUI::RenderFnc _RenderTopButton, const BFW::GUI::CompositFnc _Composit, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 

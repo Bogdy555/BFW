@@ -89,17 +89,17 @@ namespace BFW_WINDOWS
 			void Update() override;
 			void Stop() override;
 
-			void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, const bool _IsNode);
+			void GenerateNodeWindow(BFW::GUI::PopUp& _Parent, void* _UserData);
+			void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, const bool _IsNode, void* _UserData);
 
 			void InitGUI();
 			void CleanUpGUI();
 
 			const bool SpawnButtonCallBack();
-			void MouseCaptureMove(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
 
 			void MouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 			void DeleteMouseCaptureInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
-			void HandleWindowInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const bool _IsMainWindow);
+			const bool HandleWindowInputs(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData, const bool _IsMainWindow);
 			void RenderWindow(BFW::GUI::Window& _Wnd, GUI::WindowData& _WndData);
 
 			void Input();
