@@ -177,6 +177,8 @@ namespace BFW
 
 		enum BFW_API PanelTypes : const uint8_t;
 
+		struct BFW_API RenderingDescriptor;
+
 		class BFW_API SafePopUpPointer;
 
 		class BFW_API PopUp;
@@ -190,7 +192,7 @@ namespace BFW
 		typedef const size_t (*GetMinFnc)(const uint64_t _PopUpId);
 		typedef const bool (*IgnoreScrollFnc)(const uint64_t _PopUpId);
 		typedef const bool (*ForceScrollFnc)(const uint64_t _PopUpId);
-		typedef void (*ResizePopUpLayerFnc)(PopUp& _Parent, const size_t _Layer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const SetupRenderDataFnc _SetupData, const CleanUpRenderDataFnc _CleanUpData, const RenderFnc _RenderBottomWindow, const RenderFnc _RenderMiddleWindow, const RenderFnc _RenderTopWindow, const RenderFnc _RenderBottomButton, const RenderFnc _RenderMiddleButton, const RenderFnc _RenderTopButton, const CompositFnc _Composit, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
+		typedef void (*ResizePopUpLayerFnc)(PopUp& _Parent, const size_t _Layer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const RenderingDescriptor& _RenderFunctionsScrollWindow, const RenderingDescriptor& _RenderFunctionsScrollButton, const RenderingDescriptor& _RenderFunctionsScrollCorner, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 
 	}
 

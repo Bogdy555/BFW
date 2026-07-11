@@ -17,6 +17,14 @@ const size_t BFW_WINDOWS::GUI::ScrollPadding = 10;
 const size_t BFW_WINDOWS::GUI::TopPadding = 45;
 const size_t BFW_WINDOWS::GUI::Padding = 30;
 
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsNodeWindow = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray25, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsPanelWindow = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray30, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsButton = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray40, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsResizeBar = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray40, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsScrollWindow = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray25, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsScrollButton = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray40, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+const BFW::GUI::RenderingDescriptor BFW_WINDOWS::GUI::RenderFunctionsScrollCorner = BFW::GUI::RenderingDescriptor(BFW_WINDOWS::GUI::SetupRenderData, BFW_WINDOWS::GUI::CleanUpRenderData, BFW_WINDOWS::GUI::RenderGray25, nullptr, nullptr, BFW_WINDOWS::GUI::Composit);
+
 const size_t BFW_WINDOWS::GUI::DebugWindowMinX = 200;
 const size_t BFW_WINDOWS::GUI::DebugWindowMinY = 200;
 
@@ -1070,10 +1078,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 			ResizeSize,
 			ForceHScroll, ForceVScroll,
 			ScrollSize, ScrollTopPadding, ScrollPadding,
-			SetupRenderData, CleanUpRenderData,
-			RenderGray25, nullptr, nullptr,
-			RenderGray40, nullptr, nullptr,
-			Composit,
+			RenderFunctionsScrollWindow, RenderFunctionsScrollButton, RenderFunctionsScrollCorner,
 			GenerateUserData, ReleaseUserData,
 			_Menu
 		);
@@ -1225,18 +1230,15 @@ void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _E
 
 void BFW_WINDOWS::GUI::HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
-	if (_IsMainWindow)
+	if (_Wnd.GetKeys()[VK_F11].JustPressed())
 	{
-		if (_Wnd.GetKeys()[VK_F11].JustPressed())
+		if (_Wnd.IsFullScreen())
 		{
-			if (_Wnd.IsFullScreen())
-			{
-				_Wnd.GoWindowed();
-			}
-			else
-			{
-				_Wnd.GoFullScreen();
-			}
+			_Wnd.GoWindowed();
+		}
+		else
+		{
+			_Wnd.GoFullScreen();
 		}
 	}
 }
@@ -1248,23 +1250,20 @@ void BFW_WINDOWS::GUI::HandleDefaultControllers(RunTime::Application& _Applicati
 		return;
 	}
 
-	if (_IsMainWindow)
+	if (_ApplicationObj.GetController(0).GetStart().JustPressed() || _ApplicationObj.GetController(1).GetStart().JustPressed() || _ApplicationObj.GetController(2).GetStart().JustPressed() || _ApplicationObj.GetController(3).GetStart().JustPressed())
 	{
-		if (_ApplicationObj.GetController(0).GetStart().JustPressed() || _ApplicationObj.GetController(1).GetStart().JustPressed() || _ApplicationObj.GetController(2).GetStart().JustPressed() || _ApplicationObj.GetController(3).GetStart().JustPressed())
+		if (_Wnd.IsFullScreen())
 		{
-			if (_Wnd.IsFullScreen())
-			{
-				_Wnd.GoWindowed();
-			}
-			else
-			{
-				_Wnd.GoFullScreen();
-			}
+			_Wnd.GoWindowed();
+		}
+		else
+		{
+			_Wnd.GoFullScreen();
 		}
 	}
 }
 
-void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::SetupRenderDataFnc _SetupData, const BFW::GUI::CleanUpRenderDataFnc _CleanUpData, const BFW::GUI::RenderFnc _RenderBottomWindow, const BFW::GUI::RenderFnc _RenderMiddleWindow, const BFW::GUI::RenderFnc _RenderTopWindow, const BFW::GUI::RenderFnc _RenderBottomButton, const BFW::GUI::RenderFnc _RenderMiddleButton, const BFW::GUI::RenderFnc _RenderTopButton, const BFW::GUI::CompositFnc _Composit, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::RenderingDescriptor& _RenderFunctionsScrollWindow, const BFW::GUI::RenderingDescriptor& _RenderFunctionsScrollButton, const BFW::GUI::RenderingDescriptor& _RenderFunctionsScrollCorner, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global)
 {
 	for (size_t _Index = 0; _Index < _Parent.GetPopUps()[_Layer].GetSize(); _Index++)
 	{
@@ -1274,7 +1273,7 @@ void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _
 		{
 		case _DebugWindowPopUpId:
 		{
-			_PopUp.ResizeChilds(ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _SetupData, _CleanUpData, _RenderBottomWindow, _RenderMiddleWindow, _RenderTopWindow, _RenderBottomButton, _RenderMiddleButton, _RenderTopButton, _Composit, _GenerateUserData, _ReleaseUserData, _Global);
+			_PopUp.ResizeChilds(ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
 
 			break;
 		}
@@ -1435,7 +1434,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 			_WndData.Layout.SetTrueWidth(GetMinX(_WndData.Layout.GetId()));
 			_WndData.Layout.SetTrueHeight(GetMinY(_WndData.Layout.GetId()));
 
-			_WndData.Layout.ResizeChilds(ResizePopUpLayer, GetMinX, GetMinY, ResizeSize, ForceHScroll, ForceVScroll, ScrollSize, ScrollTopPadding, ScrollPadding, SetupRenderData, CleanUpRenderData, RenderGray25, nullptr, nullptr, RenderGray40, nullptr, nullptr, Composit, GenerateUserData, ReleaseUserData, _Menu);
+			_WndData.Layout.ResizeChilds(ResizePopUpLayer, GetMinX, GetMinY, ResizeSize, ForceHScroll, ForceVScroll, ScrollSize, ScrollTopPadding, ScrollPadding, RenderFunctionsScrollWindow, RenderFunctionsScrollButton, RenderFunctionsScrollCorner, GenerateUserData, ReleaseUserData, _Menu);
 		}
 	}
 
