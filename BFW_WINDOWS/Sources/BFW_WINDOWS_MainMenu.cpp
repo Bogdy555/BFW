@@ -640,6 +640,8 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 			intptr_t _MouseDeltaX = _MouseX - _WndData.RCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.RCaptureMouseYLastFrame;
 
+			GUI::HandleDefaultRCaptureDrag(_MouseX, _MouseY, _MouseDeltaX, _MouseDeltaY, _ApplicationObj, this, _Wnd, _WndData, _IsMainWindow);
+
 			_WndData.RCaptureMouseXLastFrame = _MouseX;
 			_WndData.RCaptureMouseYLastFrame = _MouseY;
 		}
@@ -658,6 +660,8 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 			intptr_t _MouseDeltaX = _MouseX - _WndData.X1CaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.X1CaptureMouseYLastFrame;
 
+			GUI::HandleDefaultX1CaptureDrag(_MouseX, _MouseY, _MouseDeltaX, _MouseDeltaY, _ApplicationObj, this, _Wnd, _WndData, _IsMainWindow);
+
 			_WndData.X1CaptureMouseXLastFrame = _MouseX;
 			_WndData.X1CaptureMouseYLastFrame = _MouseY;
 		}
@@ -675,6 +679,8 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		{
 			intptr_t _MouseDeltaX = _MouseX - _WndData.X2CaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.X2CaptureMouseYLastFrame;
+
+			GUI::HandleDefaultX2CaptureDrag(_MouseX, _MouseY, _MouseDeltaX, _MouseDeltaY, _ApplicationObj, this, _Wnd, _WndData, _IsMainWindow);
 
 			_WndData.X2CaptureMouseXLastFrame = _MouseX;
 			_WndData.X2CaptureMouseYLastFrame = _MouseY;

@@ -542,9 +542,13 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		_WndData.LayoutMutex->lock();
 
-		BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_Cursor.x, _Cursor.y);
+		BFW::Vector<BFW::GUI::SafePopUpPointer> _Path;
 
-		if (_HoverPopUp && IsMovable(_HoverPopUp->GetId()))
+		BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_Cursor.x, _Cursor.y, &_Path);
+
+		size_t _MovableIndex = 0;
+
+		if (_HoverPopUp && (IsMovable(_HoverPopUp->GetId()) || _HoverPopUp->GetId() == BFW::GUI::_NodeWindowPopUpId) && !BFW::GUI::PopUp::FindMovableWindow(IsMovable, _MovableIndex, _Path))
 		{
 			_Result = HTCAPTION;
 		}
@@ -962,6 +966,46 @@ const bool BFW_WINDOWS::GUI::ForceVScroll(const uint64_t _PopUpId)
 	return _Force;
 }
 
+const bool BFW_WINDOWS::GUI::IsMovable(const uint64_t _PopUpId)
+{
+	bool _Movable = 0;
+
+	switch (_PopUpId)
+	{
+	case _DebugWindowPopUpId:
+	{
+		_Movable = true;
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	return _Movable;
+}
+
+const bool BFW_WINDOWS::GUI::IsScrollable(const uint64_t _PopUpId)
+{
+	bool _Scrollable = 0;
+
+	switch (_PopUpId)
+	{
+	case _DebugWindowPopUpId:
+	{
+		_Scrollable = true;
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	return _Scrollable;
+}
+
 const BFW::GUI::RenderingDescriptor& BFW_WINDOWS::GUI::GetRenderingDescriptor(const uint64_t _PopUpId)
 {
 	switch (_PopUpId)
@@ -1079,109 +1123,20 @@ void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _
 
 
 
-const bool BFW_WINDOWS::GUI::IsMovable(const uint64_t _PopUpId)
-{
-	bool _Movable = 0;
-
-	switch (_PopUpId)
-	{
-	case _DebugWindowPopUpId:
-	{
-		_Movable = true;
-		break;
-	}
-	default:
-	{
-		break;
-	}
-	}
-
-	return _Movable;
-}
-
-const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path)
-{
-	_Index = 0;
-
-	if (!BFW::GUI::PopUp::IsValidPath(_Path))
-	{
-		return false;
-	}
-
-	while (_Index < _Path.GetSize())
-	{
-		switch (_Path[_Index]->GetId())
-		{
-		case _DebugWindowPopUpId:
-		{
-			size_t _Layer = 0;
-
-			if (_Path[_Index]->FindPopUpLayer(_Layer, BFW::GUI::_ScrollCornerPopUpId))
-			{
-				return true;
-			}
-
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
-
-		_Index++;
-	}
-
-	_Index = 0;
-
-	return false;
-}
-
-const bool BFW_WINDOWS::GUI::FindScrollableWindow(size_t& _Index, const BFW::Vector<const BFW::GUI::SafePopUpPointer>& _Path)
-{
-	_Index = 0;
-
-	if (!BFW::GUI::PopUp::IsValidPath(_Path))
-	{
-		return false;
-	}
-
-	while (_Index < _Path.GetSize())
-	{
-		switch (_Path[_Index]->GetId())
-		{
-		case _DebugWindowPopUpId:
-		{
-			size_t _Layer = 0;
-
-			if (_Path[_Index]->FindPopUpLayer(_Layer, BFW::GUI::_ScrollCornerPopUpId))
-			{
-				return true;
-			}
-
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
-
-		_Index++;
-	}
-
-	_Index = 0;
-
-	return false;
-}
-
-
-
 const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
 	if (!_WndData.LCapturePath.GetSize())
 	{
 		return true;
+	}
+
+	size_t _WindowIndex = 0;
+
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.LCapturePath))
+	{
+		size_t _Layer = 0;
+		_WndData.LCapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.LCapturePath[_WindowIndex]);
+		_WndData.LCapturePath[_WindowIndex + 1]->SetForegroundLayer(_Layer);
 	}
 
 	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_LeftResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_RightResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_TopResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_BottomResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_LeftTopResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_LeftBottomResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_RightTopResizePopUpId || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_RightBottomResizePopUpId)
@@ -1278,23 +1233,13 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 		return true;
 	}
 
-	if (IsMovable(_WndData.LCapturePath[0]->GetId()) && _WndData.LCapturePath.GetSize() >= 2)
+	_WindowIndex = 0;
+
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.LCapturePath))
 	{
-		bool _Found = false;
-
-		for (size_t _Layer = 0; _Layer < _WndData.LCapturePath[1]->GetPopUps().GetSize(); _Layer++)
-		{
-			if (_WndData.LCapturePath[0] != &_WndData.LCapturePath[1]->GetPopUps()[_Layer][_WndData.LCapturePath[1]->GetFocusedPopUps()[_Layer]])
-			{
-				continue;
-			}
-
-			_Found = true;
-
-			_WndData.LCapturePath[1]->MoveLayerWithMouse(_Layer, _MouseDeltaX, _MouseDeltaY);
-
-			break;
-		}
+		size_t _Layer = 0;
+		_WndData.LCapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.LCapturePath[_WindowIndex]);
+		_WndData.LCapturePath[_WindowIndex + 1]->MoveLayerWithMouse(_Layer, _MouseDeltaX, _MouseDeltaY);
 
 		return true;
 	}
@@ -1311,7 +1256,16 @@ const bool BFW_WINDOWS::GUI::HandleDefaultMCaptureDrag(const intptr_t _MouseX, c
 
 	size_t _WindowIndex = 0;
 
-	if (FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.MCapturePath))
+	{
+		size_t _Layer = 0;
+		_WndData.MCapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.MCapturePath[_WindowIndex]);
+		_WndData.MCapturePath[_WindowIndex + 1]->SetForegroundLayer(_Layer);
+	}
+
+	_WindowIndex = 0;
+
+	if (BFW::GUI::PopUp::FindScrollableWindow(IsScrollable, _WindowIndex, _WndData.MCapturePath))
 	{
 		_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), IgnoreHScroll);
 		_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), IgnoreVScroll);
@@ -1322,11 +1276,68 @@ const bool BFW_WINDOWS::GUI::HandleDefaultMCaptureDrag(const intptr_t _MouseX, c
 	return false;
 }
 
+const bool BFW_WINDOWS::GUI::HandleDefaultRCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (!_WndData.RCapturePath.GetSize())
+	{
+		return true;
+	}
+
+	size_t _WindowIndex = 0;
+
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.RCapturePath))
+	{
+		size_t _Layer = 0;
+		_WndData.RCapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.RCapturePath[_WindowIndex]);
+		_WndData.RCapturePath[_WindowIndex + 1]->SetForegroundLayer(_Layer);
+	}
+
+	return false;
+}
+
+const bool BFW_WINDOWS::GUI::HandleDefaultX1CaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (!_WndData.X1CapturePath.GetSize())
+	{
+		return true;
+	}
+
+	size_t _WindowIndex = 0;
+
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.X1CapturePath))
+	{
+		size_t _Layer = 0;
+		_WndData.X1CapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.X1CapturePath[_WindowIndex]);
+		_WndData.X1CapturePath[_WindowIndex + 1]->SetForegroundLayer(_Layer);
+	}
+
+	return false;
+}
+
+const bool BFW_WINDOWS::GUI::HandleDefaultX2CaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+{
+	if (!_WndData.X2CapturePath.GetSize())
+	{
+		return true;
+	}
+
+	size_t _WindowIndex = 0;
+
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.X2CapturePath))
+	{
+		size_t _Layer = 0;
+		_WndData.X2CapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.X2CapturePath[_WindowIndex]);
+		_WndData.X2CapturePath[_WindowIndex + 1]->SetForegroundLayer(_Layer);
+	}
+
+	return false;
+}
+
 void BFW_WINDOWS::GUI::HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
 	size_t _ScrollableWindowIndex = 0;
 
-	if (!FindScrollableWindow(_ScrollableWindowIndex, _Path))
+	if (!BFW::GUI::PopUp::FindScrollableWindow(IsScrollable, _ScrollableWindowIndex, _Path))
 	{
 		return;
 	}
@@ -1338,7 +1349,7 @@ void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _E
 {
 	size_t _ScrollableWindowIndex = 0;
 
-	if (!FindScrollableWindow(_ScrollableWindowIndex, _Path))
+	if (!BFW::GUI::PopUp::FindScrollableWindow(IsScrollable, _ScrollableWindowIndex, _Path))
 	{
 		return;
 	}
@@ -1550,7 +1561,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 		{
 			size_t _WindowIndex = 0;
 
-			if (FindScrollableWindow(_WindowIndex, _WndData.MCapturePath))
+			if (BFW::GUI::PopUp::FindScrollableWindow(IsScrollable, _WindowIndex, _WndData.MCapturePath))
 			{
 				_CursorSet = true;
 				_Wnd.SetCursorIcon(LoadCursor(NULL, IDC_SIZEALL));

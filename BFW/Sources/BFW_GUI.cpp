@@ -1953,7 +1953,7 @@ void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const IgnoreScrollFnc _Igno
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, _HScrollWindowPopUpId))
+	if (!FindFocusedPopUpLayer(_ScrollWindowIndex, _HScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -2004,7 +2004,7 @@ void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const IgnoreScrollFnc _Igno
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, _VScrollWindowPopUpId))
+	if (!FindFocusedPopUpLayer(_ScrollWindowIndex, _VScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -2055,7 +2055,7 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _Accumul
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, _HScrollWindowPopUpId))
+	if (!FindFocusedPopUpLayer(_ScrollWindowIndex, _HScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -2122,7 +2122,7 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _Accumul
 
 	size_t _ScrollWindowIndex = 0;
 
-	if (!FindPopUpLayer(_ScrollWindowIndex, _VScrollWindowPopUpId))
+	if (!FindFocusedPopUpLayer(_ScrollWindowIndex, _VScrollWindowPopUpId))
 	{
 		return;
 	}
@@ -3349,11 +3349,25 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 	MoveControlsOnTop();
 }
 
+void BFW::GUI::PopUp::SetForegroundLayer(const size_t _Layer)
+{
+	size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_Layer]);
+	Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_Layer]);
+
+	FocusedPopUps.EmplaceBack((size_t&&)(_OldFocusedPopUps));
+	PopUps.EmplaceBack((Vector<PopUp>&&)(_OldPopUps));
+
+	FocusedPopUps.Erase(_Layer);
+	PopUps.Erase(_Layer);
+
+	MoveControlsOnTop();
+}
+
 void BFW::GUI::PopUp::MoveControlsOnTop()
 {
 	size_t _HScrollWindowIndex = 0;
 
-	if (FindPopUpLayer(_HScrollWindowIndex, _HScrollWindowPopUpId))
+	if (FindFocusedPopUpLayer(_HScrollWindowIndex, _HScrollWindowPopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_HScrollWindowIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_HScrollWindowIndex]);
@@ -3367,7 +3381,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _VScrollWindowIndex = 0;
 
-	if (FindPopUpLayer(_VScrollWindowIndex, _VScrollWindowPopUpId))
+	if (FindFocusedPopUpLayer(_VScrollWindowIndex, _VScrollWindowPopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_VScrollWindowIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_VScrollWindowIndex]);
@@ -3381,7 +3395,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _ScrollCornerIndex = 0;
 
-	if (FindPopUpLayer(_ScrollCornerIndex, _ScrollCornerPopUpId))
+	if (FindFocusedPopUpLayer(_ScrollCornerIndex, _ScrollCornerPopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_ScrollCornerIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_ScrollCornerIndex]);
@@ -3395,7 +3409,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _LeftResizeIndex = 0;
 
-	if (FindPopUpLayer(_LeftResizeIndex, _LeftResizePopUpId))
+	if (FindFocusedPopUpLayer(_LeftResizeIndex, _LeftResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_LeftResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_LeftResizeIndex]);
@@ -3409,7 +3423,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _RightResizeIndex = 0;
 
-	if (FindPopUpLayer(_RightResizeIndex, _RightResizePopUpId))
+	if (FindFocusedPopUpLayer(_RightResizeIndex, _RightResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_RightResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_RightResizeIndex]);
@@ -3423,7 +3437,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _TopResizeIndex = 0;
 
-	if (FindPopUpLayer(_TopResizeIndex, _TopResizePopUpId))
+	if (FindFocusedPopUpLayer(_TopResizeIndex, _TopResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_TopResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_TopResizeIndex]);
@@ -3437,7 +3451,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _BottomResizeIndex = 0;
 
-	if (FindPopUpLayer(_BottomResizeIndex, _BottomResizePopUpId))
+	if (FindFocusedPopUpLayer(_BottomResizeIndex, _BottomResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_BottomResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_BottomResizeIndex]);
@@ -3451,7 +3465,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _LeftTopResizeIndex = 0;
 
-	if (FindPopUpLayer(_LeftTopResizeIndex, _LeftTopResizePopUpId))
+	if (FindFocusedPopUpLayer(_LeftTopResizeIndex, _LeftTopResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_LeftTopResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_LeftTopResizeIndex]);
@@ -3465,7 +3479,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _LeftBottomResizeIndex = 0;
 
-	if (FindPopUpLayer(_LeftBottomResizeIndex, _LeftBottomResizePopUpId))
+	if (FindFocusedPopUpLayer(_LeftBottomResizeIndex, _LeftBottomResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_LeftBottomResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_LeftBottomResizeIndex]);
@@ -3479,7 +3493,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _RightTopResizeIndex = 0;
 
-	if (FindPopUpLayer(_RightTopResizeIndex, _RightTopResizePopUpId))
+	if (FindFocusedPopUpLayer(_RightTopResizeIndex, _RightTopResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_RightTopResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_RightTopResizeIndex]);
@@ -3493,7 +3507,7 @@ void BFW::GUI::PopUp::MoveControlsOnTop()
 
 	size_t _RightBottomResizeIndex = 0;
 
-	if (FindPopUpLayer(_RightBottomResizeIndex, _RightBottomResizePopUpId))
+	if (FindFocusedPopUpLayer(_RightBottomResizeIndex, _RightBottomResizePopUpId))
 	{
 		size_t _OldFocusedPopUps = (size_t&&)(FocusedPopUps[_RightBottomResizeIndex]);
 		Vector<PopUp> _OldPopUps = (Vector<PopUp>&&)(PopUps[_RightBottomResizeIndex]);
@@ -3784,7 +3798,26 @@ const BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr
 	return SafePopUpPointer((PopUp*)(this));
 }
 
-const bool BFW::GUI::PopUp::FindPopUpLayer(size_t& _Layer, const uint64_t _PopUpId) const
+const bool BFW::GUI::PopUp::FindFocusedPopUpLayer(size_t& _Layer, const PopUp& _PopUp) const
+{
+	_Layer = 0;
+
+	while (_Layer < PopUps.GetSize())
+	{
+		if (&PopUps[_Layer][FocusedPopUps[_Layer]] == &_PopUp)
+		{
+			return true;
+		}
+
+		_Layer++;
+	}
+
+	_Layer = 0;
+
+	return false;
+}
+
+const bool BFW::GUI::PopUp::FindFocusedPopUpLayer(size_t& _Layer, const uint64_t _PopUpId) const
 {
 	_Layer = 0;
 
@@ -4158,4 +4191,116 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<const SafePopUpPointer>& _P
 	}
 
 	return true;
+}
+
+const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, size_t& _Index, const Vector<SafePopUpPointer>& _Path)
+{
+	_Index = 0;
+
+	if (!IsValidPath(_Path))
+	{
+		return false;
+	}
+
+	while (_Index < _Path.GetSize())
+	{
+		if ((_IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
+		{
+			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
+			{
+				if (&_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]] == _Path[_Index])
+				{
+					return true;
+				}
+			}
+		}
+
+		_Index++;
+	}
+
+	_Index = 0;
+
+	return false;
+}
+
+const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, size_t& _Index, const Vector<const SafePopUpPointer>& _Path)
+{
+	_Index = 0;
+
+	if (!IsValidPath(_Path))
+	{
+		return false;
+	}
+
+	while (_Index < _Path.GetSize())
+	{
+		if ((_IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
+		{
+			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
+			{
+				if (&_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]] == _Path[_Index])
+				{
+					return true;
+				}
+			}
+		}
+
+		_Index++;
+	}
+
+	_Index = 0;
+
+	return false;
+}
+
+const bool BFW::GUI::PopUp::FindScrollableWindow(const IsScrollableFnc _IsScrollable, size_t& _Index, const Vector<SafePopUpPointer>& _Path)
+{
+	_Index = 0;
+
+	if (!IsValidPath(_Path))
+	{
+		return false;
+	}
+
+	while (_Index < _Path.GetSize())
+	{
+		size_t _Layer = 0;
+
+		if (_IsScrollable(_Path[_Index]->Id) && _Path[_Index]->FindFocusedPopUpLayer(_Layer, _ScrollCornerPopUpId))
+		{
+			return true;
+		}
+
+		_Index++;
+	}
+
+	_Index = 0;
+
+	return false;
+}
+
+const bool BFW::GUI::PopUp::FindScrollableWindow(const IsScrollableFnc _IsScrollable, size_t& _Index, const Vector<const SafePopUpPointer>& _Path)
+{
+	_Index = 0;
+
+	if (!IsValidPath(_Path))
+	{
+		return false;
+	}
+
+	while (_Index < _Path.GetSize())
+	{
+		size_t _Layer = 0;
+
+		if (_IsScrollable(_Path[_Index]->Id) && _Path[_Index]->FindFocusedPopUpLayer(_Layer, _ScrollCornerPopUpId))
+		{
+			return true;
+		}
+
+		_Index++;
+	}
+
+	_Index = 0;
+
+	return false;
 }

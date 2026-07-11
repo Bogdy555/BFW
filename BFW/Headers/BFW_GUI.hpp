@@ -221,6 +221,7 @@ namespace BFW
 			void GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const RenderingDescriptor& _RenderFunctions, const GenerateUserDataFnc _GenerateUserData, void* _Global);
 			void GenerateScrollBars(const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, void* _Global);
 			void ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
+			void SetForegroundLayer(const size_t _Layer);
 			void MoveControlsOnTop();
 			void SetFocusedPanel(const size_t _FocusedPanel);
 			void SetFocusedNode(const size_t _FocusedNode);
@@ -245,7 +246,8 @@ namespace BFW
 
 			SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<SafePopUpPointer>* _Path = nullptr);
 			const SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<const SafePopUpPointer>* _Path = nullptr) const;
-			const bool FindPopUpLayer(size_t& _Layer, const uint64_t _PopUpId) const;
+			const bool FindFocusedPopUpLayer(size_t& _Layer, const PopUp& _PopUp) const;
+			const bool FindFocusedPopUpLayer(size_t& _Layer, const uint64_t _PopUpId) const;
 			const size_t GetFocusedPanel() const;
 			Vector<PopUp>& GetPanels();
 			const Vector<PopUp>& GetPanels() const;
@@ -285,6 +287,10 @@ namespace BFW
 			static void LocalToGlobal(intptr_t& _PositionX, intptr_t& _PositionY, const Vector<const SafePopUpPointer>& _Path);
 			static const bool IsValidPath(const Vector<SafePopUpPointer>& _Path);
 			static const bool IsValidPath(const Vector<const SafePopUpPointer>& _Path);
+			static const bool FindMovableWindow(const IsMovableFnc _IsMovable, size_t& _Index, const Vector<SafePopUpPointer>& _Path);
+			static const bool FindMovableWindow(const IsMovableFnc _IsMovable, size_t& _Index, const Vector<const SafePopUpPointer>& _Path);
+			static const bool FindScrollableWindow(const IsScrollableFnc _IsScrollable, size_t& _Index, const Vector<SafePopUpPointer>& _Path);
+			static const bool FindScrollableWindow(const IsScrollableFnc _IsScrollable, size_t& _Index, const Vector<const SafePopUpPointer>& _Path);
 
 		private:
 
