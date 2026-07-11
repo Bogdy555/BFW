@@ -142,8 +142,8 @@ namespace BFW_WINDOWS
 		void RenderGray40(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void Composit(BFW::GUI::PopUp& _Parent, BFW::GUI::PopUp& _Child, void* _Global);
 
-		const size_t GetMinX(const uint64_t _PopUpId);
-		const size_t GetMinY(const uint64_t _PopUpId);
+		const size_t GetMinX(const BFW::GUI::PopUp& _PopUp);
+		const size_t GetMinY(const BFW::GUI::PopUp& _PopUp);
 		const bool ForceHScroll(const uint64_t _PopUpId);
 		const bool ForceVScroll(const uint64_t _PopUpId);
 		const bool IgnoreHScroll(const uint64_t _PopUpId);

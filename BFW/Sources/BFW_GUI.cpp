@@ -2245,7 +2245,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 				}
 
 				_Parent.Panels[_Index].SetWidth(_Parent.Panels[_Index].Width - _TrueMouseDeltaX);
-				_Parent.Panels[_Index].SetTrueWidth(_GetMinX(_Parent.Panels[_Index].Id));
+				_Parent.Panels[_Index].SetTrueWidth(_GetMinX(_Parent.Panels[_Index]));
 				_Parent.Panels[_Index].SetPositionX(_Parent.Panels[_Index].PositionX + _TrueMouseDeltaX);
 
 				break;
@@ -2281,7 +2281,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 				}
 
 				_Parent.Panels[_Index].SetWidth(_Parent.Panels[_Index].Width + _TrueMouseDeltaX);
-				_Parent.Panels[_Index].SetTrueWidth(_GetMinX(_Parent.Panels[_Index].Id));
+				_Parent.Panels[_Index].SetTrueWidth(_GetMinX(_Parent.Panels[_Index]));
 
 				break;
 			}
@@ -2316,7 +2316,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 				}
 
 				_Parent.Panels[_Index].SetHeight(_Parent.Panels[_Index].Height - _TrueMouseDeltaY);
-				_Parent.Panels[_Index].SetTrueHeight(_GetMinY(_Parent.Panels[_Index].Id));
+				_Parent.Panels[_Index].SetTrueHeight(_GetMinY(_Parent.Panels[_Index]));
 				_Parent.Panels[_Index].SetPositionY(_Parent.Panels[_Index].PositionY + _TrueMouseDeltaY);
 
 				break;
@@ -2352,7 +2352,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 				}
 
 				_Parent.Panels[_Index].SetHeight(_Parent.Panels[_Index].Height + _TrueMouseDeltaY);
-				_Parent.Panels[_Index].SetTrueHeight(_GetMinY(_Parent.Panels[_Index].Id));
+				_Parent.Panels[_Index].SetTrueHeight(_GetMinY(_Parent.Panels[_Index]));
 
 				break;
 			}
@@ -2423,7 +2423,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 					}
 
 					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width - _TrueMouseDeltaX);
-					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index]));
 					_Parent.PopUps[_Layer][_Index].SetPositionX(_Parent.PopUps[_Layer][_Index].PositionX + _TrueMouseDeltaX);
 
 					break;
@@ -2445,7 +2445,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 					}
 
 					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width + _TrueMouseDeltaX);
-					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index]));
 
 					break;
 				}
@@ -2466,7 +2466,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 					}
 
 					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height - _TrueMouseDeltaY);
-					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index]));
 					_Parent.PopUps[_Layer][_Index].SetPositionY(_Parent.PopUps[_Layer][_Index].PositionY + _TrueMouseDeltaY);
 
 					break;
@@ -2488,7 +2488,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 					}
 
 					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height + _TrueMouseDeltaY);
-					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index]));
 
 					break;
 				}
@@ -2524,8 +2524,8 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 
 					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width - _TrueMouseDeltaX);
 					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height - _TrueMouseDeltaY);
-					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
-					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index]));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index]));
 					_Parent.PopUps[_Layer][_Index].SetPositionX(_Parent.PopUps[_Layer][_Index].PositionX + _TrueMouseDeltaX);
 					_Parent.PopUps[_Layer][_Index].SetPositionY(_Parent.PopUps[_Layer][_Index].PositionY + _TrueMouseDeltaY);
 
@@ -2563,8 +2563,8 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 
 					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width - _TrueMouseDeltaX);
 					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height + _TrueMouseDeltaY);
-					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
-					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index]));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index]));
 					_Parent.PopUps[_Layer][_Index].SetPositionX(_Parent.PopUps[_Layer][_Index].PositionX + _TrueMouseDeltaX);
 
 					break;
@@ -2601,8 +2601,8 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 
 					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width + _TrueMouseDeltaX);
 					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height - _TrueMouseDeltaY);
-					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
-					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index]));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index]));
 					_Parent.PopUps[_Layer][_Index].SetPositionY(_Parent.PopUps[_Layer][_Index].PositionY + _TrueMouseDeltaY);
 
 					break;
@@ -2639,8 +2639,8 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 
 					_Parent.PopUps[_Layer][_Index].SetWidth(_Parent.PopUps[_Layer][_Index].Width + _TrueMouseDeltaX);
 					_Parent.PopUps[_Layer][_Index].SetHeight(_Parent.PopUps[_Layer][_Index].Height + _TrueMouseDeltaY);
-					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index].Id));
-					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index].Id));
+					_Parent.PopUps[_Layer][_Index].SetTrueWidth(_GetMinX(_Parent.PopUps[_Layer][_Index]));
+					_Parent.PopUps[_Layer][_Index].SetTrueHeight(_GetMinY(_Parent.PopUps[_Layer][_Index]));
 
 					break;
 				}
@@ -3028,14 +3028,14 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		case _LeftPanelType:
 		{
 			Panels[_Index].SetHeight(TrueHeight);
-			Panels[_Index].SetTrueHeight(_GetMinY(Panels[_Index].Id));
+			Panels[_Index].SetTrueHeight(_GetMinY(Panels[_Index]));
 
 			break;
 		}
 		case _RightPanelType:
 		{
 			Panels[_Index].SetHeight(TrueHeight);
-			Panels[_Index].SetTrueHeight(_GetMinY(Panels[_Index].Id));
+			Panels[_Index].SetTrueHeight(_GetMinY(Panels[_Index]));
 			Panels[_Index].SetPositionX(TrueWidth - Panels[_Index].Width);
 
 			break;
@@ -3043,14 +3043,14 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		case _TopPanelType:
 		{
 			Panels[_Index].SetWidth(TrueWidth);
-			Panels[_Index].SetTrueWidth(_GetMinX(Panels[_Index].Id));
+			Panels[_Index].SetTrueWidth(_GetMinX(Panels[_Index]));
 
 			break;
 		}
 		case _BottomPanelType:
 		{
 			Panels[_Index].SetWidth(TrueWidth);
-			Panels[_Index].SetTrueWidth(_GetMinX(Panels[_Index].Id));
+			Panels[_Index].SetTrueWidth(_GetMinX(Panels[_Index]));
 			Panels[_Index].SetPositionY(TrueHeight - Panels[_Index].Height);
 
 			break;
@@ -3080,9 +3080,9 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 				Nodes[_Index].SetWidth(0);
 			}
 
-			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index]));
 			Nodes[_Index].SetHeight(TrueHeight);
-			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index]));
 
 			break;
 		}
@@ -3097,9 +3097,9 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 				Nodes[_Index].SetWidth(0);
 			}
 
-			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index]));
 			Nodes[_Index].SetHeight(TrueHeight);
-			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index]));
 			Nodes[_Index].SetPositionX(TrueWidth - Nodes[_Index].Width);
 
 			break;
@@ -3115,9 +3115,9 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 				Nodes[_Index].SetHeight(0);
 			}
 
-			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index]));
 			Nodes[_Index].SetWidth(TrueWidth);
-			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index]));
 
 			break;
 		}
@@ -3132,9 +3132,9 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 				Nodes[_Index].SetHeight(0);
 			}
 
-			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueHeight(_GetMinY(Nodes[_Index]));
 			Nodes[_Index].SetWidth(TrueWidth);
-			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index].Id));
+			Nodes[_Index].SetTrueWidth(_GetMinX(Nodes[_Index]));
 			Nodes[_Index].SetPositionY(TrueHeight - Nodes[_Index].Height);
 
 			break;

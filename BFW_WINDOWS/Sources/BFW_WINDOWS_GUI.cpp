@@ -843,11 +843,11 @@ void BFW_WINDOWS::GUI::Composit(BFW::GUI::PopUp& _Parent, BFW::GUI::PopUp& _Chil
 
 
 
-const size_t BFW_WINDOWS::GUI::GetMinX(const uint64_t _PopUpId)
+const size_t BFW_WINDOWS::GUI::GetMinX(const BFW::GUI::PopUp& _PopUp)
 {
 	size_t _Min = 0;
 
-	switch (_PopUpId)
+	switch (_PopUp.GetId())
 	{
 	case _DebugWindowPopUpId:
 	{
@@ -863,11 +863,11 @@ const size_t BFW_WINDOWS::GUI::GetMinX(const uint64_t _PopUpId)
 	return _Min;
 }
 
-const size_t BFW_WINDOWS::GUI::GetMinY(const uint64_t _PopUpId)
+const size_t BFW_WINDOWS::GUI::GetMinY(const BFW::GUI::PopUp& _PopUp)
 {
 	size_t _Min = 0;
 
-	switch (_PopUpId)
+	switch (_PopUp.GetId())
 	{
 	case _DebugWindowPopUpId:
 	{
@@ -1402,14 +1402,14 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 
 	size_t _TrueWidth = _WndWidth, _TrueHeight = _WndHeight;
 
-	if (_TrueWidth < GetMinX(_WndData.Layout.GetId()))
+	if (_TrueWidth < GetMinX(_WndData.Layout))
 	{
-		_TrueWidth = GetMinX(_WndData.Layout.GetId());
+		_TrueWidth = GetMinX(_WndData.Layout);
 	}
 
-	if (_TrueHeight < GetMinY(_WndData.Layout.GetId()))
+	if (_TrueHeight < GetMinY(_WndData.Layout))
 	{
-		_TrueHeight = GetMinY(_WndData.Layout.GetId());
+		_TrueHeight = GetMinY(_WndData.Layout);
 	}
 
 	if (_WndWidth != _WndData.Layout.GetWidth() || _WndHeight != _WndData.Layout.GetHeight() || _TrueWidth != _WndPopUpData.Width || _TrueHeight != _WndPopUpData.Height)
@@ -1441,8 +1441,8 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 
 			_WndData.Layout.SetWidth(_WndWidth);
 			_WndData.Layout.SetHeight(_WndHeight);
-			_WndData.Layout.SetTrueWidth(GetMinX(_WndData.Layout.GetId()));
-			_WndData.Layout.SetTrueHeight(GetMinY(_WndData.Layout.GetId()));
+			_WndData.Layout.SetTrueWidth(GetMinX(_WndData.Layout));
+			_WndData.Layout.SetTrueHeight(GetMinY(_WndData.Layout));
 
 			_WndData.Layout.ResizeChilds
 			(
