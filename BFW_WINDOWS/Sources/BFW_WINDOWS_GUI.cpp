@@ -1273,7 +1273,17 @@ void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _
 		{
 		case _DebugWindowPopUpId:
 		{
-			_PopUp.ResizeChilds(ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
+			_PopUp.ResizeChilds
+			(
+				ResizePopUpLayer,
+				_GetMinX, _GetMinY,
+				_ResizeSize,
+				_ForceHScroll, _ForceVScroll,
+				_ScrollSize, _ScrollTopPadding, _ScrollPadding,
+				_RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner,
+				_GenerateUserData, _ReleaseUserData,
+				_Global
+			);
 
 			break;
 		}
@@ -1434,7 +1444,17 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 			_WndData.Layout.SetTrueWidth(GetMinX(_WndData.Layout.GetId()));
 			_WndData.Layout.SetTrueHeight(GetMinY(_WndData.Layout.GetId()));
 
-			_WndData.Layout.ResizeChilds(ResizePopUpLayer, GetMinX, GetMinY, ResizeSize, ForceHScroll, ForceVScroll, ScrollSize, ScrollTopPadding, ScrollPadding, RenderFunctionsScrollWindow, RenderFunctionsScrollButton, RenderFunctionsScrollCorner, GenerateUserData, ReleaseUserData, _Menu);
+			_WndData.Layout.ResizeChilds
+			(
+				ResizePopUpLayer,
+				GetMinX, GetMinY,
+				ResizeSize,
+				ForceHScroll, ForceVScroll,
+				ScrollSize, ScrollTopPadding, ScrollPadding,
+				RenderFunctionsScrollWindow, RenderFunctionsScrollButton, RenderFunctionsScrollCorner,
+				GenerateUserData, ReleaseUserData,
+				_Menu
+			);
 		}
 	}
 
