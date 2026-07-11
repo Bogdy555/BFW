@@ -203,24 +203,24 @@ namespace BFW
 			PopUp(PopUp&& _Other) noexcept;
 			~PopUp();
 
-			PopUp& Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData);
-			PopUp& PushLeftPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData, const bool _Focused = false);
-			PopUp& PushRightPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData, const bool _Focused = false);
-			PopUp& PushTopPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData, const bool _Focused = false);
-			PopUp& PushBottomPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData, const bool _Focused = false);
-			PopUp& PushNode(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData, const bool _Focused = false);
+			PopUp& Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData);
+			PopUp& PushLeftPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData, const bool _Focused = false);
+			PopUp& PushRightPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData, const bool _Focused = false);
+			PopUp& PushTopPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData, const bool _Focused = false);
+			PopUp& PushBottomPanel(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Height, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData, const bool _Focused = false);
+			PopUp& PushNode(const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData, const bool _Focused = false);
 			const size_t PushPopUpLayer();
-			PopUp& PushPopUp(const size_t _Layer, const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, void* _UserData, const bool _Focused = false);
+			PopUp& PushPopUp(const size_t _Layer, const uint64_t _Id, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData, const bool _Focused = false);
 			void Render(void* _Global);
 			void ScrollH(const intptr_t _Delta, const IgnoreScrollFnc _IgnoreScroll);
 			void ScrollV(const intptr_t _Delta, const IgnoreScrollFnc _IgnoreScroll);
 			void ScrollWithMouseH(const intptr_t _Delta, intptr_t& _Accumulation, const IgnoreScrollFnc _IgnoreScroll);
 			void ScrollWithMouseV(const intptr_t _Delta, intptr_t& _Accumulation, const IgnoreScrollFnc _IgnoreScroll);
-			void ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Parent, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, intptr_t& _AccumulationX, intptr_t& _AccumulationY, const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
+			void ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Parent, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, intptr_t& _AccumulationX, intptr_t& _AccumulationY, const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 			void MoveLayerWithMouse(const size_t _Layer, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY);
-			void GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const RenderingDescriptor& _RenderFunctions, const GenerateUserDataFnc _GenerateUserData, void* _Global);
-			void GenerateScrollBars(const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, void* _Global);
-			void ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
+			void GenerateResizeBars(const bool _IsNode, const size_t _ResizeSize, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, void* _Global);
+			void GenerateScrollBars(const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, void* _Global);
+			void ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 			void SetForegroundLayer(const size_t _Layer);
 			void MoveControlsOnTop();
 			void SetFocusedPanel(const size_t _FocusedPanel);
@@ -243,6 +243,7 @@ namespace BFW
 			void SetRenderMiddle(const RenderFnc _RenderMiddle);
 			void SetRenderTop(const RenderFnc _RenderTop);
 			void SetComposit(const CompositFnc _Composit);
+			void SetHitBox(const HitBoxFnc _HitBox);
 
 			SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<SafePopUpPointer>* _Path = nullptr);
 			const SafePopUpPointer GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<const SafePopUpPointer>* _Path = nullptr) const;
@@ -277,6 +278,7 @@ namespace BFW
 			const RenderFnc GetRenderMiddle() const;
 			const RenderFnc GetRenderTop() const;
 			const CompositFnc GetComposit() const;
+			const HitBoxFnc GetHitBox() const;
 
 			PopUp& operator= (const PopUp& _Other);
 			PopUp& operator= (PopUp&& _Other) noexcept;
@@ -319,6 +321,7 @@ namespace BFW
 
 			void* UserData;
 			RenderingDescriptor RenderFunctions;
+			HitBoxFnc HitBox;
 
 		};
 

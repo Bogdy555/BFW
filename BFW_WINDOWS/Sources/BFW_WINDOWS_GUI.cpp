@@ -33,6 +33,13 @@ const size_t BFW_WINDOWS::GUI::DebugWindowMinY = 200;
 
 
 
+static const bool DefaultHitBox(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height)
+{
+	return true;
+}
+
+
+
 BFW_WINDOWS::GUI::PopUpData::PopUpData() : Width(0), Height(0), Pixels(nullptr), Wnd(nullptr)
 {
 
@@ -1006,6 +1013,11 @@ const bool BFW_WINDOWS::GUI::IsScrollable(const uint64_t _PopUpId)
 	return _Scrollable;
 }
 
+const BFW::GUI::HitBoxFnc BFW_WINDOWS::GUI::GetHitBox(const uint64_t _PopUpId)
+{
+	return DefaultHitBox;
+}
+
 const BFW::GUI::RenderingDescriptor& BFW_WINDOWS::GUI::GetRenderingDescriptor(const uint64_t _PopUpId)
 {
 	switch (_PopUpId)
@@ -1083,7 +1095,7 @@ const BFW::GUI::RenderingDescriptor& BFW_WINDOWS::GUI::GetRenderingDescriptor(co
 	return RenderFunctionsDefault;
 }
 
-void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::GetRenderingDescriptorFnc _GetRenderingDescriptor, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::GetRenderingDescriptorFnc _GetRenderingDescriptor, const BFW::GUI::GetHitBoxFnc _GetHitBox, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global)
 {
 	for (size_t _Index = 0; _Index < _Parent.GetPopUps()[_Layer].GetSize(); _Index++)
 	{
@@ -1101,6 +1113,7 @@ void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _
 				_ForceHScroll, _ForceVScroll,
 				_ScrollSize, _ScrollTopPadding, _ScrollPadding,
 				_GetRenderingDescriptor,
+				_GetHitBox,
 				_GenerateUserData, _ReleaseUserData,
 				_Global
 			);
@@ -1152,6 +1165,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 			ForceHScroll, ForceVScroll,
 			ScrollSize, ScrollTopPadding, ScrollPadding,
 			GetRenderingDescriptor,
+			GetHitBox,
 			GenerateUserData, ReleaseUserData,
 			_Menu
 		);
@@ -1543,6 +1557,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 				ForceHScroll, ForceVScroll,
 				ScrollSize, ScrollTopPadding, ScrollPadding,
 				GetRenderingDescriptor,
+				GetHitBox,
 				GenerateUserData, ReleaseUserData,
 				_Menu
 			);

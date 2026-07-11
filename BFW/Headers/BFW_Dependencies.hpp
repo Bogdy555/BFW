@@ -189,13 +189,15 @@ namespace BFW
 		typedef void (*CleanUpRenderDataFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*RenderFnc)(PopUp& _Wnd, void* _Global);
 		typedef void (*CompositFnc)(PopUp& _Parent, PopUp& _ChildWnd, void* _Global);
+		typedef const bool (*HitBoxFnc)(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height);
 		typedef const size_t (*GetMinFnc)(const PopUp& _PopUp);
 		typedef const bool (*IgnoreScrollFnc)(const uint64_t _PopUpId);
 		typedef const bool (*ForceScrollFnc)(const uint64_t _PopUpId);
 		typedef const bool (*IsMovableFnc)(const uint64_t _PopUpId);
 		typedef const bool (*IsScrollableFnc)(const uint64_t _PopUpId);
+		typedef const HitBoxFnc (*GetHitBoxFnc)(const uint64_t _PopUpId);
 		typedef const RenderingDescriptor& (*GetRenderingDescriptorFnc)(const uint64_t _PopUpId);
-		typedef void (*ResizePopUpLayerFnc)(PopUp& _Parent, const size_t _Layer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
+		typedef void (*ResizePopUpLayerFnc)(PopUp& _Parent, const size_t _Layer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 
 	}
 

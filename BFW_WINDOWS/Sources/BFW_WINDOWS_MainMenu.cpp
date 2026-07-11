@@ -125,6 +125,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateNodeWindow(BFW::GUI::PopUp& _Parent
 		_Parent.GetPositionX(), _Parent.GetPositionY(),
 		_Parent.GetScrollX(), _Parent.GetScrollY(),
 		GUI::GetRenderingDescriptor(BFW::GUI::_NodeWindowPopUpId),
+		GUI::GetHitBox(BFW::GUI::_NodeWindowPopUpId),
 		_TrueUserData
 	);
 }
@@ -146,6 +147,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		_Parent.GetPositionX(), _Parent.GetPositionY(),
 		_Parent.GetScrollX(), _Parent.GetScrollY(),
 		GUI::GetRenderingDescriptor(GUI::_DebugWindowPopUpId),
+		GUI::GetHitBox(GUI::_DebugWindowPopUpId),
 		_TrueUserData
 	);
 
@@ -159,6 +161,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		GUI::Padding, GUI::TopPadding,
 		0, 0,
 		GUI::GetRenderingDescriptor(GUI::_SpawnButtonPopUpId),
+		GUI::GetHitBox(GUI::_SpawnButtonPopUpId),
 		nullptr,
 		true
 	);
@@ -169,6 +172,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		GUI::ForceHScroll(_Parent.GetId()), GUI::ForceVScroll(_Parent.GetId()),
 		GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding,
 		GUI::GetRenderingDescriptor,
+		GUI::GetHitBox,
 		GUI::GenerateUserData, this
 	);
 
@@ -176,7 +180,8 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 	(
 		_IsNode,
 		GUI::ResizeSize,
-		GUI::GetRenderingDescriptor(BFW::GUI::_LeftResizePopUpId),
+		GUI::GetRenderingDescriptor,
+		GUI::GetHitBox,
 		GUI::GenerateUserData, this
 	);
 }
@@ -203,6 +208,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		&_MainWindowPopUpData
@@ -218,6 +224,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
 			nullptr,
+			nullptr,
 			true
 		),
 		false,
@@ -232,6 +239,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		nullptr
@@ -247,6 +255,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
 			nullptr,
+			nullptr,
 			true
 		),
 		false,
@@ -261,6 +270,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		nullptr
@@ -276,6 +286,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
 			nullptr,
+			nullptr,
 			true
 		),
 		false,
@@ -290,6 +301,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		nullptr
@@ -305,6 +317,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
 			nullptr,
+			nullptr,
 			true
 		),
 		false,
@@ -319,6 +332,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		nullptr
@@ -336,6 +350,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			GUI::DebugWindowMinX + GUI::DebugWindowMinX / 2, GUI::DebugWindowMinY + GUI::DebugWindowMinY / 2,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr,
 			true
 		),
@@ -355,6 +370,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 			GUI::DebugWindowMinX * 3, GUI::DebugWindowMinY + GUI::DebugWindowMinY / 2,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr,
 			true
 		),
@@ -387,6 +403,7 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		&_MainWindowPopUpData
@@ -446,6 +463,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 			0, 0,
 			0, 0,
 			BFW::GUI::RenderingDescriptor(),
+			nullptr,
 			nullptr
 		),
 		true,

@@ -142,8 +142,9 @@ namespace BFW_WINDOWS
 		const bool ForceVScroll(const uint64_t _PopUpId);
 		const bool IsMovable(const uint64_t _PopUpId);
 		const bool IsScrollable(const uint64_t _PopUpId);
+		const BFW::GUI::HitBoxFnc GetHitBox(const uint64_t _PopUpId);
 		const BFW::GUI::RenderingDescriptor& GetRenderingDescriptor(const uint64_t _PopUpId);
-		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::GetRenderingDescriptorFnc _GetRenderingDescriptor, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
+		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::GetRenderingDescriptorFnc _GetRenderingDescriptor, const BFW::GUI::GetHitBoxFnc _GetHitBox, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 
 		const bool HandleDefaultLCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		const bool HandleDefaultMCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
