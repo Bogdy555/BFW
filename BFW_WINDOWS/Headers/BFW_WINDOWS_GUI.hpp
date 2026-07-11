@@ -110,14 +110,6 @@ namespace BFW_WINDOWS
 		extern const size_t TopPadding;
 		extern const size_t Padding;
 
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsNodeWindow;
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsPanelWindow;
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsButton;
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsResizeBar;
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsScrollWindow;
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsScrollButton;
-		extern const BFW::GUI::RenderingDescriptor RenderFunctionsScrollCorner;
-
 		extern const size_t DebugWindowMinX;
 		extern const size_t DebugWindowMinY;
 
@@ -144,12 +136,14 @@ namespace BFW_WINDOWS
 
 		const size_t GetMinX(const BFW::GUI::PopUp& _PopUp);
 		const size_t GetMinY(const BFW::GUI::PopUp& _PopUp);
-		const bool ForceHScroll(const uint64_t _PopUpId);
-		const bool ForceVScroll(const uint64_t _PopUpId);
 		const bool IgnoreHScroll(const uint64_t _PopUpId);
 		const bool IgnoreVScroll(const uint64_t _PopUpId);
-		const bool IsMovable(const uint64_t _PopUpId);
+		const bool ForceHScroll(const uint64_t _PopUpId);
+		const bool ForceVScroll(const uint64_t _PopUpId);
+		const BFW::GUI::RenderingDescriptor& GetRenderingDescriptor(const uint64_t _PopUpId);
+		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::GetRenderingDescriptorFnc _GetRenderingDescriptor, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 
+		const bool IsMovable(const uint64_t _PopUpId);
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path);
 		const bool FindScrollableWindow(size_t& _Index, const BFW::Vector<const BFW::GUI::SafePopUpPointer>& _Path);
 
@@ -159,7 +153,6 @@ namespace BFW_WINDOWS
 		void HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void HandleDefaultControllers(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
-		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::RenderingDescriptor& _RenderFunctionsScrollWindow, const BFW::GUI::RenderingDescriptor& _RenderFunctionsScrollButton, const BFW::GUI::RenderingDescriptor& _RenderFunctionsScrollCorner, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
 
 		void RenderWindow(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);

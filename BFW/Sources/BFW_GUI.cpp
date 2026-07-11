@@ -2180,7 +2180,7 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _Accumul
 	}
 }
 
-void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Parent, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, intptr_t& _AccumulationX, intptr_t& _AccumulationY, const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const RenderingDescriptor& _RenderFunctionsScrollWindow, const RenderingDescriptor& _RenderFunctionsScrollButton, const RenderingDescriptor& _RenderFunctionsScrollCorner, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Parent, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, intptr_t& _AccumulationX, intptr_t& _AccumulationY, const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
 {
 	bool _Found = false;
 
@@ -2384,7 +2384,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 			}
 		}
 
-		_Parent.ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
+		_Parent.ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GenerateUserData, _ReleaseUserData, _Global);
 
 		return;
 	}
@@ -2651,7 +2651,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 				}
 				}
 
-				_Parent.PopUps[_Layer][_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
+				_Parent.PopUps[_Layer][_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GenerateUserData, _ReleaseUserData, _Global);
 			}
 
 			return;
@@ -2861,7 +2861,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 	}
 }
 
-void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const RenderingDescriptor& _RenderFunctionsScrollWindow, const RenderingDescriptor& _RenderFunctionsScrollButton, const RenderingDescriptor& _RenderFunctionsScrollCorner, const GenerateUserDataFnc _GenerateUserData, void* _Global)
+void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _HasVScroll, const bool _ForceHScroll, const bool _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, void* _Global)
 {
 	if (Width < TrueWidth && !_HasHScroll)
 	{
@@ -2874,7 +2874,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			(Width - (_ScrollPadding * 2 + _ScrollSize)) * (Width > _ScrollPadding * 2 + _ScrollSize), _ScrollSize,
 			_ScrollPadding + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
 			0, 0,
-			_RenderFunctionsScrollWindow,
+			_GetRenderingDescriptor(_HScrollWindowPopUpId),
 			_GenerateUserData(*this, _HScrollWindowPopUpId, _Global),
 			true
 		);
@@ -2888,7 +2888,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollWindow.Width * Width / TrueWidth, _ScrollSize,
 			ScrollX * (_ScrollWindow.Width - _ScrollWindow.Width * Width / TrueWidth) / (TrueWidth - Width), 0,
 			0, 0,
-			_RenderFunctionsScrollButton,
+			_GetRenderingDescriptor(_HScrollButtonPopUpId),
 			_GenerateUserData(_ScrollWindow, _HScrollButtonPopUpId, _Global),
 			true
 		);
@@ -2904,7 +2904,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			(Width - (_ScrollPadding * 2 + _ScrollSize)) * (Width > _ScrollPadding * 2 + _ScrollSize), _ScrollSize,
 			_ScrollPadding + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
 			0, 0,
-			_RenderFunctionsScrollWindow,
+			_GetRenderingDescriptor(_HScrollWindowPopUpId),
 			_GenerateUserData(*this, _HScrollWindowPopUpId, _Global),
 			true
 		);
@@ -2918,7 +2918,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollWindow.Width, _ScrollSize,
 			0, 0,
 			0, 0,
-			_RenderFunctionsScrollButton,
+			_GetRenderingDescriptor(_HScrollButtonPopUpId),
 			_GenerateUserData(_ScrollWindow, _HScrollButtonPopUpId, _Global),
 			true
 		);
@@ -2935,7 +2935,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollSize, (Height - (_ScrollTopPadding + _ScrollPadding + _ScrollSize)) * (Height > _ScrollTopPadding + _ScrollPadding + _ScrollSize),
 			Width - (_ScrollPadding + _ScrollSize) + ScrollX, _ScrollTopPadding + ScrollY,
 			0, 0,
-			_RenderFunctionsScrollWindow,
+			_GetRenderingDescriptor(_VScrollWindowPopUpId),
 			_GenerateUserData(*this, _VScrollWindowPopUpId, _Global),
 			true
 		);
@@ -2949,7 +2949,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollSize, _ScrollWindow.Height * Height / TrueHeight,
 			0, ScrollY * (_ScrollWindow.Height - _ScrollWindow.Height * Height / TrueHeight) / (TrueHeight - Height),
 			0, 0,
-			_RenderFunctionsScrollButton,
+			_GetRenderingDescriptor(_VScrollButtonPopUpId),
 			_GenerateUserData(_ScrollWindow, _VScrollButtonPopUpId, _Global),
 			true
 		);
@@ -2965,7 +2965,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollSize, (Height - (_ScrollTopPadding + _ScrollPadding + _ScrollSize)) * (Height > _ScrollTopPadding + _ScrollPadding + _ScrollSize),
 			Width - (_ScrollPadding + _ScrollSize) + ScrollX, _ScrollTopPadding + ScrollY,
 			0, 0,
-			_RenderFunctionsScrollWindow,
+			_GetRenderingDescriptor(_VScrollWindowPopUpId),
 			_GenerateUserData(*this, _VScrollWindowPopUpId, _Global),
 			true
 		);
@@ -2979,7 +2979,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollSize, _ScrollWindow.Height,
 			0, 0,
 			0, 0,
-			_RenderFunctionsScrollButton,
+			_GetRenderingDescriptor(_VScrollButtonPopUpId),
 			_GenerateUserData(_ScrollWindow, _VScrollButtonPopUpId, _Global),
 			true
 		);
@@ -2996,7 +2996,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollSize, _ScrollSize,
 			Width - (_ScrollPadding + _ScrollSize) + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
 			0, 0,
-			_RenderFunctionsScrollCorner,
+			_GetRenderingDescriptor(_ScrollCornerPopUpId),
 			_GenerateUserData(*this, _ScrollCornerPopUpId, _Global),
 			true
 		);
@@ -3012,14 +3012,14 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			_ScrollSize, _ScrollSize,
 			Width - (_ScrollPadding + _ScrollSize) + ScrollX, Height - (_ScrollPadding + _ScrollSize) + ScrollY,
 			0, 0,
-			_RenderFunctionsScrollCorner,
+			_GetRenderingDescriptor(_ScrollCornerPopUpId),
 			_GenerateUserData(*this, _ScrollCornerPopUpId, _Global),
 			true
 		);
 	}
 }
 
-void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const RenderingDescriptor& _RenderFunctionsScrollWindow, const RenderingDescriptor& _RenderFunctionsScrollButton, const RenderingDescriptor& _RenderFunctionsScrollCorner, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
 {
 	for (size_t _Index = 0; _Index < Panels.GetSize(); _Index++)
 	{
@@ -3062,7 +3062,7 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		}
 		}
 
-		Panels[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
+		Panels[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GenerateUserData, _ReleaseUserData, _Global);
 	}
 
 	for (size_t _Index = 0; _Index < Nodes.GetSize(); _Index++)
@@ -3146,7 +3146,7 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		}
 		}
 
-		Nodes[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
+		Nodes[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GenerateUserData, _ReleaseUserData, _Global);
 	}
 
 	bool _HasHScroll = false, _HasVScroll = false;
@@ -3338,14 +3338,14 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		}
 		default:
 		{
-			_ResizePopUpLayer(*this, _Layer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _ReleaseUserData, _Global);
+			_ResizePopUpLayer(*this, _Layer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GenerateUserData, _ReleaseUserData, _Global);
 
 			break;
 		}
 		}
 	}
 
-	GenerateScrollBars(_HasHScroll, _HasVScroll, _ForceHScroll(Id), _ForceVScroll(Id), _ScrollSize, _ScrollTopPadding, _ScrollPadding, _RenderFunctionsScrollWindow, _RenderFunctionsScrollButton, _RenderFunctionsScrollCorner, _GenerateUserData, _Global);
+	GenerateScrollBars(_HasHScroll, _HasVScroll, _ForceHScroll(Id), _ForceVScroll(Id), _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GenerateUserData, _Global);
 	MoveControlsOnTop();
 }
 

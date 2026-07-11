@@ -124,7 +124,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateNodeWindow(BFW::GUI::PopUp& _Parent
 		_Parent.GetWidth(), _Parent.GetHeight(),
 		_Parent.GetPositionX(), _Parent.GetPositionY(),
 		_Parent.GetScrollX(), _Parent.GetScrollY(),
-		GUI::RenderFunctionsNodeWindow,
+		GUI::GetRenderingDescriptor(BFW::GUI::_NodeWindowPopUpId),
 		_TrueUserData
 	);
 }
@@ -145,7 +145,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		_Parent.GetWidth(), _Parent.GetHeight(),
 		_Parent.GetPositionX(), _Parent.GetPositionY(),
 		_Parent.GetScrollX(), _Parent.GetScrollY(),
-		GUI::RenderFunctionsPanelWindow,
+		GUI::GetRenderingDescriptor(GUI::_DebugWindowPopUpId),
 		_TrueUserData
 	);
 
@@ -158,7 +158,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		_Parent.GetTrueWidth() - GUI::Padding * 2, 20,
 		GUI::Padding, GUI::TopPadding,
 		0, 0,
-		GUI::RenderFunctionsButton,
+		GUI::GetRenderingDescriptor(GUI::_SpawnButtonPopUpId),
 		nullptr,
 		true
 	);
@@ -168,7 +168,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 		false, false,
 		GUI::ForceHScroll(_Parent.GetId()), GUI::ForceVScroll(_Parent.GetId()),
 		GUI::ScrollSize, GUI::ScrollTopPadding, GUI::ScrollPadding,
-		GUI::RenderFunctionsScrollWindow, GUI::RenderFunctionsScrollButton, GUI::RenderFunctionsScrollCorner,
+		GUI::GetRenderingDescriptor,
 		GUI::GenerateUserData, this
 	);
 
@@ -176,7 +176,7 @@ void BFW_WINDOWS::RunTime::MainMenu::GenerateDebugWindow(BFW::GUI::PopUp& _Paren
 	(
 		_IsNode,
 		GUI::ResizeSize,
-		GUI::RenderFunctionsResizeBar,
+		GUI::GetRenderingDescriptor(BFW::GUI::_LeftResizePopUpId),
 		GUI::GenerateUserData, this
 	);
 }
