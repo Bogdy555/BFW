@@ -298,6 +298,16 @@ const float BFW::RunTime::Application::GetTimeStep() const
 	return FrameTime[_PreviousState] * SimulationSpeed;
 }
 
+const float BFW::RunTime::Application::GetUITimeStep() const
+{
+	if (LagTime != 0.0f && FrameTime[_PreviousState] > LagTime)
+	{
+		return LagTime;
+	}
+
+	return FrameTime[_PreviousState];
+}
+
 const float BFW::RunTime::Application::GetLagTime() const
 {
 	return LagTime;
@@ -683,6 +693,11 @@ const BFW::Time::Timer& BFW::RunTime::Menu::GetFrameTime(const size_t _Index) co
 const float BFW::RunTime::Menu::GetTimeStep() const
 {
 	return ApplicationObj->GetTimeStep();
+}
+
+const float BFW::RunTime::Menu::GetUITimeStep() const
+{
+	return ApplicationObj->GetUITimeStep();
 }
 
 const float BFW::RunTime::Menu::GetLagTime() const

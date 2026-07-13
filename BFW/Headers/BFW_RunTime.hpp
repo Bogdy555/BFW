@@ -60,6 +60,7 @@ namespace BFW
 			Time::Timer& GetFrameTime(const size_t _Index);
 			const Time::Timer& GetFrameTime(const size_t _Index) const;
 			const float GetTimeStep() const;
+			const float GetUITimeStep() const;
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
@@ -173,6 +174,7 @@ namespace BFW
 			Time::Timer& GetFrameTime(const size_t _Index);
 			const Time::Timer& GetFrameTime(const size_t _Index) const;
 			const float GetTimeStep() const;
+			const float GetUITimeStep() const;
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;

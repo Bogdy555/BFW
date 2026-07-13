@@ -1375,8 +1375,8 @@ const bool BFW_WINDOWS::GUI::HandleDefaultMCaptureDrag(const intptr_t _MouseX, c
 
 	if (BFW::GUI::PopUp::FindScrollableWindow(IsScrollable, _WindowIndex, _WndData.MCapturePath))
 	{
-		_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), IgnoreHScroll);
-		_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetTimeStep()), IgnoreVScroll);
+		_WndData.MCapturePath[_WindowIndex]->ScrollH((intptr_t)((float)((_MouseX - _WndData.MCaptureMouseX) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetUITimeStep()), IgnoreHScroll);
+		_WndData.MCapturePath[_WindowIndex]->ScrollV((intptr_t)((float)((_MouseY - _WndData.MCaptureMouseY) / (intptr_t)(MouseCaptureScrollScale)) * MouseCaptureScrollSpeed * _ApplicationObj.GetUITimeStep()), IgnoreVScroll);
 
 		return true;
 	}
