@@ -89,8 +89,8 @@ namespace BFW_WINDOWS
 			void Update() override;
 			void Stop() override;
 
-			void GenerateNodeWindow(BFW::GUI::PopUp& _Parent, void* _UserData);
-			void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, const bool _IsNode, void* _UserData);
+			void GenerateNodeWindow(BFW::GUI::PopUp& _Parent);
+			void GenerateDebugWindow(BFW::GUI::PopUp& _Parent, const bool _IsNode);
 
 			void InitGUI();
 			void CleanUpGUI();

@@ -2692,7 +2692,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_LeftResizePopUpId),
 			_GetHitBox(_LeftResizePopUpId),
-			_GenerateUserData(*this, _LeftResizePopUpId, _Global),
+			_GenerateUserData(_LeftResizePopUpId, _Global),
 			true
 		);
 
@@ -2707,7 +2707,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_RightResizePopUpId),
 			_GetHitBox(_RightResizePopUpId),
-			_GenerateUserData(*this, _RightResizePopUpId, _Global),
+			_GenerateUserData(_RightResizePopUpId, _Global),
 			true
 		);
 
@@ -2722,7 +2722,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_TopResizePopUpId),
 			_GetHitBox(_TopResizePopUpId),
-			_GenerateUserData(*this, _TopResizePopUpId, _Global),
+			_GenerateUserData(_TopResizePopUpId, _Global),
 			true
 		);
 
@@ -2737,7 +2737,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_BottomResizePopUpId),
 			_GetHitBox(_BottomResizePopUpId),
-			_GenerateUserData(*this, _BottomResizePopUpId, _Global),
+			_GenerateUserData(_BottomResizePopUpId, _Global),
 			true
 		);
 
@@ -2752,7 +2752,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_LeftTopResizePopUpId),
 			_GetHitBox(_LeftTopResizePopUpId),
-			_GenerateUserData(*this, _LeftTopResizePopUpId, _Global),
+			_GenerateUserData(_LeftTopResizePopUpId, _Global),
 			true
 		);
 
@@ -2767,7 +2767,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_LeftBottomResizePopUpId),
 			_GetHitBox(_LeftBottomResizePopUpId),
-			_GenerateUserData(*this, _LeftBottomResizePopUpId, _Global),
+			_GenerateUserData(_LeftBottomResizePopUpId, _Global),
 			true
 		);
 
@@ -2782,7 +2782,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_RightTopResizePopUpId),
 			_GetHitBox(_RightTopResizePopUpId),
-			_GenerateUserData(*this, _RightTopResizePopUpId, _Global),
+			_GenerateUserData(_RightTopResizePopUpId, _Global),
 			true
 		);
 
@@ -2797,7 +2797,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_RightBottomResizePopUpId),
 			_GetHitBox(_RightBottomResizePopUpId),
-			_GenerateUserData(*this, _RightBottomResizePopUpId, _Global),
+			_GenerateUserData(_RightBottomResizePopUpId, _Global),
 			true
 		);
 	}
@@ -2815,7 +2815,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_RightResizePopUpId),
 			_GetHitBox(_RightResizePopUpId),
-			_GenerateUserData(*this, _RightResizePopUpId, _Global),
+			_GenerateUserData(_RightResizePopUpId, _Global),
 			true
 		);
 	}
@@ -2833,7 +2833,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_LeftResizePopUpId),
 			_GetHitBox(_LeftResizePopUpId),
-			_GenerateUserData(*this, _LeftResizePopUpId, _Global),
+			_GenerateUserData(_LeftResizePopUpId, _Global),
 			true
 		);
 	}
@@ -2851,7 +2851,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_BottomResizePopUpId),
 			_GetHitBox(_BottomResizePopUpId),
-			_GenerateUserData(*this, _BottomResizePopUpId, _Global),
+			_GenerateUserData(_BottomResizePopUpId, _Global),
 			true
 		);
 	}
@@ -2869,7 +2869,7 @@ void BFW::GUI::PopUp::GenerateResizeBars(const bool _IsNode, const size_t _Resiz
 			0, 0,
 			_GetRenderingDescriptor(_TopResizePopUpId),
 			_GetHitBox(_TopResizePopUpId),
-			_GenerateUserData(*this, _TopResizePopUpId, _Global),
+			_GenerateUserData(_TopResizePopUpId, _Global),
 			true
 		);
 	}
@@ -2890,7 +2890,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_HScrollWindowPopUpId),
 			_GetHitBox(_HScrollWindowPopUpId),
-			_GenerateUserData(*this, _HScrollWindowPopUpId, _Global),
+			_GenerateUserData(_HScrollWindowPopUpId, _Global),
 			true
 		);
 
@@ -2905,7 +2905,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_HScrollButtonPopUpId),
 			_GetHitBox(_HScrollButtonPopUpId),
-			_GenerateUserData(_ScrollWindow, _HScrollButtonPopUpId, _Global),
+			_GenerateUserData(_HScrollButtonPopUpId, _Global),
 			true
 		);
 	}
@@ -2922,7 +2922,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_HScrollWindowPopUpId),
 			_GetHitBox(_HScrollWindowPopUpId),
-			_GenerateUserData(*this, _HScrollWindowPopUpId, _Global),
+			_GenerateUserData(_HScrollWindowPopUpId, _Global),
 			true
 		);
 
@@ -2937,7 +2937,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_HScrollButtonPopUpId),
 			_GetHitBox(_HScrollButtonPopUpId),
-			_GenerateUserData(_ScrollWindow, _HScrollButtonPopUpId, _Global),
+			_GenerateUserData(_HScrollButtonPopUpId, _Global),
 			true
 		);
 	}
@@ -2955,7 +2955,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_VScrollWindowPopUpId),
 			_GetHitBox(_VScrollWindowPopUpId),
-			_GenerateUserData(*this, _VScrollWindowPopUpId, _Global),
+			_GenerateUserData(_VScrollWindowPopUpId, _Global),
 			true
 		);
 
@@ -2970,7 +2970,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_VScrollButtonPopUpId),
 			_GetHitBox(_VScrollButtonPopUpId),
-			_GenerateUserData(_ScrollWindow, _VScrollButtonPopUpId, _Global),
+			_GenerateUserData(_VScrollButtonPopUpId, _Global),
 			true
 		);
 	}
@@ -2987,7 +2987,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_VScrollWindowPopUpId),
 			_GetHitBox(_VScrollWindowPopUpId),
-			_GenerateUserData(*this, _VScrollWindowPopUpId, _Global),
+			_GenerateUserData(_VScrollWindowPopUpId, _Global),
 			true
 		);
 
@@ -3002,7 +3002,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_VScrollButtonPopUpId),
 			_GetHitBox(_VScrollButtonPopUpId),
-			_GenerateUserData(_ScrollWindow, _VScrollButtonPopUpId, _Global),
+			_GenerateUserData(_VScrollButtonPopUpId, _Global),
 			true
 		);
 	}
@@ -3020,7 +3020,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_ScrollCornerPopUpId),
 			_GetHitBox(_ScrollCornerPopUpId),
-			_GenerateUserData(*this, _ScrollCornerPopUpId, _Global),
+			_GenerateUserData(_ScrollCornerPopUpId, _Global),
 			true
 		);
 	}
@@ -3037,7 +3037,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 			0, 0,
 			_GetRenderingDescriptor(_ScrollCornerPopUpId),
 			_GetHitBox(_ScrollCornerPopUpId),
-			_GenerateUserData(*this, _ScrollCornerPopUpId, _Global),
+			_GenerateUserData(_ScrollCornerPopUpId, _Global),
 			true
 		);
 	}
@@ -3299,8 +3299,8 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 			}
 			else
 			{
-				_ReleaseUserData(PopUps[_Layer][0].PopUps[0][0], _Global);
-				_ReleaseUserData(PopUps[_Layer][0], _Global);
+				_ReleaseUserData(PopUps[_Layer][0].PopUps[0][0].UserData);
+				_ReleaseUserData(PopUps[_Layer][0].UserData);
 				PopUps.Erase(_Layer);
 				_Layer--;
 			}
@@ -3331,8 +3331,8 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 			}
 			else
 			{
-				_ReleaseUserData(PopUps[_Layer][0].PopUps[0][0], _Global);
-				_ReleaseUserData(PopUps[_Layer][0], _Global);
+				_ReleaseUserData(PopUps[_Layer][0].PopUps[0][0].UserData);
+				_ReleaseUserData(PopUps[_Layer][0].UserData);
 				PopUps.Erase(_Layer);
 				_Layer--;
 			}
@@ -3353,7 +3353,7 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 			}
 			else
 			{
-				_ReleaseUserData(PopUps[_Layer][0], _Global);
+				_ReleaseUserData(PopUps[_Layer][0].UserData);
 				PopUps.Erase(_Layer);
 				_Layer--;
 			}

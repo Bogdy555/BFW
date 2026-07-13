@@ -31,6 +31,7 @@ namespace BFW_WINDOWS
 			PopUpData();
 			PopUpData(const PopUpData& _Other) = default;
 			PopUpData(PopUpData&& _Other) noexcept;
+			virtual ~PopUpData() = default;
 			PopUpData& operator= (const PopUpData& _Other) = default;
 			PopUpData& operator= (PopUpData&& _Other) noexcept;
 
@@ -125,8 +126,8 @@ namespace BFW_WINDOWS
 		const bool ChildWindowInit(BFW::GUI::Window* _Wnd);
 		void ChildWindowCleanUp(BFW::GUI::Window* _Wnd);
 
-		void* GenerateUserData(BFW::GUI::PopUp& _Parent, const uint64_t _PopUpId, void* _Global);
-		void ReleaseUserData(BFW::GUI::PopUp& _Wnd, void* _Global);
+		void* GenerateUserData(const uint64_t _PopUpId, void* _Global);
+		void ReleaseUserData(void* _PopUpUserData);
 		void SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _Parent, void* _Global);
 		void CleanUpRenderData(BFW::GUI::PopUp& _Wnd, void* _Global);
 		void RenderGray25(BFW::GUI::PopUp& _Wnd, void* _Global);
@@ -146,6 +147,9 @@ namespace BFW_WINDOWS
 		const BFW::GUI::RenderingDescriptor& GetRenderingDescriptor(const uint64_t _PopUpId);
 		void ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _Layer, const BFW::GUI::GetMinFnc _GetMinX, const BFW::GUI::GetMinFnc _GetMinY, const size_t _ResizeSize, const BFW::GUI::ForceScrollFnc _ForceHScroll, const BFW::GUI::ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const BFW::GUI::GetRenderingDescriptorFnc _GetRenderingDescriptor, const BFW::GUI::GetHitBoxFnc _GetHitBox, const BFW::GUI::GenerateUserDataFnc _GenerateUserData, const BFW::GUI::ReleaseUserDataFnc _ReleaseUserData, void* _Global);
 
+		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
+
+		void ReleaseAllChilds(BFW::GUI::PopUp& _Wnd);
 		const bool HandleDefaultLCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		const bool HandleDefaultMCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		const bool HandleDefaultRCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
@@ -155,8 +159,6 @@ namespace BFW_WINDOWS
 		void HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void HandleDefaultControllers(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
-		void RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopUpId);
-
 		void RenderWindow(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 
 	}
