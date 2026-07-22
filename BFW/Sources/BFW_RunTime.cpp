@@ -555,7 +555,7 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 
 			if (GetFrameTime(_CurrentState) < 1.0f / (float)(GetSync()))
 			{
-				BFW::Time::Sleep((uint64_t)((1.0f / (float)(GetSync()) - GetFrameTime(_CurrentState)) * 1000000.0f));
+				Time::Sleep((uint64_t)((1.0f / (float)(GetSync()) - GetFrameTime(_CurrentState)) * 1000000.0f));
 			}
 		}
 
