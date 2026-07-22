@@ -219,8 +219,6 @@ namespace BFW
 
 	};
 
-	template <typename T> class WeakPointer;
-
 	template <typename T> class SharedPointer
 	{
 

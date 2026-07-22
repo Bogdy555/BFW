@@ -234,7 +234,7 @@ const bool BFW_WINDOWS::RunTime::Application::InitWindows()
 		return false;
 	}
 
-	if (!MainWindow.Create(NULL, BFW_WINDOWS_MAIN_WINDOW_CLASS, BFW_STRING_PREFIX("BFW_WINDOWS"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, GetInstanceHandle(), nullptr, NULL, GUI::MainWindowThreadInit, GUI::MainWindowThreadCleanUp, GUI::MainWindowInit, GUI::MainWindowCleanUp, &MainWindowData))
+	if (!MainWindow.Create(NULL, BFW_WINDOWS_MAIN_WINDOW_CLASS, BFW_WINDOWS_APP_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_DESKTOP, NULL, GetInstanceHandle(), nullptr, NULL, GUI::MainWindowThreadInit, GUI::MainWindowThreadCleanUp, GUI::MainWindowInit, GUI::MainWindowCleanUp, &MainWindowData))
 	{
 		UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
 		UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());

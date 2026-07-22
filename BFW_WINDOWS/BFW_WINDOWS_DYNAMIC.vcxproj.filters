@@ -51,16 +51,16 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources\BFW_WINDOWS_Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\BFW_WINDOWS_EntryPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\BFW_WINDOWS_MainMenu.cpp">
+    <ClCompile Include="Sources\BFW_WINDOWS_GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\BFW_WINDOWS_GUI.cpp">
+    <ClCompile Include="Sources\BFW_WINDOWS_RunTime_MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\BFW_WINDOWS_RunTime_Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

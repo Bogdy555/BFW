@@ -1343,7 +1343,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 	_WindowIndex = 0;
 
-	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.LCapturePath))
+	if (BFW::GUI::PopUp::FindMovableWindow(IsMovable, _WindowIndex, _WndData.LCapturePath) && (IsMovable(_WndData.LCapturePath[0]->GetId()) || _WndData.LCapturePath[0]->GetId() == BFW::GUI::_NodeWindowPopUpId))
 	{
 		size_t _Layer = 0;
 		_WndData.LCapturePath[_WindowIndex + 1]->FindFocusedPopUpLayer(_Layer, *_WndData.LCapturePath[_WindowIndex]);

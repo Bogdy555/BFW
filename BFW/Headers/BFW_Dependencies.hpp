@@ -64,6 +64,22 @@ namespace BFW
 		_CurrentState = 1
 	};
 
+	template <typename T> class Vector;
+
+	template <typename T> class UniquePointer;
+
+	template <typename T> class SharedPointer;
+
+	template <typename T> class WeakPointer;
+
+	template <typename T> struct AnimationState;
+
+	template <typename T> class Animation;
+
+	template <typename T> class StepAnimation;
+
+	template <typename T, std::add_const_t<T> (*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearAnimation;
+
 	namespace Debug
 	{
 

@@ -237,10 +237,10 @@ if exist "$(SolutionDir)Binaries\BFW_DYNAMIC\Windows\$(Configuration)\$(Platform
     <ResourceCompile Include="Resources\BFW_WINDOWS_Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources\BFW_WINDOWS_Application.cpp" />
     <ClCompile Include="Sources\BFW_WINDOWS_EntryPoint.cpp" />
     <ClCompile Include="Sources\BFW_WINDOWS_GUI.cpp" />
-    <ClCompile Include="Sources\BFW_WINDOWS_MainMenu.cpp" />
+    <ClCompile Include="Sources\BFW_WINDOWS_RunTime_Application.cpp" />
+    <ClCompile Include="Sources\BFW_WINDOWS_RunTime_MainMenu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
