@@ -62,7 +62,7 @@ namespace BFW
 			delete[] Data;
 		}
 
-		void PushBack(ConstType& _Object)
+		void PushBack(const ConstType& _Object)
 		{
 			if (Size == 0)
 			{
