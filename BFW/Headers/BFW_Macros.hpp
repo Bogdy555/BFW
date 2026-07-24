@@ -1,4 +1,4 @@
- #ifndef BFW_Macros_hpp
+#ifndef BFW_Macros_hpp
 
 #define BFW_Macros_hpp
 
