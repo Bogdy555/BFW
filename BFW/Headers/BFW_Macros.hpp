@@ -340,6 +340,15 @@
 #define BFW_PRINT(X) std::wcout << X
 #define BFW_PRINT_LINE(X) std::wcout << X << L'\n'
 
+#define BFW_PRINT_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_PRINT_WARNING(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_WARNING_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_PRINT_INFO(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_INFO_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
 
 
 #ifdef BFW_DEBUG
@@ -347,12 +356,30 @@
 #define BFW_LOG(X) std::wcout << X
 #define BFW_LOG_LINE(X) std::wcout << X << L'\n'
 
+#define BFW_LOG_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_LOG_WARNING(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_WARNING_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_LOG_INFO(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_INFO_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
 #endif
 
 #ifndef BFW_DEBUG
 
 #define BFW_LOG(X)
 #define BFW_LOG_LINE(X)
+
+#define BFW_LOG_ERROR(X)
+#define BFW_LOG_ERROR_LINE(X)
+
+#define BFW_LOG_WARNING(X)
+#define BFW_LOG_WARNING_LINE(X)
+
+#define BFW_LOG_INFO(X)
+#define BFW_LOG_INFO_LINE(X)
 
 #endif
 
@@ -577,6 +604,15 @@
 #define BFW_PRINT(X) std::wcout << X
 #define BFW_PRINT_LINE(X) std::wcout << X << L'\n'
 
+#define BFW_PRINT_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_PRINT_WARNING(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_WARNING_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_PRINT_INFO(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_INFO_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
 
 
 #ifdef BFW_DEBUG
@@ -584,12 +620,30 @@
 #define BFW_LOG(X) std::wcout << X
 #define BFW_LOG_LINE(X) std::wcout << X << L'\n'
 
+#define BFW_LOG_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_LOG_WARNING(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_WARNING_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtYellowAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
+#define BFW_LOG_INFO(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_INFO_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtGreenAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
+
 #endif
 
 #ifndef BFW_DEBUG
 
 #define BFW_LOG(X)
 #define BFW_LOG_LINE(X)
+
+#define BFW_LOG_ERROR(X)
+#define BFW_LOG_ERROR_LINE(X)
+
+#define BFW_LOG_WARNING(X)
+#define BFW_LOG_WARNING_LINE(X)
+
+#define BFW_LOG_INFO(X)
+#define BFW_LOG_INFO_LINE(X)
 
 #endif
 
@@ -796,6 +850,15 @@
 #define BFW_PRINT(X) Serial.print(X)
 #define BFW_PRINT_LINE(X) Serial.println(X)
 
+#define BFW_PRINT_ERROR(X) Serial.print(X)
+#define BFW_PRINT_ERROR_LINE(X) Serial.println(X)
+
+#define BFW_PRINT_WARNING(X) Serial.print(X)
+#define BFW_PRINT_WARNING_LINE(X) Serial.println(X)
+
+#define BFW_PRINT_INFO(X) Serial.print(X)
+#define BFW_PRINT_INFO_LINE(X) Serial.println(X)
+
 
 
 #ifdef BFW_DEBUG
@@ -803,12 +866,30 @@
 #define BFW_LOG(X) Serial.print(X)
 #define BFW_LOG_LINE(X) Serial.println(X)
 
+#define BFW_LOG_ERROR(X) Serial.print(X)
+#define BFW_LOG_ERROR_LINE(X) Serial.println(X)
+
+#define BFW_LOG_WARNING(X) Serial.print(X)
+#define BFW_LOG_WARNING_LINE(X) Serial.println(X)
+
+#define BFW_LOG_INFO(X) Serial.print(X)
+#define BFW_LOG_INFO_LINE(X) Serial.println(X)
+
 #endif
 
 #ifndef BFW_DEBUG
 
 #define BFW_LOG(X)
 #define BFW_LOG_LINE(X)
+
+#define BFW_LOG_ERROR(X)
+#define BFW_LOG_ERROR_LINE(X)
+
+#define BFW_LOG_WARNING(X)
+#define BFW_LOG_WARNING_LINE(X)
+
+#define BFW_LOG_INFO(X)
+#define BFW_LOG_INFO_LINE(X)
 
 #endif
 

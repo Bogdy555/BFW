@@ -4,7 +4,7 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(0.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
@@ -17,7 +17,7 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
 	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 0.0f;
+	_Other.LagTime = 1.0f / 10.0f;
 	_Other.SimulationSpeed = 1.0f;
 	_Other.Sync = 60;
 	_Other.InstanceHandle = NULL;
@@ -29,7 +29,7 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(0.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
@@ -42,7 +42,7 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
 	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 0.0f;
+	_Other.LagTime = 1.0f / 10.0f;
 	_Other.SimulationSpeed = 1.0f;
 	_Other.Sync = 60;
 	_Other.ArgC = 0;
@@ -53,7 +53,7 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(0.0f), SimulationSpeed(1.0f), Sync(60)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60)
 {
 
 }
@@ -66,7 +66,7 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
 	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 0.0f;
+	_Other.LagTime = 1.0f / 10.0f;
 	_Other.SimulationSpeed = 1.0f;
 	_Other.Sync = 60;
 }
@@ -117,7 +117,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 
 	FrameTime[_PreviousState].Reset();
 	FrameTime[_CurrentState].Reset();
-	LagTime = 0.0f;
+	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
 
@@ -178,7 +178,7 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 	FrameTime[_PreviousState].Reset();
 	FrameTime[_CurrentState].Reset();
-	LagTime = 0.0f;
+	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
 
@@ -215,7 +215,7 @@ const int32_t BFW::RunTime::Application::Run()
 
 	FrameTime[_PreviousState].Reset();
 	FrameTime[_CurrentState].Reset();
-	LagTime = 0.0f;
+	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
 
@@ -430,7 +430,7 @@ BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
 	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 0.0f;
+	_Other.LagTime = 1.0f / 10.0f;
 	_Other.SimulationSpeed = 1.0f;
 	_Other.Sync = 60;
 	_Other.InstanceHandle = NULL;
@@ -467,7 +467,7 @@ BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
 	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 0.0f;
+	_Other.LagTime = 1.0f / 10.0f;
 	_Other.SimulationSpeed = 1.0f;
 	_Other.Sync = 60;
 	_Other.ArgC = 0;
@@ -499,7 +499,7 @@ BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
 	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 0.0f;
+	_Other.LagTime = 1.0f / 10.0f;
 	_Other.SimulationSpeed = 1.0f;
 	_Other.Sync = 60;
 
