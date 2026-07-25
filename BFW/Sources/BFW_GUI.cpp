@@ -1989,7 +1989,7 @@ void BFW::GUI::PopUp::ScrollH(const intptr_t _Delta, const IgnoreScrollFnc _Igno
 		{
 			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
-			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || (_IgnoreScroll && _IgnoreScroll(_Id)))
 			{
 				PopUps[_Layer][_Index].SetPositionX(PopUps[_Layer][_Index].PositionX + _ScrollDelta);
 			}
@@ -2040,7 +2040,7 @@ void BFW::GUI::PopUp::ScrollV(const intptr_t _Delta, const IgnoreScrollFnc _Igno
 		{
 			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
-			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || (_IgnoreScroll && _IgnoreScroll(_Id)))
 			{
 				PopUps[_Layer][_Index].SetPositionY(PopUps[_Layer][_Index].PositionY + _ScrollDelta);
 			}
@@ -2107,7 +2107,7 @@ void BFW::GUI::PopUp::ScrollWithMouseH(const intptr_t _Delta, intptr_t& _Accumul
 		{
 			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
-			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || (_IgnoreScroll && _IgnoreScroll(_Id)))
 			{
 				PopUps[_Layer][_Index].SetPositionX(PopUps[_Layer][_Index].PositionX + _ScrollDelta);
 			}
@@ -2174,7 +2174,7 @@ void BFW::GUI::PopUp::ScrollWithMouseV(const intptr_t _Delta, intptr_t& _Accumul
 		{
 			uint64_t _Id = PopUps[_Layer][_Index].Id;
 
-			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || _IgnoreScroll(_Id))
+			if (_Id == _LeftResizePopUpId || _Id == _RightResizePopUpId || _Id == _TopResizePopUpId || _Id == _BottomResizePopUpId || _Id == _LeftTopResizePopUpId || _Id == _LeftBottomResizePopUpId || _Id == _RightTopResizePopUpId || _Id == _RightBottomResizePopUpId || _Id == _HScrollWindowPopUpId || _Id == _VScrollWindowPopUpId || _Id == _ScrollCornerPopUpId || (_IgnoreScroll && _IgnoreScroll(_Id)))
 			{
 				PopUps[_Layer][_Index].SetPositionY(PopUps[_Layer][_Index].PositionY + _ScrollDelta);
 			}
@@ -3697,7 +3697,7 @@ void BFW::GUI::PopUp::SetHitBox(const HitBoxFnc _HitBox)
 
 BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<SafePopUpPointer>* _Path)
 {
-	if (_MouseX < 0 || (size_t)(_MouseX) >= Width || _MouseY < 0 || (size_t)(_MouseY) >= Height || !HitBox(_MouseX, _MouseY, Width, Height))
+	if (_MouseX < 0 || (size_t)(_MouseX) >= Width || _MouseY < 0 || (size_t)(_MouseY) >= Height || (HitBox && !HitBox(_MouseX, _MouseY, Width, Height)))
 	{
 		return SafePopUpPointer(nullptr);
 	}
@@ -3763,7 +3763,7 @@ BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _Mo
 
 const BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _MouseX, const intptr_t _MouseY, Vector<const SafePopUpPointer>* _Path) const
 {
-	if (_MouseX < 0 || (size_t)(_MouseX) >= Width || _MouseY < 0 || (size_t)(_MouseY) >= Height || !HitBox(_MouseX, _MouseY, Width, Height))
+	if (_MouseX < 0 || (size_t)(_MouseX) >= Width || _MouseY < 0 || (size_t)(_MouseY) >= Height || (HitBox && !HitBox(_MouseX, _MouseY, Width, Height)))
 	{
 		return SafePopUpPointer(nullptr);
 	}
@@ -4241,7 +4241,7 @@ const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, siz
 
 	while (_Index < _Path.GetSize())
 	{
-		if ((_IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
+		if ((_IsMovable && _IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
 		{
 			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 			{
@@ -4271,7 +4271,7 @@ const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, siz
 
 	while (_Index < _Path.GetSize())
 	{
-		if ((_IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
+		if ((_IsMovable && _IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
 		{
 			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 			{
@@ -4303,7 +4303,7 @@ const bool BFW::GUI::PopUp::FindScrollableWindow(const IsScrollableFnc _IsScroll
 	{
 		size_t _Layer = 0;
 
-		if (_IsScrollable(_Path[_Index]->Id) && _Path[_Index]->FindFocusedPopUpLayer(_Layer, _ScrollCornerPopUpId))
+		if (_IsScrollable && _IsScrollable(_Path[_Index]->Id) && _Path[_Index]->FindFocusedPopUpLayer(_Layer, _ScrollCornerPopUpId))
 		{
 			return true;
 		}
@@ -4329,7 +4329,7 @@ const bool BFW::GUI::PopUp::FindScrollableWindow(const IsScrollableFnc _IsScroll
 	{
 		size_t _Layer = 0;
 
-		if (_IsScrollable(_Path[_Index]->Id) && _Path[_Index]->FindFocusedPopUpLayer(_Layer, _ScrollCornerPopUpId))
+		if (_IsScrollable && _IsScrollable(_Path[_Index]->Id) && _Path[_Index]->FindFocusedPopUpLayer(_Layer, _ScrollCornerPopUpId))
 		{
 			return true;
 		}
