@@ -211,6 +211,7 @@
     <ClInclude Include="Headers\BFW_SmartPointers.hpp" />
     <ClInclude Include="Headers\BFW_Templates.hpp" />
     <ClInclude Include="Headers\BFW_Time.hpp" />
+    <ClInclude Include="Headers\BFW_Trie.hpp" />
     <ClInclude Include="Headers\BFW_Vector.hpp" />
     <ClInclude Include="Headers\BFW_WinTargetVer.hpp" />
   </ItemGroup>

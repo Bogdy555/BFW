@@ -12,6 +12,8 @@
 
 #include "BFW_SmartPointers.hpp"
 
+#include "BFW_Trie.hpp"
+
 #include "BFW_Animation.hpp"
 
 

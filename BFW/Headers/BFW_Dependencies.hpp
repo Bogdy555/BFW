@@ -72,6 +72,8 @@ namespace BFW
 
 	template <typename T> class WeakPointer;
 
+	template <typename T, typename CharT> requires (!std::is_const_v<CharT>) class Trie;
+
 	template <typename T> struct AnimationState;
 
 	template <typename T> class Animation;
