@@ -337,8 +337,8 @@
 
 
 
-#define BFW_PRINT(X) std::wcout << X
-#define BFW_PRINT_LINE(X) std::wcout << X << L'\n'
+#define BFW_PRINT(X) BFW::Log::SetConsoleAttribute(BFW::Log::GetDefaultAttribute()); std::wcout << X
+#define BFW_PRINT_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::GetDefaultAttribute()); std::wcout << X << L'\n'
 
 #define BFW_PRINT_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
 #define BFW_PRINT_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
@@ -353,8 +353,8 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_LOG(X) std::wcout << X
-#define BFW_LOG_LINE(X) std::wcout << X << L'\n'
+#define BFW_LOG(X) BFW::Log::SetConsoleAttribute(BFW::Log::GetDefaultAttribute()); std::wcout << X
+#define BFW_LOG_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::GetDefaultAttribute()); std::wcout << X << L'\n'
 
 #define BFW_LOG_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
 #define BFW_LOG_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
@@ -601,8 +601,8 @@
 
 
 
-#define BFW_PRINT(X) std::wcout << X
-#define BFW_PRINT_LINE(X) std::wcout << X << L'\n'
+#define BFW_PRINT(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtWhiteAttribute || BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_PRINT_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtWhiteAttribute || BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
 
 #define BFW_PRINT_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
 #define BFW_PRINT_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
@@ -617,8 +617,8 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_LOG(X) std::wcout << X
-#define BFW_LOG_LINE(X) std::wcout << X << L'\n'
+#define BFW_LOG(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtWhiteAttribute || BFW::Log::_BkgBlackAttribute); std::wcout << X
+#define BFW_LOG_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtWhiteAttribute || BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'
 
 #define BFW_LOG_ERROR(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X
 #define BFW_LOG_ERROR_LINE(X) BFW::Log::SetConsoleAttribute(BFW::Log::_TxtRedAttribute | BFW::Log::_BkgBlackAttribute); std::wcout << X << L'\n'

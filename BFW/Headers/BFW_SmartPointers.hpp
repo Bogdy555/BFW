@@ -72,22 +72,22 @@ namespace BFW
 			return Size;
 		}
 
-		Type* GetPointer() requires (!std::is_const_v<T>)
+		Type* GetData() requires (!std::is_const_v<T>)
 		{
 			return Pointer;
 		}
 
-		ConstType* GetPointer() const
+		ConstType* GetData() const
 		{
 			return Pointer;
 		}
 
-		explicit operator Type* () requires (!std::is_const_v<T>)
+		operator Type* () requires (!std::is_const_v<T>)
 		{
 			return Pointer;
 		}
 
-		explicit operator ConstType* () const
+		operator ConstType* () const
 		{
 			return Pointer;
 		}
@@ -302,22 +302,22 @@ namespace BFW
 			return Size;
 		}
 
-		Type* GetPointer() requires (!std::is_const_v<T>)
+		Type* GetData() requires (!std::is_const_v<T>)
 		{
 			return Pointer;
 		}
 
-		ConstType* GetPointer() const
+		ConstType* GetData() const
 		{
 			return Pointer;
 		}
 
-		explicit operator Type* () requires (!std::is_const_v<T>)
+		operator Type* () requires (!std::is_const_v<T>)
 		{
 			return Pointer;
 		}
 
-		explicit operator ConstType* () const
+		operator ConstType* () const
 		{
 			return Pointer;
 		}

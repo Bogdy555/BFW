@@ -239,12 +239,12 @@ namespace BFW
 			return Data;
 		}
 
-		explicit operator Type* () requires (!std::is_const_v<T>)
+		operator Type* () requires (!std::is_const_v<T>)
 		{
 			return Data;
 		}
 
-		explicit operator ConstType* () const
+		operator ConstType* () const
 		{
 			return Data;
 		}
