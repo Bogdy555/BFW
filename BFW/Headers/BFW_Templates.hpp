@@ -14,6 +14,8 @@
 
 #include "BFW_Trie.hpp"
 
+#include "BFW_Heap.hpp"
+
 #include "BFW_Animation.hpp"
 
 

@@ -41,7 +41,9 @@
 
 #include <type_traits>
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <sstream>
 #include <cmath>
 #include <chrono>
 #include <ctime>
@@ -73,6 +75,8 @@ namespace BFW
 	template <typename T> class WeakPointer;
 
 	template <typename T, typename CharT> requires (!std::is_const_v<CharT>) class Trie;
+
+	template <typename T, typename ValueT, const bool (*Rule)(const ValueT _Parent, const ValueT _Child)> requires (!std::is_const_v<ValueT>) class Heap;
 
 	template <typename T> struct AnimationState;
 
