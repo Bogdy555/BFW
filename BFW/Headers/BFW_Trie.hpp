@@ -42,7 +42,7 @@ namespace BFW
 
 		}
 
-		void PushBack(const CharT* _Name, ConstType& _Data)
+		void Push(const CharT* _Name, ConstType& _Data)
 		{
 			if (!_Name)
 			{
@@ -74,10 +74,10 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->PushBack(_Name + 1, _Data);
+			_Child->Push(_Name + 1, _Data);
 		}
 
-		void EmplaceBack(const CharT* _Name, Type&& _Data)
+		void Emplace(const CharT* _Name, Type&& _Data)
 		{
 			if (!_Name)
 			{
@@ -109,7 +109,7 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->PushBack(_Name + 1, _Data);
+			_Child->Emplace(_Name + 1, _Data);
 		}
 
 		void Erase(const CharT* _Name)
