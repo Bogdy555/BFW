@@ -4241,7 +4241,7 @@ const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, siz
 
 	while (_Index < _Path.GetSize())
 	{
-		if ((_IsMovable && _IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
+		if (((_IsMovable && _IsMovable(_Path[_Index]->Id)) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
 		{
 			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 			{
@@ -4271,7 +4271,7 @@ const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, siz
 
 	while (_Index < _Path.GetSize())
 	{
-		if ((_IsMovable && _IsMovable(_Path[_Index]->Id) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
+		if (((_IsMovable && _IsMovable(_Path[_Index]->Id)) || _Path[_Index]->Id == _NodeWindowPopUpId) && _Index + 1 < _Path.GetSize())
 		{
 			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 			{
