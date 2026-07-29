@@ -52,19 +52,12 @@ namespace BFW
 			_BkgWhiteAttribute = 240
 		};
 
+#endif
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 		const bool BFW_API Init();
 		void BFW_API Stop();
-
-		const bool BFW_API SetConsoleAttribute(const uint16_t _Attribute);
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-		const bool BFW_API GetConsoleAttribute(uint16_t& _Attribute);
-
-		const HANDLE BFW_API GetConsoleHandle();
-		const uint16_t BFW_API GetDefaultAttribute();
-
-#endif
 
 #endif
 
@@ -72,6 +65,21 @@ namespace BFW
 
 		const bool BFW_API Init(const size_t _BaudRate = 115200);
 		void BFW_API Stop();
+
+#endif
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		const bool BFW_API SetConsoleAttribute(const uint16_t _Attribute);
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+		const bool BFW_API GetConsoleAttribute(uint16_t& _Attribute);
+
+		const HANDLE BFW_API GetConsoleHandle();
+		const uint16_t BFW_API GetDefaultAttribute();
 
 #endif
 

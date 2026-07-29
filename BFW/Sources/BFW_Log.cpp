@@ -5,7 +5,7 @@
 #ifdef BFW_WINDOWS_PLATFORM
 
 static HANDLE ConsoleHandle = INVALID_HANDLE_VALUE;
-static uint16_t DefaultAttribute = 0;
+static uint16_t DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_BkgBlackAttribute;
 
 #endif
 
@@ -51,19 +51,9 @@ void BFW_API BFW::Log::Stop()
 	}
 
 	SetConsoleAttribute(DefaultAttribute);
-	DefaultAttribute = 0;
+	DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_BkgBlackAttribute;
 
 	ConsoleHandle = INVALID_HANDLE_VALUE;
-}
-
-const bool BFW_API BFW::Log::SetConsoleAttribute(const uint16_t _Attribute)
-{
-	if (ConsoleHandle == INVALID_HANDLE_VALUE)
-	{
-		return false;
-	}
-
-	return SetConsoleTextAttribute(ConsoleHandle, _Attribute);
 }
 
 #endif
@@ -79,6 +69,49 @@ void BFW_API BFW::Log::Stop()
 {
 	std::wcout << L"\033[0m";
 }
+
+#endif
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+const bool BFW_API BFW::Log::Init(const size_t _BaudRate)
+{
+	Serial.begin(_BaudRate);
+
+	while (!Serial)
+	{
+
+	}
+
+	return true;
+}
+
+void BFW_API BFW::Log::Stop()
+{
+	Serial.end();
+}
+
+#endif
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+const bool BFW_API BFW::Log::SetConsoleAttribute(const uint16_t _Attribute)
+{
+	if (ConsoleHandle == INVALID_HANDLE_VALUE)
+	{
+		return false;
+	}
+
+	return SetConsoleTextAttribute(ConsoleHandle, _Attribute);
+}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
 
 const bool BFW_API BFW::Log::SetConsoleAttribute(const uint16_t _Attribute)
 {
@@ -268,6 +301,8 @@ const bool BFW_API BFW::Log::SetConsoleAttribute(const uint16_t _Attribute)
 
 #endif
 
+#endif
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 const bool BFW_API BFW::Log::GetConsoleAttribute(uint16_t& _Attribute)
@@ -297,29 +332,6 @@ const HANDLE BFW_API BFW::Log::GetConsoleHandle()
 const uint16_t BFW_API BFW::Log::GetDefaultAttribute()
 {
 	return DefaultAttribute;
-}
-
-#endif
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-const bool BFW_API BFW::Log::Init(const size_t _BaudRate)
-{
-	Serial.begin(_BaudRate);
-
-	while (!Serial)
-	{
-
-	}
-
-	return true;
-}
-
-void BFW_API BFW::Log::Stop()
-{
-	Serial.end();
 }
 
 #endif
