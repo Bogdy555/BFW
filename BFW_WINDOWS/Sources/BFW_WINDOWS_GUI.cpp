@@ -1283,7 +1283,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 		_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
 
-		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+		if (_Wnd.GetKeys()[BFW::Input::_MouseLKeyId].JustPressed())
 		{
 			_WndData.LCapturePath[2]->ScrollWithMouseH(_LocalMouseX - _WndData.LCapturePath[0]->GetPositionX() - _WndData.LCapturePath[0]->GetWidth() / 2, _WndData.LAccumulationX, IgnoreHScroll);
 		}
@@ -1320,7 +1320,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 
 		_WndData.LCapturePath[0] = &_WndData.LCapturePath[1]->GetPopUps()[0][0];
 
-		if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+		if (_Wnd.GetKeys()[BFW::Input::_MouseLKeyId].JustPressed())
 		{
 			_WndData.LCapturePath[2]->ScrollWithMouseV(_LocalMouseY - _WndData.LCapturePath[0]->GetPositionY() - _WndData.LCapturePath[0]->GetHeight() / 2, _WndData.LAccumulationY, IgnoreVScroll);
 		}
@@ -1467,7 +1467,7 @@ void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _E
 
 void BFW_WINDOWS::GUI::HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
-	if (_Wnd.GetKeys()[VK_F11].JustPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_F11KeyId].JustPressed())
 	{
 		if (_Wnd.IsFullScreen())
 		{

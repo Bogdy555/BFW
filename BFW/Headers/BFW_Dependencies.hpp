@@ -167,6 +167,12 @@ namespace BFW
 	namespace Input
 	{
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		enum BFW_API KeyIds : const uint8_t;
+
+#endif
+
 		class BFW_API Key;
 
 		struct BFW_API ClickEvent;

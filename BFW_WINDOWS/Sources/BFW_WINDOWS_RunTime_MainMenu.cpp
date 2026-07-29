@@ -481,7 +481,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		return;
 	}
 
-	if (_Wnd.GetKeys()[VK_LBUTTON].JustPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseLKeyId].JustPressed())
 	{
 		_WndData.LCapture = true;
 		_WndData.LayoutMutex->lock();
@@ -495,7 +495,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.LAccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_MBUTTON].JustPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseMKeyId].JustPressed())
 	{
 		_WndData.MCapture = true;
 		_WndData.LayoutMutex->lock();
@@ -509,7 +509,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.MAccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_RBUTTON].JustPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseRKeyId].JustPressed())
 	{
 		_WndData.RCapture = true;
 		_WndData.LayoutMutex->lock();
@@ -523,7 +523,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.RAccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_XBUTTON1].JustPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseX1KeyId].JustPressed())
 	{
 		_WndData.X1Capture = true;
 		_WndData.LayoutMutex->lock();
@@ -537,7 +537,7 @@ void BFW_WINDOWS::RunTime::MainMenu::MouseCaptureInputs(BFW::GUI::Window& _Wnd, 
 		_WndData.X1AccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_XBUTTON2].JustPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseX2KeyId].JustPressed())
 	{
 		_WndData.X2Capture = true;
 		_WndData.LayoutMutex->lock();
@@ -614,7 +614,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 {
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 
-	if (_Wnd.GetKeys()[VK_LBUTTON].IsPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseLKeyId].IsPressed())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -634,7 +634,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.LayoutMutex->unlock();
 	}
 
-	if (_Wnd.GetKeys()[VK_MBUTTON].IsPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseMKeyId].IsPressed())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -654,7 +654,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.LayoutMutex->unlock();
 	}
 
-	if (_Wnd.GetKeys()[VK_RBUTTON].IsPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseRKeyId].IsPressed())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -674,7 +674,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.LayoutMutex->unlock();
 	}
 
-	if (_Wnd.GetKeys()[VK_XBUTTON1].IsPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseX1KeyId].IsPressed())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -694,7 +694,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.LayoutMutex->unlock();
 	}
 
-	if (_Wnd.GetKeys()[VK_XBUTTON2].IsPressed())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseX2KeyId].IsPressed())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -714,7 +714,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.LayoutMutex->unlock();
 	}
 
-	if (_Wnd.GetKeys()[VK_LBUTTON].JustReleased())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseLKeyId].JustReleased())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -758,7 +758,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.LAccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_MBUTTON].JustReleased())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseMKeyId].JustReleased())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -784,7 +784,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.MAccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_RBUTTON].JustReleased())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseRKeyId].JustReleased())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -810,7 +810,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.RAccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_XBUTTON1].JustReleased())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseX1KeyId].JustReleased())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 
@@ -836,7 +836,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 		_WndData.X1AccumulationY = 0;
 	}
 
-	if (_Wnd.GetKeys()[VK_XBUTTON2].JustReleased())
+	if (_Wnd.GetKeys()[BFW::Input::_MouseX2KeyId].JustReleased())
 	{
 		intptr_t _MouseX = 0, _MouseY = 0;
 

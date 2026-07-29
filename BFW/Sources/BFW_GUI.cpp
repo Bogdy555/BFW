@@ -977,11 +977,11 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_LBUTTONDOWN:
 	{
 		_Wnd->WindowMutex->lock();
-		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+		if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 		{
 			SetCapture(_hWnd);
 		}
-		_Wnd->RawKeys[VK_LBUTTON] = true;
+		_Wnd->RawKeys[Input::_MouseLKeyId] = true;
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -989,9 +989,9 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_LBUTTONUP:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->RawKeys[VK_LBUTTON] = false;
+		_Wnd->RawKeys[Input::_MouseLKeyId] = false;
 		_Wnd->LClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
-		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+		if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 		{
 			ReleaseCapture();
 		}
@@ -1002,11 +1002,11 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_RBUTTONDOWN:
 	{
 		_Wnd->WindowMutex->lock();
-		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+		if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 		{
 			SetCapture(_hWnd);
 		}
-		_Wnd->RawKeys[VK_RBUTTON] = true;
+		_Wnd->RawKeys[Input::_MouseRKeyId] = true;
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -1014,9 +1014,9 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_RBUTTONUP:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->RawKeys[VK_RBUTTON] = false;
+		_Wnd->RawKeys[Input::_MouseRKeyId] = false;
 		_Wnd->RClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
-		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+		if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 		{
 			ReleaseCapture();
 		}
@@ -1027,11 +1027,11 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_MBUTTONDOWN:
 	{
 		_Wnd->WindowMutex->lock();
-		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+		if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 		{
 			SetCapture(_hWnd);
 		}
-		_Wnd->RawKeys[VK_MBUTTON] = true;
+		_Wnd->RawKeys[Input::_MouseMKeyId] = true;
 		_Wnd->WindowMutex->unlock();
 
 		break;
@@ -1039,9 +1039,9 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 	case WM_MBUTTONUP:
 	{
 		_Wnd->WindowMutex->lock();
-		_Wnd->RawKeys[VK_MBUTTON] = false;
+		_Wnd->RawKeys[Input::_MouseMKeyId] = false;
 		_Wnd->MClicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
-		if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+		if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 		{
 			ReleaseCapture();
 		}
@@ -1054,19 +1054,19 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 		_Wnd->WindowMutex->lock();
 		if (HIWORD(_wParam) == XBUTTON1)
 		{
-			if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+			if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 			{
 				SetCapture(_hWnd);
 			}
-			_Wnd->RawKeys[VK_XBUTTON1] = true;
+			_Wnd->RawKeys[Input::_MouseX1KeyId] = true;
 		}
 		else
 		{
-			if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+			if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 			{
 				SetCapture(_hWnd);
 			}
-			_Wnd->RawKeys[VK_XBUTTON2] = true;
+			_Wnd->RawKeys[Input::_MouseX2KeyId] = true;
 		}
 		_Wnd->WindowMutex->unlock();
 
@@ -1077,18 +1077,18 @@ LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wP
 		_Wnd->WindowMutex->lock();
 		if (HIWORD(_wParam) == XBUTTON1)
 		{
-			_Wnd->RawKeys[VK_XBUTTON1] = false;
+			_Wnd->RawKeys[Input::_MouseX1KeyId] = false;
 			_Wnd->X1Clicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
-			if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+			if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 			{
 				ReleaseCapture();
 			}
 		}
 		else
 		{
-			_Wnd->RawKeys[VK_XBUTTON2] = false;
+			_Wnd->RawKeys[Input::_MouseX2KeyId] = false;
 			_Wnd->X2Clicks.PushBack(Input::ClickEvent((int16_t)(LOWORD(_lParam)), (int16_t)(HIWORD(_lParam)), (LOWORD(_wParam) & MK_CONTROL) != 0, (LOWORD(_wParam) & MK_SHIFT) != 0));
-			if (!_Wnd->RawKeys[VK_LBUTTON] && !_Wnd->RawKeys[VK_RBUTTON] && !_Wnd->RawKeys[VK_MBUTTON] && !_Wnd->RawKeys[VK_XBUTTON1] && !_Wnd->RawKeys[VK_XBUTTON2])
+			if (!_Wnd->RawKeys[Input::_MouseLKeyId] && !_Wnd->RawKeys[Input::_MouseRKeyId] && !_Wnd->RawKeys[Input::_MouseMKeyId] && !_Wnd->RawKeys[Input::_MouseX1KeyId] && !_Wnd->RawKeys[Input::_MouseX2KeyId])
 			{
 				ReleaseCapture();
 			}
