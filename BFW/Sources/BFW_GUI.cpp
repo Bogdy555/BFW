@@ -3708,7 +3708,7 @@ BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _Mo
 
 		SafePopUpPointer _Result = _PopUp.GetChildFromMouse(_MouseX + ScrollX - _PopUp.PositionX, _MouseY + ScrollY - _PopUp.PositionY, _Path);
 
-		if (_Result != nullptr)
+		if ((PopUp*)(_Result) != nullptr)
 		{
 			if (_Path)
 			{
@@ -3725,7 +3725,7 @@ BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _Mo
 
 		SafePopUpPointer _Result = _Node.GetChildFromMouse(_MouseX + ScrollX - _Node.PositionX, _MouseY + ScrollY - _Node.PositionY, _Path);
 
-		if (_Result != nullptr)
+		if ((PopUp*)(_Result) != nullptr)
 		{
 			if (_Path)
 			{
@@ -3742,7 +3742,7 @@ BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr_t _Mo
 
 		SafePopUpPointer _Result = _Panel.GetChildFromMouse(_MouseX + ScrollX - _Panel.PositionX, _MouseY + ScrollY - _Panel.PositionY, _Path);
 
-		if (_Result != nullptr)
+		if ((PopUp*)(_Result) != nullptr)
 		{
 			if (_Path)
 			{
@@ -3774,7 +3774,7 @@ const BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr
 
 		const SafePopUpPointer _Result = _PopUp.GetChildFromMouse(_MouseX + ScrollX - _PopUp.PositionX, _MouseY + ScrollY - _PopUp.PositionY, _Path);
 
-		if (_Result != nullptr)
+		if ((const PopUp*)(_Result) != nullptr)
 		{
 			if (_Path)
 			{
@@ -3791,7 +3791,7 @@ const BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr
 
 		const SafePopUpPointer _Result = _Node.GetChildFromMouse(_MouseX + ScrollX - _Node.PositionX, _MouseY + ScrollY - _Node.PositionY, _Path);
 
-		if (_Result != nullptr)
+		if ((const PopUp*)(_Result) != nullptr)
 		{
 			if (_Path)
 			{
@@ -3808,7 +3808,7 @@ const BFW::GUI::SafePopUpPointer BFW::GUI::PopUp::GetChildFromMouse(const intptr
 
 		const SafePopUpPointer _Result = _Panel.GetChildFromMouse(_MouseX + ScrollX - _Panel.PositionX, _MouseY + ScrollY - _Panel.PositionY, _Path);
 
-		if (_Result != nullptr)
+		if ((const PopUp*)(_Result) != nullptr)
 		{
 			if (_Path)
 			{
@@ -4136,7 +4136,7 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<SafePopUpPointer>& _Path)
 {
 	for (size_t _Index = 0; _Index < _Path.GetSize(); _Index++)
 	{
-		if (!_Path[_Index])
+		if (!(const PopUp*)(_Path[_Index]))
 		{
 			return false;
 		}
@@ -4153,7 +4153,7 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<SafePopUpPointer>& _Path)
 
 		for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 		{
-			if (_Path[_Index] == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
+			if ((const PopUp*)(_Path[_Index]) == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
 			{
 				_Found = true;
 				break;
@@ -4165,12 +4165,12 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<SafePopUpPointer>& _Path)
 			continue;
 		}
 
-		if (_Path[_Index] == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
+		if ((const PopUp*)(_Path[_Index]) == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
 		{
 			continue;
 		}
 
-		if (_Path[_Index] == &_Path[_Index + 1]->Panels[_Path[_Index + 1]->FocusedPanel])
+		if ((const PopUp*)(_Path[_Index]) == &_Path[_Index + 1]->Panels[_Path[_Index + 1]->FocusedPanel])
 		{
 			continue;
 		}
@@ -4185,7 +4185,7 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<const SafePopUpPointer>& _P
 {
 	for (size_t _Index = 0; _Index < _Path.GetSize(); _Index++)
 	{
-		if (!_Path[_Index])
+		if (!(const PopUp*)(_Path[_Index]))
 		{
 			return false;
 		}
@@ -4202,7 +4202,7 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<const SafePopUpPointer>& _P
 
 		for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 		{
-			if (_Path[_Index] == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
+			if ((const PopUp*)(_Path[_Index]) == &_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]])
 			{
 				_Found = true;
 				break;
@@ -4214,12 +4214,12 @@ const bool BFW::GUI::PopUp::IsValidPath(const Vector<const SafePopUpPointer>& _P
 			continue;
 		}
 
-		if (_Path[_Index] == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
+		if ((const PopUp*)(_Path[_Index]) == &_Path[_Index + 1]->Nodes[_Path[_Index + 1]->FocusedNode])
 		{
 			continue;
 		}
 
-		if (_Path[_Index] == &_Path[_Index + 1]->Panels[_Path[_Index + 1]->FocusedPanel])
+		if ((const PopUp*)(_Path[_Index]) == &_Path[_Index + 1]->Panels[_Path[_Index + 1]->FocusedPanel])
 		{
 			continue;
 		}
@@ -4245,7 +4245,7 @@ const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, siz
 		{
 			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 			{
-				if (&_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]] == _Path[_Index])
+				if (&_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]] == (const PopUp*)(_Path[_Index]))
 				{
 					return true;
 				}
@@ -4275,7 +4275,7 @@ const bool BFW::GUI::PopUp::FindMovableWindow(const IsMovableFnc _IsMovable, siz
 		{
 			for (size_t _Layer = 0; _Layer < _Path[_Index + 1]->PopUps.GetSize(); _Layer++)
 			{
-				if (&_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]] == _Path[_Index])
+				if (&_Path[_Index + 1]->PopUps[_Layer][_Path[_Index + 1]->FocusedPopUps[_Layer]] == (const PopUp*)(_Path[_Index]))
 				{
 					return true;
 				}

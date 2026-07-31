@@ -172,8 +172,8 @@ namespace BFW
 			SafePopUpPointer(SafePopUpPointer&& _Other) noexcept;
 			~SafePopUpPointer();
 
-			operator PopUp* ();
-			operator const PopUp* () const;
+			explicit operator PopUp* ();
+			explicit operator const PopUp* () const;
 
 			PopUp* operator-> ();
 			const PopUp* operator-> () const;

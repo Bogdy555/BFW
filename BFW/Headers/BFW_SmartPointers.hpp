@@ -82,12 +82,12 @@ namespace BFW
 			return Pointer;
 		}
 
-		operator Type* () requires (!std::is_const_v<T>)
+		explicit operator Type* () requires (!std::is_const_v<T>)
 		{
 			return Pointer;
 		}
 
-		operator ConstType* () const
+		explicit operator ConstType* () const
 		{
 			return Pointer;
 		}
@@ -312,12 +312,12 @@ namespace BFW
 			return Pointer;
 		}
 
-		operator Type* () requires (!std::is_const_v<T>)
+		explicit operator Type* () requires (!std::is_const_v<T>)
 		{
 			return Pointer;
 		}
 
-		operator ConstType* () const
+		explicit operator ConstType* () const
 		{
 			return Pointer;
 		}

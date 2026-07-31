@@ -545,7 +545,7 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		size_t _MovableIndex = 0;
 
-		if (_HoverPopUp && (IsMovable(_HoverPopUp->GetId()) || _HoverPopUp->GetId() == BFW::GUI::_NodeWindowPopUpId) && !BFW::GUI::PopUp::FindMovableWindow(IsMovable, _MovableIndex, _Path))
+		if ((BFW::GUI::PopUp*)(_HoverPopUp) && (IsMovable(_HoverPopUp->GetId()) || _HoverPopUp->GetId() == BFW::GUI::_NodeWindowPopUpId) && !BFW::GUI::PopUp::FindMovableWindow(IsMovable, _MovableIndex, _Path))
 		{
 			_Result = HTCAPTION;
 		}
@@ -1607,7 +1607,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 		{
 			BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
-			if (_HoverPopUp)
+			if ((BFW::GUI::PopUp*)(_HoverPopUp))
 			{
 				_CursorSet = true;
 				RenderCursor(_Wnd, _HoverPopUp->GetId());

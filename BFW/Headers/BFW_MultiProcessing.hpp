@@ -139,8 +139,8 @@ namespace BFW
 			uint8_t* GetData();
 			const uint8_t* GetData() const;
 
-			operator uint8_t* ();
-			operator const uint8_t* () const;
+			explicit operator uint8_t* ();
+			explicit operator const uint8_t* () const;
 
 			uint8_t& operator* ();
 			const uint8_t& operator* () const;

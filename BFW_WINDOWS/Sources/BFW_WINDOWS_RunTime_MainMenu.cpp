@@ -727,7 +727,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 
 			BFW::GUI::SafePopUpPointer _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
-			if (_ReleasePopUp && _WndData.LCapturePath.GetSize() && _ReleasePopUp == _WndData.LCapturePath[0])
+			if ((BFW::GUI::PopUp*)(_ReleasePopUp) && _WndData.LCapturePath.GetSize() && (BFW::GUI::PopUp*)(_ReleasePopUp) == (BFW::GUI::PopUp*)(_WndData.LCapturePath[0]))
 			{
 				switch (_ReleasePopUp->GetId())
 				{
