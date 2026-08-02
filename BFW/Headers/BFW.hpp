@@ -24,6 +24,8 @@
 
 #include "BFW_GUI.hpp"
 
+#include "BFW_Assets.hpp"
+
 
 
 #endif

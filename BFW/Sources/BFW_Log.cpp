@@ -56,9 +56,9 @@ const bool BFW_API BFW::Log::Init()
 
 	DefaultAttribute = _ConsoleInfo.wAttributes;
 
-	LoggingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_LoggingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt");
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_LoggingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt"));
 
-	ProfilingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_ProfilingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt");
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_ProfilingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt"));
 
 	return true;
 }
