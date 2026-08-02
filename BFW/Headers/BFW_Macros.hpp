@@ -266,44 +266,8 @@
 
 
 
-#ifdef BFW_WINDOWS_PLATFORM
-
-
-
-#ifdef BFW_BUILD_DYNAMIC
-
-#define BFW_API __declspec(dllexport)
-#define BFW_EXTERN
-
-#endif
-
-#ifdef BFW_LINK_DYNAMIC
-
-#define BFW_API __declspec(dllimport)
-#define BFW_EXTERN extern
-
-#endif
-
-#ifdef BFW_BUILD_STATIC
-
-#define BFW_API
-
-#endif
-
-#ifdef BFW_LINK_STATIC
-
-#define BFW_API
-
-#endif
-
-#ifdef BFW_VENDOR
-
-#define BFW_API
-
-#endif
-
-
-
+#define BFW_CONCATENATE_HELPER(A, B) A ## B
+#define BFW_CONCATENATE(A, B) BFW_CONCATENATE_HELPER(A, B)
 #define BFW_CHAR_TYPE_A char
 #define BFW_CHAR_TYPE_W wchar_t
 #define BFW_STRING_TYPE_A std::string
@@ -348,6 +312,60 @@
 #define BFW_TO_STRING(X) BFW_TO_STRING_A(X)
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_A(X)
 #define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_A(X)
+
+#endif
+
+
+
+#ifdef BFW_DEBUG
+
+#define BFW_LOG_TO_FILE(X) *BFW::Log::LoggingFile << X
+#define BFW_LOG_LINE_TO_FILE(X) *BFW::Log::LoggingFile << X << L'\n'
+
+#endif
+
+#ifndef BFW_DEBUG
+
+#define BFW_LOG_TO_FILE(X)
+#define BFW_LOG_LINE_TO_FILE(X)
+
+#endif
+
+
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+
+
+#ifdef BFW_BUILD_DYNAMIC
+
+#define BFW_API __declspec(dllexport)
+#define BFW_EXTERN
+
+#endif
+
+#ifdef BFW_LINK_DYNAMIC
+
+#define BFW_API __declspec(dllimport)
+#define BFW_EXTERN extern
+
+#endif
+
+#ifdef BFW_BUILD_STATIC
+
+#define BFW_API
+
+#endif
+
+#ifdef BFW_LINK_STATIC
+
+#define BFW_API
+
+#endif
+
+#ifdef BFW_VENDOR
+
+#define BFW_API
 
 #endif
 
@@ -460,24 +478,6 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_PROFILE_SCOPE() BFW_LOG("Push "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Time::ScopeTimer _ScopeTimer([](const float _ScopeTime) { BFW_LOG("Pop "); BFW_LOG_LINE(_ScopeTime); })
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
-#define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
-
-#endif
-
-#ifndef BFW_DEBUG
-
-#define BFW_PROFILE_SCOPE()
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer)
-#define BFW_HEAP_PROFILE_POP(Pointer)
-
-#endif
-
-
-
-#ifdef BFW_DEBUG
-
 #define BFW_DEBUG_BREAK() __debugbreak()
 #define BFW_DEBUG_BREAK_MSG_A(Msg) MessageBoxA(NULL, Msg, "Debug break!", MB_OK | MB_ICONERROR); __debugbreak()
 #define BFW_DEBUG_BREAK_MSG_W(Msg) MessageBoxW(NULL, Msg, L"Debug break!", MB_OK | MB_ICONERROR); __debugbreak()
@@ -502,37 +502,6 @@
 #define BFW_DEBUG_BREAK_MSG_A(Msg)
 #define BFW_DEBUG_BREAK_MSG_W(Msg)
 #define BFW_DEBUG_BREAK_MSG(Msg)
-
-#endif
-
-
-
-#ifdef BFW_DEBUG
-
-#define BFW_ASSERT(Condition) if (!(Condition)) { BFW_DEBUG_BREAK(); }
-#define BFW_ASSERT_MSG_A(Condition, Msg) if (!(Condition)) { BFW_DEBUG_BREAK_MSG_A(Msg); }
-#define BFW_ASSERT_MSG_W(Condition, Msg) if (!(Condition)) { BFW_DEBUG_BREAK_MSG_W(Msg); }
-
-#ifdef _UNICODE
-
-#define BFW_ASSERT_MSG(Condition, Msg) BFW_ASSERT_MSG_W(Condition, Msg)
-
-#endif
-
-#ifndef _UNICODE
-
-#define BFW_ASSERT_MSG(Condition, Msg) BFW_ASSERT_MSG_A(Condition, Msg)
-
-#endif
-
-#endif
-
-#ifndef BFW_DEBUG
-
-#define BFW_ASSERT(Condition)
-#define BFW_ASSERT_MSG_A(Condition, Msg)
-#define BFW_ASSERT_MSG_W(Condition, Msg)
-#define BFW_ASSERT_MSG(Condition, Msg)
 
 #endif
 
@@ -579,55 +548,6 @@
 #ifdef BFW_VENDOR
 
 #define BFW_API
-
-#endif
-
-
-
-#define BFW_CHAR_TYPE_A char
-#define BFW_CHAR_TYPE_W wchar_t
-#define BFW_STRING_TYPE_A std::string
-#define BFW_STRING_TYPE_W std::wstring
-#define BFW_STRING_STREAM_TYPE_A std::stringstream
-#define BFW_STRING_STREAM_TYPE_W std::wstringstream
-#define BFW_IFSTREAM_TYPE_A std::ifstream
-#define BFW_IFSTREAM_TYPE_W std::wifstream
-#define BFW_OFSTREAM_TYPE_A std::ofstream
-#define BFW_OFSTREAM_TYPE_W std::wofstream
-#define BFW_FSTREAM_TYPE_A std::fstream
-#define BFW_FSTREAM_TYPE_W std::wfstream
-#define BFW_TO_STRING_A(X) std::to_string(X)
-#define BFW_TO_STRING_W(X) std::to_wstring(X)
-#define BFW_TO_STRING_PTR_A(X) std::to_string(X).c_str()
-#define BFW_TO_STRING_PTR_W(X) std::to_wstring(X).c_str()
-#define BFW_STRING_PREFIX_A(X) X
-#define BFW_STRING_PREFIX_W(X) L ## X
-
-#ifdef _UNICODE
-
-#define BFW_CHAR_TYPE BFW_CHAR_TYPE_W
-#define BFW_STRING_TYPE BFW_STRING_TYPE_W
-#define BFW_STRING_STREAM_TYPE BFW_STRING_STREAM_TYPE_W
-#define BFW_IFSTREAM_TYPE BFW_IFSTREAM_TYPE_W
-#define BFW_OFSTREAM_TYPE BFW_OFSTREAM_TYPE_W
-#define BFW_FSTREAM_TYPE BFW_FSTREAM_TYPE_W
-#define BFW_TO_STRING(X) BFW_TO_STRING_W(X)
-#define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_W(X)
-#define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_W(X)
-
-#endif
-
-#ifndef _UNICODE
-
-#define BFW_CHAR_TYPE BFW_CHAR_TYPE_A
-#define BFW_STRING_TYPE BFW_STRING_TYPE_A
-#define BFW_STRING_STREAM_TYPE BFW_STRING_STREAM_TYPE_A
-#define BFW_IFSTREAM_TYPE BFW_IFSTREAM_TYPE_A
-#define BFW_OFSTREAM_TYPE BFW_OFSTREAM_TYPE_A
-#define BFW_FSTREAM_TYPE BFW_FSTREAM_TYPE_A
-#define BFW_TO_STRING(X) BFW_TO_STRING_A(X)
-#define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_A(X)
-#define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_A(X)
 
 #endif
 
@@ -740,24 +660,6 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_PROFILE_SCOPE() BFW_LOG("Push "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Time::ScopeTimer _ScopeTimer([](const float _ScopeTime) { BFW_LOG("Pop "); BFW_LOG_LINE(_ScopeTime); })
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
-#define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
-
-#endif
-
-#ifndef BFW_DEBUG
-
-#define BFW_PROFILE_SCOPE()
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer)
-#define BFW_HEAP_PROFILE_POP(Pointer)
-
-#endif
-
-
-
-#ifdef BFW_DEBUG
-
 #define BFW_DEBUG_BREAK() __builtin_trap()
 #define BFW_DEBUG_BREAK_MSG_A(Msg) std::wcout << L"Debug break! " << Msg << L'\n'; __builtin_trap()
 #define BFW_DEBUG_BREAK_MSG_W(Msg) std::wcout << L"Debug break! " << Msg << L'\n'; __builtin_trap()
@@ -787,37 +689,6 @@
 
 
 
-#ifdef BFW_DEBUG
-
-#define BFW_ASSERT(Condition) if (!(Condition)) { BFW_DEBUG_BREAK(); }
-#define BFW_ASSERT_MSG_A(Condition, Msg) if (!(Condition)) { BFW_DEBUG_BREAK_MSG_A(Msg); }
-#define BFW_ASSERT_MSG_W(Condition, Msg) if (!(Condition)) { BFW_DEBUG_BREAK_MSG_W(Msg); }
-
-#ifdef _UNICODE
-
-#define BFW_ASSERT_MSG(Condition, Msg) BFW_ASSERT_MSG_W(Condition, Msg)
-
-#endif
-
-#ifndef _UNICODE
-
-#define BFW_ASSERT_MSG(Condition, Msg) BFW_ASSERT_MSG_A(Condition, Msg)
-
-#endif
-
-#endif
-
-#ifndef BFW_DEBUG
-
-#define BFW_ASSERT(Condition)
-#define BFW_ASSERT_MSG_A(Condition, Msg)
-#define BFW_ASSERT_MSG_W(Condition, Msg)
-#define BFW_ASSERT_MSG(Condition, Msg)
-
-#endif
-
-
-
 #endif
 
 
@@ -841,55 +712,6 @@
 #ifdef BFW_VENDOR
 
 #define BFW_API
-
-#endif
-
-
-
-#define BFW_CHAR_TYPE_A char
-#define BFW_CHAR_TYPE_W wchar_t
-#define BFW_STRING_TYPE_A std::string
-#define BFW_STRING_TYPE_W std::wstring
-#define BFW_STRING_STREAM_TYPE_A std::stringstream
-#define BFW_STRING_STREAM_TYPE_W std::wstringstream
-#define BFW_IFSTREAM_TYPE_A std::ifstream
-#define BFW_IFSTREAM_TYPE_W std::wifstream
-#define BFW_OFSTREAM_TYPE_A std::ofstream
-#define BFW_OFSTREAM_TYPE_W std::wofstream
-#define BFW_FSTREAM_TYPE_A std::fstream
-#define BFW_FSTREAM_TYPE_W std::wfstream
-#define BFW_TO_STRING_A(X) std::to_string(X)
-#define BFW_TO_STRING_W(X) std::to_wstring(X)
-#define BFW_TO_STRING_PTR_A(X) std::to_string(X).c_str()
-#define BFW_TO_STRING_PTR_W(X) std::to_wstring(X).c_str()
-#define BFW_STRING_PREFIX_A(X) X
-#define BFW_STRING_PREFIX_W(X) L ## X
-
-#ifdef _UNICODE
-
-#define BFW_CHAR_TYPE BFW_CHAR_TYPE_W
-#define BFW_STRING_TYPE BFW_STRING_TYPE_W
-#define BFW_STRING_STREAM_TYPE BFW_STRING_STREAM_TYPE_W
-#define BFW_IFSTREAM_TYPE BFW_IFSTREAM_TYPE_W
-#define BFW_OFSTREAM_TYPE BFW_OFSTREAM_TYPE_W
-#define BFW_FSTREAM_TYPE BFW_FSTREAM_TYPE_W
-#define BFW_TO_STRING(X) BFW_TO_STRING_W(X)
-#define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_W(X)
-#define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_W(X)
-
-#endif
-
-#ifndef _UNICODE
-
-#define BFW_CHAR_TYPE BFW_CHAR_TYPE_A
-#define BFW_STRING_TYPE BFW_STRING_TYPE_A
-#define BFW_STRING_STREAM_TYPE BFW_STRING_STREAM_TYPE_A
-#define BFW_IFSTREAM_TYPE BFW_IFSTREAM_TYPE_A
-#define BFW_OFSTREAM_TYPE BFW_OFSTREAM_TYPE_A
-#define BFW_FSTREAM_TYPE BFW_FSTREAM_TYPE_A
-#define BFW_TO_STRING(X) BFW_TO_STRING_A(X)
-#define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_A(X)
-#define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_A(X)
 
 #endif
 
@@ -1002,27 +824,9 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_PROFILE_SCOPE() BFW_LOG("Push "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Time::ScopeTimer _ScopeTimer([](const float _ScopeTime) { BFW_LOG("Pop "); BFW_LOG_LINE(_ScopeTime); })
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
-#define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
-
-#endif
-
-#ifndef BFW_DEBUG
-
-#define BFW_PROFILE_SCOPE()
-#define BFW_HEAP_PROFILE_PUSH(Size, Pointer)
-#define BFW_HEAP_PROFILE_POP(Pointer)
-
-#endif
-
-
-
-#ifdef BFW_DEBUG
-
-#define BFW_DEBUG_BREAK() BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__)
-#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG(__FUNCTION__); BFW_LOG(" "); BFW_LOG_LINE(Msg)
-#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG(__FUNCTION__); BFW_LOG(" "); BFW_LOG_LINE(Msg)
+#define BFW_DEBUG_BREAK() BFW::Log::Mutex->lock(); BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Log::Mutex->unlock()
+#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW::Log::Mutex->lock(); BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG(__FUNCTION__); BFW_LOG(" "); BFW_LOG_LINE(Msg); BFW::Log::Mutex->unlock()
+#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW::Log::Mutex->lock(); BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG(__FUNCTION__); BFW_LOG(" "); BFW_LOG_LINE(Msg); BFW::Log::Mutex->unlock()
 
 #ifdef _UNICODE
 
@@ -1044,6 +848,30 @@
 #define BFW_DEBUG_BREAK_MSG_A(Msg)
 #define BFW_DEBUG_BREAK_MSG_W(Msg)
 #define BFW_DEBUG_BREAK_MSG(Msg)
+
+#endif
+
+
+
+#endif
+
+
+
+#ifdef BFW_DEBUG
+
+#define BFW_PROFILE_FUNCTION() BFW::Log::ProfilingFileMutex->lock(); BFW::Log::ProfilingFile << "Push " << "\"" << __FILE__ << "\" " << "(" << __LINE__ << ") " << __FUNCTION__ << " Thread " << std::this_thread::get_id() << '\n'; BFW::Log::ProfilingFileMutex->unlock(); BFW::Time::ScopeTimer BFW_CONCATENATE(_ScopeTimer, __LINE__)([](const float _ScopeTime) { BFW::Log::ProfilingFileMutex->lock(); BFW::Log::ProfilingFile << "Pop Thread " << std::this_thread::get_id() << " " << _ScopeTime << '\n'; BFW::Log::ProfilingFileMutex->unlock(); })
+#define BFW_PROFILE_SCOPE(Name) BFW::Log::ProfilingFileMutex->lock(); BFW::Log::ProfilingFile << "Push " << "\"" << __FILE__ << "\" " << "(" << __LINE__ << ") " << Name << " Thread " << std::this_thread::get_id() << '\n'; BFW::Log::ProfilingFileMutex->unlock(); BFW::Time::ScopeTimer BFW_CONCATENATE(_ScopeTimer, __LINE__)([](const float _ScopeTime) { BFW::Log::ProfilingFileMutex->lock(); BFW::Log::ProfilingFile << "Pop Thread " << std::this_thread::get_id() << " " << _ScopeTime << '\n'; BFW::Log::ProfilingFileMutex->unlock(); })
+#define BFW_HEAP_PROFILE_PUSH(Pointer, Size) BFW::Debug::HeapProfile.Push(Size, Pointer, BFW_STRING_PREFIX(__FILE__), __LINE__, BFW_STRING_PREFIX(__FUNCTION__))
+#define BFW_HEAP_PROFILE_POP(Pointer) BFW::Debug::HeapProfile.Pop(Pointer)
+
+#endif
+
+#ifndef BFW_DEBUG
+
+#define BFW_PROFILE_FUNCTION()
+#define BFW_PROFILE_SCOPE(Name)
+#define BFW_HEAP_PROFILE_PUSH(Pointer, Size)
+#define BFW_HEAP_PROFILE_POP(Pointer)
 
 #endif
 
@@ -1075,10 +903,6 @@
 #define BFW_ASSERT_MSG_A(Condition, Msg)
 #define BFW_ASSERT_MSG_W(Condition, Msg)
 #define BFW_ASSERT_MSG(Condition, Msg)
-
-#endif
-
-
 
 #endif
 

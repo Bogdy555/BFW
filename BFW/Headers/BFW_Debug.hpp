@@ -46,7 +46,7 @@ namespace BFW
 			void Pop(const void* _Pointer);
 
 			const size_t GetHeapSize() const;
-			const Vector<HeapPointer>& GetHeapVector() const;
+			const Vector<HeapPointer> GetHeapVector() const;
 
 			HeapTracker& operator= (const HeapTracker& _Other);
 			HeapTracker& operator= (HeapTracker&& _Other) noexcept;

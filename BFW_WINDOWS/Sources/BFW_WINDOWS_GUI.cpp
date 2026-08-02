@@ -353,7 +353,7 @@ const bool BFW_WINDOWS::GUI::MainWindowInit(BFW::GUI::Window* _Wnd)
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(std::mutex), _WndData.LayoutMutex);
+	BFW_HEAP_PROFILE_PUSH(_WndData.LayoutMutex, sizeof(std::mutex));
 
 	_WndData.Layout.SetUserData(GenerateUserData(BFW::GUI::_NodeWindowPopUpId, nullptr));
 
@@ -384,7 +384,7 @@ const bool BFW_WINDOWS::GUI::MainWindowInit(BFW::GUI::Window* _Wnd)
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _PopUpData->Width * _PopUpData->Height * 4, _PopUpData->Pixels);
+	BFW_HEAP_PROFILE_PUSH(_PopUpData->Pixels, sizeof(uint8_t) * _PopUpData->Width * _PopUpData->Height * 4);
 
 	for (size_t _Y = 0; _Y < _PopUpData->Height; _Y++)
 	{
@@ -584,7 +584,7 @@ const bool BFW_WINDOWS::GUI::ChildWindowInit(BFW::GUI::Window* _Wnd)
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(std::mutex), _WndData.LayoutMutex);
+	BFW_HEAP_PROFILE_PUSH(_WndData.LayoutMutex, sizeof(std::mutex));
 
 	_WndData.Layout.SetUserData(GenerateUserData(BFW::GUI::_NodeWindowPopUpId, nullptr));
 
@@ -615,7 +615,7 @@ const bool BFW_WINDOWS::GUI::ChildWindowInit(BFW::GUI::Window* _Wnd)
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _PopUpData->Width * _PopUpData->Height * 4, _PopUpData->Pixels);
+	BFW_HEAP_PROFILE_PUSH(_PopUpData->Pixels, sizeof(uint8_t) * _PopUpData->Width * _PopUpData->Height * 4);
 
 	for (size_t _Y = 0; _Y < _PopUpData->Height; _Y++)
 	{
@@ -661,7 +661,7 @@ void* BFW_WINDOWS::GUI::GenerateUserData(const uint64_t _PopUpId, void* _Global)
 			throw nullptr;
 		}
 
-		BFW_HEAP_PROFILE_PUSH(sizeof(PopUpData), _PopUpData);
+		BFW_HEAP_PROFILE_PUSH(_PopUpData, sizeof(PopUpData));
 
 		return _PopUpData;
 	}
@@ -675,7 +675,7 @@ void* BFW_WINDOWS::GUI::GenerateUserData(const uint64_t _PopUpId, void* _Global)
 		throw nullptr;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(PopUpData), _PopUpData);
+	BFW_HEAP_PROFILE_PUSH(_PopUpData, sizeof(PopUpData));
 
 	return _PopUpData;
 }
@@ -711,7 +711,7 @@ void BFW_WINDOWS::GUI::SetupRenderData(BFW::GUI::PopUp& _Wnd, BFW::GUI::PopUp& _
 		return;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _WndPopUpData.Width * _WndPopUpData.Height * 4, _WndPopUpData.Pixels);
+	BFW_HEAP_PROFILE_PUSH(_WndPopUpData.Pixels, sizeof(uint8_t) * _WndPopUpData.Width * _WndPopUpData.Height * 4);
 }
 
 void BFW_WINDOWS::GUI::CleanUpRenderData(BFW::GUI::PopUp& _Wnd, void* _Global)
@@ -1545,7 +1545,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 		{
 			if (_Pixels != _WndPopUpData.Pixels)
 			{
-				BFW_HEAP_PROFILE_PUSH(sizeof(uint8_t) * _WndWidth * _WndHeight * 4, _Pixels);
+				BFW_HEAP_PROFILE_PUSH(_Pixels, sizeof(uint8_t) * _WndWidth * _WndHeight * 4);
 
 				BFW_HEAP_PROFILE_POP(_WndPopUpData.Pixels);
 				delete[] _WndPopUpData.Pixels;

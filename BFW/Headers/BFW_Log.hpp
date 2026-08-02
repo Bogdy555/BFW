@@ -54,6 +54,14 @@ namespace BFW
 
 #endif
 
+		extern BFW_API std::mutex* Mutex;
+
+		BFW_DEBUG_CALL(extern BFW_OFSTREAM_TYPE_W BFW_API LoggingFile);
+		BFW_DEBUG_CALL(extern BFW_API std::mutex* LoggingFileMutex);
+
+		BFW_DEBUG_CALL(extern BFW_OFSTREAM_TYPE_W BFW_API ProfilingFile);
+		BFW_DEBUG_CALL(extern BFW_API std::mutex* ProfilingFileMutex);
+
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 		const bool BFW_API Init();

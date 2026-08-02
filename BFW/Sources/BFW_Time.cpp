@@ -292,6 +292,11 @@ void BFW_API BFW::Time::Sleep(const uint64_t _MicroSeconds)
 	std::this_thread::sleep_for(std::chrono::microseconds(_MicroSeconds));
 }
 
+const size_t BFW_API BFW::Time::GetTimeStamp()
+{
+	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+}
+
 const tm BFW_API BFW::Time::GetUTCTime()
 {
 	tm _ReturnTm = { 0 };

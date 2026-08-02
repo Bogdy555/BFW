@@ -2,12 +2,28 @@
 
 
 
+static std::mutex Mutex;
+
+BFW_DEBUG_CALL(static std::mutex LoggingFileMutex);
+
+BFW_DEBUG_CALL(static std::mutex ProfilingFileMutex);
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 static HANDLE ConsoleHandle = INVALID_HANDLE_VALUE;
 static uint16_t DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_BkgBlackAttribute;
 
 #endif
+
+
+
+BFW_API std::mutex* BFW::Log::Mutex = &::Mutex;
+
+BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE_W BFW_API BFW::Log::LoggingFile);
+BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::LoggingFileMutex = &::LoggingFileMutex);
+
+BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE_W BFW_API BFW::Log::ProfilingFile);
+BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::ProfilingFileMutex = &::ProfilingFileMutex);
 
 
 
@@ -39,6 +55,10 @@ const bool BFW_API BFW::Log::Init()
 	}
 
 	DefaultAttribute = _ConsoleInfo.wAttributes;
+
+	LoggingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_LoggingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt");
+
+	ProfilingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_ProfilingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt");
 
 	return true;
 }

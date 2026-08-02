@@ -42,7 +42,7 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(std::mutex), WindowMutex);
+	BFW_HEAP_PROFILE_PUSH(WindowMutex, sizeof(std::mutex));
 
 	bool _Done = false;
 	bool _Fail = false;
@@ -57,7 +57,7 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(std::thread), WndThread);
+	BFW_HEAP_PROFILE_PUSH(WndThread, sizeof(std::thread));
 
 	while (!_Done)
 	{

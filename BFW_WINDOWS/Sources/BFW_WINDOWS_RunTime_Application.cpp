@@ -22,7 +22,7 @@ const bool BFW_WINDOWS::RunTime::Application::AddChildWindow()
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(GUI::WindowData), ChildWindowsData[ChildWindowsData.GetSize() - 1]);
+	BFW_HEAP_PROFILE_PUSH(ChildWindowsData[ChildWindowsData.GetSize() - 1], sizeof(GUI::WindowData));
 
 	ChildWindows.PushBack(new BFW::GUI::Window);
 
@@ -35,7 +35,7 @@ const bool BFW_WINDOWS::RunTime::Application::AddChildWindow()
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(sizeof(BFW::GUI::Window), ChildWindows[ChildWindows.GetSize() - 1]);
+	BFW_HEAP_PROFILE_PUSH(ChildWindows[ChildWindows.GetSize() - 1], sizeof(BFW::GUI::Window));
 
 	return true;
 }
