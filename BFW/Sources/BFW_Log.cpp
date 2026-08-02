@@ -19,10 +19,10 @@ static uint16_t DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_Bkg
 
 BFW_API std::mutex* BFW::Log::Mutex = &::Mutex;
 
-BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE_W BFW_API BFW::Log::LoggingFile);
+BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE BFW_API BFW::Log::LoggingFile);
 BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::LoggingFileMutex = &::LoggingFileMutex);
 
-BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE_W BFW_API BFW::Log::ProfilingFile);
+BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE BFW_API BFW::Log::ProfilingFile);
 BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::ProfilingFileMutex = &::ProfilingFileMutex);
 
 
@@ -56,9 +56,9 @@ const bool BFW_API BFW::Log::Init()
 
 	DefaultAttribute = _ConsoleInfo.wAttributes;
 
-	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_LoggingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt"));
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
 
-	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE_W(L".\\BFW_Log_ProfilingFile ") + BFW_TO_STRING_W(Time::GetTimeStamp()) + L".txt"));
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
 
 	return true;
 }
@@ -82,6 +82,10 @@ void BFW_API BFW::Log::Stop()
 
 const bool BFW_API BFW::Log::Init()
 {
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+
 	return true;
 }
 
@@ -104,6 +108,10 @@ const bool BFW_API BFW::Log::Init(const size_t _BaudRate)
 	{
 
 	}
+
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
 
 	return true;
 }
