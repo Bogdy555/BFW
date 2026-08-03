@@ -236,6 +236,10 @@ namespace BFW
 
 		class BFW_API BitMap;
 
+		struct BFW_API WaveFormat;
+
+		class BFW_API Wave;
+
 	}
 
 }

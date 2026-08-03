@@ -57,6 +57,30 @@ namespace BFW
 			_Other.Data = nullptr;
 		}
 
+		Vector(const std::initializer_list<Type>& _List) : Size(0), Capacity(0), Data(nullptr)
+		{
+			if (_List.size() == 0)
+			{
+				return;
+			}
+
+			Size = _List.size();
+			Capacity = _List.size();
+			Data = new Type[Capacity];
+
+			if (!Data)
+			{
+				Size = 0;
+				Capacity = 0;
+				throw nullptr;
+			}
+
+			for (size_t _Index = 0; _Index < Capacity; _Index++)
+			{
+				Data[_Index] = *(_List.begin() + _Index);
+			}
+		}
+
 		~Vector()
 		{
 			delete[] Data;
@@ -331,6 +355,34 @@ namespace BFW
 			_Other.Size = 0;
 			_Other.Capacity = 0;
 			_Other.Data = nullptr;
+
+			return *this;
+		}
+
+		Vector& operator= (const std::initializer_list<Type>& _List)
+		{
+			Clear();
+
+			if (_List.size() == 0)
+			{
+				return *this;
+			}
+
+			Size = _List.size();
+			Capacity = _List.size();
+			Data = new Type[Capacity];
+
+			if (!Data)
+			{
+				Size = 0;
+				Capacity = 0;
+				throw nullptr;
+			}
+
+			for (size_t _Index = 0; _Index < Capacity; _Index++)
+			{
+				Data[_Index] = *(_List.begin() + _Index);
+			}
 
 			return *this;
 		}
