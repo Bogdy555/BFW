@@ -42,8 +42,6 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 		return false;
 	}
 
-	BFW_HEAP_PROFILE_PUSH(WindowMutex, sizeof(std::mutex));
-
 	bool _Done = false;
 	bool _Fail = false;
 
@@ -51,13 +49,10 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 
 	if (!WndThread)
 	{
-		BFW_HEAP_PROFILE_POP(WindowMutex);
 		delete WindowMutex;
 		WindowMutex = nullptr;
 		return false;
 	}
-
-	BFW_HEAP_PROFILE_PUSH(WndThread, sizeof(std::thread));
 
 	while (!_Done)
 	{
@@ -67,10 +62,8 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 	if (_Fail)
 	{
 		WndThread->join();
-		BFW_HEAP_PROFILE_POP(WndThread);
 		delete WndThread;
 		WndThread = nullptr;
-		BFW_HEAP_PROFILE_POP(WindowMutex);
 		delete WindowMutex;
 		WindowMutex = nullptr;
 		return false;
@@ -88,13 +81,11 @@ void BFW::GUI::Window::Destroy()
 
 	PostMessage(Handle, WM_QUIT, 0, 0);
 	WndThread->join();
-	BFW_HEAP_PROFILE_POP(WndThread);
 	delete WndThread;
 	WndThread = nullptr;
 	FullScreen = false;
 	WndRect = { 0 };
 	WndPlace = { 0 };
-	BFW_HEAP_PROFILE_POP(WindowMutex);
 	delete WindowMutex;
 	WindowMutex = nullptr;
 	Cursor = LoadCursor(NULL, IDC_ARROW);

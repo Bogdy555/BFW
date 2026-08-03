@@ -2,9 +2,20 @@
 
 
 
-BFW_WINDOWS::RunTime::Application::Application() : BFW::RunTime::Application(), Controllers(), MainWindow(), MainWindowData(), ChildWindows(), ChildWindowsData()
+BFW_WINDOWS::RunTime::Application::Application() : BFW::RunTime::Application(), Controllers(), MainWindow(nullptr), MainWindowData(nullptr), ChildWindows(), ChildWindowsData()
 {
 
+}
+
+BFW_WINDOWS::RunTime::Application::Application(Application&& _Other) noexcept : BFW::RunTime::Application((BFW::RunTime::Application&&)(_Other)), Controllers(), MainWindow(_Other.MainWindow), MainWindowData(_Other.MainWindowData), ChildWindows((BFW::Vector<BFW::GUI::Window*>&&)(_Other.ChildWindows)), ChildWindowsData((BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData))
+{
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Controllers[_Index] = (BFW::Input::Controller&&)(_Other.Controllers[_Index]);
+	}
+
+	_Other.MainWindow = nullptr;
+	_Other.MainWindowData = nullptr;
 }
 
 BFW_WINDOWS::RunTime::Application::~Application()
@@ -63,22 +74,22 @@ const BFW::Input::Controller& BFW_WINDOWS::RunTime::Application::GetController(c
 
 BFW::GUI::Window& BFW_WINDOWS::RunTime::Application::GetMainWindow()
 {
-	return MainWindow;
+	return *MainWindow;
 }
 
 const BFW::GUI::Window& BFW_WINDOWS::RunTime::Application::GetMainWindow() const
 {
-	return MainWindow;
+	return *MainWindow;
 }
 
 BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::RunTime::Application::GetMainWindowData()
 {
-	return MainWindowData;
+	return *MainWindowData;
 }
 
 const BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::RunTime::Application::GetMainWindowData() const
 {
-	return MainWindowData;
+	return *MainWindowData;
 }
 
 BFW::Vector<BFW::GUI::Window*>& BFW_WINDOWS::RunTime::Application::GetChildWindows()
@@ -101,6 +112,30 @@ const BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Applicat
 	return ChildWindowsData;
 }
 
+BFW_WINDOWS::RunTime::Application& BFW_WINDOWS::RunTime::Application::operator= (Application&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	*(BFW::RunTime::Application*)(this) = (BFW::RunTime::Application&&)(_Other);
+	MainWindow = _Other.MainWindow;
+	MainWindowData = _Other.MainWindowData;
+	ChildWindows = (BFW::Vector<BFW::GUI::Window*>&&)(_Other.ChildWindows);
+	ChildWindowsData = (BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData);
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Controllers[_Index] = (BFW::Input::Controller&&)(_Other.Controllers[_Index]);
+	}
+
+	_Other.MainWindow = nullptr;
+	_Other.MainWindowData = nullptr;
+
+	return *this;
+}
+
 void BFW_WINDOWS::RunTime::Application::Setup()
 {
 	if (GetArgC() != 1)
@@ -121,7 +156,7 @@ void BFW_WINDOWS::RunTime::Application::Setup()
 		return;
 	}
 
-	if (!MainWindow.Show(GetShowCmd()))
+	if (!MainWindow->Show(GetShowCmd()))
 	{
 		Close(BFW::MultiProcessing::_UnknownErrorReturnValue);
 		return;
@@ -234,8 +269,39 @@ const bool BFW_WINDOWS::RunTime::Application::InitWindows()
 		return false;
 	}
 
-	if (!MainWindow.Create(NULL, BFW_WINDOWS_MAIN_WINDOW_CLASS, BFW_WINDOWS_APP_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_DESKTOP, NULL, GetInstanceHandle(), nullptr, NULL, GUI::MainWindowThreadInit, GUI::MainWindowThreadCleanUp, GUI::MainWindowInit, GUI::MainWindowCleanUp, &MainWindowData))
+	MainWindow = new BFW::GUI::Window;
+
+	if (!MainWindow)
 	{
+		UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
+		UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());
+		return false;
+	}
+
+	BFW_HEAP_PROFILE_PUSH(MainWindow, sizeof(BFW::GUI::Window));
+
+	MainWindowData = new GUI::WindowData;
+
+	if (!MainWindowData)
+	{
+		BFW_HEAP_PROFILE_POP(MainWindow);
+		delete MainWindow;
+		MainWindow = nullptr;
+		UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
+		UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());
+		return false;
+	}
+
+	BFW_HEAP_PROFILE_PUSH(MainWindowData, sizeof(GUI::WindowData));
+
+	if (!MainWindow->Create(NULL, BFW_WINDOWS_MAIN_WINDOW_CLASS, BFW_WINDOWS_APP_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_DESKTOP, NULL, GetInstanceHandle(), nullptr, NULL, GUI::MainWindowThreadInit, GUI::MainWindowThreadCleanUp, GUI::MainWindowInit, GUI::MainWindowCleanUp, MainWindowData))
+	{
+		BFW_HEAP_PROFILE_POP(MainWindow);
+		delete MainWindow;
+		MainWindow = nullptr;
+		BFW_HEAP_PROFILE_POP(MainWindowData);
+		delete MainWindowData;
+		MainWindowData = nullptr;
 		UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
 		UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());
 		return false;
@@ -246,7 +312,7 @@ const bool BFW_WINDOWS::RunTime::Application::InitWindows()
 
 void BFW_WINDOWS::RunTime::Application::CleanUpWindows()
 {
-	if (!MainWindow.CheckOn())
+	if (!MainWindow)
 	{
 		return;
 	}
@@ -256,7 +322,15 @@ void BFW_WINDOWS::RunTime::Application::CleanUpWindows()
 		RemoveChildWindow(0);
 	}
 
-	MainWindow.Destroy();
+	MainWindow->Destroy();
+
+	BFW_HEAP_PROFILE_POP(MainWindow);
+	delete MainWindow;
+	MainWindow = nullptr;
+
+	BFW_HEAP_PROFILE_POP(MainWindowData);
+	delete MainWindowData;
+	MainWindowData = nullptr;
 
 	UnregisterClass(BFW_WINDOWS_MAIN_WINDOW_CLASS, GetInstanceHandle());
 	UnregisterClass(BFW_WINDOWS_CHILD_WINDOW_CLASS, GetInstanceHandle());

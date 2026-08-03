@@ -232,7 +232,9 @@ namespace BFW
 	namespace Assets
 	{
 
+		class BFW_API FileContent;
 
+		class BFW_API BitMap;
 
 	}
 

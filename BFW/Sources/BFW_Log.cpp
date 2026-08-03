@@ -19,10 +19,10 @@ static uint16_t DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_Bkg
 
 BFW_API std::mutex* BFW::Log::Mutex = &::Mutex;
 
-BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE BFW_API BFW::Log::LoggingFile);
+BFW_DEBUG_CALL(std::ofstream BFW_API BFW::Log::LoggingFile);
 BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::LoggingFileMutex = &::LoggingFileMutex);
 
-BFW_DEBUG_CALL(BFW_OFSTREAM_TYPE BFW_API BFW::Log::ProfilingFile);
+BFW_DEBUG_CALL(std::ofstream BFW_API BFW::Log::ProfilingFile);
 BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::ProfilingFileMutex = &::ProfilingFileMutex);
 
 
