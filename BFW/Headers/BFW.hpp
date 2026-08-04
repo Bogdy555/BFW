@@ -8,6 +8,8 @@
 
 #include "BFW_Resources.hpp"
 
+#include "BFW_String.hpp"
+
 #include "BFW_GUID.hpp"
 
 #include "BFW_Debug.hpp"

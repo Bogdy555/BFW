@@ -34,6 +34,7 @@ xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Math_Vector.cpp" -o 
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Math.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Math.o"
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_MultiProcessing.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_MultiProcessing.o"
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_RunTime.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_RunTime.o"
+xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_String.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_String.o"
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Time.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Time.o"
 
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Assets.o"
@@ -50,6 +51,7 @@ xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATI
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Math.o"
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_MultiProcessing.o"
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_RunTime.o"
+xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_String.o"
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Time.o"
 
 @echo off

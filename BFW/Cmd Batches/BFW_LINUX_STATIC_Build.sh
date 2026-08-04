@@ -53,6 +53,7 @@ g++ $CompileFlags -c "./BFW/Sources/BFW_Math_Vector.cpp" -o "./Objects/BFW_STATI
 g++ $CompileFlags -c "./BFW/Sources/BFW_Math.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_MultiProcessing.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_RunTime.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_RunTime.o"
+g++ $CompileFlags -c "./BFW/Sources/BFW_String.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_String.o"
 g++ $CompileFlags -c "./BFW/Sources/BFW_Time.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Time.o"
 
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Assets.o"
@@ -69,6 +70,7 @@ ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" ".
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math.o"
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o"
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_RunTime.o"
+ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_String.o"
 ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Time.o"
 
 CompileFlags=

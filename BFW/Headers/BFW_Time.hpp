@@ -82,7 +82,7 @@ namespace BFW
 
 		void BFW_API Sleep(const uint64_t _MicroSeconds);
 
-		const size_t BFW_API GetTimeStamp();
+		const uint64_t BFW_API GetTimeStamp();
 
 		const tm BFW_API GetUTCTime();
 		const tm BFW_API GetLocalTime();

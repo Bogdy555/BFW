@@ -391,7 +391,7 @@ const bool BFW::Assets::FileContent::Load(std::ifstream& _File)
 		return false;
 	}
 
-	size_t _CurrentPos = _File.tellg();
+	size_t _CurrentPos = (size_t)(_File.tellg());
 
 	_File.seekg(0, std::ios::end);
 
@@ -435,7 +435,7 @@ const bool BFW::Assets::FileContent::Load(std::fstream& _File)
 		return false;
 	}
 
-	size_t _CurrentPos = _File.tellg();
+	size_t _CurrentPos = (size_t)(_File.tellg());
 
 	_File.seekg(0, std::ios::end);
 
@@ -1530,7 +1530,7 @@ BFW::Assets::FileContent BFW::Assets::Wave::Save() const
 	_FileHeader.RIFF[1] = 'I';
 	_FileHeader.RIFF[2] = 'F';
 	_FileHeader.RIFF[3] = 'F';
-	_FileHeader.FileSize = BFW_MACHINE_TO_LITTLE_ENDIAN_32(sizeof(WaveFileHeader) + sizeof(WaveChunkHeader) + sizeof(WaveFormat) + sizeof(WaveChunkHeader) + Size - 8);
+	_FileHeader.FileSize = BFW_MACHINE_TO_LITTLE_ENDIAN_32((uint32_t)(sizeof(WaveFileHeader) + sizeof(WaveChunkHeader) + sizeof(WaveFormat) + sizeof(WaveChunkHeader) + Size - 8));
 	_FileHeader.WAVE[0] = 'W';
 	_FileHeader.WAVE[1] = 'A';
 	_FileHeader.WAVE[2] = 'V';
@@ -1562,7 +1562,7 @@ BFW::Assets::FileContent BFW::Assets::Wave::Save() const
 	_DataHeader.ID[1] = 'a';
 	_DataHeader.ID[2] = 't';
 	_DataHeader.ID[3] = 'a';
-	_DataHeader.Size = BFW_MACHINE_TO_LITTLE_ENDIAN_32(Size);
+	_DataHeader.Size = BFW_MACHINE_TO_LITTLE_ENDIAN_32((uint32_t)(Size));
 
 	FileContent _FileContent;
 
