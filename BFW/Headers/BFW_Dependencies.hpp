@@ -40,16 +40,18 @@
 #endif
 
 #include <type_traits>
+#include <cstdint>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <string_view>
 #include <sstream>
+#include <thread>
+#include <mutex>
+#include <functional>
 #include <cmath>
 #include <chrono>
 #include <ctime>
-#include <cstdint>
-#include <thread>
-#include <mutex>
 
 
 
@@ -103,6 +105,13 @@ namespace BFW
 		enum BFW_API Attributes : const uint16_t;
 
 #endif
+
+	}
+
+	namespace Cryptography
+	{
+
+
 
 	}
 

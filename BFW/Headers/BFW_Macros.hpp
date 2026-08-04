@@ -266,6 +266,22 @@
 
 
 
+#ifdef _UNICODE
+
+#define BFW_UNICODE_CALL(X) X
+#define BFW_NON_UNICODE_CALL(X)
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_UNICODE_CALL(X)
+#define BFW_NON_UNICODE_CALL(X) X
+
+#endif
+
+
+
 #define BFW_SWAP_BYTES_16(X) ((((X) & 0xFF) << 8) | (((X) & 0xFF00) >> 8))
 #define BFW_SWAP_BYTES_32(X) ((((X) & 0xFF) << 24) | (((X) & 0xFF00) << 8) | (((X) & 0xFF0000) >> 8) | (((X) & 0xFF000000) >> 24))
 #define BFW_SWAP_BYTES_64(X) ((((X) & 0xFF) << 56) | (((X) & 0xFF00) << 40) | (((X) & 0xFF0000) << 24) | (((X) & 0xFF000000) << 8) | (((X) & 0xFF00000000) >> 8) | (((X) & 0xFF0000000000) >> 24) | (((X) & 0xFF000000000000) >> 40) | (((X) & 0xFF00000000000000) >> 56))
@@ -312,6 +328,8 @@
 #define BFW_CHAR_TYPE_W wchar_t
 #define BFW_STRING_TYPE_A std::string
 #define BFW_STRING_TYPE_W std::wstring
+#define BFW_STRING_VIEW_TYPE_A std::string_view
+#define BFW_STRING_VIEW_TYPE_W std::wstring_view
 #define BFW_STRING_STREAM_TYPE_A std::stringstream
 #define BFW_STRING_STREAM_TYPE_W std::wstringstream
 #define BFW_TO_STRING_A(X) std::to_string(X)
@@ -325,6 +343,7 @@
 
 #define BFW_CHAR_TYPE BFW_CHAR_TYPE_W
 #define BFW_STRING_TYPE BFW_STRING_TYPE_W
+#define BFW_STRING_VIEW_TYPE BFW_STRING_VIEW_TYPE_W
 #define BFW_STRING_STREAM_TYPE BFW_STRING_STREAM_TYPE_W
 #define BFW_TO_STRING(X) BFW_TO_STRING_W(X)
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_W(X)
@@ -336,6 +355,7 @@
 
 #define BFW_CHAR_TYPE BFW_CHAR_TYPE_A
 #define BFW_STRING_TYPE BFW_STRING_TYPE_A
+#define BFW_STRING_VIEW_TYPE BFW_STRING_VIEW_TYPE_A
 #define BFW_STRING_STREAM_TYPE BFW_STRING_STREAM_TYPE_A
 #define BFW_TO_STRING(X) BFW_TO_STRING_A(X)
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_A(X)

@@ -40,6 +40,8 @@ namespace BFW
 			const bool Save(std::ofstream& _File) const;
 			const bool Save(std::fstream& _File) const;
 
+			const size_t Hash() const;
+
 			uint8_t* GetData();
 			const uint8_t* GetData() const;
 			const size_t GetLength() const;

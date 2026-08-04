@@ -12,6 +12,8 @@
 
 #include "BFW_Log.hpp"
 
+#include "BFW_Cryptography.hpp"
+
 #include "BFW_Math.hpp"
 
 #include "BFW_Time.hpp"

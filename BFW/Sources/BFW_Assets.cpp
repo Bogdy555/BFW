@@ -563,6 +563,11 @@ const bool BFW::Assets::FileContent::Save(std::fstream& _File) const
 	return true;
 }
 
+const size_t BFW::Assets::FileContent::Hash() const
+{
+	return BFW::Cryptography::HashA((const char*)(Data), Length);
+}
+
 uint8_t* BFW::Assets::FileContent::GetData()
 {
 	return Data;

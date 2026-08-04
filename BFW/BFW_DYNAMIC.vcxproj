@@ -219,6 +219,7 @@
     <ClInclude Include="Headers\BFW.hpp" />
     <ClInclude Include="Headers\BFW_Animation.hpp" />
     <ClInclude Include="Headers\BFW_Assets.hpp" />
+    <ClInclude Include="Headers\BFW_Cryptography.hpp" />
     <ClInclude Include="Headers\BFW_Debug.hpp" />
     <ClInclude Include="Headers\BFW_Dependencies.hpp" />
     <ClInclude Include="Headers\BFW_GUI.hpp" />
@@ -245,6 +246,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\BFW_Assets.cpp" />
+    <ClCompile Include="Sources\BFW_Cryptography.cpp" />
     <ClCompile Include="Sources\BFW_Debug.cpp" />
     <ClCompile Include="Sources\BFW_EntryPoint.cpp" />
     <ClCompile Include="Sources\BFW_GUI.cpp" />

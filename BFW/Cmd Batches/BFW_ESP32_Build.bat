@@ -21,6 +21,7 @@ if not exist ".\Objects\BFW_STATIC\ESP32\%Configuration%\" mkdir ".\Objects\BFW_
 echo on
 
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Assets.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Assets.o"
+xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Cryptography.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Cryptography.o"
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Debug.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Debug.o"
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_GUI.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_GUI.o"
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_EntryPoint.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_EntryPoint.o"
@@ -35,6 +36,7 @@ xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_RunTime.cpp" -o ".\O
 xtensa-esp32s3-elf-g++ %CompileFlags% -c ".\BFW\Sources\BFW_Time.cpp" -o ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Time.o"
 
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Assets.o"
+xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Cryptography.o"
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_Debug.o"
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_GUI.o"
 xtensa-esp32s3-elf-ar rcs ".\Binaries\BFW_STATIC\ESP32\%Configuration%\BFW_STATIC.a" ".\Objects\BFW_STATIC\ESP32\%Configuration%\BFW_EntryPoint.o"

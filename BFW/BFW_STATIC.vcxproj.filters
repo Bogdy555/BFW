@@ -102,6 +102,9 @@
     <ClInclude Include="Headers\BFW_Assets.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\BFW_Cryptography.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Resources\Manifests\BFW_MainManifest.manifest" />
@@ -149,6 +152,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_Assets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\BFW_Cryptography.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
