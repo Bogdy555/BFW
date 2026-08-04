@@ -56,6 +56,10 @@ g++ $CompileFlags -c "./BFW/Sources/BFW_Time.cpp" -o "./Objects/BFW_DYNAMIC/Linu
 
 g++ "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Assets.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Debug.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_GUI.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Input.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Log.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Matrix.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Quaternion.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math_Vector.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Math.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_RunTime.o" "./Objects/BFW_DYNAMIC/Linux/$Configuration/$Platform/BFW_Time.o" $LinkFlags -o "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so"
 
+if [ -f "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/libBFW_DYNAMIC.so" ]; then
+	cp "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so" "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/"
+fi
+
 CompileFlags=
 LinkFlags=
 

@@ -111,6 +111,10 @@
     <ResourceCompile>
       <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_DEBUG;BFW_X86;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=VS_FF_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(OutDir)BFW_DYNAMIC.dll" "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\*"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -135,6 +139,10 @@
     <ResourceCompile>
       <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_X86;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=NULL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(OutDir)BFW_DYNAMIC.dll" "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\*"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -157,6 +165,10 @@
     <ResourceCompile>
       <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_DEBUG;BFW_X64;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=VS_FF_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(OutDir)BFW_DYNAMIC.dll" "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\*"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,6 +193,10 @@
     <ResourceCompile>
       <PreprocessorDefinitions>BFW_WINDOWS_PLATFORM;BFW_LITTLE_ENDIAN;BFW_BUILD_DYNAMIC;BFW_X64;NULL=0;VERSION_INFO_FILE_TYPE=VFT_DLL;VERSION_INFO_FILE_FLAGS=NULL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>if exist "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\BFW_DYNAMIC.dll" copy /y "$(OutDir)BFW_DYNAMIC.dll" "$(SolutionDir)Binaries\BFW_WINDOWS_DYNAMIC\$(Configuration)\$(PlatformShortName)\*"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Cmd Batches\BFW_ESP32_Build.bat" />
