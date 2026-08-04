@@ -203,6 +203,7 @@
     <ClInclude Include="Headers\BFW_Debug.hpp" />
     <ClInclude Include="Headers\BFW_Dependencies.hpp" />
     <ClInclude Include="Headers\BFW_GUI.hpp" />
+    <ClInclude Include="Headers\BFW_GUID.hpp" />
     <ClInclude Include="Headers\BFW_Heap.hpp" />
     <ClInclude Include="Headers\BFW_Input.hpp" />
     <ClInclude Include="Headers\BFW_Log.hpp" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Sources\BFW_Debug.cpp" />
     <ClCompile Include="Sources\BFW_EntryPoint.cpp" />
     <ClCompile Include="Sources\BFW_GUI.cpp" />
+    <ClCompile Include="Sources\BFW_GUID.cpp" />
     <ClCompile Include="Sources\BFW_Input.cpp" />
     <ClCompile Include="Sources\BFW_Log.cpp" />
     <ClCompile Include="Sources\BFW_Math.cpp" />

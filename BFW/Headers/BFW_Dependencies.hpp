@@ -88,6 +88,13 @@ namespace BFW
 
 	template <typename T, std::add_const_t<T> (*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearAnimation;
 
+	namespace GUID
+	{
+
+
+
+	}
+
 	namespace Debug
 	{
 
