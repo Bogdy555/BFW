@@ -52,6 +52,8 @@ namespace BFW
 			void SetSimulationSpeed(const float _SimulationSpeed);
 			void SetSync(const uint64_t _Sync);
 
+			void UpdateWorkingDirectory();
+
 			const bool CheckOn() const;
 			const int32_t GetReturnValue() const;
 
@@ -64,6 +66,8 @@ namespace BFW
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
+
+			const FileSystem::Directory& GetWorkingDirectory() const;
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -104,6 +108,8 @@ namespace BFW
 			float LagTime;
 			float SimulationSpeed;
 			uint64_t Sync;
+
+			FileSystem::Directory WorkingDirectory;
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -151,8 +157,6 @@ namespace BFW
 			Menu& operator= (const Menu& _Other) = delete;
 			Menu& operator= (Menu&& _Other) noexcept;
 
-		protected:
-
 			void TurnOn();
 			void Close(const uint64_t _NextMenu);
 			void QueueMenu(const uint64_t _QueuedMenu);
@@ -161,6 +165,8 @@ namespace BFW
 			void SetLagTime(const float _LagTime);
 			void SetSimulationSpeed(const float _SimulationSpeed);
 			void SetSync(const uint64_t _Sync);
+
+			void UpdateWorkingDirectory();
 
 			const bool CheckOn() const;
 			const uint64_t GetNextMenu() const;
@@ -178,6 +184,10 @@ namespace BFW
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
+
+			const FileSystem::Directory& GetWorkingDirectory() const;
+
+		protected:
 
 			virtual void SpawnQueuedMenu(const uint64_t _QueuedMenu) = 0;
 			virtual void Setup() = 0;

@@ -36,10 +36,8 @@ namespace BFW
 			void SubtractMicroSecondsFromBegin(const uint64_t _MicroSeconds);
 			void SubtractMicroSecondsFromEnd(const uint64_t _MicroSeconds);
 
-			const tm GetUTCBegin() const;
-			const tm GetUTCEnd() const;
-			const tm GetLocalBegin() const;
-			const tm GetLocalEnd() const;
+			const time_t GetBegin() const;
+			const time_t GetEnd() const;
 
 			operator const float () const;
 
@@ -84,8 +82,10 @@ namespace BFW
 
 		const uint64_t BFW_API GetTimeStamp();
 
-		const tm BFW_API GetUTCTime();
-		const tm BFW_API GetLocalTime();
+		const time_t BFW_API GetTime();
+
+		const tm BFW_API TimeTToUTCTM(const time_t _Time);
+		const tm BFW_API TimeTToLocalTM(const time_t _Time);
 
 #ifdef BFW_WINDOWS_PLATFORM
 

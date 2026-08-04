@@ -14,14 +14,14 @@ namespace BFW
 	namespace GUID
 	{
 
-		const size_t Get();
-		void Release(const size_t _GUID);
-		const BFW_STRING_TYPE_A GetStringA();
-		const BFW_STRING_TYPE_W GetStringW();
-		const BFW_STRING_TYPE GetString();
-		void ReleaseStringA(const BFW_STRING_TYPE_A& _GUID);
-		void ReleaseStringW(const BFW_STRING_TYPE_W& _GUID);
-		void ReleaseString(const BFW_STRING_TYPE& _GUID);
+		const uint64_t BFW_API Get();
+		void BFW_API Release(const uint64_t _GUID);
+		const BFW_STRING_TYPE_A BFW_API GetStringA();
+		const BFW_STRING_TYPE_W BFW_API GetStringW();
+		const BFW_STRING_TYPE BFW_API GetString();
+		void BFW_API ReleaseStringA(const BFW_STRING_TYPE_A& _GUID);
+		void BFW_API ReleaseStringW(const BFW_STRING_TYPE_W& _GUID);
+		void BFW_API ReleaseString(const BFW_STRING_TYPE& _GUID);
 
 	}
 

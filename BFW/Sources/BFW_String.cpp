@@ -3,7 +3,7 @@
 
 
 
-const std::wstring BFW::String::FromUTF8ToUnicode(const std::string_view& _String)
+const std::wstring BFW_API BFW::String::FromUTF8ToUnicode(const std::string_view& _String)
 {
 	std::wstring _Result;
 
@@ -16,7 +16,7 @@ const std::wstring BFW::String::FromUTF8ToUnicode(const std::string_view& _Strin
 	return _Result;
 }
 
-const std::string BFW::String::FromUnicodeToUTF8(const std::wstring_view& _String)
+const std::string BFW_API BFW::String::FromUnicodeToUTF8(const std::wstring_view& _String)
 {
 	std::string _Result;
 

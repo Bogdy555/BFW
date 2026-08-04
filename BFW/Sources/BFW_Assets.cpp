@@ -17,7 +17,6 @@ struct BitMapFileHeader
 	BitMapFileHeader(const BitMapFileHeader& _Other) = default;
 	BitMapFileHeader(BitMapFileHeader&& _Other) noexcept;
 	~BitMapFileHeader();
-
 	BitMapFileHeader& operator= (const BitMapFileHeader& _Other) = default;
 	BitMapFileHeader& operator= (BitMapFileHeader&& _Other) noexcept;
 
@@ -42,7 +41,6 @@ struct BitMapInfoHeader
 	BitMapInfoHeader(const BitMapInfoHeader& _Other) = default;
 	BitMapInfoHeader(BitMapInfoHeader& _Other) noexcept;
 	~BitMapInfoHeader();
-
 	BitMapInfoHeader& operator= (const BitMapInfoHeader& _Other) = default;
 	BitMapInfoHeader& operator= (BitMapInfoHeader& _Other) noexcept;
 
@@ -59,7 +57,6 @@ struct WaveFileHeader
 	WaveFileHeader(const WaveFileHeader& _Other) = default;
 	WaveFileHeader(WaveFileHeader&& _Other) noexcept;
 	~WaveFileHeader();
-
 	WaveFileHeader& operator= (const WaveFileHeader& _Other) = default;
 	WaveFileHeader& operator= (WaveFileHeader&& _Other) noexcept;
 
@@ -75,7 +72,6 @@ struct WaveChunkHeader
 	WaveChunkHeader(const WaveChunkHeader& _Other) = default;
 	WaveChunkHeader(WaveChunkHeader& _Other) noexcept;
 	~WaveChunkHeader();
-
 	WaveChunkHeader& operator= (const WaveChunkHeader& _Other) = default;
 	WaveChunkHeader& operator= (WaveChunkHeader& _Other) noexcept;
 
@@ -318,352 +314,6 @@ WaveChunkHeader& WaveChunkHeader::operator= (WaveChunkHeader& _Other) noexcept
 
 
 
-BFW::Assets::FileContent::FileContent() : Data(nullptr), Length(0)
-{
-
-}
-
-BFW::Assets::FileContent::FileContent(const FileContent& _Other) : Data(nullptr), Length(0)
-{
-	if (!_Other.Length)
-	{
-		return;
-	}
-
-	Data = new uint8_t[_Other.Length];
-
-	if (!Data)
-	{
-		throw nullptr;
-	}
-
-	Length = _Other.Length;
-
-	for (size_t _Index = 0; _Index < Length; _Index++)
-	{
-		Data[_Index] = _Other.Data[_Index];
-	}
-}
-
-BFW::Assets::FileContent::FileContent(FileContent&& _Other) noexcept : Data(_Other.Data), Length(_Other.Length)
-{
-	_Other.Data = nullptr;
-	_Other.Length = 0;
-}
-
-BFW::Assets::FileContent::~FileContent()
-{
-	delete[] Data;
-}
-
-const bool BFW::Assets::FileContent::Create(const size_t _Length)
-{
-	Destroy();
-
-	if (!_Length)
-	{
-		return false;
-	}
-
-	Data = new uint8_t[_Length];
-
-	if (!Data)
-	{
-		return false;
-	}
-
-	Length = _Length;
-
-	for (size_t _Index = 0; _Index < Length; _Index++)
-	{
-		Data[_Index] = 0;
-	}
-
-	return true;
-}
-
-const bool BFW::Assets::FileContent::Load(std::ifstream& _File)
-{
-	Destroy();
-
-	if (!_File.is_open())
-	{
-		return false;
-	}
-
-	size_t _CurrentPos = (size_t)(_File.tellg());
-
-	_File.seekg(0, std::ios::end);
-
-	size_t _Length = (size_t)(_File.tellg()) + 1;
-
-	uint8_t* _Data = new uint8_t[_Length];
-
-	if (!_Data)
-	{
-		_File.seekg(_CurrentPos, std::ios::beg);
-		return false;
-	}
-
-	_File.seekg(0, std::ios::beg);
-
-	_File.read((char*)(_Data), _Length - 1);
-
-	if (_File.gcount() != _Length - 1)
-	{
-		delete[] _Data;
-		_File.seekg(_CurrentPos, std::ios::beg);
-		return false;
-	}
-
-	_Data[_Length - 1] = '\0';
-
-	Data = _Data;
-	Length = _Length;
-
-	_File.seekg(_CurrentPos, std::ios::beg);
-
-	return true;
-}
-
-const bool BFW::Assets::FileContent::Load(std::fstream& _File)
-{
-	Destroy();
-
-	if (!_File.is_open())
-	{
-		return false;
-	}
-
-	size_t _CurrentPos = (size_t)(_File.tellg());
-
-	_File.seekg(0, std::ios::end);
-
-	size_t _Length = (size_t)(_File.tellg()) + 1;
-
-	uint8_t* _Data = new uint8_t[_Length];
-
-	if (!_Data)
-	{
-		_File.seekg(_CurrentPos, std::ios::beg);
-		return false;
-	}
-
-	_File.seekg(0, std::ios::beg);
-
-	_File.read((char*)(_Data), _Length - 1);
-
-	if (_File.gcount() != _Length - 1)
-	{
-		delete[] _Data;
-		_File.seekg(_CurrentPos, std::ios::beg);
-		return false;
-	}
-
-	_Data[_Length - 1] = '\0';
-
-	Data = _Data;
-	Length = _Length;
-
-	_File.seekg(_CurrentPos, std::ios::beg);
-
-	return true;
-}
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-const bool BFW::Assets::FileContent::Load(const size_t _ResourceType, const size_t _ResourceId)
-{
-	HINSTANCE _InstanceHandle = GetModuleHandle(nullptr);
-
-	if (!_InstanceHandle)
-	{
-		return false;
-	}
-
-	HRSRC _ResourceHandle = FindResource(_InstanceHandle, MAKEINTRESOURCE(_ResourceId), MAKEINTRESOURCE(_ResourceType));
-
-	if (!_ResourceHandle)
-	{
-		return false;
-	}
-
-	size_t _Length = SizeofResource(_InstanceHandle, _ResourceHandle) + 1;
-
-	const uint8_t* _ResourceMemory = (const uint8_t*)(LoadResource(_InstanceHandle, _ResourceHandle));
-
-	if (!_ResourceMemory)
-	{
-		return false;
-	}
-
-	uint8_t* _Data = new uint8_t[_Length];
-
-	if (!_Data)
-	{
-		FreeResource((HGLOBAL)(_ResourceMemory));
-		return false;
-	}
-
-	for (size_t _Index = 0; _Index < _Length - 1; _Index++)
-	{
-		_Data[_Index] = _ResourceMemory[_Index];
-	}
-
-	_Data[_Length - 1] = '\0';
-
-	Data = _Data;
-	Length = _Length;
-
-	FreeResource((HGLOBAL)(_ResourceMemory));
-
-	return true;
-}
-
-#endif
-
-void BFW::Assets::FileContent::Destroy()
-{
-	delete[] Data;
-	Data = nullptr;
-	Length = 0;
-}
-
-const bool BFW::Assets::FileContent::Save(std::ofstream& _File) const
-{
-	if (!Data || Length <= 1 || !_File.is_open())
-	{
-		return false;
-	}
-
-	_File.write((const char*)(Data), Length - 1);
-
-	if (!_File)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-const bool BFW::Assets::FileContent::Save(std::fstream& _File) const
-{
-	if (!Data || Length <= 1 || !_File.is_open())
-	{
-		return false;
-	}
-
-	_File.write((const char*)(Data), Length - 1);
-
-	if (!_File)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-const size_t BFW::Assets::FileContent::Hash() const
-{
-	return BFW::Cryptography::HashA((const char*)(Data), Length);
-}
-
-uint8_t* BFW::Assets::FileContent::GetData()
-{
-	return Data;
-}
-
-const uint8_t* BFW::Assets::FileContent::GetData() const
-{
-	return Data;
-}
-
-const size_t BFW::Assets::FileContent::GetLength() const
-{
-	return Length;
-}
-
-BFW::Assets::FileContent::operator uint8_t* ()
-{
-	return Data;
-}
-
-BFW::Assets::FileContent::operator const uint8_t* () const
-{
-	return Data;
-}
-
-uint8_t& BFW::Assets::FileContent::operator* ()
-{
-	return *Data;
-}
-
-const uint8_t& BFW::Assets::FileContent::operator* () const
-{
-	return *Data;
-}
-
-uint8_t& BFW::Assets::FileContent::operator[] (const size_t _Index)
-{
-	return Data[_Index];
-}
-
-const uint8_t& BFW::Assets::FileContent::operator[] (const size_t _Index) const
-{
-	return Data[_Index];
-}
-
-BFW::Assets::FileContent& BFW::Assets::FileContent::operator= (const FileContent& _Other)
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	Destroy();
-
-	if (!_Other.Length)
-	{
-		return *this;
-	}
-
-	Data = new uint8_t[_Other.Length];
-
-	if (!Data)
-	{
-		throw nullptr;
-	}
-
-	Length = _Other.Length;
-
-	for (size_t _Index = 0; _Index < Length; _Index++)
-	{
-		Data[_Index] = _Other.Data[_Index];
-	}
-
-	return *this;
-}
-
-BFW::Assets::FileContent& BFW::Assets::FileContent::operator= (FileContent&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	Destroy();
-
-	Data = _Other.Data;
-	Length = _Other.Length;
-
-	_Other.Data = nullptr;
-	_Other.Length = 0;
-
-	return *this;
-}
-
-
-
 BFW::Assets::BitMap::BitMap() : Data(nullptr), ChannelsCount(0), Width(0), Height(0)
 {
 
@@ -734,7 +384,7 @@ const bool BFW::Assets::BitMap::Create(const size_t _Width, const size_t _Height
 	return true;
 }
 
-const bool BFW::Assets::BitMap::Load(const FileContent& _FileContent, const bool _Flip)
+const bool BFW::Assets::BitMap::Load(const FileSystem::FileContent& _FileContent, const bool _Flip)
 {
 	Destroy();
 
@@ -771,14 +421,14 @@ const bool BFW::Assets::BitMap::Load(const FileContent& _FileContent, const bool
 		_AlreadyFlipped = true;
 	}
 
-	const size_t _RowPadding = (4 - (_InfoHeader.Width * _InfoHeader.BitCount / 8) % 4) % 4;
+	const size_t _RowPadding = (4 - (_InfoHeader.Width * (size_t)(_InfoHeader.BitCount) / 8) % 4) % 4;
 
 	if (_FileHeader.Type[0] != 'B' || _FileHeader.Type[1] != 'M')
 	{
 		return false;
 	}
 
-	if (_FileHeader.Size + 1 != _FileContent.GetLength())
+	if ((size_t)(_FileHeader.Size) + 1 != _FileContent.GetLength())
 	{
 		return false;
 	}
@@ -793,7 +443,7 @@ const bool BFW::Assets::BitMap::Load(const FileContent& _FileContent, const bool
 		return false;
 	}
 
-	if (_InfoHeader.Width == 0 || _InfoHeader.Height == 0 || _InfoHeader.Width * _InfoHeader.Height * _InfoHeader.BitCount / 8 + _RowPadding * _InfoHeader.Height + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader) != _FileHeader.Size)
+	if (_InfoHeader.Width == 0 || _InfoHeader.Height == 0 || (uint32_t)(_InfoHeader.Width * _InfoHeader.Height * (size_t)(_InfoHeader.BitCount / 8) + _RowPadding * _InfoHeader.Height + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)) != _FileHeader.Size)
 	{
 		return false;
 	}
@@ -813,7 +463,7 @@ const bool BFW::Assets::BitMap::Load(const FileContent& _FileContent, const bool
 		return false;
 	}
 
-	if (_InfoHeader.ImageSize != 0 && _InfoHeader.ImageSize != _InfoHeader.Width * _InfoHeader.Height * _InfoHeader.BitCount / 8 + _RowPadding * _InfoHeader.Height)
+	if (_InfoHeader.ImageSize != 0 && _InfoHeader.ImageSize != (uint32_t)(_InfoHeader.Width * _InfoHeader.Height * (size_t)(_InfoHeader.BitCount / 8) + _RowPadding * _InfoHeader.Height))
 	{
 		return false;
 	}
@@ -912,11 +562,11 @@ void BFW::Assets::BitMap::Destroy()
 	Height = 0;
 }
 
-BFW::Assets::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
+BFW::FileSystem::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 {
 	if (!Data)
 	{
-		return FileContent();
+		return FileSystem::FileContent();
 	}
 
 	BitMapFileHeader _FileHeader;
@@ -944,11 +594,11 @@ BFW::Assets::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 	_InfoHeader.ColorsUsed = BFW_MACHINE_TO_LITTLE_ENDIAN_32(0);
 	_InfoHeader.ColorsImportant = BFW_MACHINE_TO_LITTLE_ENDIAN_32(0);
 
-	FileContent _FileContent;
+	FileSystem::FileContent _FileContent;
 
 	if (!_FileContent.Create(sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader) + Width * Height * 4 + 1))
 	{
-		return FileContent();
+		return FileSystem::FileContent();
 	}
 
 	_FileContent[_FileContent.GetLength() - 1] = '\0';
@@ -1314,7 +964,7 @@ const bool BFW::Assets::Wave::Create(const WaveFormat& _Info, const size_t _Size
 		return false;
 	}
 
-	if (!_Size || _Size % (_Info.Channels * _Info.BitsPerSample / 8) != 0)
+	if (!_Size || _Size % ((size_t)(_Info.Channels) * (size_t)(_Info.BitsPerSample) / 8) != 0)
 	{
 		return false;
 	}
@@ -1337,7 +987,7 @@ const bool BFW::Assets::Wave::Create(const WaveFormat& _Info, const size_t _Size
 	return true;
 }
 
-const bool BFW::Assets::Wave::Load(const FileContent& _FileContent)
+const bool BFW::Assets::Wave::Load(const FileSystem::FileContent& _FileContent)
 {
 	Destroy();
 
@@ -1355,7 +1005,7 @@ const bool BFW::Assets::Wave::Load(const FileContent& _FileContent)
 		return false;
 	}
 
-	if (_FileHeader.FileSize + 1 != _FileContent.GetLength() - 8)
+	if ((size_t)(_FileHeader.FileSize) + 1 != _FileContent.GetLength() - 8)
 	{
 		return false;
 	}
@@ -1489,7 +1139,7 @@ const bool BFW::Assets::Wave::Load(const FileContent& _FileContent)
 		return false;
 	}
 
-	if (Size % (Info.Channels * Info.BitsPerSample / 8) != 0)
+	if (Size % ((size_t)(Info.Channels) * (size_t)(Info.BitsPerSample) / 8) != 0)
 	{
 		Destroy();
 		return false;
@@ -1516,11 +1166,11 @@ void BFW::Assets::Wave::Destroy()
 	Size = 0;
 }
 
-BFW::Assets::FileContent BFW::Assets::Wave::Save() const
+BFW::FileSystem::FileContent BFW::Assets::Wave::Save() const
 {
 	if (!Data)
 	{
-		return FileContent();
+		return FileSystem::FileContent();
 	}
 
 	WaveFileHeader _FileHeader;
@@ -1564,11 +1214,11 @@ BFW::Assets::FileContent BFW::Assets::Wave::Save() const
 	_DataHeader.ID[3] = 'a';
 	_DataHeader.Size = BFW_MACHINE_TO_LITTLE_ENDIAN_32((uint32_t)(Size));
 
-	FileContent _FileContent;
+	FileSystem::FileContent _FileContent;
 
 	if (!_FileContent.Create(sizeof(WaveFileHeader) + sizeof(WaveChunkHeader) + sizeof(WaveFormat) + sizeof(WaveChunkHeader) + Size + 1))
 	{
-		return FileContent();
+		return FileSystem::FileContent();
 	}
 
 	_FileContent[_FileContent.GetLength() - 1] = '\0';

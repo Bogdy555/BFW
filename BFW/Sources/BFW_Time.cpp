@@ -80,44 +80,14 @@ void BFW::Time::Timer::SubtractMicroSecondsFromEnd(const uint64_t _MicroSeconds)
 	End -= std::chrono::microseconds(_MicroSeconds);
 }
 
-const tm BFW::Time::Timer::GetUTCBegin() const
+const time_t BFW::Time::Timer::GetBegin() const
 {
-	tm _ReturnTm = { 0 };
-	time_t _Time = std::chrono::system_clock::to_time_t(Begin);
-	BFW_WINDOWS_PLATFORM_CALL(gmtime_s(&_ReturnTm, &_Time));
-	BFW_LINUX_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
-	BFW_ESP32_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
-	return _ReturnTm;
+	return std::chrono::system_clock::to_time_t(Begin);
 }
 
-const tm BFW::Time::Timer::GetUTCEnd() const
+const time_t BFW::Time::Timer::GetEnd() const
 {
-	tm _ReturnTm = { 0 };
-	time_t _Time = std::chrono::system_clock::to_time_t(End);
-	BFW_WINDOWS_PLATFORM_CALL(gmtime_s(&_ReturnTm, &_Time));
-	BFW_LINUX_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
-	BFW_ESP32_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
-	return _ReturnTm;
-}
-
-const tm BFW::Time::Timer::GetLocalBegin() const
-{
-	tm _ReturnTm = { 0 };
-	time_t _Time = std::chrono::system_clock::to_time_t(Begin);
-	BFW_WINDOWS_PLATFORM_CALL(localtime_s(&_ReturnTm, &_Time));
-	BFW_LINUX_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
-	BFW_ESP32_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
-	return _ReturnTm;
-}
-
-const tm BFW::Time::Timer::GetLocalEnd() const
-{
-	tm _ReturnTm = { 0 };
-	time_t _Time = std::chrono::system_clock::to_time_t(End);
-	BFW_WINDOWS_PLATFORM_CALL(localtime_s(&_ReturnTm, &_Time));
-	BFW_LINUX_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
-	BFW_ESP32_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
-	return _ReturnTm;
+	return std::chrono::system_clock::to_time_t(End);
 }
 
 BFW::Time::Timer::operator const float () const
@@ -297,23 +267,30 @@ const uint64_t BFW_API BFW::Time::GetTimeStamp()
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-const tm BFW_API BFW::Time::GetUTCTime()
+const time_t BFW_API BFW::Time::GetTime()
+{
+	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+}
+
+const tm BFW_API BFW::Time::TimeTToUTCTM(const time_t _Time)
 {
 	tm _ReturnTm = { 0 };
-	time_t _Time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
 	BFW_WINDOWS_PLATFORM_CALL(gmtime_s(&_ReturnTm, &_Time));
 	BFW_LINUX_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
 	BFW_ESP32_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
+
 	return _ReturnTm;
 }
 
-const tm BFW_API BFW::Time::GetLocalTime()
+const tm BFW_API BFW::Time::TimeTToLocalTM(const time_t _Time)
 {
 	tm _ReturnTm = { 0 };
-	time_t _Time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
 	BFW_WINDOWS_PLATFORM_CALL(localtime_s(&_ReturnTm, &_Time));
 	BFW_LINUX_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
 	BFW_ESP32_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
+
 	return _ReturnTm;
 }
 

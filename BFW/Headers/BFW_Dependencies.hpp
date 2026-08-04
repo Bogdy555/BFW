@@ -53,6 +53,7 @@
 #include <cmath>
 #include <chrono>
 #include <ctime>
+#include <filesystem>
 
 
 
@@ -160,6 +161,19 @@ namespace BFW
 
 	}
 
+	namespace FileSystem
+	{
+
+		class BFW_API FileContent;
+
+		struct BFW_API File;
+
+		struct BFW_API Directory;
+
+		struct BFW_API DirectoryDiff;
+
+	}
+
 	namespace MultiProcessing
 	{
 
@@ -255,8 +269,6 @@ namespace BFW
 
 	namespace Assets
 	{
-
-		class BFW_API FileContent;
 
 		class BFW_API BitMap;
 

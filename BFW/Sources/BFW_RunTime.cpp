@@ -4,12 +4,12 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
 
-BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), SharedInstanceMemory((MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory)), SharedInstanceMutex((MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex)), InstanceHandle(_Other.InstanceHandle), CmdLine(_Other.CmdLine), ShowCmd(_Other.ShowCmd)
+BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), WorkingDirectory((FileSystem::Directory&&)(_Other.WorkingDirectory)), SharedInstanceMemory((MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory)), SharedInstanceMutex((MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex)), InstanceHandle(_Other.InstanceHandle), CmdLine(_Other.CmdLine), ShowCmd(_Other.ShowCmd)
 {
 	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
 	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
@@ -29,12 +29,12 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
 
-BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), SharedInstanceMemory((MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory)), SharedInstanceMutex((MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex)), ArgC(_Other.ArgC), ArgV(_Other.ArgV)
+BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), WorkingDirectory((FileSystem::Directory&&)(_Other.WorkingDirectory)), SharedInstanceMemory((MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory)), SharedInstanceMutex((MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex)), ArgC(_Other.ArgC), ArgV(_Other.ArgV)
 {
 	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
 	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
@@ -53,12 +53,12 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory()
 {
 
 }
 
-BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync)
+BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), WorkingDirectory((FileSystem::Directory&&)(_Other.WorkingDirectory))
 {
 	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
 	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
@@ -106,6 +106,8 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	CmdLine = _CmdLine;
 	ShowCmd = _ShowCmd;
 
+	WorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory(), true);
+
 	Setup();
 	while (On)
 	{
@@ -120,6 +122,8 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+
+	WorkingDirectory = FileSystem::Directory();
 
 	InstanceHandle = NULL;
 	CmdLine = nullptr;
@@ -167,6 +171,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	ArgC = _ArgC;
 	ArgV = _ArgV;
 
+	WorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory(), true);
+
 	Setup();
 	while (On)
 	{
@@ -181,6 +187,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+
+	WorkingDirectory = FileSystem::Directory();
 
 	ArgC = 0;
 	ArgV = nullptr;
@@ -204,6 +212,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 const int32_t BFW::RunTime::Application::Run()
 {
+	WorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory(), true);
+
 	Setup();
 	while (On)
 	{
@@ -218,6 +228,8 @@ const int32_t BFW::RunTime::Application::Run()
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+
+	WorkingDirectory = FileSystem::Directory();
 
 	int32_t _ReturnValue = ReturnValue;
 	ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
@@ -261,6 +273,20 @@ void BFW::RunTime::Application::SetSimulationSpeed(const float _SimulationSpeed)
 void BFW::RunTime::Application::SetSync(const uint64_t _Sync)
 {
 	Sync = _Sync;
+}
+
+void BFW::RunTime::Application::UpdateWorkingDirectory()
+{
+	FileSystem::Directory _NewWorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory());
+
+	FileSystem::DirectoryDiff _DirectoryDiff = FileSystem::DirectoryDiff::Get(WorkingDirectory, _NewWorkingDirectory);
+
+	if (_DirectoryDiff.Empty())
+	{
+		return;
+	}
+
+	WorkingDirectory = FileSystem::ApplyDirectoryDiff(WorkingDirectory, _DirectoryDiff, true);
 }
 
 const bool BFW::RunTime::Application::CheckOn() const
@@ -321,6 +347,11 @@ const float BFW::RunTime::Application::GetSimulationSpeed() const
 const uint64_t BFW::RunTime::Application::GetSync() const
 {
 	return Sync;
+}
+
+const BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory() const
+{
+	return WorkingDirectory;
 }
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
@@ -421,6 +452,7 @@ BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _
 	LagTime = _Other.LagTime;
 	SimulationSpeed = _Other.SimulationSpeed;
 	Sync = _Other.Sync;
+	WorkingDirectory = (FileSystem::Directory&&)(_Other.WorkingDirectory);
 	SharedInstanceMemory = (MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory);
 	SharedInstanceMutex = (MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex);
 	InstanceHandle = _Other.InstanceHandle;
@@ -459,6 +491,7 @@ BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _
 	LagTime = _Other.LagTime;
 	SimulationSpeed = _Other.SimulationSpeed;
 	Sync = _Other.Sync;
+	WorkingDirectory = (FileSystem::Directory&&)(_Other.WorkingDirectory);
 	SharedInstanceMemory = (MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory);
 	SharedInstanceMutex = (MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex);
 	ArgC = _Other.ArgC;
@@ -495,6 +528,7 @@ BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _
 	LagTime = _Other.LagTime;
 	SimulationSpeed = _Other.SimulationSpeed;
 	Sync = _Other.Sync;
+	WorkingDirectory = (FileSystem::Directory&&)(_Other.WorkingDirectory);
 
 	_Other.On = false;
 	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
@@ -548,6 +582,7 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 		GetFrameTime(_CurrentState).Start();
 
 		Update();
+		UpdateWorkingDirectory();
 
 		if (GetSync())
 		{
@@ -645,6 +680,11 @@ void BFW::RunTime::Menu::SetSync(const uint64_t _Sync)
 	ApplicationObj->SetSync(_Sync);
 }
 
+void BFW::RunTime::Menu::UpdateWorkingDirectory()
+{
+	ApplicationObj->UpdateWorkingDirectory();
+}
+
 const bool BFW::RunTime::Menu::CheckOn() const
 {
 	return On;
@@ -713,4 +753,9 @@ const float BFW::RunTime::Menu::GetSimulationSpeed() const
 const uint64_t BFW::RunTime::Menu::GetSync() const
 {
 	return ApplicationObj->GetSync();
+}
+
+const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory() const
+{
+	return ApplicationObj->GetWorkingDirectory();
 }
