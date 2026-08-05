@@ -2,7 +2,11 @@
 
 
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 const BFW::FileSystem::LockedDirectoryHandle BFW::FileSystem::NullLockedDirectoryHandle = (LockedDirectoryHandle)(-1);
+
+#endif
 
 
 
@@ -1404,38 +1408,6 @@ void BFW_API BFW::FileSystem::ReleaseLockedDirectory(LockedDirectoryHandle& _Loc
 	}
 
 	CloseHandle(_LockedDirectoryHandle);
-	_LockedDirectoryHandle = NullLockedDirectoryHandle;
-}
-
-#endif
-
-#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
-
-const BFW::FileSystem::LockedDirectoryHandle BFW_API BFW::FileSystem::LockDirectory(const BFW_STRING_TYPE& _Path)
-{
-	LockedDirectoryHandle _LockedDirectoryHandle = open(_Path.c_str(), O_RDONLY | O_DIRECTORY);
-
-	if (_LockedDirectoryHandle != NullLockedDirectoryHandle)
-	{
-		if (flock(_LockedDirectoryHandle, LOCK_EX | LOCK_NB) != 0)
-		{
-			close(_LockedDirectoryHandle);
-			return NullLockedDirectoryHandle;
-		}
-	}
-
-	return _LockedDirectoryHandle;
-}
-
-void BFW_API BFW::FileSystem::ReleaseLockedDirectory(LockedDirectoryHandle& _LockedDirectoryHandle)
-{
-	if (_LockedDirectoryHandle == NullLockedDirectoryHandle)
-	{
-		return;
-	}
-
-	flock(_LockedDirectoryHandle, LOCK_UN);
-	close(_LockedDirectoryHandle);
 	_LockedDirectoryHandle = NullLockedDirectoryHandle;
 }
 

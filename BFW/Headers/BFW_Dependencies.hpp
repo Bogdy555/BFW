@@ -179,12 +179,6 @@ namespace BFW
 
 #endif
 
-#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
-
-		typedef int LockedDirectoryHandle;
-
-#endif
-
 	}
 
 	namespace MultiProcessing

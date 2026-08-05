@@ -157,12 +157,20 @@ namespace BFW
 
 		};
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 		extern const LockedDirectoryHandle NullLockedDirectoryHandle;
+
+#endif
 
 		const BFW_STRING_TYPE BFW_API GetWorkingDirectory();
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 		const LockedDirectoryHandle BFW_API LockDirectory(const BFW_STRING_TYPE& _Path);
 		void BFW_API ReleaseLockedDirectory(LockedDirectoryHandle& _LockedDirectoryHandle);
+
+#endif
 
 	}
 
