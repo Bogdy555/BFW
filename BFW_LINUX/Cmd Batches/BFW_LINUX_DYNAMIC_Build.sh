@@ -8,8 +8,8 @@ pushd "$SolutionDir"
 
 source "./BFW/Cmd Batches/BFW_LINUX_DYNAMIC_Build.sh"
 
-CompileFlags="-Wall -Wno-unused-variable -std=c++20 -static-libstdc++ -static-libgcc -I./BFW/Headers/ -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_LINK_DYNAMIC"
-LinkFlags="-static-libstdc++ -static-libgcc -L./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/ -lBFW_DYNAMIC"
+CompileFlags="-Wall -Wno-unused-variable -std=c++20 -shared-libstdc++ -shared-libgcc -I./BFW/Headers/ -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_LINK_DYNAMIC"
+LinkFlags="-shared-libstdc++ -shared-libgcc -L./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/ -lBFW_DYNAMIC"
 
 if [ "$Configuration" == "Debug" ]; then
 	CompileFlags="$CompileFlags -g -O0 -DBFW_DEBUG"

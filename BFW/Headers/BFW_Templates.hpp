@@ -22,9 +22,26 @@
 
 #if defined BFW_BUILD_DYNAMIC || defined BFW_LINK_DYNAMIC
 
+struct BFW_API std::_Container_base12;
+BFW_EXTERN template struct BFW_API std::char_traits<char>;
+BFW_EXTERN template class BFW_API std::allocator<char>;
+BFW_EXTERN template struct BFW_API std::_Simple_types<char>;
+union BFW_API std::_String_val<std::_Simple_types<char>>::_Bxty;
+BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<char>>;
+BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<char>, std::_String_val<std::_Simple_types<char>>, true>;
+BFW_EXTERN template class BFW_API std::basic_string<char, std::char_traits<char>, std::allocator<char>>;
+BFW_EXTERN template struct BFW_API std::char_traits<wchar_t>;
+BFW_EXTERN template class BFW_API std::allocator<wchar_t>;
+BFW_EXTERN template struct BFW_API std::_Simple_types<wchar_t>;
+union BFW_API std::_String_val<std::_Simple_types<wchar_t>>::_Bxty;
+BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<wchar_t>>;
+BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<wchar_t>, std::_String_val<std::_Simple_types<wchar_t>>, true>;
+BFW_EXTERN template class BFW_API std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
+
 BFW_EXTERN template class BFW_API BFW::Vector<uint8_t>;
 BFW_EXTERN template class BFW_API BFW::Vector<size_t>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE>;
+BFW_EXTERN template class BFW_API BFW::Vector<char>;
+BFW_EXTERN template class BFW_API BFW::Vector<wchar_t>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
 
@@ -33,6 +50,13 @@ BFW_EXTERN template class BFW_API std::chrono::time_point<std::chrono::system_cl
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::FileSystem::File>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::FileSystem::Directory>;
+
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::FileSystem::FileContent>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::FileSystem::FileContent>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::FileSystem::FileContent>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::Trie<BFW::FileSystem::FileContent>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::ClickEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::WheelEvent>;

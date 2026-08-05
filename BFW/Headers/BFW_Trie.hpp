@@ -21,20 +21,19 @@ namespace BFW
 
 	public:
 
-		Trie() : Id((CharT)('\0')), HasData(false), Data(), Childs()
+		Trie() : Id((CharT)('\0')), Data(), Childs()
 		{
 
 		}
 
-		Trie(const Trie& _Other) : Id(_Other.Id), HasData(_Other.HasData), Data(_Other.Data), Childs(_Other.Childs)
+		Trie(const Trie& _Other) : Id(_Other.Id), Data(_Other.Data), Childs(_Other.Childs)
 		{
 
 		}
 
-		Trie(Trie&& _Other) noexcept : Id(_Other.Id), HasData(_Other.HasData), Data((Type&&)(_Other.Data)), Childs((Vector<Trie>&&)(_Other.Childs))
+		Trie(Trie&& _Other) noexcept : Id(_Other.Id), Data((UniquePointer<Type>&&)(_Other.Data)), Childs((Vector<Trie>&&)(_Other.Childs))
 		{
 			_Other.Id = (CharT)('\0');
-			_Other.HasData = false;
 		}
 
 		~Trie()
@@ -51,8 +50,7 @@ namespace BFW
 
 			if (_Name[0] == (CharT)('\0'))
 			{
-				HasData = true;
-				Data = _Data;
+				Data = UniquePointer<Type>::MakeUnique(_Data);
 				return;
 			}
 
@@ -86,8 +84,7 @@ namespace BFW
 
 			if (_Length == 0)
 			{
-				HasData = true;
-				Data = _Data;
+				Data = UniquePointer<Type>::MakeUnique(_Data);
 				return;
 			}
 
@@ -121,8 +118,7 @@ namespace BFW
 
 			if (_Name[0] == (CharT)('\0'))
 			{
-				HasData = true;
-				Data = (Type&&)(_Data);
+				Data = UniquePointer<Type>::MakeUnique((Type&&)(_Data));
 				return;
 			}
 
@@ -156,8 +152,7 @@ namespace BFW
 
 			if (_Length == 0)
 			{
-				HasData = true;
-				Data = (Type&&)(_Data);
+				Data = UniquePointer<Type>::MakeUnique((Type&&)(_Data));
 				return;
 			}
 
@@ -191,8 +186,7 @@ namespace BFW
 
 			if (_Name[0] == (CharT)('\0'))
 			{
-				HasData = false;
-				Data = Type();
+				Data = UniquePointer<Type>();
 				return;
 			}
 
@@ -202,7 +196,7 @@ namespace BFW
 				{
 					Childs[_Index].Erase(_Name + 1);
 
-					if (!Childs[_Index].HasData && Childs[_Index].Childs.GetSize() == 0)
+					if ((Type*)(Childs[_Index].Data) == nullptr && Childs[_Index].Childs.GetSize() == 0)
 					{
 						Childs.Erase(_Index);
 					}
@@ -215,8 +209,7 @@ namespace BFW
 		void Clear()
 		{
 			Id = (CharT)('\0');
-			HasData = false;
-			Data = Type();
+			Data = UniquePointer<Type>();
 			Childs.Clear();
 		}
 
@@ -238,12 +231,12 @@ namespace BFW
 				}
 			}
 
-			if (!HasData)
+			if ((Type*)(Data) == nullptr)
 			{
 				return nullptr;
 			}
 
-			return &Data;
+			return Data.GetData();
 		}
 
 		ConstType* GetData(const CharT* _Name) const
@@ -264,12 +257,12 @@ namespace BFW
 				}
 			}
 
-			if (!HasData)
+			if ((ConstType*)(Data) == nullptr)
 			{
 				return nullptr;
 			}
 
-			return &Data;
+			return Data.GetData();
 		}
 
 		Trie& operator= (const Trie& _Other)
@@ -280,7 +273,6 @@ namespace BFW
 			}
 
 			Id = _Other.Id;
-			HasData = _Other.HasData;
 			Data = _Other.Data;
 			Childs = _Other.Childs;
 
@@ -295,12 +287,10 @@ namespace BFW
 			}
 
 			Id = _Other.Id;
-			HasData = _Other.HasData;
-			Data = (Type&&)(_Other.Data);
+			Data = (UniquePointer<Type>&&)(_Other.Data);
 			Childs = (Vector<Trie>&&)(_Other.Childs);
 
 			_Other.Id = (CharT)('\0');
-			_Other.HasData = false;
 
 			return *this;
 		}
@@ -308,8 +298,7 @@ namespace BFW
 	private:
 
 		CharT Id;
-		bool HasData;
-		Type Data;
+		UniquePointer<Type> Data;
 		Vector<Trie> Childs;
 
 	};

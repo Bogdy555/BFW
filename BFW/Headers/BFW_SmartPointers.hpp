@@ -173,6 +173,24 @@ namespace BFW
 			return *this;
 		}
 
+		static UniquePointer MakeUnique(ConstType& _Value = Type())
+		{
+			UniquePointer _Result;
+
+			_Result.Size = 1;
+			_Result.Pointer = new Type[1];
+
+			if (!_Result.Pointer)
+			{
+				_Result.Size = 0;
+				throw nullptr;
+			}
+
+			*_Result.Pointer = _Value;
+
+			return _Result;
+		}
+
 		static UniquePointer MakeUnique(Type&& _Value = Type())
 		{
 			UniquePointer _Result;
@@ -209,7 +227,7 @@ namespace BFW
 				throw nullptr;
 			}
 
-			for (size_t _Index = 0; _Index < _List.size(); _Index++)
+			for (size_t _Index = 0; _Index < _Result.Size; _Index++)
 			{
 				_Result.Pointer[_Index] = *(_List.begin() + _Index);
 			}
@@ -427,6 +445,36 @@ namespace BFW
 			return *this;
 		}
 
+		static SharedPointer MakeShared(ConstType& _Value = Type())
+		{
+			SharedPointer _Result;
+
+			_Result.Mutex = new std::mutex;
+			_Result.RefCount = new size_t;
+			_Result.WeakPointers = new Vector<WeakPointer<T>*>;
+			_Result.Size = 1;
+			_Result.Pointer = new Type[1];
+
+			if (!_Result.Mutex || !_Result.RefCount || !_Result.WeakPointers || !_Result.Pointer)
+			{
+				delete _Result.Mutex;
+				_Result.Mutex = nullptr;
+				delete _Result.RefCount;
+				_Result.RefCount = nullptr;
+				delete _Result.WeakPointers;
+				_Result.WeakPointers = nullptr;
+				_Result.Size = 0;
+				delete[] _Result.Pointer;
+				_Result.Pointer = nullptr;
+				throw nullptr;
+			}
+
+			*_Result.RefCount = 1;
+			*_Result.Pointer = _Value;
+
+			return _Result;
+		}
+
 		static SharedPointer MakeShared(Type&& _Value = Type())
 		{
 			SharedPointer _Result;
@@ -488,7 +536,7 @@ namespace BFW
 
 			*_Result.RefCount = 1;
 
-			for (size_t _Index = 0; _Index < _List.size(); _Index++)
+			for (size_t _Index = 0; _Index < _Result.Size; _Index++)
 			{
 				_Result.Pointer[_Index] = *(_List.begin() + _Index);
 			}
