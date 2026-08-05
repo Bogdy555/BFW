@@ -10,22 +10,18 @@ CompileFlags="-Wall -Wno-unused-variable -std=c++20 -static-libstdc++ -static-li
 
 if [ "$Configuration" == "Debug" ]; then
 	CompileFlags="$CompileFlags -g -O0 -DBFW_DEBUG"
-	LinkFlags="$LinkFlags -g"
 fi
 
 if [ "$Configuration" == "Release" ]; then
 	CompileFlags="$CompileFlags -O2"
-	LinkFlags="$LinkFlags"
 fi
 
 if [ "$Platform" == "x64" ]; then
 	CompileFlags="$CompileFlags -DBFW_X64"
-	LinkFlags="$LinkFlags"
 fi
 
 if [ "$Platform" == "x86" ]; then
 	CompileFlags="$CompileFlags -m32 -DBFW_X86"
-	LinkFlags="$LinkFlags -m32"
 fi
 
 mkdir -p "./Binaries/"

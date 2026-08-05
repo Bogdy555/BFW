@@ -29,7 +29,6 @@ xtensa-esp32s3-elf-g++ "-Wl,--Map=.\Binaries\BFW_ESP32\%Configuration%\BFW_ESP32
 @echo off
 
 set CompileFlags=
-set LinkFlags=
 
 popd
 
