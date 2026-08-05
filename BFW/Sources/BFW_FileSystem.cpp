@@ -2,6 +2,10 @@
 
 
 
+const BFW::FileSystem::LockedDirectoryHandle BFW::FileSystem::NullLockedDirectoryHandle = (LockedDirectoryHandle)(-1);
+
+
+
 BFW::FileSystem::FileContent::FileContent() : Data(nullptr), Length(0)
 {
 
@@ -353,6 +357,11 @@ BFW::FileSystem::File::File() : Path(), Content(), LastWrite(std::chrono::system
 
 }
 
+BFW::FileSystem::File::File(const File& _Other) : Path(_Other.Path), Content(_Other.Content), LastWrite(_Other.LastWrite)
+{
+
+}
+
 BFW::FileSystem::File::File(File&& _Other) noexcept : Path((BFW_STRING_TYPE&&)(_Other.Path)), Content((FileContent&&)(_Other.Content)), LastWrite(_Other.LastWrite)
 {
 	_Other.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -385,6 +394,51 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetParentPath() const
 	return Path.substr(0, Path.size() - 1 - _Index);
 }
 
+const BFW_STRING_TYPE BFW::FileSystem::File::GetName() const
+{
+	BFW_STRING_TYPE _Parent = GetParentPath();
+
+	return Path.substr(_Parent.size() + 1, Path.size());
+}
+
+const BFW_STRING_TYPE BFW::FileSystem::File::GetExtension() const
+{
+	BFW_STRING_TYPE _Name = GetName();
+
+	size_t _Index = 0;
+
+	while (_Index < _Name.size())
+	{
+		if (_Name[_Name.size() - 1 - _Index] == '.')
+		{
+			break;
+		}
+
+		_Index++;
+	}
+
+	if (_Index == _Name.size())
+	{
+		return BFW_STRING_TYPE();
+	}
+
+	return _Name.substr(_Name.size() - 1 - _Index, _Name.size());
+}
+
+BFW::FileSystem::File& BFW::FileSystem::File::operator= (const File& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Path = _Other.Path;
+	Content = _Other.Content;
+	LastWrite = _Other.LastWrite;
+
+	return *this;
+}
+
 BFW::FileSystem::File& BFW::FileSystem::File::operator= (File&& _Other) noexcept
 {
 	if (this == &_Other)
@@ -401,9 +455,66 @@ BFW::FileSystem::File& BFW::FileSystem::File::operator= (File&& _Other) noexcept
 	return *this;
 }
 
+const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _Path, const bool _LoadContent)
+{
+	File _Result;
+
+	try
+	{
+		const std::filesystem::directory_entry _Entry(_Path);
+
+		if (_Entry.is_directory() && !_Entry.is_symlink())
+		{
+			throw nullptr;
+		}
+
+		if (_LoadContent)
+		{
+			std::ifstream _FileStream(_Entry.path().BFW_STRING_METHOD(), std::ios::binary);
+
+			if (!_FileStream.is_open())
+			{
+				throw std::filesystem::filesystem_error("Load failed!", std::make_error_code(std::errc::no_such_file_or_directory));
+			}
+
+			if (!_Result.Content.Load(_FileStream))
+			{
+				throw std::filesystem::filesystem_error("Load failed!", std::make_error_code(std::errc::no_such_file_or_directory));
+			}
+		}
+
+		_Result.Path = _Path;
+
+		for (size_t _Index = 0; _Index < _Result.Path.size(); _Index++)
+		{
+			if (_Result.Path[_Index] == BFW_STRING_PREFIX('\\'))
+			{
+				_Result.Path[_Index] = BFW_STRING_PREFIX('/');
+			}
+		}
+
+		_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+	}
+	catch (const std::filesystem::filesystem_error& _Error)
+	{
+		_Result = File();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	return _Result;
+}
+
 
 
 BFW::FileSystem::Directory::Directory() : Path(), Files(), SubDirectories()
+{
+
+}
+
+BFW::FileSystem::Directory::Directory(const Directory& _Other) : Path(_Other.Path), Files(_Other.Files), SubDirectories(_Other.SubDirectories)
 {
 
 }
@@ -416,6 +527,77 @@ BFW::FileSystem::Directory::Directory(Directory&& _Other) noexcept : Path((BFW_S
 BFW::FileSystem::Directory::~Directory()
 {
 
+}
+
+const BFW_STRING_TYPE BFW::FileSystem::Directory::GetParentPath() const
+{
+	size_t _Index = 0;
+
+	while (_Index < Path.size())
+	{
+		if (Path[Path.size() - 1 - _Index] == '/')
+		{
+			break;
+		}
+
+		_Index++;
+	}
+
+	if (_Index == Path.size())
+	{
+		return BFW_STRING_TYPE();
+	}
+
+	return Path.substr(0, Path.size() - 1 - _Index);
+}
+
+const bool BFW::FileSystem::Directory::FileExists(const BFW_STRING_TYPE& _Path) const
+{
+	if (Path != _Path.substr(0, Path.size()))
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < Files.GetSize(); _Index++)
+	{
+		if (Files[_Index].Path == _Path)
+		{
+			return true;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < SubDirectories.GetSize(); _Index++)
+	{
+		if (SubDirectories[_Index].FileExists(_Path))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+const bool BFW::FileSystem::Directory::DirectoryExists(const BFW_STRING_TYPE& _Path) const
+{
+	if (Path == _Path)
+	{
+		return true;
+	}
+
+	if (Path != _Path.substr(0, Path.size()))
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < SubDirectories.GetSize(); _Index++)
+	{
+		if (SubDirectories[_Index].DirectoryExists(_Path))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 BFW::FileSystem::File& BFW::FileSystem::Directory::GetFile(const BFW_STRING_TYPE& _Path)
@@ -532,75 +714,18 @@ const BFW::FileSystem::Directory& BFW::FileSystem::Directory::GetDirectory(const
 	throw nullptr;
 }
 
-const BFW_STRING_TYPE BFW::FileSystem::Directory::GetParentPath() const
+BFW::FileSystem::Directory& BFW::FileSystem::Directory::operator= (const Directory& _Other)
 {
-	size_t _Index = 0;
-
-	while (_Index < Path.size())
+	if (this == &_Other)
 	{
-		if (Path[Path.size() - 1 - _Index] == '/')
-		{
-			break;
-		}
-
-		_Index++;
+		return *this;
 	}
 
-	if (_Index == Path.size())
-	{
-		return BFW_STRING_TYPE();
-	}
+	Path = _Other.Path;
+	Files = _Other.Files;
+	SubDirectories = _Other.SubDirectories;
 
-	return Path.substr(0, Path.size() - 1 - _Index);
-}
-
-const bool BFW::FileSystem::Directory::FileExists(const BFW_STRING_TYPE& _Path) const
-{
-	if (Path != _Path.substr(0, Path.size()))
-	{
-		return false;
-	}
-
-	for (size_t _Index = 0; _Index < Files.GetSize(); _Index++)
-	{
-		if (Files[_Index].Path == _Path)
-		{
-			return true;
-		}
-	}
-
-	for (size_t _Index = 0; _Index < SubDirectories.GetSize(); _Index++)
-	{
-		if (SubDirectories[_Index].FileExists(_Path))
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-const bool BFW::FileSystem::Directory::DirectoryExists(const BFW_STRING_TYPE& _Path) const
-{
-	if (Path == _Path)
-	{
-		return true;
-	}
-
-	if (Path != _Path.substr(0, Path.size()))
-	{
-		return false;
-	}
-
-	for (size_t _Index = 0; _Index < SubDirectories.GetSize(); _Index++)
-	{
-		if (SubDirectories[_Index].DirectoryExists(_Path))
-		{
-			return true;
-		}
-	}
-
-	return false;
+	return *this;
 }
 
 BFW::FileSystem::Directory& BFW::FileSystem::Directory::operator= (Directory&& _Other) noexcept
@@ -617,9 +742,105 @@ BFW::FileSystem::Directory& BFW::FileSystem::Directory::operator= (Directory&& _
 	return *this;
 }
 
+const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRING_TYPE& _Path, const bool _LoadContent)
+{
+	Directory _Result;
+
+	try
+	{
+		for (const std::filesystem::directory_entry& _Entry : std::filesystem::directory_iterator(_Path))
+		{
+			if (_Entry.is_directory() && !_Entry.is_symlink())
+			{
+				Directory _TempDir = Load(_Entry.path().BFW_STRING_METHOD(), _LoadContent);
+
+				if (!_TempDir.Path.size())
+				{
+					continue;
+				}
+
+				_Result.SubDirectories.EmplaceBack((Directory&&)(_TempDir));
+			}
+			else if (_LoadContent)
+			{
+				std::ifstream _FileStream(_Entry.path().BFW_STRING_METHOD(), std::ios::binary);
+
+				if (!_FileStream.is_open())
+				{
+					continue;
+				}
+
+				File _File;
+
+				if (!_File.Content.Load(_FileStream))
+				{
+					continue;
+				}
+
+				_File.Path = _Entry.path().BFW_STRING_METHOD();
+
+				for (size_t _Index = 0; _Index < _File.Path.size(); _Index++)
+				{
+					if (_File.Path[_Index] == BFW_STRING_PREFIX('\\'))
+					{
+						_File.Path[_Index] = BFW_STRING_PREFIX('/');
+					}
+				}
+
+				_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+
+				_Result.Files.EmplaceBack((File&&)(_File));
+			}
+			else
+			{
+				File _File;
+
+				_File.Path = _Entry.path().BFW_STRING_METHOD();
+
+				for (size_t _Index = 0; _Index < _File.Path.size(); _Index++)
+				{
+					if (_File.Path[_Index] == BFW_STRING_PREFIX('\\'))
+					{
+						_File.Path[_Index] = BFW_STRING_PREFIX('/');
+					}
+				}
+
+				_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+
+				_Result.Files.EmplaceBack((File&&)(_File));
+			}
+		}
+
+		_Result.Path = _Path;
+
+		for (size_t _Index = 0; _Index < _Result.Path.size(); _Index++)
+		{
+			if (_Result.Path[_Index] == BFW_STRING_PREFIX('\\'))
+			{
+				_Result.Path[_Index] = BFW_STRING_PREFIX('/');
+			}
+		}
+	}
+	catch (const std::filesystem::filesystem_error& _Error)
+	{
+		_Result = Directory();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	return _Result;
+}
+
 
 
 BFW::FileSystem::DirectoryDiff::DirectoryDiff() : AddedDirectories(), DeletedDirectories(), AddedFiles(), DeletedFiles(), ModifiedFiles()
+{
+
+}
+
+BFW::FileSystem::DirectoryDiff::DirectoryDiff(const DirectoryDiff& _Other) : AddedDirectories(_Other.AddedDirectories), DeletedDirectories(_Other.DeletedDirectories), AddedFiles(_Other.AddedFiles), DeletedFiles(_Other.DeletedFiles), ModifiedFiles(_Other.ModifiedFiles)
 {
 
 }
@@ -632,6 +853,198 @@ BFW::FileSystem::DirectoryDiff::DirectoryDiff(DirectoryDiff&& _Other) noexcept :
 BFW::FileSystem::DirectoryDiff::~DirectoryDiff()
 {
 
+}
+
+const BFW::FileSystem::Directory BFW::FileSystem::DirectoryDiff::Apply(const Directory& _Old, const bool _LoadContent)
+{
+	Directory _Result = _Old;
+
+	for (size_t _IndexDeletedDirectories = 0; _IndexDeletedDirectories < DeletedDirectories.GetSize(); _IndexDeletedDirectories++)
+	{
+		if (!_Result.DirectoryExists(DeletedDirectories[_IndexDeletedDirectories].GetParentPath()))
+		{
+			continue;
+		}
+
+		Directory& _Parent = _Result.GetDirectory(DeletedDirectories[_IndexDeletedDirectories].GetParentPath());
+
+		bool _Found = false;
+		size_t _Index = 0;
+
+		while (_Index < _Parent.SubDirectories.GetSize())
+		{
+			if (_Parent.SubDirectories[_Index].Path == DeletedDirectories[_IndexDeletedDirectories].Path)
+			{
+				_Found = true;
+				break;
+			}
+
+			_Index++;
+		}
+
+		if (!_Found)
+		{
+			continue;
+		}
+
+		_Parent.SubDirectories.Erase(_Index);
+	}
+
+	for (size_t _IndexAddedDirectories = 0; _IndexAddedDirectories < AddedDirectories.GetSize(); _IndexAddedDirectories++)
+	{
+		if (_Result.DirectoryExists(AddedDirectories[_IndexAddedDirectories].Path))
+		{
+			continue;
+		}
+
+		BFW_STRING_TYPE _Path = AddedDirectories[_IndexAddedDirectories].Path;
+
+		while (!_Result.DirectoryExists(_Path) && _Path.size())
+		{
+			size_t _Index = 0;
+
+			while (_Index < _Path.size())
+			{
+				if (_Path[_Path.size() - 1 - _Index] == '/')
+				{
+					break;
+				}
+
+				_Index++;
+			}
+
+			if (_Index == _Path.size())
+			{
+				_Path = BFW_STRING_TYPE();
+				continue;
+			}
+
+			_Path = _Path.substr(0, _Path.size() - 1 - _Index);
+		}
+
+		if (!_Path.size())
+		{
+			continue;
+		}
+
+		while (_Path != AddedDirectories[_IndexAddedDirectories].Path)
+		{
+			size_t _NextIndex = _Path.size() + 1;
+
+			while (_NextIndex < AddedDirectories[_IndexAddedDirectories].Path.size() && AddedDirectories[_IndexAddedDirectories].Path[_NextIndex] != '/')
+			{
+				_NextIndex++;
+			}
+
+			Directory _TempDir;
+
+			_TempDir.Path = _Path + AddedDirectories[_IndexAddedDirectories].Path.substr(_Path.size(), _NextIndex - _Path.size());
+
+			_Result.GetDirectory(_Path).SubDirectories.EmplaceBack((Directory&&)(_TempDir));
+
+			_Path += AddedDirectories[_IndexAddedDirectories].Path.substr(_Path.size(), _NextIndex - _Path.size());
+		}
+	}
+
+	for (size_t _IndexDeletedFiles = 0; _IndexDeletedFiles < DeletedFiles.GetSize(); _IndexDeletedFiles++)
+	{
+		if (!_Result.DirectoryExists(DeletedFiles[_IndexDeletedFiles].GetParentPath()))
+		{
+			continue;
+		}
+
+		Directory& _Parent = _Result.GetDirectory(DeletedFiles[_IndexDeletedFiles].GetParentPath());
+
+		bool _Found = false;
+		size_t _Index = 0;
+
+		while (_Index < _Parent.Files.GetSize())
+		{
+			if (_Parent.Files[_Index].Path == DeletedFiles[_IndexDeletedFiles].Path)
+			{
+				_Found = true;
+				break;
+			}
+
+			_Index++;
+		}
+
+		if (!_Found)
+		{
+			continue;
+		}
+
+		_Parent.Files.Erase(_Index);
+	}
+
+	for (size_t _IndexAddedFiles = 0; _IndexAddedFiles < AddedFiles.GetSize(); _IndexAddedFiles++)
+	{
+		if (_Result.FileExists(AddedFiles[_IndexAddedFiles].Path))
+		{
+			continue;
+		}
+
+		if (!_Result.DirectoryExists(AddedFiles[_IndexAddedFiles].GetParentPath()))
+		{
+			continue;
+		}
+
+		Directory& _Parent = _Result.GetDirectory(AddedFiles[_IndexAddedFiles].GetParentPath());
+
+		File _TempFile;
+
+		_TempFile.Path = AddedFiles[_IndexAddedFiles].Path;
+		_TempFile.LastWrite = AddedFiles[_IndexAddedFiles].LastWrite;
+
+		if (_LoadContent)
+		{
+			std::ifstream _Stream(_TempFile.Path);
+
+			if (!_Stream.is_open())
+			{
+				continue;
+			}
+
+			if (!_TempFile.Content.Load(_Stream))
+			{
+				continue;
+			}
+		}
+
+		_Parent.Files.EmplaceBack((File&&)(_TempFile));
+	}
+
+	for (size_t _IndexModifiedFiles = 0; _IndexModifiedFiles < ModifiedFiles.GetSize(); _IndexModifiedFiles++)
+	{
+		if (!_Result.FileExists(ModifiedFiles[_IndexModifiedFiles].Path))
+		{
+			continue;
+		}
+
+		File _TempFile;
+
+		_TempFile.Path = ModifiedFiles[_IndexModifiedFiles].Path;
+		_TempFile.LastWrite = ModifiedFiles[_IndexModifiedFiles].LastWrite;
+
+		if (_LoadContent)
+		{
+			std::ifstream _Stream(_TempFile.Path);
+
+			if (!_Stream.is_open())
+			{
+				continue;
+			}
+
+			if (!_TempFile.Content.Load(_Stream))
+			{
+				continue;
+			}
+		}
+
+		_Result.GetFile(ModifiedFiles[_IndexModifiedFiles].Path) = (File&&)(_TempFile);
+	}
+
+	return _Result;
 }
 
 const bool BFW::FileSystem::DirectoryDiff::Empty() const
@@ -809,6 +1222,22 @@ BFW::FileSystem::DirectoryDiff& BFW::FileSystem::DirectoryDiff::operator-= (cons
 	return *this;
 }
 
+BFW::FileSystem::DirectoryDiff& BFW::FileSystem::DirectoryDiff::operator= (const DirectoryDiff& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	AddedDirectories = _Other.AddedDirectories;
+	DeletedDirectories = _Other.DeletedDirectories;
+	AddedFiles = _Other.AddedFiles;
+	DeletedFiles = _Other.DeletedFiles;
+	ModifiedFiles = _Other.ModifiedFiles;
+
+	return *this;
+}
+
 BFW::FileSystem::DirectoryDiff& BFW::FileSystem::DirectoryDiff::operator= (DirectoryDiff&& _Other) noexcept
 {
 	if (this == &_Other)
@@ -954,337 +1383,54 @@ const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 	return std::filesystem::current_path().BFW_STRING_METHOD();
 }
 
-const BFW::FileSystem::File BFW_API BFW::FileSystem::LoadFile(const BFW_STRING_TYPE& _Path, const bool _LoadContent)
+#ifdef BFW_WINDOWS_PLATFORM
+
+const BFW::FileSystem::LockedDirectoryHandle BFW_API BFW::FileSystem::LockDirectory(const BFW_STRING_TYPE& _Path)
 {
-	File _Result;
-
-	try
-	{
-		const std::filesystem::directory_entry _Entry(_Path);
-
-		if (_Entry.is_directory() && !_Entry.is_symlink())
-		{
-			throw nullptr;
-		}
-
-		if (_LoadContent)
-		{
-			std::ifstream _FileStream(_Entry.path().BFW_STRING_METHOD(), std::ios::binary);
-
-			if (!_FileStream.is_open())
-			{
-				throw std::filesystem::filesystem_error("Load failed!", std::make_error_code(std::errc::no_such_file_or_directory));
-			}
-
-			if (!_Result.Content.Load(_FileStream))
-			{
-				throw std::filesystem::filesystem_error("Load failed!", std::make_error_code(std::errc::no_such_file_or_directory));
-			}
-		}
-
-		_Result.Path = _Path;
-
-		for (size_t _Index = 0; _Index < _Result.Path.size(); _Index++)
-		{
-			if (_Result.Path[_Index] == BFW_STRING_PREFIX('\\'))
-			{
-				_Result.Path[_Index] = BFW_STRING_PREFIX('/');
-			}
-		}
-
-		_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
-	}
-	catch (const std::filesystem::filesystem_error& _Error)
-	{
-		_Result = File();
-	}
-	catch (...)
-	{
-		throw nullptr;
-	}
-
-	return _Result;
+	return CreateFile(_Path.c_str(), DELETE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
 }
 
-const BFW::FileSystem::Directory BFW_API BFW::FileSystem::LoadDirectory(const BFW_STRING_TYPE& _Path, const bool _LoadContent)
+void BFW_API BFW::FileSystem::ReleaseLockedDirectory(LockedDirectoryHandle& _LockedDirectoryHandle)
 {
-	Directory _Result;
-
-	try
+	if (_LockedDirectoryHandle == NullLockedDirectoryHandle)
 	{
-		for (const std::filesystem::directory_entry& _Entry : std::filesystem::directory_iterator(_Path))
-		{
-			if (_Entry.is_directory() && !_Entry.is_symlink())
-			{
-				Directory _TempDir = LoadDirectory(_Entry.path().BFW_STRING_METHOD(), _LoadContent);
-
-				if (!_TempDir.Path.size())
-				{
-					continue;
-				}
-
-				_Result.SubDirectories.EmplaceBack((Directory&&)(_TempDir));
-			}
-			else if (_LoadContent)
-			{
-				std::ifstream _FileStream(_Entry.path().BFW_STRING_METHOD(), std::ios::binary);
-
-				if (!_FileStream.is_open())
-				{
-					continue;
-				}
-
-				File _File;
-
-				if (!_File.Content.Load(_FileStream))
-				{
-					continue;
-				}
-
-				_File.Path = _Entry.path().BFW_STRING_METHOD();
-
-				for (size_t _Index = 0; _Index < _File.Path.size(); _Index++)
-				{
-					if (_File.Path[_Index] == BFW_STRING_PREFIX('\\'))
-					{
-						_File.Path[_Index] = BFW_STRING_PREFIX('/');
-					}
-				}
-
-				_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
-
-				_Result.Files.EmplaceBack((File&&)(_File));
-			}
-			else
-			{
-				File _File;
-
-				_File.Path = _Entry.path().BFW_STRING_METHOD();
-
-				for (size_t _Index = 0; _Index < _File.Path.size(); _Index++)
-				{
-					if (_File.Path[_Index] == BFW_STRING_PREFIX('\\'))
-					{
-						_File.Path[_Index] = BFW_STRING_PREFIX('/');
-					}
-				}
-
-				_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
-
-				_Result.Files.EmplaceBack((File&&)(_File));
-			}
-		}
-
-		_Result.Path = _Path;
-
-		for (size_t _Index = 0; _Index < _Result.Path.size(); _Index++)
-		{
-			if (_Result.Path[_Index] == BFW_STRING_PREFIX('\\'))
-			{
-				_Result.Path[_Index] = BFW_STRING_PREFIX('/');
-			}
-		}
-	}
-	catch (const std::filesystem::filesystem_error& _Error)
-	{
-		_Result = Directory();
-	}
-	catch (...)
-	{
-		throw nullptr;
+		return;
 	}
 
-	return _Result;
+	CloseHandle(_LockedDirectoryHandle);
+	_LockedDirectoryHandle = NullLockedDirectoryHandle;
 }
 
-const BFW::FileSystem::Directory BFW_API BFW::FileSystem::ApplyDirectoryDiff(const Directory& _Old, const DirectoryDiff& _DirectoryDiff, const bool _LoadContent)
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+const BFW::FileSystem::LockedDirectoryHandle BFW_API BFW::FileSystem::LockDirectory(const BFW_STRING_TYPE& _Path)
 {
-	Directory _Result = _Old;
+	LockedDirectoryHandle _LockedDirectoryHandle = open(_Path.c_str(), O_RDONLY | O_DIRECTORY);
 
-	for (size_t _IndexDeletedDirectories = 0; _IndexDeletedDirectories < _DirectoryDiff.DeletedDirectories.GetSize(); _IndexDeletedDirectories++)
+	if (_LockedDirectoryHandle != NullLockedDirectoryHandle)
 	{
-		if (!_Result.DirectoryExists(_DirectoryDiff.DeletedDirectories[_IndexDeletedDirectories].GetParentPath()))
+		if (flock(_LockedDirectoryHandle, LOCK_EX | LOCK_NB) != 0)
 		{
-			continue;
-		}
-
-		Directory& _Parent = _Result.GetDirectory(_DirectoryDiff.DeletedDirectories[_IndexDeletedDirectories].GetParentPath());
-
-		bool _Found = false;
-		size_t _Index = 0;
-
-		while (_Index < _Parent.SubDirectories.GetSize())
-		{
-			if (_Parent.SubDirectories[_Index].Path == _DirectoryDiff.DeletedDirectories[_IndexDeletedDirectories].Path)
-			{
-				_Found = true;
-				break;
-			}
-
-			_Index++;
-		}
-
-		if (!_Found)
-		{
-			continue;
-		}
-
-		_Parent.SubDirectories.Erase(_Index);
-	}
-
-	for (size_t _IndexAddedDirectories = 0; _IndexAddedDirectories < _DirectoryDiff.AddedDirectories.GetSize(); _IndexAddedDirectories++)
-	{
-		if (_Result.DirectoryExists(_DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path))
-		{
-			continue;
-		}
-
-		BFW_STRING_TYPE _Path = _DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path;
-
-		while (!_Result.DirectoryExists(_Path) && _Path.size())
-		{
-			size_t _Index = 0;
-
-			while (_Index < _Path.size())
-			{
-				if (_Path[_Path.size() - 1 - _Index] == '/')
-				{
-					break;
-				}
-
-				_Index++;
-			}
-
-			if (_Index == _Path.size())
-			{
-				_Path = BFW_STRING_TYPE();
-				continue;
-			}
-
-			_Path = _Path.substr(0, _Path.size() - 1 - _Index);
-		}
-
-		if (!_Path.size())
-		{
-			continue;
-		}
-
-		while (_Path != _DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path)
-		{
-			size_t _NextIndex = _Path.size() + 1;
-
-			while (_NextIndex < _DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path.size() && _DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path[_NextIndex] != '/')
-			{
-				_NextIndex++;
-			}
-
-			Directory _TempDir;
-
-			_TempDir.Path = _Path + _DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path.substr(_Path.size(), _NextIndex);
-
-			_Result.GetDirectory(_Path).SubDirectories.EmplaceBack((Directory&&)(_TempDir));
-
-			_Path += _DirectoryDiff.AddedDirectories[_IndexAddedDirectories].Path.substr(_Path.size(), _NextIndex);
+			close(_LockedDirectoryHandle);
+			return NullLockedDirectoryHandle;
 		}
 	}
 
-	for (size_t _IndexDeletedFiles = 0; _IndexDeletedFiles < _DirectoryDiff.DeletedFiles.GetSize(); _IndexDeletedFiles++)
-	{
-		if (!_Result.DirectoryExists(_DirectoryDiff.DeletedFiles[_IndexDeletedFiles].GetParentPath()))
-		{
-			continue;
-		}
-
-		Directory& _Parent = _Result.GetDirectory(_DirectoryDiff.DeletedFiles[_IndexDeletedFiles].GetParentPath());
-
-		bool _Found = false;
-		size_t _Index = 0;
-
-		while (_Index < _Parent.Files.GetSize())
-		{
-			if (_Parent.Files[_Index].Path == _DirectoryDiff.DeletedFiles[_IndexDeletedFiles].Path)
-			{
-				_Found = true;
-				break;
-			}
-
-			_Index++;
-		}
-
-		if (!_Found)
-		{
-			continue;
-		}
-
-		_Parent.Files.Erase(_Index);
-	}
-
-	for (size_t _IndexAddedFiles = 0; _IndexAddedFiles < _DirectoryDiff.AddedFiles.GetSize(); _IndexAddedFiles++)
-	{
-		if (_Result.FileExists(_DirectoryDiff.AddedFiles[_IndexAddedFiles].Path))
-		{
-			continue;
-		}
-
-		if (!_Result.DirectoryExists(_DirectoryDiff.AddedFiles[_IndexAddedFiles].GetParentPath()))
-		{
-			continue;
-		}
-
-		Directory& _Parent = _Result.GetDirectory(_DirectoryDiff.AddedFiles[_IndexAddedFiles].GetParentPath());
-
-		File _TempFile;
-
-		_TempFile.Path = _DirectoryDiff.AddedFiles[_IndexAddedFiles].Path;
-		_TempFile.LastWrite = _DirectoryDiff.AddedFiles[_IndexAddedFiles].LastWrite;
-
-		if (_LoadContent)
-		{
-			std::ifstream _Stream(_TempFile.Path);
-
-			if (!_Stream.is_open())
-			{
-				continue;
-			}
-
-			if (!_TempFile.Content.Load(_Stream))
-			{
-				continue;
-			}
-		}
-
-		_Parent.Files.EmplaceBack((File&&)(_TempFile));
-	}
-
-	for (size_t _IndexModifiedFiles = 0; _IndexModifiedFiles < _DirectoryDiff.ModifiedFiles.GetSize(); _IndexModifiedFiles++)
-	{
-		if (!_Result.FileExists(_DirectoryDiff.ModifiedFiles[_IndexModifiedFiles].Path))
-		{
-			continue;
-		}
-
-		File _TempFile;
-
-		_TempFile.Path = _DirectoryDiff.ModifiedFiles[_IndexModifiedFiles].Path;
-		_TempFile.LastWrite = _DirectoryDiff.ModifiedFiles[_IndexModifiedFiles].LastWrite;
-
-		if (_LoadContent)
-		{
-			std::ifstream _Stream(_TempFile.Path);
-
-			if (!_Stream.is_open())
-			{
-				continue;
-			}
-
-			if (!_TempFile.Content.Load(_Stream))
-			{
-				continue;
-			}
-		}
-
-		_Result.GetFile(_DirectoryDiff.ModifiedFiles[_IndexModifiedFiles].Path) = (File&&)(_TempFile);
-	}
-
-	return _Result;
+	return _LockedDirectoryHandle;
 }
+
+void BFW_API BFW::FileSystem::ReleaseLockedDirectory(LockedDirectoryHandle& _LockedDirectoryHandle)
+{
+	if (_LockedDirectoryHandle == NullLockedDirectoryHandle)
+	{
+		return;
+	}
+
+	flock(_LockedDirectoryHandle, LOCK_UN);
+	close(_LockedDirectoryHandle);
+	_LockedDirectoryHandle = NullLockedDirectoryHandle;
+}
+
+#endif

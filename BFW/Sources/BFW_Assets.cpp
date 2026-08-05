@@ -493,28 +493,28 @@ const bool BFW::Assets::BitMap::Load(const FileSystem::FileContent& _FileContent
 	{
 		if (_InfoHeader.BitCount == 32)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					Data[(_X + _Y * Width) * ChannelsCount + 0] = _FileContent[_X * 4 + (Height - 1 - _Y) * (Width * 4 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 1] = _FileContent[_X * 4 + (Height - 1 - _Y) * (Width * 4 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 2] = _FileContent[_X * 4 + (Height - 1 - _Y) * (Width * 4 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 3] = _FileContent[_X * 4 + (Height - 1 - _Y) * (Width * 4 + _RowPadding) + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0] = _FileContent[_PositionX * 4 + (Height - 1 - _PositionY) * (Width * 4 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1] = _FileContent[_PositionX * 4 + (Height - 1 - _PositionY) * (Width * 4 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2] = _FileContent[_PositionX * 4 + (Height - 1 - _PositionY) * (Width * 4 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 3] = _FileContent[_PositionX * 4 + (Height - 1 - _PositionY) * (Width * 4 + _RowPadding) + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
 				}
 			}
 		}
 
 		if (_InfoHeader.BitCount == 24)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					Data[(_X + _Y * Width) * ChannelsCount + 0] = _FileContent[_X * 3 + (Height - 1 - _Y) * (Width * 3 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 1] = _FileContent[_X * 3 + (Height - 1 - _Y) * (Width * 3 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 2] = _FileContent[_X * 3 + (Height - 1 - _Y) * (Width * 3 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 3] = 255;
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0] = _FileContent[_PositionX * 3 + (Height - 1 - _PositionY) * (Width * 3 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1] = _FileContent[_PositionX * 3 + (Height - 1 - _PositionY) * (Width * 3 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2] = _FileContent[_PositionX * 3 + (Height - 1 - _PositionY) * (Width * 3 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 3] = 255;
 				}
 			}
 		}
@@ -523,28 +523,28 @@ const bool BFW::Assets::BitMap::Load(const FileSystem::FileContent& _FileContent
 	{
 		if (_InfoHeader.BitCount == 32)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					Data[(_X + _Y * Width) * ChannelsCount + 0] = _FileContent[_X * 4 + _Y * (Width * 4 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 1] = _FileContent[_X * 4 + _Y * (Width * 4 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 2] = _FileContent[_X * 4 + _Y * (Width * 4 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 3] = _FileContent[_X * 4 + _Y * (Width * 4 + _RowPadding) + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0] = _FileContent[_PositionX * 4 + _PositionY * (Width * 4 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1] = _FileContent[_PositionX * 4 + _PositionY * (Width * 4 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2] = _FileContent[_PositionX * 4 + _PositionY * (Width * 4 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 3] = _FileContent[_PositionX * 4 + _PositionY * (Width * 4 + _RowPadding) + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
 				}
 			}
 		}
 
 		if (_InfoHeader.BitCount == 24)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					Data[(_X + _Y * Width) * ChannelsCount + 0] = _FileContent[_X * 3 + _Y * (Width * 3 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 1] = _FileContent[_X * 3 + _Y * (Width * 3 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 2] = _FileContent[_X * 3 + _Y * (Width * 3 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
-					Data[(_X + _Y * Width) * ChannelsCount + 3] = 255;
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0] = _FileContent[_PositionX * 3 + _PositionY * (Width * 3 + _RowPadding) + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1] = _FileContent[_PositionX * 3 + _PositionY * (Width * 3 + _RowPadding) + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2] = _FileContent[_PositionX * 3 + _PositionY * (Width * 3 + _RowPadding) + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)];
+					Data[(_PositionX + _PositionY * Width) * ChannelsCount + 3] = 255;
 				}
 			}
 		}
@@ -617,56 +617,56 @@ BFW::FileSystem::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 	{
 		if (ChannelsCount == 1)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
 				}
 			}
 		}
 
 		if (ChannelsCount == 2)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 1];
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
 				}
 			}
 		}
 
 		if (ChannelsCount == 3)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 1];
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 2];
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
 				}
 			}
 		}
 
 		if (ChannelsCount == 4)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 1];
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 2];
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + _Y * Width) * ChannelsCount + 3];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + _PositionY * Width) * ChannelsCount + 3];
 				}
 			}
 		}
@@ -675,56 +675,56 @@ BFW::FileSystem::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 	{
 		if (ChannelsCount == 1)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
 				}
 			}
 		}
 
 		if (ChannelsCount == 2)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 1];
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 0;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
 				}
 			}
 		}
 
 		if (ChannelsCount == 3)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 1];
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 2];
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 2];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = 255;
 				}
 			}
 		}
 
 		if (ChannelsCount == 4)
 		{
-			for (size_t _Y = 0; _Y < Height; _Y++)
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
 			{
-				for (size_t _X = 0; _X < Width; _X++)
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
 				{
-					_FileContent[(_X + _Y * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 0];
-					_FileContent[(_X + _Y * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 1];
-					_FileContent[(_X + _Y * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 2];
-					_FileContent[(_X + _Y * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_X + (Height - 1 - _Y) * Width) * ChannelsCount + 3];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 2];
+					_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader)] = Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 3];
 				}
 			}
 		}
@@ -778,14 +778,14 @@ const uint8_t& BFW::Assets::BitMap::operator* () const
 	return *Data;
 }
 
-uint8_t* BFW::Assets::BitMap::operator[] (const size_t _Y)
+uint8_t* BFW::Assets::BitMap::operator[] (const size_t _PositionY)
 {
-	return Data + _Y * Width * ChannelsCount;
+	return Data + _PositionY * Width * ChannelsCount;
 }
 
-const uint8_t* BFW::Assets::BitMap::operator* (const size_t _Y) const
+const uint8_t* BFW::Assets::BitMap::operator* (const size_t _PositionY) const
 {
-	return Data + _Y * Width * ChannelsCount;
+	return Data + _PositionY * Width * ChannelsCount;
 }
 
 BFW::Assets::BitMap& BFW::Assets::BitMap::operator= (const BitMap& _Other)

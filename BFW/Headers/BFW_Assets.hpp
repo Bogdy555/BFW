@@ -42,8 +42,8 @@ namespace BFW
 			uint8_t& operator* ();
 			const uint8_t& operator* () const;
 
-			uint8_t* operator[] (const size_t _Y);
-			const uint8_t* operator* (const size_t _Y) const;
+			uint8_t* operator[] (const size_t _PositionY);
+			const uint8_t* operator* (const size_t _PositionY) const;
 
 			BitMap& operator= (const BitMap& _Other);
 			BitMap& operator= (BitMap&& _Other) noexcept;

@@ -21,11 +21,11 @@ namespace BFW_ESP32
 
 			Application();
 			Application(const Application& _Other) = delete;
-			Application(Application&& _Other) noexcept;
+			Application(Application&& _Other) noexcept = delete;
 			~Application();
 
 			Application& operator= (const Application& _Other) = delete;
-			Application& operator= (Application&& _Other) noexcept;
+			Application& operator= (Application&& _Other) noexcept = delete;
 
 		private:
 
@@ -47,13 +47,13 @@ namespace BFW_ESP32
 
 			MainMenu();
 			MainMenu(const MainMenu& _Other) = delete;
-			MainMenu(MainMenu&& _Other) noexcept;
+			MainMenu(MainMenu&& _Other) noexcept = delete;
 			~MainMenu();
 
 			const uint64_t GetType() const override;
 
 			MainMenu& operator= (const MainMenu& _Other) = delete;
-			MainMenu& operator= (MainMenu&& _Other) noexcept;
+			MainMenu& operator= (MainMenu&& _Other) noexcept = delete;
 
 		private:
 

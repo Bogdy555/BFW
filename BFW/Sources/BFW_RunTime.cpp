@@ -4,25 +4,9 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
-}
-
-BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), WorkingDirectory((FileSystem::Directory&&)(_Other.WorkingDirectory)), SharedInstanceMemory((MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory)), SharedInstanceMutex((MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex)), InstanceHandle(_Other.InstanceHandle), CmdLine(_Other.CmdLine), ShowCmd(_Other.ShowCmd)
-{
-	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
-	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
-
-	_Other.On = false;
-	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
-	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 1.0f / 10.0f;
-	_Other.SimulationSpeed = 1.0f;
-	_Other.Sync = 60;
-	_Other.InstanceHandle = NULL;
-	_Other.CmdLine = nullptr;
-	_Other.ShowCmd = SW_HIDE;
 }
 
 #endif
@@ -34,21 +18,6 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 }
 
-BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), WorkingDirectory((FileSystem::Directory&&)(_Other.WorkingDirectory)), SharedInstanceMemory((MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory)), SharedInstanceMutex((MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex)), ArgC(_Other.ArgC), ArgV(_Other.ArgV)
-{
-	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
-	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
-
-	_Other.On = false;
-	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
-	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 1.0f / 10.0f;
-	_Other.SimulationSpeed = 1.0f;
-	_Other.Sync = 60;
-	_Other.ArgC = 0;
-	_Other.ArgV = nullptr;
-}
-
 #endif
 
 #ifdef BFW_ESP32_PLATFORM
@@ -56,19 +25,6 @@ BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Othe
 BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory()
 {
 
-}
-
-BFW::RunTime::Application::Application(Application&& _Other) noexcept : On(_Other.On), ReturnValue(_Other.ReturnValue), CurrentMenu(_Other.CurrentMenu), FrameTime(), LagTime(_Other.LagTime), SimulationSpeed(_Other.SimulationSpeed), Sync(_Other.Sync), WorkingDirectory((FileSystem::Directory&&)(_Other.WorkingDirectory))
-{
-	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
-	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
-
-	_Other.On = false;
-	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
-	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 1.0f / 10.0f;
-	_Other.SimulationSpeed = 1.0f;
-	_Other.Sync = 60;
 }
 
 #endif
@@ -106,7 +62,49 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	CmdLine = _CmdLine;
 	ShowCmd = _ShowCmd;
 
-	WorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory(), true);
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
+
+	Resources.Emplace(BFW_TO_STRING(BFW_BMP_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+	Resources.Emplace(BFW_TO_STRING(BFW_HDR_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+	Resources.Emplace(BFW_TO_STRING(BFW_WAV_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+	Resources.Emplace(BFW_TO_STRING(BFW_WFOBJ_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+	Resources.Emplace(BFW_TO_STRING(BFW_MTL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+	Resources.Emplace(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+
+	for (size_t _ResourceId = 0; _ResourceId < (size_t)((uint16_t)(-1)) + 1; _ResourceId++)
+	{
+		FileSystem::FileContent _FileContent;
+
+		if (_FileContent.Load(BFW_BMP_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_BMP_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+
+		if (_FileContent.Load(BFW_HDR_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_HDR_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+
+		if (_FileContent.Load(BFW_WAV_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_WAV_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+
+		if (_FileContent.Load(BFW_WFOBJ_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_WFOBJ_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+
+		if (_FileContent.Load(BFW_MTL_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_MTL_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+
+		if (_FileContent.Load(BFW_GLSL_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+	}
 
 	Setup();
 	while (On)
@@ -124,6 +122,8 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	Sync = 60;
 
 	WorkingDirectory = FileSystem::Directory();
+
+	Resources = Trie<Trie<FileSystem::FileContent>>();
 
 	InstanceHandle = NULL;
 	CmdLine = nullptr;
@@ -171,7 +171,7 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	ArgC = _ArgC;
 	ArgV = _ArgV;
 
-	WorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory(), true);
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
 
 	Setup();
 	while (On)
@@ -212,7 +212,7 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 const int32_t BFW::RunTime::Application::Run()
 {
-	WorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory(), true);
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
 
 	Setup();
 	while (On)
@@ -277,7 +277,7 @@ void BFW::RunTime::Application::SetSync(const uint64_t _Sync)
 
 void BFW::RunTime::Application::UpdateWorkingDirectory()
 {
-	FileSystem::Directory _NewWorkingDirectory = FileSystem::LoadDirectory(FileSystem::GetWorkingDirectory());
+	FileSystem::Directory _NewWorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
 
 	FileSystem::DirectoryDiff _DirectoryDiff = FileSystem::DirectoryDiff::Get(WorkingDirectory, _NewWorkingDirectory);
 
@@ -286,7 +286,7 @@ void BFW::RunTime::Application::UpdateWorkingDirectory()
 		return;
 	}
 
-	WorkingDirectory = FileSystem::ApplyDirectoryDiff(WorkingDirectory, _DirectoryDiff, true);
+	WorkingDirectory = _DirectoryDiff.Apply(WorkingDirectory, true);
 }
 
 const bool BFW::RunTime::Application::CheckOn() const
@@ -353,6 +353,15 @@ const BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory
 {
 	return WorkingDirectory;
 }
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+const BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>& BFW::RunTime::Application::GetResources() const
+{
+	return Resources;
+}
+
+#endif
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -435,127 +444,11 @@ const int32_t BFW::RunTime::Application::GetShowCmd() const
 
 #endif
 
-#ifdef BFW_WINDOWS_PLATFORM
-
-BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	On = _Other.On;
-	ReturnValue = _Other.ReturnValue;
-	CurrentMenu = _Other.CurrentMenu;
-	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
-	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
-	LagTime = _Other.LagTime;
-	SimulationSpeed = _Other.SimulationSpeed;
-	Sync = _Other.Sync;
-	WorkingDirectory = (FileSystem::Directory&&)(_Other.WorkingDirectory);
-	SharedInstanceMemory = (MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory);
-	SharedInstanceMutex = (MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex);
-	InstanceHandle = _Other.InstanceHandle;
-	CmdLine = _Other.CmdLine;
-	ShowCmd = _Other.ShowCmd;
-
-	_Other.On = false;
-	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
-	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 1.0f / 10.0f;
-	_Other.SimulationSpeed = 1.0f;
-	_Other.Sync = 60;
-	_Other.InstanceHandle = NULL;
-	_Other.CmdLine = nullptr;
-	_Other.ShowCmd = SW_HIDE;
-
-	return *this;
-}
-
-#endif
-
-#ifdef BFW_LINUX_PLATFORM
-
-BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	On = _Other.On;
-	ReturnValue = _Other.ReturnValue;
-	CurrentMenu = _Other.CurrentMenu;
-	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
-	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
-	LagTime = _Other.LagTime;
-	SimulationSpeed = _Other.SimulationSpeed;
-	Sync = _Other.Sync;
-	WorkingDirectory = (FileSystem::Directory&&)(_Other.WorkingDirectory);
-	SharedInstanceMemory = (MultiProcessing::SharedMemory&&)(_Other.SharedInstanceMemory);
-	SharedInstanceMutex = (MultiProcessing::SharedMutex&&)(_Other.SharedInstanceMutex);
-	ArgC = _Other.ArgC;
-	ArgV = _Other.ArgV;
-
-	_Other.On = false;
-	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
-	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 1.0f / 10.0f;
-	_Other.SimulationSpeed = 1.0f;
-	_Other.Sync = 60;
-	_Other.ArgC = 0;
-	_Other.ArgV = nullptr;
-
-	return *this;
-}
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-BFW::RunTime::Application& BFW::RunTime::Application::operator= (Application&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	On = _Other.On;
-	ReturnValue = _Other.ReturnValue;
-	CurrentMenu = _Other.CurrentMenu;
-	FrameTime[_PreviousState] = (Time::Timer&&)(_Other.FrameTime[_PreviousState]);
-	FrameTime[_CurrentState] = (Time::Timer&&)(_Other.FrameTime[_CurrentState]);
-	LagTime = _Other.LagTime;
-	SimulationSpeed = _Other.SimulationSpeed;
-	Sync = _Other.Sync;
-	WorkingDirectory = (FileSystem::Directory&&)(_Other.WorkingDirectory);
-
-	_Other.On = false;
-	_Other.ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
-	_Other.CurrentMenu = _NullMenu;
-	_Other.LagTime = 1.0f / 10.0f;
-	_Other.SimulationSpeed = 1.0f;
-	_Other.Sync = 60;
-
-	return *this;
-}
-
-#endif
-
 
 
 BFW::RunTime::Menu::Menu() : On(false), NextMenu(_NullMenu), QueuedMenu(_NullMenu), ApplicationObj(nullptr), ParentMenu(nullptr)
 {
 
-}
-
-BFW::RunTime::Menu::Menu(Menu&& _Other) noexcept : On(_Other.On), NextMenu(_Other.NextMenu), QueuedMenu(_Other.QueuedMenu), ApplicationObj(_Other.ApplicationObj), ParentMenu(_Other.ParentMenu)
-{
-	_Other.On = false;
-	_Other.NextMenu = _NullMenu;
-	_Other.QueuedMenu = _NullMenu;
-	_Other.ApplicationObj = nullptr;
-	_Other.ParentMenu = nullptr;
 }
 
 BFW::RunTime::Menu::~Menu()
@@ -620,28 +513,6 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 	NextMenu = _NullMenu;
 
 	return _NextMenu;
-}
-
-BFW::RunTime::Menu& BFW::RunTime::Menu::operator= (Menu&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	On = _Other.On;
-	NextMenu = _Other.NextMenu;
-	QueuedMenu = _Other.QueuedMenu;
-	ApplicationObj = _Other.ApplicationObj;
-	ParentMenu = _Other.ParentMenu;
-
-	_Other.On = false;
-	_Other.NextMenu = _NullMenu;
-	_Other.QueuedMenu = _NullMenu;
-	_Other.ApplicationObj = nullptr;
-	_Other.ParentMenu = nullptr;
-
-	return *this;
 }
 
 void BFW::RunTime::Menu::TurnOn()
@@ -759,3 +630,12 @@ const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory() cons
 {
 	return ApplicationObj->GetWorkingDirectory();
 }
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+const BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>& BFW::RunTime::Menu::GetResources() const
+{
+	return ApplicationObj->GetResources();
+}
+
+#endif

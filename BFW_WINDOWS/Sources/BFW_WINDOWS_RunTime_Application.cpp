@@ -7,17 +7,6 @@ BFW_WINDOWS::RunTime::Application::Application() : BFW::RunTime::Application(), 
 
 }
 
-BFW_WINDOWS::RunTime::Application::Application(Application&& _Other) noexcept : BFW::RunTime::Application((BFW::RunTime::Application&&)(_Other)), Controllers(), MainWindow(_Other.MainWindow), MainWindowData(_Other.MainWindowData), ChildWindows((BFW::Vector<BFW::GUI::Window*>&&)(_Other.ChildWindows)), ChildWindowsData((BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData))
-{
-	for (size_t _Index = 0; _Index < 4; _Index++)
-	{
-		Controllers[_Index] = (BFW::Input::Controller&&)(_Other.Controllers[_Index]);
-	}
-
-	_Other.MainWindow = nullptr;
-	_Other.MainWindowData = nullptr;
-}
-
 BFW_WINDOWS::RunTime::Application::~Application()
 {
 
@@ -110,30 +99,6 @@ BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Application::G
 const BFW::Vector<BFW_WINDOWS::GUI::WindowData*>& BFW_WINDOWS::RunTime::Application::GetChildWindowsData() const
 {
 	return ChildWindowsData;
-}
-
-BFW_WINDOWS::RunTime::Application& BFW_WINDOWS::RunTime::Application::operator= (Application&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	*(BFW::RunTime::Application*)(this) = (BFW::RunTime::Application&&)(_Other);
-	MainWindow = _Other.MainWindow;
-	MainWindowData = _Other.MainWindowData;
-	ChildWindows = (BFW::Vector<BFW::GUI::Window*>&&)(_Other.ChildWindows);
-	ChildWindowsData = (BFW::Vector<GUI::WindowData*>&&)(_Other.ChildWindowsData);
-
-	for (size_t _Index = 0; _Index < 4; _Index++)
-	{
-		Controllers[_Index] = (BFW::Input::Controller&&)(_Other.Controllers[_Index]);
-	}
-
-	_Other.MainWindow = nullptr;
-	_Other.MainWindowData = nullptr;
-
-	return *this;
 }
 
 void BFW_WINDOWS::RunTime::Application::Setup()

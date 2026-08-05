@@ -7,26 +7,9 @@ BFW_ESP32::RunTime::Application::Application() : BFW::RunTime::Application()
 
 }
 
-BFW_ESP32::RunTime::Application::Application(Application&& _Other) noexcept : BFW::RunTime::Application((BFW::RunTime::Application&&)(_Other))
-{
-
-}
-
 BFW_ESP32::RunTime::Application::~Application()
 {
 
-}
-
-BFW_ESP32::RunTime::Application& BFW_ESP32::RunTime::Application::operator= (Application&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	*(BFW::RunTime::Application*)(this) = (BFW::RunTime::Application&&)(_Other);
-
-	return *this;
 }
 
 void BFW_ESP32::RunTime::Application::Setup()

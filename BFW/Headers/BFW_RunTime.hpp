@@ -21,7 +21,7 @@ namespace BFW
 
 			Application();
 			Application(const Application& _Other) = delete;
-			Application(Application&& _Other) noexcept;
+			Application(Application&& _Other) noexcept = delete;
 			virtual ~Application();
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -69,6 +69,12 @@ namespace BFW
 
 			const FileSystem::Directory& GetWorkingDirectory() const;
 
+#ifdef BFW_WINDOWS_PLATFORM
+
+			const Trie<Trie<FileSystem::FileContent>>& GetResources() const;
+
+#endif
+
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 			MultiProcessing::SharedMemory& GetSharedInstanceMemory();
@@ -89,7 +95,7 @@ namespace BFW
 #endif
 
 			Application& operator= (const Application& _Other) = delete;
-			Application& operator= (Application&& _Other) noexcept;
+			Application& operator= (Application&& _Other) noexcept = delete;
 
 		protected:
 
@@ -110,6 +116,12 @@ namespace BFW
 			uint64_t Sync;
 
 			FileSystem::Directory WorkingDirectory;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+			Trie<Trie<FileSystem::FileContent>> Resources;
+
+#endif
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -147,7 +159,7 @@ namespace BFW
 
 			Menu();
 			Menu(const Menu& _Other) = delete;
-			Menu(Menu&& _Other) noexcept;
+			Menu(Menu&& _Other) noexcept = delete;
 			virtual ~Menu();
 
 			const uint64_t Run(Application* _ApplicationObj, Menu* _ParentMenu = nullptr);
@@ -155,7 +167,7 @@ namespace BFW
 			virtual const uint64_t GetType() const = 0;
 
 			Menu& operator= (const Menu& _Other) = delete;
-			Menu& operator= (Menu&& _Other) noexcept;
+			Menu& operator= (Menu&& _Other) noexcept = delete;
 
 			void TurnOn();
 			void Close(const uint64_t _NextMenu);
@@ -186,6 +198,12 @@ namespace BFW
 			const uint64_t GetSync() const;
 
 			const FileSystem::Directory& GetWorkingDirectory() const;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+			const Trie<Trie<FileSystem::FileContent>>& GetResources() const;
+
+#endif
 
 		protected:
 

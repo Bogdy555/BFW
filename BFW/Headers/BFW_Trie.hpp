@@ -77,6 +77,41 @@ namespace BFW
 			_Child->Push(_Name + 1, _Data);
 		}
 
+		void Push(const CharT* _Name, const size_t _Length, ConstType& _Data)
+		{
+			if (!_Name)
+			{
+				throw nullptr;
+			}
+
+			if (_Length == 0)
+			{
+				HasData = true;
+				Data = _Data;
+				return;
+			}
+
+			Trie* _Child = nullptr;
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
+				{
+					_Child = &Childs[_Index];
+					break;
+				}
+			}
+
+			if (_Child == nullptr)
+			{
+				Childs.PushBack(Trie());
+				_Child = &Childs[Childs.GetSize() - 1];
+				_Child->Id = _Name[0];
+			}
+
+			_Child->Push(_Name + 1, _Length - 1, _Data);
+		}
+
 		void Emplace(const CharT* _Name, Type&& _Data)
 		{
 			if (!_Name)
@@ -109,7 +144,42 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->Emplace(_Name + 1, _Data);
+			_Child->Emplace(_Name + 1, (Type&&)(_Data));
+		}
+
+		void Emplace(const CharT* _Name, const size_t _Length, Type&& _Data)
+		{
+			if (!_Name)
+			{
+				throw nullptr;
+			}
+
+			if (_Length == 0)
+			{
+				HasData = true;
+				Data = (Type&&)(_Data);
+				return;
+			}
+
+			Trie* _Child = nullptr;
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
+				{
+					_Child = &Childs[_Index];
+					break;
+				}
+			}
+
+			if (_Child == nullptr)
+			{
+				Childs.PushBack(Trie());
+				_Child = &Childs[Childs.GetSize() - 1];
+				_Child->Id = _Name[0];
+			}
+
+			_Child->Emplace(_Name + 1, _Length - 1, (Type&&)(_Data));
 		}
 
 		void Erase(const CharT* _Name)

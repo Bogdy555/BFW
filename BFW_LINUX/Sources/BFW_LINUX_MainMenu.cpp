@@ -7,11 +7,6 @@ BFW_LINUX::RunTime::MainMenu::MainMenu() : BFW::RunTime::Menu()
 
 }
 
-BFW_LINUX::RunTime::MainMenu::MainMenu(MainMenu&& _Other) noexcept : BFW::RunTime::Menu((BFW::RunTime::Menu&&)(_Other))
-{
-
-}
-
 BFW_LINUX::RunTime::MainMenu::~MainMenu()
 {
 
@@ -20,18 +15,6 @@ BFW_LINUX::RunTime::MainMenu::~MainMenu()
 const uint64_t BFW_LINUX::RunTime::MainMenu::GetType() const
 {
 	return _MainMenu;
-}
-
-BFW_LINUX::RunTime::MainMenu& BFW_LINUX::RunTime::MainMenu::operator= (MainMenu&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	*(BFW::RunTime::Menu*)(this) = (BFW::RunTime::Menu&&)(_Other);
-
-	return *this;
 }
 
 void BFW_LINUX::RunTime::MainMenu::SpawnQueuedMenu(const uint64_t _QueuedMenu)

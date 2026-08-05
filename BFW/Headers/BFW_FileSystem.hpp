@@ -65,54 +65,66 @@ namespace BFW
 
 		};
 
-		struct BFW_API File
+		class BFW_API File
 		{
+
+		public:
 
 			BFW_STRING_TYPE Path;
 			FileContent Content;
 			time_t LastWrite;
 
 			File();
-			File(const File& _Other) = default;
+			File(const File& _Other);
 			File(File&& _Other) noexcept;
 			~File();
 
 			const BFW_STRING_TYPE GetParentPath() const;
+			const BFW_STRING_TYPE GetName() const;
+			const BFW_STRING_TYPE GetExtension() const;
 
-			File& operator= (const File& _Other) = default;
+			File& operator= (const File& _Other);
 			File& operator= (File&& _Other) noexcept;
+
+			static const File Load(const BFW_STRING_TYPE& _Path, const bool _LoadContent = false);
 
 		};
 
-		struct BFW_API Directory
+		class BFW_API Directory
 		{
+
+		public:
 
 			BFW_STRING_TYPE Path;
 			Vector<File> Files;
 			Vector<Directory> SubDirectories;
 
 			Directory();
-			Directory(const Directory& _Other) = default;
+			Directory(const Directory& _Other);
 			Directory(Directory&& _Other) noexcept;
 			~Directory();
-
-			File& GetFile(const BFW_STRING_TYPE& _Path);
-			const File& GetFile(const BFW_STRING_TYPE& _Path) const;
-			Directory& GetDirectory(const BFW_STRING_TYPE& _Path);
-			const Directory& GetDirectory(const BFW_STRING_TYPE& _Path) const;
 
 			const BFW_STRING_TYPE GetParentPath() const;
 
 			const bool FileExists(const BFW_STRING_TYPE& _Path) const;
 			const bool DirectoryExists(const BFW_STRING_TYPE& _Path) const;
 
-			Directory& operator= (const Directory& _Other) = default;
+			File& GetFile(const BFW_STRING_TYPE& _Path);
+			const File& GetFile(const BFW_STRING_TYPE& _Path) const;
+			Directory& GetDirectory(const BFW_STRING_TYPE& _Path);
+			const Directory& GetDirectory(const BFW_STRING_TYPE& _Path) const;
+
+			Directory& operator= (const Directory& _Other);
 			Directory& operator= (Directory&& _Other) noexcept;
+
+			static const Directory Load(const BFW_STRING_TYPE& _Path, const bool _LoadContent = false);
 
 		};
 
-		struct BFW_API DirectoryDiff
+		class BFW_API DirectoryDiff
 		{
+
+		public:
 
 			Vector<Directory> AddedDirectories;
 			Vector<Directory> DeletedDirectories;
@@ -121,9 +133,11 @@ namespace BFW
 			Vector<File> ModifiedFiles;
 
 			DirectoryDiff();
-			DirectoryDiff(const DirectoryDiff& _Other) = default;
+			DirectoryDiff(const DirectoryDiff& _Other);
 			DirectoryDiff(DirectoryDiff&& _Other) noexcept;
 			~DirectoryDiff();
+
+			const Directory Apply(const Directory& _Old, const bool _LoadContent = false);
 
 			const bool Empty() const;
 
@@ -136,17 +150,19 @@ namespace BFW
 			const DirectoryDiff operator- (const Directory& _Directory) const;
 			DirectoryDiff& operator-= (const Directory& _Directory);
 
-			DirectoryDiff& operator= (const DirectoryDiff& _Other) = default;
+			DirectoryDiff& operator= (const DirectoryDiff& _Other);
 			DirectoryDiff& operator= (DirectoryDiff&& _Other) noexcept;
 
 			static const DirectoryDiff Get(const Directory& _Old, const Directory& _New);
 
 		};
 
+		extern const LockedDirectoryHandle NullLockedDirectoryHandle;
+
 		const BFW_STRING_TYPE BFW_API GetWorkingDirectory();
-		const File BFW_API LoadFile(const BFW_STRING_TYPE& _Path, const bool _LoadContent = false);
-		const Directory BFW_API LoadDirectory(const BFW_STRING_TYPE& _Path, const bool _LoadContent = false);
-		const Directory BFW_API ApplyDirectoryDiff(const Directory& _Old, const DirectoryDiff& _DirectoryDiff, const bool _LoadContent = false);
+
+		const LockedDirectoryHandle BFW_API LockDirectory(const BFW_STRING_TYPE& _Path);
+		void BFW_API ReleaseLockedDirectory(LockedDirectoryHandle& _LockedDirectoryHandle);
 
 	}
 

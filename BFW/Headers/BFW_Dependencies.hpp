@@ -24,10 +24,10 @@
 #ifdef BFW_LINUX_PLATFORM
 
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <semaphore.h>
 #include <linux/joystick.h>
 
@@ -166,11 +166,23 @@ namespace BFW
 
 		class BFW_API FileContent;
 
-		struct BFW_API File;
+		class BFW_API File;
 
-		struct BFW_API Directory;
+		class BFW_API Directory;
 
-		struct BFW_API DirectoryDiff;
+		class BFW_API DirectoryDiff;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+		typedef HANDLE LockedDirectoryHandle;
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+		typedef int LockedDirectoryHandle;
+
+#endif
 
 	}
 
