@@ -6,8 +6,8 @@ fi
 
 pushd "$SolutionDir"
 
-CompileFlags="-Wall -Wno-unused-variable -std=c++20 -shared-libstdc++ -shared-libgcc -fPIC -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_BUILD_DYNAMIC"
-LinkFlags="-shared -shared-libstdc++ -shared-libgcc"
+CompileFlags="-Wall -Wno-unused-variable -std=c++20 -fPIC -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_BUILD_DYNAMIC"
+LinkFlags="-shared"
 
 if [ "$Configuration" == "Debug" ]; then
 	CompileFlags="$CompileFlags -g -O0 -DBFW_DEBUG"
