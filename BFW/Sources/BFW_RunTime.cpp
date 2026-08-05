@@ -4,7 +4,7 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
@@ -13,7 +13,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
@@ -22,7 +22,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory()
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff()
 {
 
 }
@@ -122,6 +122,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	Sync = 60;
 
 	WorkingDirectory = FileSystem::Directory();
+	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
 
 	Resources = Trie<Trie<FileSystem::FileContent>>();
 
@@ -189,6 +190,7 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	Sync = 60;
 
 	WorkingDirectory = FileSystem::Directory();
+	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
 
 	ArgC = 0;
 	ArgV = nullptr;
@@ -230,6 +232,7 @@ const int32_t BFW::RunTime::Application::Run()
 	Sync = 60;
 
 	WorkingDirectory = FileSystem::Directory();
+	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
 
 	int32_t _ReturnValue = ReturnValue;
 	ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
@@ -279,14 +282,14 @@ void BFW::RunTime::Application::UpdateWorkingDirectory()
 {
 	FileSystem::Directory _NewWorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
 
-	FileSystem::DirectoryDiff _DirectoryDiff = FileSystem::DirectoryDiff::Get(WorkingDirectory, _NewWorkingDirectory);
+	WorkingDirectoryDiff = FileSystem::DirectoryDiff::Get(WorkingDirectory, _NewWorkingDirectory);
 
-	if (_DirectoryDiff.Empty())
+	if (WorkingDirectoryDiff.Empty())
 	{
 		return;
 	}
 
-	WorkingDirectory = _DirectoryDiff.Apply(WorkingDirectory, true);
+	WorkingDirectory = WorkingDirectoryDiff.Apply(WorkingDirectory, true);
 }
 
 const bool BFW::RunTime::Application::CheckOn() const
@@ -352,6 +355,11 @@ const uint64_t BFW::RunTime::Application::GetSync() const
 const BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory() const
 {
 	return WorkingDirectory;
+}
+
+const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirectoryDiff() const
+{
+	return WorkingDirectoryDiff;
 }
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -629,6 +637,11 @@ const uint64_t BFW::RunTime::Menu::GetSync() const
 const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory() const
 {
 	return ApplicationObj->GetWorkingDirectory();
+}
+
+const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDiff() const
+{
+	return ApplicationObj->GetWorkingDirectoryDiff();
 }
 
 #ifdef BFW_WINDOWS_PLATFORM

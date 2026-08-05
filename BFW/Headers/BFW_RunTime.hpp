@@ -68,6 +68,7 @@ namespace BFW
 			const uint64_t GetSync() const;
 
 			const FileSystem::Directory& GetWorkingDirectory() const;
+			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -116,6 +117,7 @@ namespace BFW
 			uint64_t Sync;
 
 			FileSystem::Directory WorkingDirectory;
+			FileSystem::DirectoryDiff WorkingDirectoryDiff;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -198,6 +200,7 @@ namespace BFW
 			const uint64_t GetSync() const;
 
 			const FileSystem::Directory& GetWorkingDirectory() const;
+			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
