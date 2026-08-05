@@ -501,7 +501,7 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 		BFW_LINUX_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
 		BFW_ESP32_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
 	}
-	catch (const std::filesystem::filesystem_error _Error)
+	catch (const std::filesystem::filesystem_error&)
 	{
 		_Result = File();
 	}
@@ -831,7 +831,7 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 			}
 		}
 	}
-	catch (const std::filesystem::filesystem_error _Error)
+	catch (const std::filesystem::filesystem_error&)
 	{
 		_Result = Directory();
 	}
