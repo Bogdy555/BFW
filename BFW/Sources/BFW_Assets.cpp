@@ -489,7 +489,7 @@ const bool BFW::Assets::BitMap::Load(const FileSystem::FileContent& _FileContent
 	Width = _InfoHeader.Width;
 	Height = _InfoHeader.Height;
 
-	if (_Flip && _AlreadyFlipped || !_Flip && !_AlreadyFlipped)
+	if ((_Flip && _AlreadyFlipped) || (!_Flip && !_AlreadyFlipped))
 	{
 		if (_InfoHeader.BitCount == 32)
 		{

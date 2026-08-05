@@ -97,7 +97,7 @@ const bool BFW::FileSystem::FileContent::Load(std::ifstream& _File)
 
 	_File.read((char*)(_Data), _Length - 1);
 
-	if (_File.gcount() != _Length - 1)
+	if ((size_t)(_File.gcount()) != _Length - 1)
 	{
 		delete[] _Data;
 		_File.seekg(_CurrentPos, std::ios::beg);
@@ -141,7 +141,7 @@ const bool BFW::FileSystem::FileContent::Load(std::fstream& _File)
 
 	_File.read((char*)(_Data), _Length - 1);
 
-	if (_File.gcount() != _Length - 1)
+	if ((size_t)(_File.gcount()) != _Length - 1)
 	{
 		delete[] _Data;
 		_File.seekg(_CurrentPos, std::ios::beg);
@@ -493,7 +493,9 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 			}
 		}
 
-		_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+		BFW_WINDOWS_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
+		BFW_LINUX_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
+		BFW_ESP32_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
 	}
 	catch (const std::filesystem::filesystem_error& _Error)
 	{
@@ -787,7 +789,9 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 					}
 				}
 
-				_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+				BFW_WINDOWS_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
+				BFW_LINUX_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
+				BFW_ESP32_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
 
 				_Result.Files.EmplaceBack((File&&)(_File));
 			}
@@ -805,7 +809,9 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 					}
 				}
 
-				_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+				BFW_WINDOWS_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
+				BFW_LINUX_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
+				BFW_ESP32_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
 
 				_Result.Files.EmplaceBack((File&&)(_File));
 			}
