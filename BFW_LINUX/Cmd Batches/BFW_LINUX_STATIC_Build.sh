@@ -8,6 +8,9 @@ pushd "$SolutionDir"
 
 source "./BFW/Cmd Batches/BFW_LINUX_STATIC_Build.sh"
 
+Compiler=g++
+Linker=g++
+Files="BFW_LINUX_Application BFW_LINUX_EntryPoint BFW_LINUX_MainMenu"
 CompileFlags="-Wall -Wno-unused-variable -std=c++20 -static-libstdc++ -static-libgcc -I./BFW/Headers/ -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_LINK_STATIC"
 LinkFlags="-static-libstdc++ -static-libgcc -L./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/ -lBFW_STATIC"
 
@@ -31,25 +34,32 @@ if [ "$Platform" == "x86" ]; then
 	LinkFlags="$LinkFlags -m32"
 fi
 
-mkdir -p "./Binaries/"
-mkdir -p "./Binaries/BFW_LINUX_STATIC/"
-mkdir -p "./Binaries/BFW_LINUX_STATIC/$Configuration/"
 mkdir -p "./Binaries/BFW_LINUX_STATIC/$Configuration/$Platform/"
-mkdir -p "./Objects/"
-mkdir -p "./Objects/BFW_LINUX_STATIC/"
-mkdir -p "./Objects/BFW_LINUX_STATIC/$Configuration/"
 mkdir -p "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/"
 
-g++ $CompileFlags -c "./BFW_LINUX/Sources/BFW_LINUX_Application.cpp" -o "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_Application.o"
-g++ $CompileFlags -c "./BFW_LINUX/Sources/BFW_LINUX_EntryPoint.cpp" -o "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_EntryPoint.o"
-g++ $CompileFlags -c "./BFW_LINUX/Sources/BFW_LINUX_MainMenu.cpp" -o "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_MainMenu.o"
+for File in $Files; do
+	$Compiler $CompileFlags -c "./BFW_LINUX/Sources/$File.cpp" -o "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/$File.o" & Jobs+=($!)
+done
 
-g++ "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_Application.o" "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_EntryPoint.o" "./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_MainMenu.o" $LinkFlags -o "./Binaries/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_STATIC"
+for Pid in "${Jobs[@]}"; do
+	wait "$Pid"
+done
+
+for File in $Files; do
+	AllObj+=" ./Objects/BFW_LINUX_STATIC/$Configuration/$Platform/$File.o"
+done
+
+$Linker $AllObj $LinkFlags -o "./Binaries/BFW_LINUX_STATIC/$Configuration/$Platform/BFW_LINUX_STATIC"
 
 if [ -d "./BFW_LINUX/Files" ]; then
 	cp -r "./BFW_LINUX/Files/." "./Binaries/BFW_LINUX_STATIC/$Configuration/$Platform/"
 fi
 
+Jobs=
+AllObj=
+Compiler=
+Linker=
+Files=
 CompileFlags=
 LinkFlags=
 

@@ -8,6 +8,9 @@ pushd "$SolutionDir"
 
 source "./BFW/Cmd Batches/BFW_LINUX_DYNAMIC_Build.sh"
 
+Compiler=g++
+Linker=g++
+Files="BFW_LINUX_Application BFW_LINUX_EntryPoint BFW_LINUX_MainMenu"
 CompileFlags="-Wall -Wno-unused-variable -std=c++20 -I./BFW/Headers/ -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_LINK_DYNAMIC"
 LinkFlags="-L./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/ -lBFW_DYNAMIC"
 
@@ -31,20 +34,22 @@ if [ "$Platform" == "x86" ]; then
 	LinkFlags="$LinkFlags -m32"
 fi
 
-mkdir -p "./Binaries/"
-mkdir -p "./Binaries/BFW_LINUX_DYNAMIC/"
-mkdir -p "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/"
 mkdir -p "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/"
-mkdir -p "./Objects/"
-mkdir -p "./Objects/BFW_LINUX_DYNAMIC/"
-mkdir -p "./Objects/BFW_LINUX_DYNAMIC/$Configuration/"
 mkdir -p "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/"
 
-g++ $CompileFlags -c "./BFW_LINUX/Sources/BFW_LINUX_Application.cpp" -o "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_Application.o"
-g++ $CompileFlags -c "./BFW_LINUX/Sources/BFW_LINUX_EntryPoint.cpp" -o "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_EntryPoint.o"
-g++ $CompileFlags -c "./BFW_LINUX/Sources/BFW_LINUX_MainMenu.cpp" -o "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_MainMenu.o"
+for File in $Files; do
+	$Compiler $CompileFlags -c "./BFW_LINUX/Sources/$File.cpp" -o "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/$File.o" & Jobs+=($!)
+done
 
-g++ "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_Application.o" "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_EntryPoint.o" "./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_MainMenu.o" $LinkFlags -o "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_DYNAMIC"
+for Pid in "${Jobs[@]}"; do
+	wait "$Pid"
+done
+
+for File in $Files; do
+	AllObj+=" ./Objects/BFW_LINUX_DYNAMIC/$Configuration/$Platform/$File.o"
+done
+
+$Linker $AllObj $LinkFlags -o "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/BFW_LINUX_DYNAMIC"
 
 if [ -d "./BFW_LINUX/Files" ]; then
 	cp -r "./BFW_LINUX/Files/." "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/"
@@ -54,6 +59,11 @@ if [ -f "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so
 	cp "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so" "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/"
 fi
 
+Jobs=
+AllObj=
+Compiler=
+Linker=
+Files=
 CompileFlags=
 LinkFlags=
 

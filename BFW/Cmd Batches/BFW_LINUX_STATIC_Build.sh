@@ -6,6 +6,9 @@ fi
 
 pushd "$SolutionDir"
 
+Compiler=g++
+Linker=ar
+Files="BFW_Assets BFW_Cryptography BFW_Debug BFW_GUI BFW_GUID BFW_EntryPoint BFW_FileSystem BFW_Input BFW_Log BFW_Math_Matrix BFW_Math_Quaternion BFW_Math_Vector BFW_Math BFW_MultiProcessing BFW_RunTime BFW_String BFW_Time"
 CompileFlags="-Wall -Wno-unused-variable -std=c++20 -static-libstdc++ -static-libgcc -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_BUILD_STATIC"
 
 if [ "$Configuration" == "Debug" ]; then
@@ -24,53 +27,25 @@ if [ "$Platform" == "x86" ]; then
 	CompileFlags="$CompileFlags -m32 -DBFW_X86"
 fi
 
-mkdir -p "./Binaries/"
-mkdir -p "./Binaries/BFW_STATIC/"
-mkdir -p "./Binaries/BFW_STATIC/Linux/"
-mkdir -p "./Binaries/BFW_STATIC/Linux/$Configuration/"
 mkdir -p "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/"
-mkdir -p "./Objects/"
-mkdir -p "./Objects/BFW_STATIC/"
-mkdir -p "./Objects/BFW_STATIC/Linux/"
-mkdir -p "./Objects/BFW_STATIC/Linux/$Configuration/"
 mkdir -p "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/"
 
-g++ $CompileFlags -c "./BFW/Sources/BFW_Assets.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Assets.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Cryptography.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Cryptography.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Debug.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Debug.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_GUI.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_GUI.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_GUID.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_GUID.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_EntryPoint.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_FileSystem.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_FileSystem.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Input.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Input.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Log.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Log.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Math_Matrix.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math_Matrix.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Math_Quaternion.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math_Quaternion.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Math_Vector.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math_Vector.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Math.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_MultiProcessing.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_RunTime.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_RunTime.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_String.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_String.o"
-g++ $CompileFlags -c "./BFW/Sources/BFW_Time.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Time.o"
+for File in $Files; do
+	$Compiler $CompileFlags -c "./BFW/Sources/$File.cpp" -o "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/$File.o" & Jobs+=($!)
+done
 
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Assets.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Cryptography.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Debug.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_GUI.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_GUID.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_EntryPoint.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_FileSystem.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Input.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Log.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math_Matrix.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math_Quaternion.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math_Vector.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Math.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_MultiProcessing.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_RunTime.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_String.o"
-ar rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/BFW_Time.o"
+for Pid in "${Jobs[@]}"; do
+	wait "$Pid"
+done
 
+for File in $Files; do
+	$Linker rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/$File.o"
+done
+
+Jobs=
+Compiler=
+Linker=
+Files=
 CompileFlags=
 
 popd
