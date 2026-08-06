@@ -6,6 +6,7 @@
   <Folder Name="/BFW_ESP32/" />
   <Folder Name="/BFW_ESP32/Cmd Batches/">
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build.ps1" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build_Debug.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Build_Release.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload.bat" />
@@ -59,6 +60,7 @@
   <Folder Name="/Solution Items/Cmd Batches/">
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildAll.bat" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildCore.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildCore.ps1" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_CreateFolders.bat" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_Path.bat" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_Setup.bat" />

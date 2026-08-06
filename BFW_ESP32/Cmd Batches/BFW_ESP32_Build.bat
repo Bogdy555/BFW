@@ -13,7 +13,7 @@ call ".\BFW\Cmd Batches\BFW_ESP32_Build.bat"
 set Compiler=xtensa-esp32s3-elf-g++
 set Linker=xtensa-esp32s3-elf-g++
 set Files=BFW_ESP32_Application BFW_ESP32_EntryPoint BFW_ESP32_MainMenu
-set CompileFlags=-DBFW_ESP32_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_BUILD_STATIC -DBFW_X86 -std=c++20 -w -Os -Werror=return-type "@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\cpp_flags" "-I.\BFW\Headers\\" -DF_CPU=240000000L -DARDUINO=10607 -DARDUINO_ESP32S3_DEV -DARDUINO_ARCH_ESP32 -DARDUINO_BOARD=\"ESP32S3_DEV\" -DARDUINO_VARIANT=\"esp32s3\" -DARDUINO_PARTITION_huge_app -DARDUINO_HOST_OS=\"windows\" -DARDUINO_FQBN=\"esp32:esp32:esp32s3:UploadSpeed=921600,USBMode=hwcdc,CDCOnBoot=cdc,MSCOnBoot=default,DFUOnBoot=dfu,UploadMode=default,CPUFreq=240,FlashMode=qio,FlashSize=16M,PartitionScheme=huge_app,DebugLevel=none,PSRAM=opi,LoopCore=1,EventsCore=1,EraseFlash=none,JTAGAdapter=builtin,ZigbeeMode=default\" -DESP32=ESP32 -DCORE_DEBUG_LEVEL=0 -DARDUINO_RUNNING_CORE=1 -DARDUINO_EVENT_RUNNING_CORE=1 -DBOARD_HAS_PSRAM -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1 -DARDUINO_USB_MSC_ON_BOOT=0 -DARDUINO_USB_DFU_ON_BOOT=1 "@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\defines" -iprefix "%ESPPack%tools\esp32s3-libs\%ArduLibVer%\include\\" "@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\includes" "-I%ESPPack%tools\esp32s3-libs\%ArduLibVer%\qio_opi\include\\" "-I%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\\" "-I%ESPPack%hardware\esp32\%ArduLibVer%\variants\esp32s3\\"
+set CompileFlags=-DBFW_ESP32_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_BUILD_STATIC -DBFW_X86 -std=c++20 -w -Os -Werror=return-type \"@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\cpp_flags\" \"-I.\BFW\Headers\\\\\" -DF_CPU=240000000L -DARDUINO=10607 -DARDUINO_ESP32S3_DEV -DARDUINO_ARCH_ESP32 -DARDUINO_BOARD=\\\"ESP32S3_DEV\\\" -DARDUINO_VARIANT=\\\"esp32s3\\\" -DARDUINO_PARTITION_huge_app -DARDUINO_HOST_OS=\\\"windows\\\" -DARDUINO_FQBN=\\\"esp32:esp32:esp32s3:UploadSpeed=921600,USBMode=hwcdc,CDCOnBoot=cdc,MSCOnBoot=default,DFUOnBoot=dfu,UploadMode=default,CPUFreq=240,FlashMode=qio,FlashSize=16M,PartitionScheme=huge_app,DebugLevel=none,PSRAM=opi,LoopCore=1,EventsCore=1,EraseFlash=none,JTAGAdapter=builtin,ZigbeeMode=default\\\" -DESP32=ESP32 -DCORE_DEBUG_LEVEL=0 -DARDUINO_RUNNING_CORE=1 -DARDUINO_EVENT_RUNNING_CORE=1 -DBOARD_HAS_PSRAM -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1 -DARDUINO_USB_MSC_ON_BOOT=0 -DARDUINO_USB_DFU_ON_BOOT=1 \"@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\defines\" -iprefix \"%ESPPack%tools\esp32s3-libs\%ArduLibVer%\include\\\\\" \"@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\includes\" \"-I%ESPPack%tools\esp32s3-libs\%ArduLibVer%\qio_opi\include\\\\\" \"-I%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\\\\\" \"-I%ESPPack%hardware\esp32\%ArduLibVer%\variants\esp32s3\\\\\"
 
 if "%Configuration%" == "Debug" set CompileFlags=%CompileFlags% -DBFW_DEBUG
 if "%Configuration%" == "Release" set CompileFlags=%CompileFlags%
@@ -23,9 +23,7 @@ if not exist ".\Objects\BFW_ESP32\%Configuration%\" mkdir ".\Objects\BFW_ESP32\%
 
 echo on
 
-for %%i in (%Files%) do (
-	%Compiler% %CompileFlags% -c ".\BFW_ESP32\Sources\%%i.cpp" -o ".\Objects\BFW_ESP32\%Configuration%\%%i.o"
-)
+"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File ".\BFW_ESP32\Cmd Batches\BFW_ESP32_Build.ps1" -Compiler "%Compiler%" -CompileFlags "%CompileFlags%" -Files "%Files%" -Configuration "%Configuration%"
 
 @echo off
 

@@ -200,6 +200,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Cmd Batches\BFW_ESP32_Build.bat" />
+    <None Include="Cmd Batches\BFW_ESP32_Build.ps1" />
     <None Include="Cmd Batches\BFW_ESP32_Build_Debug.bat" />
     <None Include="Cmd Batches\BFW_ESP32_Build_Release.bat" />
     <None Include="Cmd Batches\BFW_LINUX_DYNAMIC_Build.sh" />

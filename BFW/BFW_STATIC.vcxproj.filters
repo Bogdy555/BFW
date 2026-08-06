@@ -40,6 +40,7 @@
     <None Include="Resources\BFW_EnglishUS.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Cmd Batches\BFW_ESP32_Build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\BFW.hpp">
