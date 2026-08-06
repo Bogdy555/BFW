@@ -219,7 +219,7 @@ namespace BFW
 			UniquePointer _Result;
 
 			_Result.Size = _List.size();
-			_Result.Pointer = new Type[_List.size()];
+			_Result.Pointer = new Type[_Result.Size];
 
 			if (!_Result.Pointer)
 			{
@@ -518,7 +518,7 @@ namespace BFW
 			_Result.RefCount = new size_t;
 			_Result.WeakPointers = new Vector<WeakPointer<T>*>;
 			_Result.Size = _List.size();
-			_Result.Pointer = new Type[_List.size()];
+			_Result.Pointer = new Type[_Result.Size];
 
 			if (!_Result.Mutex || !_Result.RefCount || !_Result.WeakPointers || !_Result.Pointer)
 			{

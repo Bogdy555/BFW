@@ -95,11 +95,16 @@ namespace BFW
 			}
 		}
 
-		T Pop()
+		T Pop(ValueT* _Value = nullptr)
 		{
 			if (!Objects.GetSize())
 			{
 				throw nullptr;
+			}
+
+			if (_Value)
+			{
+				*_Value = Values[0];
 			}
 
 			Type _Result = (Type&&)(Objects[0]);
@@ -145,13 +150,23 @@ namespace BFW
 			return _Result;
 		}
 
-		Type& Peek() requires (!std::is_const_v<T>)
+		Type& Peek(ValueT* _Value = nullptr) requires (!std::is_const_v<T>)
 		{
+			if (_Value)
+			{
+				*_Value = Values[0];
+			}
+
 			return Objects[0];
 		}
 
-		ConstType& Peek() const
+		ConstType& Peek(ValueT* _Value = nullptr) const
 		{
+			if (_Value)
+			{
+				*_Value = Values[0];
+			}
+
 			return Objects[0];
 		}
 

@@ -79,8 +79,6 @@
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/ArduinoCore.a" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/base64.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/cbuf.o" />
-    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/cdecode.o" />
-    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/cencode.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/chip-debug-report.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/ColorFormat.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/Esp.o" />
@@ -136,6 +134,10 @@
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/wiring_shift.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/WMath.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/WString.o" />
+  </Folder>
+  <Folder Name="/Solution Items/Dependencies/ArduinoCore/Lib/libb64/">
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/libb64/cdecode.o" />
+    <File Path="Solution Items/Dependencies/ArduinoCore/Lib/libb64/cencode.o" />
   </Folder>
   <Folder Name="/Solution Items/Digital Certificates/" />
   <Folder Name="/Solution Items/Digital Certificates/BSW/">

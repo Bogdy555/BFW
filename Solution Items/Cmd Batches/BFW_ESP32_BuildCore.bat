@@ -8,136 +8,42 @@ if "%SolutionDir%" == "" call ".\BFW_ESP32_Path.bat"
 
 pushd "%SolutionDir%"
 
+set CCompiler=xtensa-esp32s3-elf-gcc
+set CPPCompiler=xtensa-esp32s3-elf-g++
+set Linker=xtensa-esp32s3-elf-ar
+set CFiles=ColorFormat esp32-hal-adc esp32-hal-bt esp32-hal-cpu esp32-hal-dac esp32-hal-gpio esp32-hal-hosted esp32-hal-i2c-ng esp32-hal-i2c-slave esp32-hal-i2c esp32-hal-ldo esp32-hal-ledc esp32-hal-log-wrapper esp32-hal-matrix esp32-hal-misc esp32-hal-periman esp32-hal-psram esp32-hal-rgb-led esp32-hal-rmt esp32-hal-sigmadelta esp32-hal-spi esp32-hal-time esp32-hal-timer esp32-hal-tinyusb esp32-hal-touch-ng esp32-hal-touch esp32-hal-uart firmware_msc_fat idf_openthread_mpool_wrapper libb64\cdecode libb64\cencode stdlib_noniso wiring_pulse wiring_shift
+set CPPFiles=freertos_stats main Esp FirmwareMSC FunctionalInterrupt HEXBuilder HWCDC HardwareSerial HashBuilder IPAddress MD5Builder MacAddress Print Stream StreamString StringUtils Tone USB USBCDC USBMSC WMath WString base64 cbuf chip-debug-report
 set CompileFlags=-w -Os -Werror=return-type -DARDUINO_CORE_BUILD -DF_CPU=240000000L -DARDUINO=10607 -DARDUINO_ESP32S3_DEV -DARDUINO_ARCH_ESP32 -DARDUINO_BOARD=\"ESP32S3_DEV\" -DARDUINO_VARIANT=\"esp32s3\" -DARDUINO_PARTITION_huge_app -DARDUINO_HOST_OS=\"windows\" -DARDUINO_FQBN=\"esp32:esp32:esp32s3:UploadSpeed=921600,USBMode=hwcdc,CDCOnBoot=cdc,MSCOnBoot=default,DFUOnBoot=dfu,UploadMode=default,CPUFreq=240,FlashMode=qio,FlashSize=16M,PartitionScheme=huge_app,DebugLevel=none,PSRAM=opi,LoopCore=1,EventsCore=1,EraseFlash=none,JTAGAdapter=builtin,ZigbeeMode=default\" -DESP32=ESP32 -DCORE_DEBUG_LEVEL=0 -DARDUINO_RUNNING_CORE=1 -DARDUINO_EVENT_RUNNING_CORE=1 -DBOARD_HAS_PSRAM -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1 -DARDUINO_USB_MSC_ON_BOOT=0 -DARDUINO_USB_DFU_ON_BOOT=1 "@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\defines" -iprefix "%ESPPack%tools\esp32s3-libs\%ArduLibVer%\include\\" "@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\includes" "-I%ESPPack%tools\esp32s3-libs\%ArduLibVer%\qio_opi\include\\" "-I%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\\" "-I%ESPPack%hardware\esp32\%ArduLibVer%\variants\esp32s3\\"
 set CFlags="@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\c_flags"
 set CPPFlags="@%ESPPack%tools\esp32s3-libs\%ArduLibVer%\flags\cpp_flags"
 
-if not exist ".\Solution Items\Dependencies\ArduinoCore\Lib\" mkdir ".\Solution Items\Dependencies\ArduinoCore\Lib\"
+if not exist ".\Solution Items\Dependencies\ArduinoCore\Lib\libb64\" mkdir ".\Solution Items\Dependencies\ArduinoCore\Lib\libb64\"
 
 echo on
 
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\ColorFormat.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\ColorFormat.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\Esp.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\Esp.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\FirmwareMSC.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\FirmwareMSC.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\FunctionalInterrupt.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\FunctionalInterrupt.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\HEXBuilder.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\HEXBuilder.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\HWCDC.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\HWCDC.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\HardwareSerial.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\HardwareSerial.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\HashBuilder.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\HashBuilder.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\IPAddress.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\IPAddress.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\MD5Builder.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\MD5Builder.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\MacAddress.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\MacAddress.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\Print.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\Print.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\Stream.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\Stream.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\StreamString.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\StreamString.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\StringUtils.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\StringUtils.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\Tone.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\Tone.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\USB.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\USB.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\USBCDC.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\USBCDC.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\USBMSC.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\USBMSC.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\WMath.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\WMath.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\WString.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\WString.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\base64.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\base64.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\cbuf.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\cbuf.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\chip-debug-report.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\chip-debug-report.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-adc.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-adc.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-bt.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-bt.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-cpu.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-cpu.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-dac.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-dac.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-gpio.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-gpio.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-hosted.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-hosted.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-i2c-ng.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-i2c-ng.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-i2c-slave.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-i2c-slave.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-i2c.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-i2c.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-ldo.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-ldo.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-ledc.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-ledc.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-log-wrapper.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-log-wrapper.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-matrix.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-matrix.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-misc.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-misc.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-periman.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-periman.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-psram.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-psram.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-rgb-led.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-rgb-led.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-rmt.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-rmt.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-sigmadelta.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-sigmadelta.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-spi.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-spi.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-time.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-time.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-timer.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-timer.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-tinyusb.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-tinyusb.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-touch-ng.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-touch-ng.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-touch.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-touch.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\esp32-hal-uart.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-uart.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\firmware_msc_fat.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\firmware_msc_fat.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\freertos_stats.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\freertos_stats.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\idf_openthread_mpool_wrapper.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\idf_openthread_mpool_wrapper.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\libb64\cdecode.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\cdecode.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\libb64\cencode.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\cencode.o"
-xtensa-esp32s3-elf-g++ %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\main.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\main.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\stdlib_noniso.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\stdlib_noniso.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\wiring_pulse.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\wiring_pulse.o"
-xtensa-esp32s3-elf-gcc %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\wiring_shift.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\wiring_shift.o"
+for %%i in (%CFiles%) do (
+	%CCompiler% %CompileFlags% %CFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\%%i.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\%%i.o"
+)
 
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\ColorFormat.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\Esp.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\FirmwareMSC.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\FunctionalInterrupt.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\HEXBuilder.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\HWCDC.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\HardwareSerial.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\HashBuilder.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\IPAddress.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\MD5Builder.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\MacAddress.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\Print.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\Stream.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\StreamString.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\StringUtils.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\Tone.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\USB.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\USBCDC.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\USBMSC.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\WMath.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\WString.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\base64.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\cbuf.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\chip-debug-report.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-adc.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-bt.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-cpu.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-dac.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-gpio.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-hosted.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-i2c-ng.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-i2c-slave.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-i2c.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-ldo.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-ledc.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-log-wrapper.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-matrix.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-misc.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-periman.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-psram.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-rgb-led.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-rmt.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-sigmadelta.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-spi.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-time.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-timer.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-tinyusb.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-touch-ng.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-touch.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\esp32-hal-uart.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\firmware_msc_fat.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\freertos_stats.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\idf_openthread_mpool_wrapper.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\cdecode.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\cencode.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\main.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\stdlib_noniso.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\wiring_pulse.o"
-xtensa-esp32s3-elf-ar rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\wiring_shift.o"
+for %%i in (%CPPFiles%) do (
+	%CPPCompiler% %CompileFlags% %CPPFlags% -c "%ESPPack%hardware\esp32\%ArduLibVer%\cores\esp32\%%i.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\%%i.o"
+)
+
+for %%i in (%CFiles%) do (
+	%Linker% rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\%%i.o"
+)
+
+for %%i in (%CPPFiles%) do (
+	%Linker% rcs ".\Solution Items\Dependencies\ArduinoCore\Lib\ArduinoCore.a" ".\Solution Items\Dependencies\ArduinoCore\Lib\%%i.o"
+)
 
 @echo off
 
+set CCompiler=
+set CPPCompiler=
+set Linker=
+set CFiles=
+set CPPFiles=
 set CompileFlags=
 set CFlags=
 set CPPFlags=
