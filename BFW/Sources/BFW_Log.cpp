@@ -104,11 +104,6 @@ const bool BFW_API BFW::Log::Init(const size_t _BaudRate)
 {
 	Serial.begin(_BaudRate);
 
-	while (!Serial)
-	{
-
-	}
-
 	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
 
 	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
