@@ -507,6 +507,52 @@ namespace BFW
 
 		};
 
+		class BFW_API RandomUInt64
+		{
+
+		public:
+
+			RandomUInt64();
+			RandomUInt64(const uint64_t _Seed);
+			RandomUInt64(const RandomUInt64& _Other);
+			RandomUInt64(RandomUInt64&& _Other) noexcept;
+			~RandomUInt64();
+
+			void SetSeed(const uint64_t _Seed);
+			const uint64_t operator() (const uint64_t _Min = 0, const uint64_t _Max = 0xFFFFFFFFFFFFFFFF);
+
+			RandomUInt64& operator= (const RandomUInt64& _Other);
+			RandomUInt64& operator= (RandomUInt64&& _Other) noexcept;
+
+		private:
+
+			std::mt19937_64 Engine;
+
+		};
+
+		class BFW_API RandomFloat
+		{
+
+		public:
+
+			RandomFloat();
+			RandomFloat(const uint64_t _Seed);
+			RandomFloat(const RandomFloat& _Other);
+			RandomFloat(RandomFloat&& _Other) noexcept;
+			~RandomFloat();
+
+			void SetSeed(const uint64_t _Seed);
+			const float operator() (const float _Min = 0.0f, const float _Max = 1.0f);
+
+			RandomFloat& operator= (const RandomFloat& _Other);
+			RandomFloat& operator= (RandomFloat&& _Other) noexcept;
+
+		private:
+
+			std::mt19937 Engine;
+
+		};
+
 		extern const float BFW_API Pi;
 		extern const float BFW_API DegreesToRadians;
 		extern const float BFW_API RadiansToDegrees;

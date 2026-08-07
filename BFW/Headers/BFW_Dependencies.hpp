@@ -52,6 +52,7 @@
 #include <cstdlib>
 #include <functional>
 #include <cmath>
+#include <random>
 #include <chrono>
 #include <ctime>
 #include <filesystem>
@@ -148,6 +149,10 @@ namespace BFW
 		class BFW_API Mat4;
 
 		class BFW_API Quat;
+
+		class BFW_API RandomUInt64;
+
+		class BFW_API RandomFloat;
 
 	}
 

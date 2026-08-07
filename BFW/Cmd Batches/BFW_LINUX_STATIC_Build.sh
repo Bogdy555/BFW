@@ -8,7 +8,7 @@ pushd "$SolutionDir"
 
 Compiler=g++
 Linker=ar
-Files="BFW_Assets BFW_Cryptography BFW_Debug BFW_GUI BFW_GUID BFW_EntryPoint BFW_FileSystem BFW_Input BFW_Log BFW_Math_Matrix BFW_Math_Quaternion BFW_Math_Vector BFW_Math BFW_MultiProcessing BFW_RunTime BFW_String BFW_Time"
+Files="BFW_Assets BFW_Cryptography BFW_Debug BFW_GUI BFW_GUID BFW_EntryPoint BFW_FileSystem BFW_Input BFW_Log BFW_Math BFW_Math_Matrix BFW_Math_Quaternion BFW_Math_Random BFW_Math_Vector BFW_Math BFW_MultiProcessing BFW_RunTime BFW_String BFW_Time"
 CompileFlags="-Wall -Wno-unused-variable -std=c++20 -static-libstdc++ -static-libgcc -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_BUILD_STATIC"
 
 if [ "$Configuration" == "Debug" ]; then
