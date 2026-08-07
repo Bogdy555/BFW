@@ -261,6 +261,7 @@
     <ClCompile Include="Sources\BFW_Math.cpp" />
     <ClCompile Include="Sources\BFW_Math_Matrix.cpp" />
     <ClCompile Include="Sources\BFW_Math_Quaternion.cpp" />
+    <ClCompile Include="Sources\BFW_Math_Random.cpp" />
     <ClCompile Include="Sources\BFW_Math_Vector.cpp" />
     <ClCompile Include="Sources\BFW_MultiProcessing.cpp" />
     <ClCompile Include="Sources\BFW_RunTime.cpp" />

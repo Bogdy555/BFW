@@ -176,5 +176,8 @@
     <ClCompile Include="Sources\BFW_FileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\BFW_Math_Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
