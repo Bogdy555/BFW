@@ -2,7 +2,7 @@
 
 
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM
 
 BFW::GUI::Window* LastWnd = nullptr;
 std::mutex LastWndMutex;
@@ -11,7 +11,7 @@ std::mutex LastWndMutex;
 
 
 
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM
 
 BFW::GUI::Window::Window() : Handle(NULL), WndThread(nullptr), UserData(nullptr), FullScreen(false), WndRect({ 0 }), WndPlace({ 0 }), WindowMutex(nullptr), Cursor(LoadCursor(NULL, IDC_ARROW)), Close(false), Focus(false), RawKeys(), Keys(), Tracking(false), HasMouse(false), MouseX(0), MouseY(0), KeyEvents(), LClicks(), RClicks(), MClicks(), X1Clicks(), X2Clicks(), LDblClicks(), RDblClicks(), MDblClicks(), X1DblClicks(), X2DblClicks(), WheelEvents(), HWheelEvents(), CharEvents()
 {

@@ -11,7 +11,7 @@ Platform=x64
 
 source "./BFW/Cmd Batches/BFW_LINUX_STATIC_Build.sh"
 
-Configuration=
-Platform=
+unset Configuration
+unset Platform
 
 popd

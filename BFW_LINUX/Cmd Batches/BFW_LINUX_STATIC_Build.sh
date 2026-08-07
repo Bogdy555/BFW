@@ -55,12 +55,12 @@ if [ -d "./BFW_LINUX/Files" ]; then
 	cp -r "./BFW_LINUX/Files/." "./Binaries/BFW_LINUX_STATIC/$Configuration/$Platform/"
 fi
 
-Jobs=
-AllObj=
-Compiler=
-Linker=
-Files=
-CompileFlags=
-LinkFlags=
+unset Jobs
+unset AllObj
+unset Compiler
+unset Linker
+unset Files
+unset CompileFlags
+unset LinkFlags
 
 popd

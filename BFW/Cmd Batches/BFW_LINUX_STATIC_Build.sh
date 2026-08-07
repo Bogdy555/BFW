@@ -42,10 +42,10 @@ for File in $Files; do
 	$Linker rcs "./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/libBFW_STATIC.a" "./Objects/BFW_STATIC/Linux/$Configuration/$Platform/$File.o"
 done
 
-Jobs=
-Compiler=
-Linker=
-Files=
-CompileFlags=
+unset Jobs
+unset Compiler
+unset Linker
+unset Files
+unset CompileFlags
 
 popd

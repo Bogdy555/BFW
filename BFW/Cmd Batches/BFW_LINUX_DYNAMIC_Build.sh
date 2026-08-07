@@ -53,12 +53,12 @@ if [ -f "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/libBFW_DYNAMIC.so
 	cp "./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/libBFW_DYNAMIC.so" "./Binaries/BFW_LINUX_DYNAMIC/$Configuration/$Platform/"
 fi
 
-Jobs=
-AllObj=
-Compiler=
-Linker=
-Files=
-CompileFlags=
-LinkFlags=
+unset Jobs
+unset AllObj
+unset Compiler
+unset Linker
+unset Files
+unset CompileFlags
+unset LinkFlags
 
 popd

@@ -11,7 +11,7 @@ Platform=x86
 
 source "./BFW/Cmd Batches/BFW_LINUX_DYNAMIC_Build.sh"
 
-Configuration=
-Platform=
+unset Configuration
+unset Platform
 
 popd
