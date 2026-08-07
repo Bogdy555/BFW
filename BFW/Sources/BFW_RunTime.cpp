@@ -341,7 +341,7 @@ void BFW::RunTime::Application::UpdateWorkingDirectory()
 	WorkingDirectory = WorkingDirectoryDiff.Apply(WorkingDirectory);
 }
 
-#if defined BFW_WINDOWS_PLATFORM || define BFW_LINUX_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 void BFW::RunTime::Application::UpdateAssetsDirectory()
 {
