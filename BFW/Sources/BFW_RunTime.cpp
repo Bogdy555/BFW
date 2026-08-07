@@ -22,7 +22,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff()
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), SDCardPath()
 {
 
 }
@@ -250,10 +250,12 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 #ifdef BFW_ESP32_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run()
+const int32_t BFW::RunTime::Application::Run(const BFW_STRING_TYPE& _SDCardPath)
 {
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
-	AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
+	SDCardPath = _SDCardPath;
+
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
+	AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath), true);
 
 	Setup();
 	while (On)
@@ -269,6 +271,8 @@ const int32_t BFW::RunTime::Application::Run()
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+
+	SDCardPath = BFW_STRING_TYPE();
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
@@ -321,11 +325,11 @@ void BFW::RunTime::Application::SetSync(const uint64_t _Sync)
 
 void BFW::RunTime::Application::UpdateWorkingDirectory()
 {
-	FileSystem::Directory _NewWorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
+	FileSystem::Directory _NewWorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(BFW_ESP32_PLATFORM_CALL(SDCardPath)));
 
 	if (_NewWorkingDirectory.Path != WorkingDirectory.Path)
 	{
-		WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
+		WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(BFW_ESP32_PLATFORM_CALL(SDCardPath)));
 		WorkingDirectoryDiff = FileSystem::DirectoryDiff();
 		WorkingDirectoryDiff += WorkingDirectory;
 		return;
@@ -365,11 +369,11 @@ void BFW::RunTime::Application::UpdateAssetsDirectory()
 
 void BFW::RunTime::Application::UpdateAssetsDirectory()
 {
-	FileSystem::Directory _NewAssetsDirectory = FileSystem::Directory::Load(FileSystem::GetAssetsDirectory());
+	FileSystem::Directory _NewAssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
 
 	if (_NewAssetsDirectory.Path != AssetsDirectory.Path)
 	{
-		AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetAssetsDirectory(), true);
+		AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath), true);
 		AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 		AssetsDirectoryDiff += AssetsDirectory;
 		return;

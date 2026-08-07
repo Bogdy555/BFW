@@ -38,7 +38,7 @@ namespace BFW
 
 #ifdef BFW_ESP32_PLATFORM
 
-			const int32_t Run();
+			const int32_t Run(const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
 
 #endif
 
@@ -127,6 +127,12 @@ namespace BFW
 #ifdef BFW_WINDOWS_PLATFORM
 
 			Trie<Trie<FileSystem::FileContent>> Resources;
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+			BFW_STRING_TYPE SDCardPath;
 
 #endif
 

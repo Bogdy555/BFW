@@ -71,7 +71,7 @@ namespace BFW
 
 #ifdef BFW_ESP32_PLATFORM
 
-		const bool BFW_API Init(const size_t _BaudRate = 115200);
+		const bool BFW_API Init(const size_t _BaudRate = 115200, const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
 		void BFW_API Stop();
 
 #endif

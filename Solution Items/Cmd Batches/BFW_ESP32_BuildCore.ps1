@@ -26,19 +26,21 @@ foreach ($CFile in $CFiles)
 			$ESPPack, $ArduLibVer, $CCompiler, $CompileFlags, $CFlags, $CFile, $CurrentDir
 		)
 		Set-Location $CurrentDir
-		$AllFlags = $CompileFlags
-		$AllFlags += ' '
-		$AllFlags += $CFlags
-		$AllFlags += ' -c "'
-		$AllFlags += $ESPPack
-		$AllFlags += 'hardware\esp32\'
-		$AllFlags += $ArduLibVer
-		$AllFlags += '\cores\esp32\'
-		$AllFlags += $CFile
-		$AllFlags += '.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\'
-		$AllFlags += $CFile
-		$AllFlags += '.o"'
-		Start-Process -File $CCompiler -Wait -NoNewWindow -ArgumentList $AllFlags
+		$Command = $CCompiler
+		$Command += ' '
+		$Command += $CompileFlags
+		$Command += ' '
+		$Command += $CFlags
+		$Command += ' -c "'
+		$Command += $ESPPack
+		$Command += 'hardware\esp32\'
+		$Command += $ArduLibVer
+		$Command += '\cores\esp32\'
+		$Command += $CFile
+		$Command += '.c" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\'
+		$Command += $CFile
+		$Command += '.o"'
+		& cmd /c $Command
 	} -ArgumentList $ESPPack, $ArduLibVer, $CCompiler, $CompileFlags, $CFlags, $CFile, $CurrentDir
 }
 
@@ -54,19 +56,21 @@ foreach ($CPPFile in $CPPFiles)
 			$ESPPack, $ArduLibVer, $CPPCompiler, $CompileFlags, $CPPFlags, $CPPFile, $CurrentDir
 		)
 		Set-Location $CurrentDir
-		$AllFlags = $CompileFlags
-		$AllFlags += ' '
-		$AllFlags += $CPPFlags
-		$AllFlags += ' -c "'
-		$AllFlags += $ESPPack
-		$AllFlags += 'hardware\esp32\'
-		$AllFlags += $ArduLibVer
-		$AllFlags += '\cores\esp32\'
-		$AllFlags += $CPPFile
-		$AllFlags += '.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\'
-		$AllFlags += $CPPFile
-		$AllFlags += '.o"'
-		Start-Process -File $CPPCompiler -Wait -NoNewWindow -ArgumentList $AllFlags
+		$Command = $CPPCompiler
+		$Command += ' '
+		$Command += $CompileFlags
+		$Command += ' '
+		$Command += $CPPFlags
+		$Command += ' -c "'
+		$Command += $ESPPack
+		$Command += 'hardware\esp32\'
+		$Command += $ArduLibVer
+		$Command += '\cores\esp32\'
+		$Command += $CPPFile
+		$Command += '.cpp" -o ".\Solution Items\Dependencies\ArduinoCore\Lib\'
+		$Command += $CPPFile
+		$Command += '.o"'
+		& cmd /c $Command
 	} -ArgumentList $ESPPack, $ArduLibVer, $CPPCompiler, $CompileFlags, $CPPFlags, $CPPFile, $CurrentDir
 }
 

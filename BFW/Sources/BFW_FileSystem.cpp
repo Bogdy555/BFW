@@ -1388,6 +1388,22 @@ const BFW::FileSystem::DirectoryDiff BFW::FileSystem::DirectoryDiff::Get(const D
 
 
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+const bool BFW_API BFW::FileSystem::SetWorkingDirectory(const BFW_STRING_TYPE& _Path)
+{
+	try
+	{
+		std::filesystem::current_path(_Path);
+	}
+	catch (const std::filesystem::filesystem_error&)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 {
 	BFW_STRING_TYPE _Result = std::filesystem::current_path().BFW_STRING_METHOD();
@@ -1402,6 +1418,17 @@ const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 
 	return _Result;
 }
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory(const BFW_STRING_TYPE& _SDCardPath)
+{
+	return _SDCardPath;
+}
+
+#endif
 
 #ifdef BFW_WINDOWS_PLATFORM
 

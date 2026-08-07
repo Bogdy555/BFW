@@ -163,7 +163,18 @@ namespace BFW
 
 #endif
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+		const bool BFW_API SetWorkingDirectory(const BFW_STRING_TYPE& _Path);
 		const BFW_STRING_TYPE BFW_API GetWorkingDirectory();
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+		const BFW_STRING_TYPE BFW_API GetWorkingDirectory(const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
+
+#endif
 
 #ifdef BFW_WINDOWS_PLATFORM
 

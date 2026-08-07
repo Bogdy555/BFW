@@ -20,15 +20,17 @@ foreach ($File in $Files)
 			$Compiler, $CompileFlags, $Configuration, $File, $CurrentDir
 		)
 		Set-Location $CurrentDir
-		$AllFlags = $CompileFlags
-		$AllFlags += ' -c ".\BFW\Sources\'
-		$AllFlags += $File
-		$AllFlags += '.cpp" -o ".\Objects\BFW_STATIC\ESP32\'
-		$AllFlags += $Configuration
-		$AllFlags += '\'
-		$AllFlags += $File
-		$AllFlags += '.o"'
-		Start-Process -File $Compiler -Wait -NoNewWindow -ArgumentList $AllFlags
+		$Command = $Compiler
+		$Command += ' '
+		$Command += $CompileFlags
+		$Command += ' -c ".\BFW\Sources\'
+		$Command += $File
+		$Command += '.cpp" -o ".\Objects\BFW_STATIC\ESP32\'
+		$Command += $Configuration
+		$Command += '\'
+		$Command += $File
+		$Command += '.o"'
+		& cmd /c $Command
 	} -ArgumentList $Compiler, $CompileFlags, $Configuration, $File, $CurrentDir
 }
 
