@@ -257,7 +257,7 @@ const bool BFW::FileSystem::FileContent::Save(std::fstream& _File) const
 
 const uint64_t BFW::FileSystem::FileContent::Hash() const
 {
-	return BFW::Cryptography::HashA((const char*)(Data), Length);
+	return BFW::Cryptography::HashA((const BFW_CHAR_TYPE_A*)(Data), Length);
 }
 
 uint8_t* BFW::FileSystem::FileContent::GetData()

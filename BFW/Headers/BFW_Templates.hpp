@@ -25,20 +25,20 @@
 #ifdef BFW_WINDOWS_PLATFORM
 
 struct BFW_API std::_Container_base12;
-BFW_EXTERN template struct BFW_API std::char_traits<char>;
-BFW_EXTERN template class BFW_API std::allocator<char>;
-BFW_EXTERN template struct BFW_API std::_Simple_types<char>;
-union BFW_API std::_String_val<std::_Simple_types<char>>::_Bxty;
-BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<char>>;
-BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<char>, std::_String_val<std::_Simple_types<char>>, true>;
-BFW_EXTERN template class BFW_API std::basic_string<char, std::char_traits<char>, std::allocator<char>>;
-BFW_EXTERN template struct BFW_API std::char_traits<wchar_t>;
-BFW_EXTERN template class BFW_API std::allocator<wchar_t>;
-BFW_EXTERN template struct BFW_API std::_Simple_types<wchar_t>;
-union BFW_API std::_String_val<std::_Simple_types<wchar_t>>::_Bxty;
-BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<wchar_t>>;
-BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<wchar_t>, std::_String_val<std::_Simple_types<wchar_t>>, true>;
-BFW_EXTERN template class BFW_API std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
+BFW_EXTERN template struct BFW_API std::char_traits<BFW_CHAR_TYPE_A>;
+BFW_EXTERN template class BFW_API std::allocator<BFW_CHAR_TYPE_A>;
+BFW_EXTERN template struct BFW_API std::_Simple_types<BFW_CHAR_TYPE_A>;
+union BFW_API std::_String_val<std::_Simple_types<BFW_CHAR_TYPE_A>>::_Bxty;
+BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<BFW_CHAR_TYPE_A>>;
+BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<BFW_CHAR_TYPE_A>, std::_String_val<std::_Simple_types<BFW_CHAR_TYPE_A>>, true>;
+BFW_EXTERN template class BFW_API std::basic_string<BFW_CHAR_TYPE_A, std::char_traits<BFW_CHAR_TYPE_A>, std::allocator<BFW_CHAR_TYPE_A>>;
+BFW_EXTERN template struct BFW_API std::char_traits<BFW_CHAR_TYPE_W>;
+BFW_EXTERN template class BFW_API std::allocator<BFW_CHAR_TYPE_W>;
+BFW_EXTERN template struct BFW_API std::_Simple_types<BFW_CHAR_TYPE_W>;
+union BFW_API std::_String_val<std::_Simple_types<BFW_CHAR_TYPE_W>>::_Bxty;
+BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<BFW_CHAR_TYPE_W>>;
+BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<BFW_CHAR_TYPE_W>, std::_String_val<std::_Simple_types<BFW_CHAR_TYPE_W>>, true>;
+BFW_EXTERN template class BFW_API std::basic_string<BFW_CHAR_TYPE_W, std::char_traits<BFW_CHAR_TYPE_W>, std::allocator<BFW_CHAR_TYPE_W>>;
 
 BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint32_t, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253>;
 BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint64_t, 64, 312, 156, 31, 13043109905998158313, 29, 6148914691236517205, 17, 8202884508482404352, 37, 18444473444759240704, 43, 6364136223846793005>;
@@ -47,8 +47,8 @@ BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint64_t, 64, 312
 
 BFW_EXTERN template class BFW_API BFW::Vector<uint8_t>;
 BFW_EXTERN template class BFW_API BFW::Vector<size_t>;
-BFW_EXTERN template class BFW_API BFW::Vector<char>;
-BFW_EXTERN template class BFW_API BFW::Vector<wchar_t>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE_A>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE_W>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
 

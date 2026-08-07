@@ -7,7 +7,7 @@
 struct BitMapFileHeader
 {
 
-	char Type[2];
+	BFW_CHAR_TYPE_A Type[2];
 	uint32_t Size;
 	uint16_t Reserved1;
 	uint16_t Reserved2;
@@ -49,9 +49,9 @@ struct BitMapInfoHeader
 struct WaveFileHeader
 {
 
-	char RIFF[4];
+	BFW_CHAR_TYPE_A RIFF[4];
 	uint32_t FileSize;
-	char WAVE[4];
+	BFW_CHAR_TYPE_A WAVE[4];
 
 	WaveFileHeader();
 	WaveFileHeader(const WaveFileHeader& _Other) = default;
@@ -65,7 +65,7 @@ struct WaveFileHeader
 struct WaveChunkHeader
 {
 
-	char ID[4];
+	BFW_CHAR_TYPE_A ID[4];
 	uint32_t Size;
 
 	WaveChunkHeader();
