@@ -10,7 +10,7 @@ source "./BFW/Cmd Batches/BFW_LINUX_STATIC_Build.sh"
 
 Compiler=g++
 Linker=g++
-Files="BFW_LINUX_Application BFW_LINUX_EntryPoint BFW_LINUX_MainMenu"
+Files="BFW_LINUX_EntryPoint BFW_LINUX_RunTime_Application BFW_LINUX_RunTime_MainMenu"
 CompileFlags="-Wall -Wno-unused-variable -std=c++20 -static-libstdc++ -static-libgcc -I./BFW/Headers/ -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_LINK_STATIC"
 LinkFlags="-static-libstdc++ -static-libgcc -L./Binaries/BFW_STATIC/Linux/$Configuration/$Platform/ -lBFW_STATIC"
 

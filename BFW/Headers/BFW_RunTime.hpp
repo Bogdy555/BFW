@@ -26,13 +26,13 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-			const int32_t Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName);
+			const int32_t Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory = true);
 
 #endif
 
 #ifdef BFW_LINUX_PLATFORM
 
-			const int32_t Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName);
+			const int32_t Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory = true);
 
 #endif
 
@@ -53,6 +53,7 @@ namespace BFW
 			void SetSync(const uint64_t _Sync);
 
 			void UpdateWorkingDirectory();
+			void UpdateAssetsDirectory();
 
 			const bool CheckOn() const;
 			const int32_t GetReturnValue() const;
@@ -69,6 +70,8 @@ namespace BFW
 
 			const FileSystem::Directory& GetWorkingDirectory() const;
 			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
+			const FileSystem::Directory& GetAssetsDirectory() const;
+			const FileSystem::DirectoryDiff& GetAssetsDirectoryDiff() const;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -118,6 +121,8 @@ namespace BFW
 
 			FileSystem::Directory WorkingDirectory;
 			FileSystem::DirectoryDiff WorkingDirectoryDiff;
+			FileSystem::Directory AssetsDirectory;
+			FileSystem::DirectoryDiff AssetsDirectoryDiff;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -181,6 +186,7 @@ namespace BFW
 			void SetSync(const uint64_t _Sync);
 
 			void UpdateWorkingDirectory();
+			void UpdateAssetsDirectory();
 
 			const bool CheckOn() const;
 			const uint64_t GetNextMenu() const;
@@ -201,6 +207,8 @@ namespace BFW
 
 			const FileSystem::Directory& GetWorkingDirectory() const;
 			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
+			const FileSystem::Directory& GetAssetsDirectory() const;
+			const FileSystem::DirectoryDiff& GetAssetsDirectoryDiff() const;
 
 #ifdef BFW_WINDOWS_PLATFORM
 

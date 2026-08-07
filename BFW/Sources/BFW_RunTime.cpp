@@ -4,7 +4,7 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
@@ -13,7 +13,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
@@ -22,7 +22,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff()
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff()
 {
 
 }
@@ -36,11 +36,22 @@ BFW::RunTime::Application::~Application()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName)
+const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory)
 {
 	if (_InstanceHandle == NULL || _CmdLine == nullptr || _SharedInstanceMemoryName == nullptr || _SharedInstanceMutexName == nullptr)
 	{
 		return MultiProcessing::_UnknownErrorReturnValue;
+	}
+
+	if (_EnforceWorkingDirectory)
+	{
+		BFW_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__wargv[0]));
+		BFW_NON_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__argv[0]));
+
+		if (_Binary.GetParentPath() != FileSystem::GetWorkingDirectory())
+		{
+			return MultiProcessing::_UnknownErrorReturnValue;
+		}
 	}
 
 	if (!SharedInstanceMemory.Create(_SharedInstanceMemoryName, 8))
@@ -62,7 +73,14 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	CmdLine = _CmdLine;
 	ShowCmd = _ShowCmd;
 
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
+
+	{
+		BFW_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__wargv[0]));
+		BFW_NON_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__argv[0]));
+
+		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath(), true);
+	}
 
 	Resources.Emplace(BFW_TO_STRING(BFW_BMP_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
 	Resources.Emplace(BFW_TO_STRING(BFW_HDR_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
@@ -123,6 +141,8 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+	AssetsDirectory = FileSystem::Directory();
+	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
 	Resources = Trie<Trie<FileSystem::FileContent>>();
 
@@ -147,11 +167,21 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 
 #ifdef BFW_LINUX_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName)
+const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory)
 {
 	if (_ArgC == 0 || _ArgV == nullptr || _SharedInstanceMemoryName == nullptr || _SharedInstanceMutexName == nullptr)
 	{
 		return MultiProcessing::_UnknownErrorReturnValue;
+	}
+
+	if (_EnforceWorkingDirectory)
+	{
+		FileSystem::File _Binary = FileSystem::File::Load(_ArgV[0]);
+
+		if (_Binary.GetParentPath() != FileSystem::GetWorkingDirectory())
+		{
+			return MultiProcessing::_UnknownErrorReturnValue;
+		}
 	}
 
 	if (!SharedInstanceMemory.Create(_SharedInstanceMemoryName, 8))
@@ -172,7 +202,13 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	ArgC = _ArgC;
 	ArgV = _ArgV;
 
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
+
+	{
+		FileSystem::File _Binary = FileSystem::File::Load(_ArgV[0]);
+
+		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath(), true);
+	}
 
 	Setup();
 	while (On)
@@ -191,6 +227,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+	AssetsDirectory = FileSystem::Directory();
+	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
 	ArgC = 0;
 	ArgV = nullptr;
@@ -214,7 +252,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 const int32_t BFW::RunTime::Application::Run()
 {
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
+	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
+	AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(), true);
 
 	Setup();
 	while (On)
@@ -233,6 +272,8 @@ const int32_t BFW::RunTime::Application::Run()
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+	AssetsDirectory = FileSystem::Directory();
+	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
 	int32_t _ReturnValue = ReturnValue;
 	ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
@@ -282,6 +323,14 @@ void BFW::RunTime::Application::UpdateWorkingDirectory()
 {
 	FileSystem::Directory _NewWorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
 
+	if (_NewWorkingDirectory.Path != WorkingDirectory.Path)
+	{
+		WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
+		WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+		WorkingDirectoryDiff += WorkingDirectory;
+		return;
+	}
+
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff::Get(WorkingDirectory, _NewWorkingDirectory);
 
 	if (WorkingDirectoryDiff.Empty())
@@ -289,8 +338,54 @@ void BFW::RunTime::Application::UpdateWorkingDirectory()
 		return;
 	}
 
-	WorkingDirectory = WorkingDirectoryDiff.Apply(WorkingDirectory, true);
+	WorkingDirectory = WorkingDirectoryDiff.Apply(WorkingDirectory);
 }
+
+#if defined BFW_WINDOWS_PLATFORM || define BFW_LINUX_PLATFORM
+
+void BFW::RunTime::Application::UpdateAssetsDirectory()
+{
+	FileSystem::File _Binary = FileSystem::File::Load(GetArgV(0));
+
+	FileSystem::Directory _NewAssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath());
+
+	AssetsDirectoryDiff = FileSystem::DirectoryDiff::Get(AssetsDirectory, _NewAssetsDirectory);
+
+	if (AssetsDirectoryDiff.Empty())
+	{
+		return;
+	}
+
+	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory, true);
+}
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+void BFW::RunTime::Application::UpdateAssetsDirectory()
+{
+	FileSystem::Directory _NewAssetsDirectory = FileSystem::Directory::Load(FileSystem::GetAssetsDirectory());
+
+	if (_NewAssetsDirectory.Path != AssetsDirectory.Path)
+	{
+		AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetAssetsDirectory(), true);
+		AssetsDirectoryDiff = FileSystem::DirectoryDiff();
+		AssetsDirectoryDiff += AssetsDirectory;
+		return;
+	}
+
+	AssetsDirectoryDiff = FileSystem::DirectoryDiff::Get(AssetsDirectory, _NewAssetsDirectory);
+
+	if (AssetsDirectoryDiff.Empty())
+	{
+		return;
+	}
+
+	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory, true);
+}
+
+#endif
 
 const bool BFW::RunTime::Application::CheckOn() const
 {
@@ -360,6 +455,16 @@ const BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory
 const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirectoryDiff() const
 {
 	return WorkingDirectoryDiff;
+}
+
+const BFW::FileSystem::Directory& BFW::RunTime::Application::GetAssetsDirectory() const
+{
+	return AssetsDirectory;
+}
+
+const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetAssetsDirectoryDiff() const
+{
+	return AssetsDirectoryDiff;
 }
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -484,6 +589,7 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 
 		Update();
 		UpdateWorkingDirectory();
+		UpdateAssetsDirectory();
 
 		if (GetSync())
 		{
@@ -564,6 +670,11 @@ void BFW::RunTime::Menu::UpdateWorkingDirectory()
 	ApplicationObj->UpdateWorkingDirectory();
 }
 
+void BFW::RunTime::Menu::UpdateAssetsDirectory()
+{
+	ApplicationObj->UpdateAssetsDirectory();
+}
+
 const bool BFW::RunTime::Menu::CheckOn() const
 {
 	return On;
@@ -642,6 +753,16 @@ const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory() cons
 const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDiff() const
 {
 	return ApplicationObj->GetWorkingDirectoryDiff();
+}
+
+const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetAssetsDirectory() const
+{
+	return ApplicationObj->GetAssetsDirectory();
+}
+
+const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetAssetsDirectoryDiff() const
+{
+	return ApplicationObj->GetAssetsDirectoryDiff();
 }
 
 #ifdef BFW_WINDOWS_PLATFORM

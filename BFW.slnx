@@ -22,9 +22,9 @@
     <File Path="BFW_ESP32/Headers/BFW_ESP32_RunTime.hpp" />
   </Folder>
   <Folder Name="/BFW_ESP32/Sources/">
-    <File Path="BFW_ESP32/Sources/BFW_ESP32_Application.cpp" />
     <File Path="BFW_ESP32/Sources/BFW_ESP32_EntryPoint.cpp" />
-    <File Path="BFW_ESP32/Sources/BFW_ESP32_MainMenu.cpp" />
+    <File Path="BFW_ESP32/Sources/BFW_ESP32_RunTime_Application.cpp" />
+    <File Path="BFW_ESP32/Sources/BFW_ESP32_RunTime_MainMenu.cpp" />
   </Folder>
   <Folder Name="/BFW_LINUX/" />
   <Folder Name="/BFW_LINUX/Cmd Batches/">
@@ -48,9 +48,9 @@
     <File Path="BFW_LINUX/Headers/BFW_LINUX_RunTime.hpp" />
   </Folder>
   <Folder Name="/BFW_LINUX/Sources/">
-    <File Path="BFW_LINUX/Sources/BFW_LINUX_Application.cpp" />
     <File Path="BFW_LINUX/Sources/BFW_LINUX_EntryPoint.cpp" />
-    <File Path="BFW_LINUX/Sources/BFW_LINUX_MainMenu.cpp" />
+    <File Path="BFW_LINUX/Sources/BFW_LINUX_RunTime_Application.cpp" />
+    <File Path="BFW_LINUX/Sources/BFW_LINUX_RunTime_MainMenu.cpp" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />

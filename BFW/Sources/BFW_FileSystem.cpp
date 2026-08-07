@@ -1390,7 +1390,17 @@ const BFW::FileSystem::DirectoryDiff BFW::FileSystem::DirectoryDiff::Get(const D
 
 const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 {
-	return std::filesystem::current_path().BFW_STRING_METHOD();
+	BFW_STRING_TYPE _Result = std::filesystem::current_path().BFW_STRING_METHOD();
+
+	for (size_t _Index = 0; _Index < _Result.size(); _Index++)
+	{
+		if (_Result[_Index] == '\\')
+		{
+			_Result[_Index] = '/';
+		}
+	}
+
+	return _Result;
 }
 
 #ifdef BFW_WINDOWS_PLATFORM
