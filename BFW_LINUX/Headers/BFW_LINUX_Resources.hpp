@@ -99,8 +99,8 @@
 
 
 
-#define BFW_LINUX_COPY_RIGHT_EN_US_A "Copyright (C) BSW (TM). All rights reserved."
-#define BFW_LINUX_COPY_RIGHT_EN_US_W L"Copyright © BSW™. All rights reserved."
+#define BFW_LINUX_COPY_RIGHT_EN_US_A "Copyright \xC2\xA9 BSW\xE2\x84\xA2. All rights reserved."
+#define BFW_LINUX_COPY_RIGHT_EN_US_W L"Copyright \x00A9 BSW\x2122. All rights reserved."
 
 #ifdef _UNICODE
 

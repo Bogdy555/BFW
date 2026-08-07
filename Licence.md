@@ -1,1 +1,1 @@
-Copyright (C) BSW (TM). All rights reserved.
+Copyright © BSW™. All rights reserved.
