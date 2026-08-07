@@ -40,6 +40,9 @@ BFW_EXTERN template class BFW_API std::_String_val<std::_Simple_types<wchar_t>>;
 BFW_EXTERN template class BFW_API std::_Compressed_pair<std::allocator<wchar_t>, std::_String_val<std::_Simple_types<wchar_t>>, true>;
 BFW_EXTERN template class BFW_API std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
 
+BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint32_t, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253>;
+BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint64_t, 64, 312, 156, 31, 13043109905998158313, 29, 6148914691236517205, 17, 8202884508482404352, 37, 18444473444759240704, 43, 6364136223846793005>;
+
 #endif
 
 BFW_EXTERN template class BFW_API BFW::Vector<uint8_t>;

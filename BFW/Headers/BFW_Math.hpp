@@ -513,12 +513,12 @@ namespace BFW
 		public:
 
 			RandomUInt64();
-			RandomUInt64(const uint64_t _Seed);
+			RandomUInt64(const uint32_t _Seed);
 			RandomUInt64(const RandomUInt64& _Other);
 			RandomUInt64(RandomUInt64&& _Other) noexcept;
 			~RandomUInt64();
 
-			void SetSeed(const uint64_t _Seed);
+			void SetSeed(const uint32_t _Seed);
 			const uint64_t operator() (const uint64_t _Min = 0, const uint64_t _Max = 0xFFFFFFFFFFFFFFFF);
 
 			RandomUInt64& operator= (const RandomUInt64& _Other);
@@ -536,12 +536,12 @@ namespace BFW
 		public:
 
 			RandomFloat();
-			RandomFloat(const uint64_t _Seed);
+			RandomFloat(const uint32_t _Seed);
 			RandomFloat(const RandomFloat& _Other);
 			RandomFloat(RandomFloat&& _Other) noexcept;
 			~RandomFloat();
 
-			void SetSeed(const uint64_t _Seed);
+			void SetSeed(const uint32_t _Seed);
 			const float operator() (const float _Min = 0.0f, const float _Max = 1.0f);
 
 			RandomFloat& operator= (const RandomFloat& _Other);

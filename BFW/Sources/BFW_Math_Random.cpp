@@ -7,7 +7,7 @@ BFW::Math::RandomUInt64::RandomUInt64() : Engine(0)
 
 }
 
-BFW::Math::RandomUInt64::RandomUInt64(const uint64_t _Seed) : Engine(_Seed)
+BFW::Math::RandomUInt64::RandomUInt64(const uint32_t _Seed) : Engine(_Seed)
 {
 
 }
@@ -27,7 +27,7 @@ BFW::Math::RandomUInt64::~RandomUInt64()
 
 }
 
-void BFW::Math::RandomUInt64::SetSeed(const uint64_t _Seed)
+void BFW::Math::RandomUInt64::SetSeed(const uint32_t _Seed)
 {
 	Engine = std::mt19937_64(_Seed);
 }
@@ -68,7 +68,7 @@ BFW::Math::RandomFloat::RandomFloat() : Engine(0)
 
 }
 
-BFW::Math::RandomFloat::RandomFloat(const uint64_t _Seed) : Engine(_Seed)
+BFW::Math::RandomFloat::RandomFloat(const uint32_t _Seed) : Engine(_Seed)
 {
 
 }
@@ -88,7 +88,7 @@ BFW::Math::RandomFloat::~RandomFloat()
 
 }
 
-void BFW::Math::RandomFloat::SetSeed(const uint64_t _Seed)
+void BFW::Math::RandomFloat::SetSeed(const uint32_t _Seed)
 {
 	Engine = std::mt19937(_Seed);
 }
