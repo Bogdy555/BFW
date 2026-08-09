@@ -430,15 +430,20 @@ static const bool LoadJsonNumber(const BFW::FileSystem::FileContent& _FileConten
 		_Negative = true;
 		_CurrentPos++;
 	}
+	else if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '+')
+	{
+		_CurrentPos++;
+	}
 
-	if (BFW_STRING_TYPE_A(".0123456789").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+	if (BFW_STRING_TYPE_A("e.0123456789").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
 	{
 		return false;
 	}
 
 	float _Number = 0.0f;
+
 	bool _FoundDot = false;
-	float _Exponent = 1.0f;
+	float _NumberExponent = 1.0f;
 
 	while (BFW_STRING_TYPE_A(".0123456789").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\0')
 	{
@@ -457,8 +462,8 @@ static const bool LoadJsonNumber(const BFW::FileSystem::FileContent& _FileConten
 
 		if (_FoundDot)
 		{
-			_Exponent /= 10.0f;
-			_Number += _Exponent * ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+			_NumberExponent /= 10.0f;
+			_Number += _NumberExponent * ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
 
 			_CurrentPos++;
 			continue;
@@ -470,13 +475,70 @@ static const bool LoadJsonNumber(const BFW::FileSystem::FileContent& _FileConten
 		_CurrentPos++;
 	}
 
+	float _Exponent = 0.0f;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == 'e')
+	{
+		_CurrentPos++;
+
+		bool _NegativeExponent = false;
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '-')
+		{
+			_NegativeExponent = true;
+			_CurrentPos++;
+		}
+		else if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '+')
+		{
+			_CurrentPos++;
+		}
+
+		bool _FoundExponentDot = false;
+		float _ExponentExponent = 1.0f;
+
+		while (BFW_STRING_TYPE_A(".0123456789").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\0')
+		{
+			if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '.')
+			{
+				if (_FoundExponentDot)
+				{
+					return false;
+				}
+
+				_FoundExponentDot = true;
+
+				_CurrentPos++;
+				continue;
+			}
+
+			if (_FoundExponentDot)
+			{
+				_ExponentExponent /= 10.0f;
+				_Exponent += _ExponentExponent * ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+
+				_CurrentPos++;
+				continue;
+			}
+
+			_Exponent *= 10;
+			_Exponent += (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0';
+
+			_CurrentPos++;
+		}
+
+		if (_NegativeExponent)
+		{
+			_Exponent = -_Exponent;
+		}
+	}
+
 	if (_Negative)
 	{
-		_Json.SetNumber(-_Number);
+		_Json.SetNumber(-_Number * powf(10.0f, _Exponent));
 	}
 	else
 	{
-		_Json.SetNumber(_Number);
+		_Json.SetNumber(_Number * powf(10.0f, _Exponent));
 	}
 
 	return true;
