@@ -4,6 +4,12 @@
 
 int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 {
+	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
+	{
+		int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
+		return BFW::MultiProcessing::_UnknownErrorReturnValue;
+	}
+
 	BFW_DEBUG_CALL
 	(
 		if (!BFW::Log::Init())

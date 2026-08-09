@@ -14,11 +14,18 @@ const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_
 
 	BFW_STRING_TYPE_W _Result;
 
-	_Result.resize(std::mbstowcs(nullptr, _TempString.data(), 0) + 1);
+	size_t _Size = std::mbstowcs(nullptr, _TempString.data(), 0);
 
-	std::mbstowcs(_Result.data(), _TempString.data(), _Result.size() - 1);
+	if (_Size == std::numeric_limits<size_t>::max())
+	{
+		return L"";
+	}
 
-	_Result[_Result.size() - 1] = '\0';
+	_Result.resize(_Size);
+
+	std::mbstowcs(_Result.data(), _TempString.data(), _Result.size());
+
+	_Result[_Result.size()] = '\0';
 
 	return _Result;
 }
@@ -29,11 +36,18 @@ const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_
 
 	BFW_STRING_TYPE_A _Result;
 
-	_Result.resize(std::wcstombs(nullptr, _TempString.data(), 0) + 1);
+	size_t _Size = std::wcstombs(nullptr, _TempString.data(), 0);
 
-	std::wcstombs(_Result.data(), _TempString.data(), _Result.size() - 1);
+	if (_Size == std::numeric_limits<size_t>::max())
+	{
+		return "";
+	}
 
-	_Result[_Result.size() - 1] = '\0';
+	_Result.resize(_Size);
+
+	std::wcstombs(_Result.data(), _TempString.data(), _Result.size());
+
+	_Result[_Result.size()] = '\0';
 
 	return _Result;
 }

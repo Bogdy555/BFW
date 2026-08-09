@@ -553,7 +553,7 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 
 	_CurrentPos++;
 
-	BFW_STRING_TYPE_A _String;
+	BFW_STRING_TYPE_W _String;
 
 	while ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\"')
 	{
@@ -570,42 +570,42 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 			{
 			case '\"':
 			{
-				_String += '\"';
+				_String += L'\"';
 				break;
 			}
 			case '\\':
 			{
-				_String += '\\';
+				_String += L'\\';
 				break;
 			}
 			case '/':
 			{
-				_String += '/';
+				_String += L'/';
 				break;
 			}
 			case 'b':
 			{
-				_String += '\b';
+				_String += L'\b';
 				break;
 			}
 			case 'f':
 			{
-				_String += '\f';
+				_String += L'\f';
 				break;
 			}
 			case 'n':
 			{
-				_String += '\n';
+				_String += L'\n';
 				break;
 			}
 			case 'r':
 			{
-				_String += '\r';
+				_String += L'\r';
 				break;
 			}
 			case 't':
 			{
-				_String += '\t';
+				_String += L'\t';
 				break;
 			}
 			case 'u':
@@ -692,11 +692,7 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
 				}
 
-				BFW_STRING_TYPE_W _WString = L"";
-
-				_WString += _WChar;
-
-				_String += BFW::String::FromUnicodeToUTF8(_WString);
+				_String += _WChar;
 
 				break;
 			}
@@ -710,14 +706,14 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 			continue;
 		}
 
-		_String += (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]);
+		_String += (const BFW_CHAR_TYPE_W)((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]));
 
 		_CurrentPos++;
 	}
 
 	_CurrentPos++;
 
-	_Json.SetString(_String);
+	_Json.SetString(BFW::String::FromUnicodeToUTF8(_String));
 
 	return true;
 }

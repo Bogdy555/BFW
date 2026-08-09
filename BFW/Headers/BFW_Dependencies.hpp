@@ -47,8 +47,9 @@
 #include <fstream>
 #include <string>
 #include <string_view>
-#include <cctype>
 #include <sstream>
+#include <cctype>
+#include <locale>
 #include <thread>
 #include <mutex>
 #include <cstdlib>
