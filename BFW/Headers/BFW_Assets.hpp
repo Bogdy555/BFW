@@ -123,6 +123,76 @@ namespace BFW
 
 		};
 
+		enum BFW_API JsonTypes : const uint8_t
+		{
+			_NullJsonType = 0,
+			_BoolJsonType = 1,
+			_NumberJsonType = 2,
+			_StringJsonType = 3,
+			_ArrayJsonType = 4,
+			_ObjectJsonType = 5
+		};
+
+		struct BFW_API JsonObjectData
+		{
+
+			Trie<Json, BFW_CHAR_TYPE_A> Object;
+			Vector<BFW_STRING_TYPE_A> Tags;
+
+			JsonObjectData();
+			JsonObjectData(const JsonObjectData& _Other) = default;
+			JsonObjectData(JsonObjectData&& _Other) noexcept;
+			~JsonObjectData();
+			JsonObjectData& operator= (const JsonObjectData& _Other) = default;
+			JsonObjectData& operator= (JsonObjectData&& _Other) noexcept;
+
+		};
+
+		class BFW_API Json
+		{
+
+		public:
+
+			Json();
+			Json(const Json& _Other);
+			Json(Json&& _Other) noexcept;
+			~Json();
+
+			const bool Load(const FileSystem::FileContent& _FileContent);
+
+			void SetNull();
+			void SetBool(const bool _Bool);
+			void SetNumber(const float _Number);
+			void SetString(const BFW_STRING_TYPE_A _String);
+			void SetArray();
+			void SetObject();
+
+			FileSystem::FileContent Save() const;
+
+			const uint8_t GetType() const;
+			const bool GetBool() const;
+			const float GetNumber() const;
+			const BFW_STRING_TYPE_A& GetString() const;
+			Vector<Json>& GetArray();
+			const Vector<Json>& GetArray() const;
+			JsonObjectData& GetObjectData();
+			const JsonObjectData& GetObjectData() const;
+
+			Json& operator= (const Json& _Other);
+			Json& operator= (Json&& _Other) noexcept;
+
+		private:
+
+			uint8_t Type;
+
+			bool Bool;
+			float Number;
+			BFW_STRING_TYPE_A String;
+			Vector<Json> Array;
+			JsonObjectData ObjectData;
+
+		};
+
 	}
 
 }

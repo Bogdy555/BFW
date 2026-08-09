@@ -41,7 +41,7 @@ namespace BFW
 
 		}
 
-		void Push(const CharT* _Name, ConstType& _Data)
+		T& Push(const CharT* _Name, ConstType& _Data)
 		{
 			if (!_Name)
 			{
@@ -51,7 +51,7 @@ namespace BFW
 			if (_Name[0] == (CharT)('\0'))
 			{
 				Data = UniquePointer<Type>::MakeUnique(_Data);
-				return;
+				return *Data;
 			}
 
 			Trie* _Child = nullptr;
@@ -72,10 +72,10 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->Push(_Name + 1, _Data);
+			return _Child->Push(_Name + 1, _Data);
 		}
 
-		void Push(const CharT* _Name, const size_t _Length, ConstType& _Data)
+		T& Push(const CharT* _Name, const size_t _Length, ConstType& _Data)
 		{
 			if (!_Name)
 			{
@@ -85,7 +85,7 @@ namespace BFW
 			if (_Length == 0)
 			{
 				Data = UniquePointer<Type>::MakeUnique(_Data);
-				return;
+				return *Data;
 			}
 
 			Trie* _Child = nullptr;
@@ -106,10 +106,10 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->Push(_Name + 1, _Length - 1, _Data);
+			return _Child->Push(_Name + 1, _Length - 1, _Data);
 		}
 
-		void Emplace(const CharT* _Name, Type&& _Data)
+		T& Emplace(const CharT* _Name, Type&& _Data)
 		{
 			if (!_Name)
 			{
@@ -119,7 +119,7 @@ namespace BFW
 			if (_Name[0] == (CharT)('\0'))
 			{
 				Data = UniquePointer<Type>::MakeUnique((Type&&)(_Data));
-				return;
+				return *Data;
 			}
 
 			Trie* _Child = nullptr;
@@ -140,10 +140,10 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->Emplace(_Name + 1, (Type&&)(_Data));
+			return _Child->Emplace(_Name + 1, (Type&&)(_Data));
 		}
 
-		void Emplace(const CharT* _Name, const size_t _Length, Type&& _Data)
+		T& Emplace(const CharT* _Name, const size_t _Length, Type&& _Data)
 		{
 			if (!_Name)
 			{
@@ -153,7 +153,7 @@ namespace BFW
 			if (_Length == 0)
 			{
 				Data = UniquePointer<Type>::MakeUnique((Type&&)(_Data));
-				return;
+				return *Data;
 			}
 
 			Trie* _Child = nullptr;
@@ -174,7 +174,7 @@ namespace BFW
 				_Child->Id = _Name[0];
 			}
 
-			_Child->Emplace(_Name + 1, _Length - 1, (Type&&)(_Data));
+			return _Child->Emplace(_Name + 1, _Length - 1, (Type&&)(_Data));
 		}
 
 		void Erase(const CharT* _Name)

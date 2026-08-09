@@ -4,7 +4,7 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), LoadAssetsDirectory(true) , AssetsDirectory(), AssetsDirectoryDiff(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
@@ -13,7 +13,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), LoadAssetsDirectory(true) , AssetsDirectory(), AssetsDirectoryDiff(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
@@ -22,7 +22,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), SDCardPath()
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), LoadAssetsDirectory(true) , AssetsDirectory(), AssetsDirectoryDiff(), SDCardPath()
 {
 
 }
@@ -36,7 +36,7 @@ BFW::RunTime::Application::~Application()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory)
+const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _LoadAssetsDirectory, const bool _EnforceWorkingDirectory)
 {
 	if (_InstanceHandle == NULL || _CmdLine == nullptr || _SharedInstanceMemoryName == nullptr || _SharedInstanceMutexName == nullptr)
 	{
@@ -79,7 +79,8 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 		BFW_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__wargv[0]));
 		BFW_NON_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__argv[0]));
 
-		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath(), true);
+		LoadAssetsDirectory = _LoadAssetsDirectory;
+		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath(), LoadAssetsDirectory);
 	}
 
 	Resources.Emplace(BFW_TO_STRING(BFW_BMP_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
@@ -122,6 +123,11 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 		{
 			Resources.GetData(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
 		}
+
+		if (_FileContent.Load(BFW_JSON_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_JSON_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
 	}
 
 	Setup();
@@ -141,6 +147,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+	LoadAssetsDirectory = true;
 	AssetsDirectory = FileSystem::Directory();
 	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
@@ -167,7 +174,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 
 #ifdef BFW_LINUX_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory)
+const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _LoadAssetsDirectory, const bool _EnforceWorkingDirectory)
 {
 	if (_ArgC == 0 || _ArgV == nullptr || _SharedInstanceMemoryName == nullptr || _SharedInstanceMutexName == nullptr)
 	{
@@ -207,7 +214,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	{
 		FileSystem::File _Binary = FileSystem::File::Load(_ArgV[0]);
 
-		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath(), true);
+		LoadAssetsDirectory = _LoadAssetsDirectory;
+		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath(), LoadAssetsDirectory);
 	}
 
 	Setup();
@@ -227,6 +235,7 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+	LoadAssetsDirectory = true;
 	AssetsDirectory = FileSystem::Directory();
 	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
@@ -250,12 +259,13 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 #ifdef BFW_ESP32_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run(const BFW_STRING_TYPE& _SDCardPath)
+const int32_t BFW::RunTime::Application::Run(const bool _LoadAssetsDirectory, const BFW_STRING_TYPE& _SDCardPath)
 {
 	SDCardPath = _SDCardPath;
 
 	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
-	AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath), true);
+	LoadAssetsDirectory = _LoadAssetsDirectory;
+	AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath), LoadAssetsDirectory);
 
 	Setup();
 	while (On)
@@ -276,6 +286,7 @@ const int32_t BFW::RunTime::Application::Run(const BFW_STRING_TYPE& _SDCardPath)
 
 	WorkingDirectory = FileSystem::Directory();
 	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
+	LoadAssetsDirectory = true;
 	AssetsDirectory = FileSystem::Directory();
 	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
@@ -360,7 +371,7 @@ void BFW::RunTime::Application::UpdateAssetsDirectory()
 		return;
 	}
 
-	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory, true);
+	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory, LoadAssetsDirectory);
 }
 
 #endif
@@ -373,7 +384,7 @@ void BFW::RunTime::Application::UpdateAssetsDirectory()
 
 	if (_NewAssetsDirectory.Path != AssetsDirectory.Path)
 	{
-		AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath), true);
+		AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath), LoadAssetsDirectory);
 		AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 		AssetsDirectoryDiff += AssetsDirectory;
 		return;
@@ -386,7 +397,7 @@ void BFW::RunTime::Application::UpdateAssetsDirectory()
 		return;
 	}
 
-	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory, true);
+	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory, LoadAssetsDirectory);
 }
 
 #endif

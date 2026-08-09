@@ -86,7 +86,7 @@ namespace BFW
 			delete[] Data;
 		}
 
-		void PushBack(const ConstType& _Object)
+		T& PushBack(const ConstType& _Object)
 		{
 			if (Size == 0)
 			{
@@ -101,7 +101,7 @@ namespace BFW
 				Capacity = 1;
 				Data[0] = _Object;
 
-				return;
+				return Data[0];
 			}
 
 			if (Size + 1 > Capacity)
@@ -128,14 +128,16 @@ namespace BFW
 
 				_NewData[Size - 1] = _Object;
 
-				return;
+				return _NewData[Size - 1];
 			}
 
 			Size++;
 			Data[Size - 1] = _Object;
+
+			return Data[Size - 1];
 		}
 
-		void EmplaceBack(Type&& _Object)
+		T& EmplaceBack(Type&& _Object)
 		{
 			if (Size == 0)
 			{
@@ -150,7 +152,7 @@ namespace BFW
 				Capacity = 1;
 				Data[0] = (Type&&)(_Object);
 
-				return;
+				return Data[0];
 			}
 
 			if (Size + 1 > Capacity)
@@ -177,11 +179,13 @@ namespace BFW
 
 				_NewData[Size - 1] = (Type&&)(_Object);
 
-				return;
+				return _NewData[Size - 1];
 			}
 
 			Size++;
 			Data[Size - 1] = (Type&&)(_Object);
+
+			return Data[Size - 1];
 		}
 
 		void Erase(const size_t _EraseIndex)

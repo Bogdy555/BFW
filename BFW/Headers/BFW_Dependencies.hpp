@@ -46,6 +46,7 @@
 #include <fstream>
 #include <string>
 #include <string_view>
+#include <cctype>
 #include <sstream>
 #include <thread>
 #include <mutex>
@@ -287,6 +288,12 @@ namespace BFW
 		struct BFW_API WaveFormat;
 
 		class BFW_API Wave;
+
+		enum BFW_API JsonTypes : const uint8_t;
+
+		struct BFW_API JsonObjectData;
+
+		class BFW_API Json;
 
 	}
 

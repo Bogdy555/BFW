@@ -26,19 +26,19 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-			const int32_t Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory = true);
+			const int32_t Run(const HINSTANCE _InstanceHandle, const BFW_CHAR_TYPE* _CmdLine, const int32_t _ShowCmd, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _LoadAssetsDirectory = true, const bool _EnforceWorkingDirectory = true);
 
 #endif
 
 #ifdef BFW_LINUX_PLATFORM
 
-			const int32_t Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _EnforceWorkingDirectory = true);
+			const int32_t Run(const size_t _ArgC, const BFW_CHAR_TYPE** _ArgV, const BFW_CHAR_TYPE* _SharedInstanceMemoryName, const BFW_CHAR_TYPE* _SharedInstanceMutexName, const bool _LoadAssetsDirectory = true, const bool _EnforceWorkingDirectory = true);
 
 #endif
 
 #ifdef BFW_ESP32_PLATFORM
 
-			const int32_t Run(const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
+			const int32_t Run(const bool _LoadAssetsDirectory = true, const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
 
 #endif
 
@@ -121,6 +121,7 @@ namespace BFW
 
 			FileSystem::Directory WorkingDirectory;
 			FileSystem::DirectoryDiff WorkingDirectoryDiff;
+			bool LoadAssetsDirectory;
 			FileSystem::Directory AssetsDirectory;
 			FileSystem::DirectoryDiff AssetsDirectoryDiff;
 

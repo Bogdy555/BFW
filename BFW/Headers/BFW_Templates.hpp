@@ -49,6 +49,8 @@ BFW_EXTERN template class BFW_API BFW::Vector<uint8_t>;
 BFW_EXTERN template class BFW_API BFW::Vector<size_t>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE_A>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE_W>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW_STRING_TYPE_A>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW_STRING_TYPE_W>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
 
@@ -72,6 +74,11 @@ BFW_EXTERN template class BFW_API BFW::Vector<const BFW::GUI::SafePopUpPointer>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::PopUp>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Vector<BFW::GUI::PopUp>>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::SafePopUpPointer*>;
+
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::Assets::Json>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::Assets::Json, BFW_CHAR_TYPE_A>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::Assets::Json, BFW_CHAR_TYPE_A>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::Json>;
 
 #endif
 

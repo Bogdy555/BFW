@@ -314,6 +314,1018 @@ WaveChunkHeader& WaveChunkHeader::operator= (WaveChunkHeader& _Other) noexcept
 
 
 
+static const bool LoadJsonNull(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+{
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'n')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'u')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'l')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'l')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	_Json.SetNull();
+
+	return true;
+}
+
+static const bool LoadJsonBool(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+{
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 't' && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'f')
+	{
+		return false;
+	}
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == 't')
+	{
+		_CurrentPos++;
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'r')
+		{
+			return false;
+		}
+
+		_CurrentPos++;
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'u')
+		{
+			return false;
+		}
+
+		_CurrentPos++;
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'e')
+		{
+			return false;
+		}
+
+		_CurrentPos++;
+
+		_Json.SetBool(true);
+
+		return true;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'a')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'l')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 's')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'e')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	_Json.SetBool(false);
+
+	return true;
+}
+
+static const bool LoadJsonNumber(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+{
+	bool _Negative = false;
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '-')
+	{
+		_Negative = true;
+		_CurrentPos++;
+	}
+
+	if (BFW_STRING_TYPE_A(".0123456789").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+	{
+		return false;
+	}
+
+	float _Number = 0.0f;
+	bool _FoundDot = false;
+	float _Exponent = 1.0f;
+
+	while (BFW_STRING_TYPE_A(".0123456789").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\0')
+	{
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '.')
+		{
+			if (_FoundDot)
+			{
+				return false;
+			}
+
+			_FoundDot = true;
+
+			_CurrentPos++;
+			continue;
+		}
+
+		if (_FoundDot)
+		{
+			_Exponent /= 10.0f;
+			_Number += _Exponent * ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+
+			_CurrentPos++;
+			continue;
+		}
+
+		_Number *= 10;
+		_Number += (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0';
+
+		_CurrentPos++;
+	}
+
+	if (_Negative)
+	{
+		_Json.SetNumber(-_Number);
+	}
+	else
+	{
+		_Json.SetNumber(_Number);
+	}
+
+	return true;
+}
+
+static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+{
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\"')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	BFW_STRING_TYPE_A _String;
+
+	while ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\"')
+	{
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+		{
+			return false;
+		}
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\\')
+		{
+			_CurrentPos++;
+
+			switch ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]))
+			{
+			case '\"':
+			{
+				_String += '\"';
+				break;
+			}
+			case '\\':
+			{
+				_String += '\\';
+				break;
+			}
+			case '/':
+			{
+				_String += '/';
+				break;
+			}
+			case 'b':
+			{
+				_String += '\b';
+				break;
+			}
+			case 'f':
+			{
+				_String += '\f';
+				break;
+			}
+			case 'n':
+			{
+				_String += '\n';
+				break;
+			}
+			case 'r':
+			{
+				_String += '\r';
+				break;
+			}
+			case 't':
+			{
+				_String += '\t';
+				break;
+			}
+			case 'u':
+			{
+				BFW_CHAR_TYPE_W _WChar = L'\0';
+
+				_CurrentPos++;
+
+				if (BFW_STRING_TYPE_A("0123456789ABCDEFabcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+				{
+					return false;
+				}
+
+				if (BFW_STRING_TYPE_A("ABCDEF").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'A' + 10);
+				}
+				else if (BFW_STRING_TYPE_A("abcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'a' + 10);
+				}
+				else
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+				}
+
+				_CurrentPos++;
+
+				if (BFW_STRING_TYPE_A("0123456789ABCDEFabcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+				{
+					return false;
+				}
+
+				if (BFW_STRING_TYPE_A("ABCDEF").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'A' + 10);
+				}
+				else if (BFW_STRING_TYPE_A("abcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'a' + 10);
+				}
+				else
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+				}
+
+				_CurrentPos++;
+
+				if (BFW_STRING_TYPE_A("0123456789ABCDEFabcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+				{
+					return false;
+				}
+
+				if (BFW_STRING_TYPE_A("ABCDEF").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'A' + 10);
+				}
+				else if (BFW_STRING_TYPE_A("abcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'a' + 10);
+				}
+				else
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+				}
+
+				_CurrentPos++;
+
+				if (BFW_STRING_TYPE_A("0123456789ABCDEFabcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) == BFW_STRING_TYPE_A::npos || (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+				{
+					return false;
+				}
+
+				if (BFW_STRING_TYPE_A("ABCDEF").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'A' + 10);
+				}
+				else if (BFW_STRING_TYPE_A("abcdef").find((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) != BFW_STRING_TYPE_A::npos)
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - 'a' + 10);
+				}
+				else
+				{
+					_WChar = (_WChar << 4) + ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) - '0');
+				}
+
+				BFW_STRING_TYPE_W _WString = L"";
+
+				_WString += _WChar;
+
+				_String += BFW::String::FromUnicodeToUTF8(_WString);
+
+				break;
+			}
+			default:
+			{
+				return false;
+			}
+			}
+
+			_CurrentPos++;
+			continue;
+		}
+
+		_String += (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]);
+
+		_CurrentPos++;
+	}
+
+	_CurrentPos++;
+
+	_Json.SetString(_String);
+
+	return true;
+}
+
+static const bool LoadJsonArray(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json);
+
+static const bool LoadJsonObject(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+{
+	_Json.SetObject();
+
+	BFW::Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '{')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	while ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '}')
+	{
+		BFW::Assets::Json _Tag;
+
+		if (!LoadJsonString(_FileContent, _CurrentPos, _Tag))
+		{
+			return false;
+		}
+
+		for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
+		{
+			if (_ObjectData.Tags[_Index] == _Tag.GetString())
+			{
+				return false;
+			}
+		}
+
+		BFW::Assets::Json& _TagObject = _ObjectData.Object.Emplace(_Tag.GetString().c_str(), BFW::Assets::Json());
+		_ObjectData.Tags.PushBack(_Tag.GetString());
+
+		while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != ':')
+		{
+			return false;
+		}
+
+		_CurrentPos++;
+
+		while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		switch ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]))
+		{
+		case 'n':
+		{
+			if (!LoadJsonNull(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case 't':
+		{
+			if (!LoadJsonBool(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case 'f':
+		{
+			if (!LoadJsonBool(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '.':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '0':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '1':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '2':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '3':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '4':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '5':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '6':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '7':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '8':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '9':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '\"':
+		{
+			if (!LoadJsonString(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '{':
+		{
+			if (!LoadJsonObject(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '[':
+		{
+			if (!LoadJsonArray(_FileContent, _CurrentPos, _TagObject))
+			{
+				return false;
+			}
+
+			break;
+		}
+		default:
+		{
+			return false;
+		}
+		}
+
+		while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != ',' && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '}')
+		{
+			return false;
+		}
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == ',')
+		{
+			_CurrentPos++;
+
+			while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+			{
+				_CurrentPos++;
+			}
+
+			if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '}')
+			{
+				return false;
+			}
+
+			continue;
+		}
+	}
+
+	_CurrentPos++;
+
+	return true;
+}
+
+static const bool LoadJsonArray(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+{
+	_Json.SetArray();
+
+	BFW::Vector<BFW::Assets::Json>& _Array = _Json.GetArray();
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '[')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	while ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != ']')
+	{
+		BFW::Assets::Json& _Object = _Array.EmplaceBack(BFW::Assets::Json());
+
+		switch ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]))
+		{
+		case 'n':
+		{
+			if (!LoadJsonNull(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case 't':
+		{
+			if (!LoadJsonBool(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case 'f':
+		{
+			if (!LoadJsonBool(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '.':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '0':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '1':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '2':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '3':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '4':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '5':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '6':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '7':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '8':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '9':
+		{
+			if (!LoadJsonNumber(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '\"':
+		{
+			if (!LoadJsonString(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '{':
+		{
+			if (!LoadJsonObject(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		case '[':
+		{
+			if (!LoadJsonArray(_FileContent, _CurrentPos, _Object))
+			{
+				return false;
+			}
+
+			break;
+		}
+		default:
+		{
+			return false;
+		}
+		}
+
+		while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != ',' && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != ']')
+		{
+			return false;
+		}
+
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == ',')
+		{
+			_CurrentPos++;
+
+			while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+			{
+				_CurrentPos++;
+			}
+
+			if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == ']')
+			{
+				return false;
+			}
+
+			continue;
+		}
+	}
+
+	_CurrentPos++;
+
+	return true;
+}
+
+static void SaveJsonNull(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
+{
+	_Stream << "null";
+}
+
+static void SaveJsonBool(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
+{
+	if (_Json.GetBool())
+	{
+		_Stream << "true";
+	}
+	else
+	{
+		_Stream << "false";
+	}
+}
+
+static void SaveJsonNumber(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
+{
+	_Stream << _Json.GetNumber();
+}
+
+static void SaveJsonString(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
+{
+	_Stream << '\"' << _Json.GetString() << '\"';
+}
+
+static void SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json);
+
+static void SaveJsonObject(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
+{
+	_Stream << '{' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	_TabLevel++;
+
+	const BFW::Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
+	{
+		BFW::Assets::Json _Tag;
+
+		_Tag.SetString(_ObjectData.Tags[_Index]);
+
+		for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+		{
+			_Stream << '\t';
+		}
+
+		SaveJsonString(_TabLevel, _Stream, _Tag);
+
+		_Stream << ":";
+
+		const BFW::Assets::Json& _CurrentJson = *_ObjectData.Object.GetData(_ObjectData.Tags[_Index].c_str());
+
+		if (_CurrentJson.GetType() == BFW::Assets::_ObjectJsonType || _CurrentJson.GetType() == BFW::Assets::_ArrayJsonType)
+		{
+			_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+			for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+			{
+				_Stream << '\t';
+			}
+		}
+		else
+		{
+			_Stream << ' ';
+		}
+
+		switch (_CurrentJson.GetType())
+		{
+		case BFW::Assets::_NullJsonType:
+		{
+			SaveJsonNull(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_BoolJsonType:
+		{
+			SaveJsonBool(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_NumberJsonType:
+		{
+			SaveJsonNumber(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_StringJsonType:
+		{
+			SaveJsonString(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_ObjectJsonType:
+		{
+			SaveJsonObject(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_ArrayJsonType:
+		{
+			SaveJsonArray(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+
+		if (_Index != _ObjectData.Tags.GetSize() - 1)
+		{
+			_Stream << ',';
+		}
+
+		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+	}
+
+	_TabLevel--;
+
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << '}';
+}
+
+static void SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
+{
+	_Stream << '[' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	_TabLevel++;
+
+	const BFW::Vector<BFW::Assets::Json>& _Array = _Json.GetArray();
+
+	for (size_t _Index = 0; _Index < _Array.GetSize(); _Index++)
+	{
+		for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+		{
+			_Stream << '\t';
+		}
+
+		const BFW::Assets::Json& _CurrentJson = _Array[_Index];
+
+		switch (_CurrentJson.GetType())
+		{
+		case BFW::Assets::_NullJsonType:
+		{
+			SaveJsonNull(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_BoolJsonType:
+		{
+			SaveJsonBool(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_NumberJsonType:
+		{
+			SaveJsonNumber(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_StringJsonType:
+		{
+			SaveJsonString(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_ObjectJsonType:
+		{
+			SaveJsonObject(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		case BFW::Assets::_ArrayJsonType:
+		{
+			SaveJsonArray(_TabLevel, _Stream, _CurrentJson);
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+
+		if (_Index != _Array.GetSize() - 1)
+		{
+			_Stream << ',';
+		}
+
+		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+	}
+
+	_TabLevel--;
+
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << ']';
+}
+
+
+
 BFW::Assets::BitMap::BitMap() : Data(nullptr), ChannelsCount(0), Width(0), Height(0)
 {
 
@@ -1368,6 +2380,329 @@ BFW::Assets::Wave& BFW::Assets::Wave::operator= (Wave&& _Other) noexcept
 
 	_Other.Data = nullptr;
 	_Other.Size = 0;
+
+	return *this;
+}
+
+
+
+BFW::Assets::JsonObjectData::JsonObjectData() : Object(), Tags()
+{
+
+}
+
+BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : Object((Trie<Json, BFW_CHAR_TYPE_A>&&)(_Other.Object)), Tags((Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags))
+{
+
+}
+
+BFW::Assets::JsonObjectData::~JsonObjectData()
+{
+
+}
+
+BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectData&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Object = (Trie<Json, BFW_CHAR_TYPE_A>&&)(_Other.Object);
+	Tags = (Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags);
+
+	return *this;
+}
+
+
+
+BFW::Assets::Json::Json() : Type(_NullJsonType), Bool(false), Number(0.0f), String(""), Array(), ObjectData()
+{
+
+}
+
+BFW::Assets::Json::Json(const Json& _Other) : Type(_Other.Type), Bool(_Other.Bool), Number(_Other.Number), String(_Other.String), Array(_Other.Array), ObjectData(_Other.ObjectData)
+{
+
+}
+
+BFW::Assets::Json::Json(Json&& _Other) noexcept : Type(_Other.Type), Bool(_Other.Bool), Number(_Other.Number), String(_Other.String), Array((Vector<Json>&&)(_Other.Array)), ObjectData((JsonObjectData&&)(_Other.ObjectData))
+{
+	_Other.Type = _NullJsonType;
+	_Other.Bool = false;
+	_Other.Number = 0.0f;
+	_Other.String = "";
+}
+
+BFW::Assets::Json::~Json()
+{
+
+}
+
+const bool BFW::Assets::Json::Load(const FileSystem::FileContent& _FileContent)
+{
+	*this = Json();
+
+	if (!_FileContent.GetData() || (const BFW_CHAR_TYPE_A)(_FileContent[_FileContent.GetLength() - 1]) != '\0')
+	{
+		return false;
+	}
+
+	size_t _CurrentPos = 0;
+
+	while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '{' && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '[')
+	{
+		return false;
+	}
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '{')
+	{
+		if (!LoadJsonObject(_FileContent, _CurrentPos, *this))
+		{
+			*this = Json();
+			return false;
+		}
+	}
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '[')
+	{
+		if (!LoadJsonArray(_FileContent, _CurrentPos, *this))
+		{
+			*this = Json();
+			return false;
+		}
+	}
+
+	while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\0')
+	{
+		*this = Json();
+		return false;
+	}
+
+	return true;
+}
+
+void BFW::Assets::Json::SetNull()
+{
+	Type = _NullJsonType;
+	Bool = false;
+	Number = 0.0f;
+	String = "";
+	Array = Vector<Json>();
+	ObjectData = JsonObjectData();
+}
+
+void BFW::Assets::Json::SetBool(const bool _Bool)
+{
+	Type = _BoolJsonType;
+	Bool = _Bool;
+	Number = 0.0f;
+	String = "";
+	Array = Vector<Json>();
+	ObjectData = JsonObjectData();
+}
+
+void BFW::Assets::Json::SetNumber(const float _Number)
+{
+	Type = _NumberJsonType;
+	Bool = false;
+	Number = _Number;
+	String = "";
+	Array = Vector<Json>();
+	ObjectData = JsonObjectData();
+}
+
+void BFW::Assets::Json::SetString(const BFW_STRING_TYPE_A _String)
+{
+	Type = _StringJsonType;
+	Bool = false;
+	Number = 0.0f;
+	String = _String;
+	Array = Vector<Json>();
+	ObjectData = JsonObjectData();
+}
+
+void BFW::Assets::Json::SetArray()
+{
+	Type = _ArrayJsonType;
+	Bool = false;
+	Number = 0.0f;
+	String = "";
+	Array = Vector<Json>();
+	ObjectData = JsonObjectData();
+}
+
+void BFW::Assets::Json::SetObject()
+{
+	Type = _ObjectJsonType;
+	Bool = false;
+	Number = 0.0f;
+	String = "";
+	Array = Vector<Json>();
+	ObjectData = JsonObjectData();
+}
+
+BFW::FileSystem::FileContent BFW::Assets::Json::Save() const
+{
+	if (Type != _ObjectJsonType && Type != _ArrayJsonType)
+	{
+		return FileSystem::FileContent();
+	}
+
+	size_t _TabLevel = 0;
+	BFW_STRING_STREAM_TYPE_A _Stream;
+
+	if (Type == _ObjectJsonType)
+	{
+		SaveJsonObject(_TabLevel, _Stream, *this);
+	}
+
+	if (Type == _ArrayJsonType)
+	{
+		SaveJsonArray(_TabLevel, _Stream, *this);
+	}
+
+	_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	BFW_STRING_TYPE_A _String = _Stream.str();
+
+	FileSystem::FileContent _FileContent;
+
+	if (!_FileContent.Create(_String.size() + 1))
+	{
+		return FileSystem::FileContent();
+	}
+
+	_FileContent[_FileContent.GetLength() - 1] = '\0';
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		_FileContent[_Index] = _String[_Index];
+	}
+
+	return _FileContent;
+}
+
+const uint8_t BFW::Assets::Json::GetType() const
+{
+	return Type;
+}
+
+const bool BFW::Assets::Json::GetBool() const
+{
+	if (Type != _BoolJsonType)
+	{
+		throw nullptr;
+	}
+
+	return Bool;
+}
+
+const float BFW::Assets::Json::GetNumber() const
+{
+	if (Type != _NumberJsonType)
+	{
+		throw nullptr;
+	}
+
+	return Number;
+}
+
+const BFW_STRING_TYPE_A& BFW::Assets::Json::GetString() const
+{
+	if (Type != _StringJsonType)
+	{
+		throw nullptr;
+	}
+
+	return String;
+}
+
+BFW::Vector<BFW::Assets::Json>& BFW::Assets::Json::GetArray()
+{
+	if (Type != _ArrayJsonType)
+	{
+		throw nullptr;
+	}
+
+	return Array;
+}
+
+const BFW::Vector<BFW::Assets::Json>& BFW::Assets::Json::GetArray() const
+{
+	if (Type != _ArrayJsonType)
+	{
+		throw nullptr;
+	}
+
+	return Array;
+}
+
+BFW::Assets::JsonObjectData& BFW::Assets::Json::GetObjectData()
+{
+	if (Type != _ObjectJsonType)
+	{
+		throw nullptr;
+	}
+
+	return ObjectData;
+}
+
+const BFW::Assets::JsonObjectData& BFW::Assets::Json::GetObjectData() const
+{
+	if (Type != _ObjectJsonType)
+	{
+		throw nullptr;
+	}
+
+	return ObjectData;
+}
+
+BFW::Assets::Json& BFW::Assets::Json::operator= (const Json& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Type = _Other.Type;
+	Bool = _Other.Bool;
+	Number = _Other.Number;
+	String = _Other.String;
+	Array = _Other.Array;
+	ObjectData = _Other.ObjectData;
+
+	return *this;
+}
+
+BFW::Assets::Json& BFW::Assets::Json::operator= (Json&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Type = _Other.Type;
+	Bool = _Other.Bool;
+	Number = _Other.Number;
+	String = _Other.String;
+	Array = (Vector<Json>&&)(_Other.Array);
+	ObjectData = (JsonObjectData&&)(_Other.ObjectData);
+
+	_Other.Type = _NullJsonType;
+	_Other.Bool = false;
+	_Other.Number = 0.0f;
+	_Other.String = "";
 
 	return *this;
 }
