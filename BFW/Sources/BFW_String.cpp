@@ -10,11 +10,13 @@
 
 const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_VIEW_TYPE_A& _String)
 {
+	BFW_STRING_TYPE_A _TempString = BFW_STRING_TYPE_A(_String.data(), _String.size());
+
 	BFW_STRING_TYPE_W _Result;
 
-	_Result.resize(std::mbstowcs(nullptr, _String.data(), 0) + 1);
+	_Result.resize(std::mbstowcs(nullptr, _TempString.data(), 0) + 1);
 
-	std::mbstowcs(_Result.data(), _String.data(), _Result.size() - 1);
+	std::mbstowcs(_Result.data(), _TempString.data(), _Result.size() - 1);
 
 	_Result[_Result.size() - 1] = '\0';
 
@@ -23,11 +25,13 @@ const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_
 
 const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_VIEW_TYPE_W& _String)
 {
+	BFW_STRING_TYPE_W _TempString = BFW_STRING_TYPE_W(_String.data(), _String.size());
+
 	BFW_STRING_TYPE_A _Result;
 
-	_Result.resize(std::wcstombs(nullptr, _String.data(), 0) + 1);
+	_Result.resize(std::wcstombs(nullptr, _TempString.data(), 0) + 1);
 
-	std::wcstombs(_Result.data(), _String.data(), _Result.size() - 1);
+	std::wcstombs(_Result.data(), _TempString.data(), _Result.size() - 1);
 
 	_Result[_Result.size() - 1] = '\0';
 
