@@ -351,10 +351,10 @@
 #define BFW_TO_STRING(X) BFW_TO_STRING_W(X)
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_W(X)
 #define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_W(X)
-#define BFW_UNICODE_TO_MACHINE(X) X
-#define BFW_UTF8_TO_MACHINE(X) BFW::String::FromUTF8ToUnicode(X)
-#define BFW_MACHINE_TO_UNICODE(X) X
-#define BFW_MACHINE_TO_UTF8(X) BFW::String::FromUnicodeToUTF8(X)
+#define BFW_UNICODE_TO_MACHINE(X, Error) [](const BFW_STRING_VIEW_TYPE_W& _X, bool* _Error) -> BFW_STRING_TYPE { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE)(_X); }(X, Error)
+#define BFW_UTF8_TO_MACHINE(X, Error) BFW::String::FromUTF8ToUnicode(X, Error)
+#define BFW_MACHINE_TO_UNICODE(X, Error) [](const BFW_STRING_VIEW_TYPE_W& _X, bool* _Error) -> BFW_STRING_TYPE_W { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE_W)(_X); }(X, Error)
+#define BFW_MACHINE_TO_UTF8(X, Error) BFW::String::FromUnicodeToUTF8(X, Error)
 
 #endif
 
@@ -368,10 +368,10 @@
 #define BFW_TO_STRING(X) BFW_TO_STRING_A(X)
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_A(X)
 #define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_A(X)
-#define BFW_UNICODE_TO_MACHINE(X) BFW::String::FromUnicodeToUTF8(X)
-#define BFW_UTF8_TO_MACHINE(X) X
-#define BFW_MACHINE_TO_UNICODE(X) BFW::String::FromUTF8ToUnicode(X)
-#define BFW_MACHINE_TO_UTF8(X) X
+#define BFW_UNICODE_TO_MACHINE(X, Error) BFW::String::FromUnicodeToUTF8(X, Error)
+#define BFW_UTF8_TO_MACHINE(X, Error) [](const BFW_STRING_VIEW_TYPE_A& _X, bool* _Error) -> BFW_STRING_TYPE { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE)(_X); }(X, Error)
+#define BFW_MACHINE_TO_UNICODE(X, Error) BFW::String::FromUTF8ToUnicode(X, Error)
+#define BFW_MACHINE_TO_UTF8(X, Error) [](const BFW_STRING_VIEW_TYPE_A& _X, bool* _Error) -> BFW_STRING_TYPE_A { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE_A)(_X); }(X, Error)
 
 #endif
 

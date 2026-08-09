@@ -55,7 +55,7 @@ void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_TYPE_A& _GUID)
 {
 	GUIDMutex.lock();
 
-	ExistentGUIDs.Erase(BFW_UTF8_TO_MACHINE(_GUID).c_str());
+	ExistentGUIDs.Erase(BFW_UTF8_TO_MACHINE(_GUID, nullptr).c_str());
 
 	GUIDMutex.unlock();
 }
@@ -64,7 +64,7 @@ void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_TYPE_W& _GUID)
 {
 	GUIDMutex.lock();
 
-	ExistentGUIDs.Erase(BFW_UNICODE_TO_MACHINE(_GUID).c_str());
+	ExistentGUIDs.Erase(BFW_UNICODE_TO_MACHINE(_GUID, nullptr).c_str());
 
 	GUIDMutex.unlock();
 }

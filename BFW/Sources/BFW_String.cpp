@@ -8,8 +8,13 @@
 
 
 
-const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_VIEW_TYPE_A& _String)
+const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_VIEW_TYPE_A& _String, bool* _Error)
 {
+	if (_Error)
+	{
+		*_Error = false;
+	}
+
 	BFW_STRING_TYPE_A _TempString = BFW_STRING_TYPE_A(_String.data(), _String.size());
 
 	BFW_STRING_TYPE_W _Result;
@@ -18,6 +23,11 @@ const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_
 
 	if (_Size == std::numeric_limits<size_t>::max())
 	{
+		if (_Error)
+		{
+			*_Error = true;
+		}
+
 		return L"";
 	}
 
@@ -30,8 +40,13 @@ const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_
 	return _Result;
 }
 
-const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_VIEW_TYPE_W& _String)
+const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_VIEW_TYPE_W& _String, bool* _Error)
 {
+	if (_Error)
+	{
+		*_Error = false;
+	}
+
 	BFW_STRING_TYPE_W _TempString = BFW_STRING_TYPE_W(_String.data(), _String.size());
 
 	BFW_STRING_TYPE_A _Result;
@@ -40,6 +55,11 @@ const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_
 
 	if (_Size == std::numeric_limits<size_t>::max())
 	{
+		if (_Error)
+		{
+			*_Error = true;
+		}
+
 		return "";
 	}
 

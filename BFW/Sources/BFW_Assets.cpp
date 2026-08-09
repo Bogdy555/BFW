@@ -557,7 +557,7 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 
 	while ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\"')
 	{
-		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) == '\0')
+		if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) <= 0x1F)
 		{
 			return false;
 		}
@@ -713,7 +713,15 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 
 	_CurrentPos++;
 
-	_Json.SetString(BFW::String::FromUnicodeToUTF8(_String));
+	bool _Error = false;
+	BFW_STRING_TYPE_A _FinalString = BFW::String::FromUnicodeToUTF8(_String, &_Error);
+
+	if (_Error)
+	{
+		return false;
+	}
+
+	_Json.SetString(_FinalString);
 
 	return true;
 }
@@ -1219,7 +1227,63 @@ static void SaveJsonNumber(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream,
 
 static void SaveJsonString(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
 {
-	_Stream << '\"' << _Json.GetString() << '\"';
+	_Stream << '\"';
+
+	BFW_STRING_TYPE_A _String = _Json.GetString();
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		if (_String[_Index] == '\"')
+		{
+			_Stream << '\\' << '\"';
+			continue;
+		}
+
+		if (_String[_Index] == '\\')
+		{
+			_Stream << '\\' << '\\';
+			continue;
+		}
+
+		if (_String[_Index] == '\b')
+		{
+			_Stream << '\\' << 'b';
+			continue;
+		}
+
+		if (_String[_Index] == '\f')
+		{
+			_Stream << '\\' << 'f';
+			continue;
+		}
+
+		if (_String[_Index] == '\n')
+		{
+			_Stream << '\\' << 'n';
+			continue;
+		}
+
+		if (_String[_Index] == '\r')
+		{
+			_Stream << '\\' << 'r';
+			continue;
+		}
+
+		if (_String[_Index] == '\t')
+		{
+			_Stream << '\\' << 't';
+			continue;
+		}
+
+		if (_String[_Index] <= 0x1F)
+		{
+			continue;
+		}
+
+		_Stream << _String[_Index];
+	}
+
+	_Stream << '\"';
 }
 
 static void SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json);
