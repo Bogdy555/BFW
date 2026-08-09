@@ -135,7 +135,7 @@ namespace BFW
 				return AnimationStates.GetSize() - 1;
 			}
 
-			return (size_t)(-1);
+			return std::numeric_limits<size_t>::max();
 		}
 
 		const float GetTime() const

@@ -42,6 +42,7 @@
 
 #include <type_traits>
 #include <cstdint>
+#include <limits>
 #include <iostream>
 #include <fstream>
 #include <string>

@@ -519,7 +519,7 @@ namespace BFW
 			~RandomUInt64();
 
 			void SetSeed(const uint32_t _Seed);
-			const uint64_t operator() (const uint64_t _Min = 0, const uint64_t _Max = 0xFFFFFFFFFFFFFFFF);
+			const uint64_t operator() (const uint64_t _Min = 0, const uint64_t _Max = std::numeric_limits<uint64_t>::max());
 
 			RandomUInt64& operator= (const RandomUInt64& _Other);
 			RandomUInt64& operator= (RandomUInt64&& _Other) noexcept;

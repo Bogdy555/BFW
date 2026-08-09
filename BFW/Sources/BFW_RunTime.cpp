@@ -90,7 +90,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	Resources.Emplace(BFW_TO_STRING(BFW_MTL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
 	Resources.Emplace(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
 
-	for (size_t _ResourceId = 0; _ResourceId < (size_t)((uint16_t)(-1)) + 1; _ResourceId++)
+	for (size_t _ResourceId = 0; _ResourceId < (size_t)(std::numeric_limits<uint16_t>::max()) + 1; _ResourceId++)
 	{
 		FileSystem::FileContent _FileContent;
 

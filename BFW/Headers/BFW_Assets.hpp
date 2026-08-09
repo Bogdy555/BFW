@@ -136,7 +136,7 @@ namespace BFW
 		struct BFW_API JsonObjectData
 		{
 
-			Trie<Json, BFW_CHAR_TYPE_A> Object;
+			Vector<Json> Object;
 			Vector<BFW_STRING_TYPE_A> Tags;
 
 			JsonObjectData();

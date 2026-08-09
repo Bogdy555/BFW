@@ -751,15 +751,7 @@ static const bool LoadJsonObject(const BFW::FileSystem::FileContent& _FileConten
 			return false;
 		}
 
-		for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
-		{
-			if (_ObjectData.Tags[_Index] == _Tag.GetString())
-			{
-				return false;
-			}
-		}
-
-		BFW::Assets::Json& _TagObject = _ObjectData.Object.Emplace(_Tag.GetString().c_str(), BFW::Assets::Json());
+		BFW::Assets::Json& _TagObject = _ObjectData.Object.PushBack(BFW::Assets::Json());
 		_ObjectData.Tags.PushBack(_Tag.GetString());
 
 		while (std::isspace((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
@@ -1208,6 +1200,24 @@ static void SaveJsonBool(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, c
 
 static void SaveJsonNumber(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)
 {
+	if (std::isnan(_Json.GetNumber()))
+	{
+		_Stream << 0.0f;
+		return;
+	}
+
+	if (!std::isfinite(_Json.GetNumber()) && _Json.GetNumber() < 0.0f)
+	{
+		_Stream << std::numeric_limits<float>::max();
+		return;
+	}
+
+	if (!std::isfinite(_Json.GetNumber()) && _Json.GetNumber() > 0.0f)
+	{
+		_Stream << std::numeric_limits<float>::min();
+		return;
+	}
+
 	_Stream << _Json.GetNumber();
 }
 
@@ -1241,7 +1251,7 @@ static void SaveJsonObject(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream,
 
 		_Stream << ":";
 
-		const BFW::Assets::Json& _CurrentJson = *_ObjectData.Object.GetData(_ObjectData.Tags[_Index].c_str());
+		const BFW::Assets::Json& _CurrentJson = _ObjectData.Object[_Index];
 
 		if (_CurrentJson.GetType() == BFW::Assets::_ObjectJsonType || _CurrentJson.GetType() == BFW::Assets::_ArrayJsonType)
 		{
@@ -2453,7 +2463,7 @@ BFW::Assets::JsonObjectData::JsonObjectData() : Object(), Tags()
 
 }
 
-BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : Object((Trie<Json, BFW_CHAR_TYPE_A>&&)(_Other.Object)), Tags((Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags))
+BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : Object((Vector<Json>&&)(_Other.Object)), Tags((Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags))
 {
 
 }
@@ -2470,7 +2480,7 @@ BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectD
 		return *this;
 	}
 
-	Object = (Trie<Json, BFW_CHAR_TYPE_A>&&)(_Other.Object);
+	Object = (Vector<Json>&&)(_Other.Object);
 	Tags = (Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags);
 
 	return *this;
