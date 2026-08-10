@@ -8,6 +8,50 @@
 
 
 
+static const BFW_CHAR_TYPE_A* DefaultLocale = nullptr;
+
+
+
+const bool BFW_API BFW::String::Init()
+{
+	if (DefaultLocale)
+	{
+		return true;
+	}
+
+	DefaultLocale = std::setlocale(LC_ALL, nullptr);
+
+	if (!DefaultLocale)
+	{
+		return false;
+	}
+
+	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
+	{
+		DefaultLocale = nullptr;
+		return false;
+	}
+
+	return true;
+}
+
+void BFW_API BFW::String::Stop()
+{
+	if (!DefaultLocale)
+	{
+		return;
+	}
+
+	std::setlocale(LC_ALL, DefaultLocale);
+
+	DefaultLocale = nullptr;
+}
+
+const BFW_CHAR_TYPE_A* BFW_API BFW::String::GetDefaultLocale()
+{
+	return DefaultLocale;
+}
+
 const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_VIEW_TYPE_A& _String, bool* _Error)
 {
 	if (_Error)

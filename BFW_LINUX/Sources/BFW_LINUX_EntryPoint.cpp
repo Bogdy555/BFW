@@ -4,7 +4,7 @@
 
 int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 {
-	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
+	if (!BFW::String::Init())
 	{
 		int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
@@ -15,6 +15,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 		if (!BFW::Log::Init())
 		{
 			int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
+			BFW::String::Stop();
 			return BFW::MultiProcessing::_UnknownErrorReturnValue;
 		}
 	);
@@ -23,6 +24,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 	{
 		int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
 		BFW_DEBUG_CALL(BFW::Log::Stop());
+		BFW::String::Stop();
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
 	}
 
@@ -37,6 +39,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 
 	BFW::Time::Stop();
 	BFW_DEBUG_CALL(BFW::Log::Stop());
+	BFW::String::Stop();
 
 	return _ReturnValue;
 }

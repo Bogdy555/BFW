@@ -4,7 +4,7 @@
 
 void setup()
 {
-	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
+	if (!BFW::String::Init())
 	{
 		BFW_LOG_LINE(BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}

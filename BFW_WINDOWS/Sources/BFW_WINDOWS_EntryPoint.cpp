@@ -4,7 +4,7 @@
 
 int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance, _In_ LPWSTR _CmdLine, _In_ int _ShowCmd)
 {
-	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
+	if (!BFW::String::Init())
 	{
 		MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
@@ -15,6 +15,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 		if (!BFW::Log::Init())
 		{
 			MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
+			BFW::String::Stop();
 			return BFW::MultiProcessing::_UnknownErrorReturnValue;
 		}
 	);
@@ -23,6 +24,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 	{
 		MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
 		BFW_DEBUG_CALL(BFW::Log::Stop());
+		BFW::String::Stop();
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
 	}
 
@@ -37,6 +39,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 
 	BFW::Time::Stop();
 	BFW_DEBUG_CALL(BFW::Log::Stop());
+	BFW::String::Stop();
 
 	return _ReturnValue;
 }
