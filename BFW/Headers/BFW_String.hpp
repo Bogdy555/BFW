@@ -22,6 +22,32 @@ namespace BFW
 		const BFW_STRING_TYPE_W BFW_API FromUTF8ToUnicode(const BFW_STRING_VIEW_TYPE_A& _String, bool* _Error = nullptr);
 		const BFW_STRING_TYPE_A BFW_API FromUnicodeToUTF8(const BFW_STRING_VIEW_TYPE_W& _String, bool* _Error = nullptr);
 
+		const bool BFW_API IsHexA(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsHexW(const BFW_CHAR_TYPE_W _Char);
+		const bool BFW_API IsHex(const BFW_CHAR_TYPE _Char);
+
+		const uint8_t BFW_API HexCharToNibbleA(const BFW_CHAR_TYPE_A _Char);
+		const uint8_t BFW_API HexCharToNibbleW(const BFW_CHAR_TYPE_W _Char);
+		const uint8_t BFW_API HexCharToNibble(const BFW_CHAR_TYPE _Char);
+
+		const bool BFW_API IsUTF8MultiByte2(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsUTF8MultiByte3(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsUTF8MultiByteContinuation(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsUnicodeSurrogated(const BFW_CHAR_TYPE_W _Char);
+		const bool BFW_API IsUnicodeSurrogatedContinuation(const BFW_CHAR_TYPE_W _Char);
+
+		const bool BFW_API IsValidUnicodeChar(const BFW_CHAR_TYPE_W _Char);
+
+		const bool BFW_API IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& _String);
+		const bool BFW_API IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_W& _String);
+
+		const bool BFW_API IsControlCharacter(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsControlCharacter(const BFW_CHAR_TYPE_W _Char);
+
+		const bool BFW_API IsExtendedControlCharacter(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsExtendedControlCharacter(const BFW_CHAR_TYPE_W _Char);
+
 	}
 
 }
