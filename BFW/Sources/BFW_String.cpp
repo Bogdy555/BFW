@@ -47,7 +47,7 @@ void BFW_API BFW::String::Stop()
 	DefaultLocale = nullptr;
 }
 
-const BFW_CHAR_TYPE_A* BFW_API BFW::String::GetDefaultLocale()
+BFW_API const BFW_CHAR_TYPE_A* BFW::String::GetDefaultLocale()
 {
 	return DefaultLocale;
 }
