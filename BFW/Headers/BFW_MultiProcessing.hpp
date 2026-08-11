@@ -92,6 +92,8 @@ namespace BFW
 			Process& operator= (const Process& _Other) = delete;
 			Process& operator= (Process&& _Other) noexcept;
 
+			static const uint32_t GetCurrentPid();
+
 		private:
 
 #ifdef BFW_WINDOWS_PLATFORM

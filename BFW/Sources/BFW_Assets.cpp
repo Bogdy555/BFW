@@ -1204,23 +1204,23 @@ static void SaveJsonNumber(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream,
 {
 	if (std::isnan(_Json.GetNumber()))
 	{
-		_Stream << 0.0f;
+		_Stream << std::fixed << 0.0f;
 		return;
 	}
 
 	if (!std::isfinite(_Json.GetNumber()) && _Json.GetNumber() < 0.0f)
 	{
-		_Stream << std::numeric_limits<float>::max();
+		_Stream << std::fixed << std::numeric_limits<float>::max();
 		return;
 	}
 
 	if (!std::isfinite(_Json.GetNumber()) && _Json.GetNumber() > 0.0f)
 	{
-		_Stream << std::numeric_limits<float>::min();
+		_Stream << std::fixed << std::numeric_limits<float>::min();
 		return;
 	}
 
-	_Stream << _Json.GetNumber();
+	_Stream << std::fixed << _Json.GetNumber();
 }
 
 static const bool SaveJsonString(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Json& _Json)

@@ -61,6 +61,8 @@ namespace BFW
 
 		BFW_DEBUG_CALL(extern std::ofstream BFW_API ProfilingFile);
 		BFW_DEBUG_CALL(extern BFW_API std::mutex* ProfilingFileMutex);
+		BFW_DEBUG_CALL(extern BFW_API Assets::Json* ProfilingJson);
+		BFW_DEBUG_CALL(extern BFW_API const uint64_t& ProfilingStart);
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 

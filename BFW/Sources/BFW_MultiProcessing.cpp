@@ -319,6 +319,24 @@ BFW::MultiProcessing::Process& BFW::MultiProcessing::Process::operator= (Process
 
 #endif
 
+#ifdef BFW_WINDOWS_PLATFORM
+
+const uint32_t BFW::MultiProcessing::Process::GetCurrentPid()
+{
+	return GetCurrentProcessId();
+}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+const uint32_t BFW::MultiProcessing::Process::GetCurrentPid()
+{
+	return getpid();
+}
+
+#endif
+
 
 
 #ifdef BFW_WINDOWS_PLATFORM

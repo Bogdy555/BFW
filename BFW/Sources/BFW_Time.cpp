@@ -80,14 +80,14 @@ void BFW::Time::Timer::SubtractMicroSecondsFromEnd(const uint64_t _MicroSeconds)
 	End -= std::chrono::microseconds(_MicroSeconds);
 }
 
-const time_t BFW::Time::Timer::GetBegin() const
+const std::chrono::system_clock::time_point& BFW::Time::Timer::GetBegin() const
 {
-	return std::chrono::system_clock::to_time_t(Begin);
+	return Begin;
 }
 
-const time_t BFW::Time::Timer::GetEnd() const
+const std::chrono::system_clock::time_point& BFW::Time::Timer::GetEnd() const
 {
-	return std::chrono::system_clock::to_time_t(End);
+	return End;
 }
 
 BFW::Time::Timer::operator const float () const
@@ -126,19 +126,25 @@ BFW::Time::Timer& BFW::Time::Timer::operator= (Timer&& _Other) noexcept
 
 
 
-BFW::Time::ScopeTimer::ScopeTimer(const LogScopeTimeFnc _LogFnc) : ScopeTime(), LogFnc(_LogFnc)
+BFW::Time::ScopeTimer::ScopeTimer(const LogScopeTimeFnc _LogFnc, const BFW_CHAR_TYPE* _File, const size_t _Line, const BFW_CHAR_TYPE* _Name) : ScopeTime(), LogFnc(_LogFnc), File(_File), Line(_Line), Name(BFW_STRING_PREFIX(""))
+{
+	if (_Name)
+	{
+		Name = _Name;
+	}
+}
+
+BFW::Time::ScopeTimer::ScopeTimer(const ScopeTimer& _Other) : ScopeTime(_Other.ScopeTime), LogFnc(_Other.LogFnc), File(_Other.File), Line(_Other.Line), Name(_Other.Name)
 {
 
 }
 
-BFW::Time::ScopeTimer::ScopeTimer(const ScopeTimer& _Other) : ScopeTime(_Other.ScopeTime), LogFnc(_Other.LogFnc)
-{
-
-}
-
-BFW::Time::ScopeTimer::ScopeTimer(ScopeTimer&& _Other) noexcept : ScopeTime((Timer&&)(_Other.ScopeTime)), LogFnc(_Other.LogFnc)
+BFW::Time::ScopeTimer::ScopeTimer(ScopeTimer&& _Other) noexcept : ScopeTime((Timer&&)(_Other.ScopeTime)), LogFnc(_Other.LogFnc), File(_Other.File), Line(_Other.Line), Name(_Other.Name)
 {
 	_Other.LogFnc = nullptr;
+	_Other.File = nullptr;
+	_Other.Line = 0;
+	_Other.Name = BFW_STRING_PREFIX("");
 }
 
 BFW::Time::ScopeTimer::~ScopeTimer()
@@ -147,7 +153,7 @@ BFW::Time::ScopeTimer::~ScopeTimer()
 
 	if (LogFnc)
 	{
-		LogFnc(ScopeTime);
+		LogFnc(ScopeTime, File, Line, Name.c_str());
 	}
 }
 
@@ -156,9 +162,45 @@ void BFW::Time::ScopeTimer::SetLogFnc(const LogScopeTimeFnc _LogFnc)
 	LogFnc = _LogFnc;
 }
 
+void BFW::Time::ScopeTimer::SetFile(const BFW_CHAR_TYPE* _File)
+{
+	File = _File;
+}
+
+void BFW::Time::ScopeTimer::SetLine(const size_t _Line)
+{
+	Line = _Line;
+}
+
+void BFW::Time::ScopeTimer::SetName(const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name)
+	{
+		Name = BFW_STRING_PREFIX("");
+		return;
+	}
+
+	Name = _Name;
+}
+
 const BFW::Time::LogScopeTimeFnc BFW::Time::ScopeTimer::GetLogFnc() const
 {
 	return LogFnc;
+}
+
+const BFW_CHAR_TYPE* BFW::Time::ScopeTimer::GetFile() const
+{
+	return File;
+}
+
+const size_t BFW::Time::ScopeTimer::GetLine() const
+{
+	return Line;
+}
+
+const BFW_CHAR_TYPE* BFW::Time::ScopeTimer::GetName() const
+{
+	return Name.c_str();
 }
 
 BFW::Time::ScopeTimer& BFW::Time::ScopeTimer::operator= (const ScopeTimer& _Other)
@@ -170,6 +212,9 @@ BFW::Time::ScopeTimer& BFW::Time::ScopeTimer::operator= (const ScopeTimer& _Othe
 
 	ScopeTime = _Other.ScopeTime;
 	LogFnc = _Other.LogFnc;
+	File = _Other.File;
+	Line = _Other.Line;
+	Name = _Other.Name;
 
 	return *this;
 }
@@ -183,8 +228,14 @@ BFW::Time::ScopeTimer& BFW::Time::ScopeTimer::operator= (ScopeTimer&& _Other) no
 
 	ScopeTime = (Timer&&)(_Other.ScopeTime);
 	LogFnc = _Other.LogFnc;
+	File = _Other.File;
+	Line = _Other.Line;
+	Name = _Other.Name;
 
 	_Other.LogFnc = nullptr;
+	_Other.File = nullptr;
+	_Other.Line = 0;
+	_Other.Name = BFW_STRING_PREFIX("");
 
 	return *this;
 }
@@ -262,34 +313,38 @@ void BFW_API BFW::Time::Sleep(const uint64_t _MicroSeconds)
 	std::this_thread::sleep_for(std::chrono::microseconds(_MicroSeconds));
 }
 
-const uint64_t BFW_API BFW::Time::GetTimeStamp()
+const uint64_t BFW_API BFW::Time::GetTimeStamp(const std::chrono::system_clock::time_point& _Time)
 {
-	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	return (uint64_t)(std::chrono::duration_cast<std::chrono::nanoseconds>(_Time.time_since_epoch()).count());
 }
 
-const time_t BFW_API BFW::Time::GetTime()
+const std::chrono::system_clock::time_point BFW_API BFW::Time::GetTime()
 {
-	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	return std::chrono::system_clock::now();
 }
 
-const tm BFW_API BFW::Time::TimeTToUTCTM(const time_t _Time)
+const tm BFW_API BFW::Time::TimeTToUTCTM(const std::chrono::system_clock::time_point& _Time)
 {
 	tm _ReturnTm = { 0 };
 
-	BFW_WINDOWS_PLATFORM_CALL(gmtime_s(&_ReturnTm, &_Time));
-	BFW_LINUX_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
-	BFW_ESP32_PLATFORM_CALL(gmtime_r(&_Time, &_ReturnTm));
+	time_t _TimeT = std::chrono::system_clock::to_time_t(_Time);
+
+	BFW_WINDOWS_PLATFORM_CALL(gmtime_s(&_ReturnTm, &_TimeT));
+	BFW_LINUX_PLATFORM_CALL(gmtime_r(&_TimeT, &_ReturnTm));
+	BFW_ESP32_PLATFORM_CALL(gmtime_r(&_TimeT, &_ReturnTm));
 
 	return _ReturnTm;
 }
 
-const tm BFW_API BFW::Time::TimeTToLocalTM(const time_t _Time)
+const tm BFW_API BFW::Time::TimeTToLocalTM(const std::chrono::system_clock::time_point& _Time)
 {
 	tm _ReturnTm = { 0 };
 
-	BFW_WINDOWS_PLATFORM_CALL(localtime_s(&_ReturnTm, &_Time));
-	BFW_LINUX_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
-	BFW_ESP32_PLATFORM_CALL(localtime_r(&_Time, &_ReturnTm));
+	time_t _TimeT = std::chrono::system_clock::to_time_t(_Time);
+
+	BFW_WINDOWS_PLATFORM_CALL(localtime_s(&_ReturnTm, &_TimeT));
+	BFW_LINUX_PLATFORM_CALL(localtime_r(&_TimeT, &_ReturnTm));
+	BFW_ESP32_PLATFORM_CALL(localtime_r(&_TimeT, &_ReturnTm));
 
 	return _ReturnTm;
 }

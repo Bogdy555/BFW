@@ -43,6 +43,8 @@ void BFW_ESP32::RunTime::MainMenu::Setup()
 
 void BFW_ESP32::RunTime::MainMenu::Update()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Input();
 	Engine();
 	FrameBuild();
@@ -55,6 +57,8 @@ void BFW_ESP32::RunTime::MainMenu::Stop()
 
 void BFW_ESP32::RunTime::MainMenu::Input()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application* _ApplicationObj = (Application*)(GetApplicationObj());
 }
 
@@ -65,10 +69,14 @@ void BFW_ESP32::RunTime::MainMenu::DeleteInputs()
 
 void BFW_ESP32::RunTime::MainMenu::Engine()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application* _ApplicationObj = (Application*)(GetApplicationObj());
 }
 
 void BFW_ESP32::RunTime::MainMenu::FrameBuild()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application* _ApplicationObj = (Application*)(GetApplicationObj());
 }

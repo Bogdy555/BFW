@@ -43,6 +43,7 @@
 #include <type_traits>
 #include <cstdint>
 #include <limits>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -164,7 +165,7 @@ namespace BFW
 
 		class BFW_API Timer;
 
-		typedef void (*LogScopeTimeFnc)(const float _ScopeTime);
+		typedef void (*LogScopeTimeFnc)(const Timer& _ScopeTimer, const BFW_CHAR_TYPE* _File, const size_t _Line, const BFW_CHAR_TYPE* _Name);
 
 		class BFW_API ScopeTimer;
 

@@ -81,6 +81,8 @@ void BFW_WINDOWS::RunTime::MainMenu::Setup()
 
 void BFW_WINDOWS::RunTime::MainMenu::Update()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Input();
 	Engine();
 	FrameBuild();
@@ -889,6 +891,8 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 
 void BFW_WINDOWS::RunTime::MainMenu::Input()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
@@ -950,6 +954,8 @@ void BFW_WINDOWS::RunTime::MainMenu::DeleteInputs()
 
 void BFW_WINDOWS::RunTime::MainMenu::Engine()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();
@@ -987,6 +993,8 @@ void BFW_WINDOWS::RunTime::MainMenu::Engine()
 
 void BFW_WINDOWS::RunTime::MainMenu::FrameBuild()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 	BFW::GUI::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 	GUI::WindowData& _MainWindowData = _ApplicationObj.GetMainWindowData();

@@ -7,6 +7,8 @@ static std::mutex Mutex;
 BFW_DEBUG_CALL(static std::mutex LoggingFileMutex);
 
 BFW_DEBUG_CALL(static std::mutex ProfilingFileMutex);
+BFW_DEBUG_CALL(static BFW::Assets::Json ProfilingJson);
+BFW_DEBUG_CALL(static uint64_t ProfilingStart = 0);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -24,6 +26,8 @@ BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::LoggingFileMutex = &::LoggingFileMu
 
 BFW_DEBUG_CALL(std::ofstream BFW_API BFW::Log::ProfilingFile);
 BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::ProfilingFileMutex = &::ProfilingFileMutex);
+BFW_DEBUG_CALL(BFW_API BFW::Assets::Json* BFW::Log::ProfilingJson = &::ProfilingJson);
+BFW_DEBUG_CALL(BFW_API const uint64_t& BFW::Log::ProfilingStart = ::ProfilingStart);
 
 
 
@@ -56,9 +60,20 @@ const bool BFW_API BFW::Log::Init()
 
 	DefaultAttribute = _ConsoleInfo.wAttributes;
 
-	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+	BFW_DEBUG_CALL(uint64_t _TimeStamp = Time::GetTimeStamp());
 
-	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary));
+
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary));
+	BFW_DEBUG_CALL
+	(
+		ProfilingJson->SetObject();
+		ProfilingJson->GetObjectData().Tags.EmplaceBack("displayTimeUnit");
+		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetString("ms");
+		ProfilingJson->GetObjectData().Tags.EmplaceBack("traceEvents");
+		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetArray();
+	);
+	BFW_DEBUG_CALL(::ProfilingStart = _TimeStamp);
 
 	return true;
 }
@@ -74,6 +89,15 @@ void BFW_API BFW::Log::Stop()
 	DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_BkgBlackAttribute;
 
 	ConsoleHandle = INVALID_HANDLE_VALUE;
+
+	BFW_DEBUG_CALL
+	(
+		ProfilingJson->Save().Save(ProfilingFile);
+		*ProfilingJson = Assets::Json();
+		::ProfilingStart = 0;
+	);
+	BFW_DEBUG_CALL(LoggingFile.close());
+	BFW_DEBUG_CALL(ProfilingFile.close());
 }
 
 #endif
@@ -82,9 +106,20 @@ void BFW_API BFW::Log::Stop()
 
 const bool BFW_API BFW::Log::Init()
 {
-	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+	BFW_DEBUG_CALL(uint64_t _TimeStamp = Time::GetTimeStamp());
 
-	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_LoggingFile ")) + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary));
+
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(BFW_STRING_PREFIX(".\\BFW_Log_ProfilingFile ")) + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary));
+	BFW_DEBUG_CALL
+	(
+		ProfilingJson->SetObject();
+		ProfilingJson->GetObjectData().Tags.EmplaceBack("displayTimeUnit");
+		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetString("ms");
+		ProfilingJson->GetObjectData().Tags.EmplaceBack("traceEvents");
+		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetArray();
+	);
+	BFW_DEBUG_CALL(::ProfilingStart = _TimeStamp);
 
 	return true;
 }
@@ -92,6 +127,15 @@ const bool BFW_API BFW::Log::Init()
 void BFW_API BFW::Log::Stop()
 {
 	std::wcout << L"\033[0m";
+
+	BFW_DEBUG_CALL
+	(
+		ProfilingJson->Save().Save(ProfilingFile);
+		*ProfilingJson = Assets::Json();
+		::ProfilingStart = 0;
+	);
+	BFW_DEBUG_CALL(LoggingFile.close());
+	BFW_DEBUG_CALL(ProfilingFile.close());
 }
 
 #endif
@@ -104,9 +148,20 @@ const bool BFW_API BFW::Log::Init(const size_t _BaudRate, const BFW_STRING_TYPE&
 {
 	Serial.begin(_BaudRate);
 
-	BFW_DEBUG_CALL(LoggingFile.open(_SDCardPath + BFW_STRING_PREFIX("\\BFW_Log_LoggingFile ") + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+	BFW_DEBUG_CALL(uint64_t _TimeStamp = Time::GetTimeStamp());
 
-	BFW_DEBUG_CALL(ProfilingFile.open(_SDCardPath + BFW_STRING_PREFIX("\\BFW_Log_ProfilingFile ") + BFW_TO_STRING(Time::GetTimeStamp()) + BFW_STRING_PREFIX(".txt")));
+	BFW_DEBUG_CALL(LoggingFile.open(_SDCardPath + BFW_STRING_PREFIX("\\BFW_Log_LoggingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary));
+
+	BFW_DEBUG_CALL(ProfilingFile.open(_SDCardPath + BFW_STRING_PREFIX("\\BFW_Log_ProfilingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary));
+	BFW_DEBUG_CALL
+	(
+		ProfilingJson->SetObject();
+		ProfilingJson->GetObjectData().Tags.EmplaceBack("displayTimeUnit");
+		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetString("ms");
+		ProfilingJson->GetObjectData().Tags.EmplaceBack("traceEvents");
+		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetArray();
+	);
+	BFW_DEBUG_CALL(::ProfilingStart = _TimeStamp);
 
 	return true;
 }
@@ -114,6 +169,15 @@ const bool BFW_API BFW::Log::Init(const size_t _BaudRate, const BFW_STRING_TYPE&
 void BFW_API BFW::Log::Stop()
 {
 	Serial.end();
+
+	BFW_DEBUG_CALL
+	(
+		ProfilingJson->Save().Save(ProfilingFile);
+		*ProfilingJson = Assets::Json();
+		::ProfilingStart = 0;
+	);
+	BFW_DEBUG_CALL(LoggingFile.close());
+	BFW_DEBUG_CALL(ProfilingFile.close());
 }
 
 #endif

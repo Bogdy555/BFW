@@ -36,8 +36,8 @@ namespace BFW
 			void SubtractMicroSecondsFromBegin(const uint64_t _MicroSeconds);
 			void SubtractMicroSecondsFromEnd(const uint64_t _MicroSeconds);
 
-			const time_t GetBegin() const;
-			const time_t GetEnd() const;
+			const std::chrono::system_clock::time_point& GetBegin() const;
+			const std::chrono::system_clock::time_point& GetEnd() const;
 
 			operator const float () const;
 
@@ -56,14 +56,20 @@ namespace BFW
 
 		public:
 
-			ScopeTimer(const LogScopeTimeFnc _LogFnc = nullptr);
+			ScopeTimer(const LogScopeTimeFnc _LogFnc = nullptr, const BFW_CHAR_TYPE* _File = nullptr, const size_t _Line = 0, const BFW_CHAR_TYPE* _Name = nullptr);
 			ScopeTimer(const ScopeTimer& _Other);
 			ScopeTimer(ScopeTimer&& _Other) noexcept;
 			~ScopeTimer();
 
 			void SetLogFnc(const LogScopeTimeFnc _LogFnc);
+			void SetFile(const BFW_CHAR_TYPE* _File);
+			void SetLine(const size_t _Line);
+			void SetName(const BFW_CHAR_TYPE* _Name);
 
 			const LogScopeTimeFnc GetLogFnc() const;
+			const BFW_CHAR_TYPE* GetFile() const;
+			const size_t GetLine() const;
+			const BFW_CHAR_TYPE* GetName() const;
 
 			ScopeTimer& operator= (const ScopeTimer& _Other);
 			ScopeTimer& operator= (ScopeTimer&& _Other) noexcept;
@@ -72,6 +78,9 @@ namespace BFW
 
 			Timer ScopeTime;
 			LogScopeTimeFnc LogFnc;
+			const BFW_CHAR_TYPE* File;
+			size_t Line;
+			BFW_STRING_TYPE Name;
 
 		};
 
@@ -80,12 +89,12 @@ namespace BFW
 
 		void BFW_API Sleep(const uint64_t _MicroSeconds);
 
-		const uint64_t BFW_API GetTimeStamp();
+		const uint64_t BFW_API GetTimeStamp(const std::chrono::system_clock::time_point& _Time = std::chrono::system_clock::now());
 
-		const time_t BFW_API GetTime();
+		const std::chrono::system_clock::time_point BFW_API GetTime();
 
-		const tm BFW_API TimeTToUTCTM(const time_t _Time);
-		const tm BFW_API TimeTToLocalTM(const time_t _Time);
+		const tm BFW_API TimeTToUTCTM(const std::chrono::system_clock::time_point& _Time);
+		const tm BFW_API TimeTToLocalTM(const std::chrono::system_clock::time_point& _Time);
 
 #ifdef BFW_WINDOWS_PLATFORM
 

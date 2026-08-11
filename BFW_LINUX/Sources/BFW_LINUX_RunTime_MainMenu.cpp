@@ -43,6 +43,8 @@ void BFW_LINUX::RunTime::MainMenu::Setup()
 
 void BFW_LINUX::RunTime::MainMenu::Update()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Input();
 	Engine();
 	FrameBuild();
@@ -55,6 +57,8 @@ void BFW_LINUX::RunTime::MainMenu::Stop()
 
 void BFW_LINUX::RunTime::MainMenu::Input()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application* _ApplicationObj = (Application*)(GetApplicationObj());
 
 	_ApplicationObj->GetController(0).UpdateState(0);
@@ -75,10 +79,14 @@ void BFW_LINUX::RunTime::MainMenu::DeleteInputs()
 
 void BFW_LINUX::RunTime::MainMenu::Engine()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application* _ApplicationObj = (Application*)(GetApplicationObj());
 }
 
 void BFW_LINUX::RunTime::MainMenu::FrameBuild()
 {
+	BFW_PROFILE_FUNCTION();
+
 	Application* _ApplicationObj = (Application*)(GetApplicationObj());
 }
