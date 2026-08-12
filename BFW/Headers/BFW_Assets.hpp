@@ -161,9 +161,9 @@ namespace BFW
 			const bool Load(const FileSystem::FileContent& _FileContent);
 
 			void SetNull();
-			void SetBool(const bool _Bool);
-			void SetNumber(const float _Number);
-			void SetString(const BFW_STRING_TYPE_A _String);
+			void SetBool(const bool _BoolValue);
+			void SetNumber(const float _NumberValue);
+			void SetString(const BFW_STRING_TYPE_A _StringValue);
 			void SetArray();
 			void SetObject();
 
@@ -185,11 +185,11 @@ namespace BFW
 
 			uint8_t Type;
 
-			bool Bool;
-			float Number;
-			BFW_STRING_TYPE_A String;
-			Vector<Json> Array;
-			JsonObjectData ObjectData;
+			bool BoolValue;
+			float NumberValue;
+			BFW_STRING_TYPE_A StringValue;
+			Vector<Json> ArrayValue;
+			JsonObjectData ObjectDataValue;
 
 		};
 

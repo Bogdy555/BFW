@@ -465,7 +465,16 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 
 	try
 	{
-		const std::filesystem::directory_entry _Entry(_Path);
+		std::filesystem::directory_entry _Entry;
+
+		if (_Path[0] == '.' && (_Path[1] == '/' || _Path[1] == '\\'))
+		{
+			_Entry = std::filesystem::directory_entry(GetWorkingDirectory() + _Path.substr(2, _Path.size()));
+		}
+		else
+		{
+			_Entry = std::filesystem::directory_entry(_Path);
+		}
 
 		if (_Entry.is_directory() && !_Entry.is_symlink())
 		{

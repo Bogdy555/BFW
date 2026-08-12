@@ -2584,22 +2584,22 @@ BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectD
 
 
 
-BFW::Assets::Json::Json() : Type(_NullJsonType), Bool(false), Number(0.0f), String(""), Array(), ObjectData()
+BFW::Assets::Json::Json() : Type(_NullJsonType), BoolValue(false), NumberValue(0.0f), StringValue(""), ArrayValue(), ObjectDataValue()
 {
 
 }
 
-BFW::Assets::Json::Json(const Json& _Other) : Type(_Other.Type), Bool(_Other.Bool), Number(_Other.Number), String(_Other.String), Array(_Other.Array), ObjectData(_Other.ObjectData)
+BFW::Assets::Json::Json(const Json& _Other) : Type(_Other.Type), BoolValue(_Other.BoolValue), NumberValue(_Other.NumberValue), StringValue(_Other.StringValue), ArrayValue(_Other.ArrayValue), ObjectDataValue(_Other.ObjectDataValue)
 {
 
 }
 
-BFW::Assets::Json::Json(Json&& _Other) noexcept : Type(_Other.Type), Bool(_Other.Bool), Number(_Other.Number), String(_Other.String), Array((Vector<Json>&&)(_Other.Array)), ObjectData((JsonObjectData&&)(_Other.ObjectData))
+BFW::Assets::Json::Json(Json&& _Other) noexcept : Type(_Other.Type), BoolValue(_Other.BoolValue), NumberValue(_Other.NumberValue), StringValue(_Other.StringValue), ArrayValue((Vector<Json>&&)(_Other.ArrayValue)), ObjectDataValue((JsonObjectData&&)(_Other.ObjectDataValue))
 {
 	_Other.Type = _NullJsonType;
-	_Other.Bool = false;
-	_Other.Number = 0.0f;
-	_Other.String = "";
+	_Other.BoolValue = false;
+	_Other.NumberValue = 0.0f;
+	_Other.StringValue = "";
 }
 
 BFW::Assets::Json::~Json()
@@ -2663,61 +2663,61 @@ const bool BFW::Assets::Json::Load(const FileSystem::FileContent& _FileContent)
 void BFW::Assets::Json::SetNull()
 {
 	Type = _NullJsonType;
-	Bool = false;
-	Number = 0.0f;
-	String = "";
-	Array = Vector<Json>();
-	ObjectData = JsonObjectData();
+	BoolValue = false;
+	NumberValue = 0.0f;
+	StringValue = "";
+	ArrayValue = Vector<Json>();
+	ObjectDataValue = JsonObjectData();
 }
 
-void BFW::Assets::Json::SetBool(const bool _Bool)
+void BFW::Assets::Json::SetBool(const bool _BoolValue)
 {
 	Type = _BoolJsonType;
-	Bool = _Bool;
-	Number = 0.0f;
-	String = "";
-	Array = Vector<Json>();
-	ObjectData = JsonObjectData();
+	BoolValue = _BoolValue;
+	NumberValue = 0.0f;
+	StringValue = "";
+	ArrayValue = Vector<Json>();
+	ObjectDataValue = JsonObjectData();
 }
 
-void BFW::Assets::Json::SetNumber(const float _Number)
+void BFW::Assets::Json::SetNumber(const float _NumberValue)
 {
 	Type = _NumberJsonType;
-	Bool = false;
-	Number = _Number;
-	String = "";
-	Array = Vector<Json>();
-	ObjectData = JsonObjectData();
+	BoolValue = false;
+	NumberValue = _NumberValue;
+	StringValue = "";
+	ArrayValue = Vector<Json>();
+	ObjectDataValue = JsonObjectData();
 }
 
-void BFW::Assets::Json::SetString(const BFW_STRING_TYPE_A _String)
+void BFW::Assets::Json::SetString(const BFW_STRING_TYPE_A _StringValue)
 {
 	Type = _StringJsonType;
-	Bool = false;
-	Number = 0.0f;
-	String = _String;
-	Array = Vector<Json>();
-	ObjectData = JsonObjectData();
+	BoolValue = false;
+	NumberValue = 0.0f;
+	StringValue = _StringValue;
+	ArrayValue = Vector<Json>();
+	ObjectDataValue = JsonObjectData();
 }
 
 void BFW::Assets::Json::SetArray()
 {
 	Type = _ArrayJsonType;
-	Bool = false;
-	Number = 0.0f;
-	String = "";
-	Array = Vector<Json>();
-	ObjectData = JsonObjectData();
+	BoolValue = false;
+	NumberValue = 0.0f;
+	StringValue = "";
+	ArrayValue = Vector<Json>();
+	ObjectDataValue = JsonObjectData();
 }
 
 void BFW::Assets::Json::SetObject()
 {
 	Type = _ObjectJsonType;
-	Bool = false;
-	Number = 0.0f;
-	String = "";
-	Array = Vector<Json>();
-	ObjectData = JsonObjectData();
+	BoolValue = false;
+	NumberValue = 0.0f;
+	StringValue = "";
+	ArrayValue = Vector<Json>();
+	ObjectDataValue = JsonObjectData();
 }
 
 BFW::FileSystem::FileContent BFW::Assets::Json::Save() const
@@ -2779,7 +2779,7 @@ const bool BFW::Assets::Json::GetBool() const
 		throw nullptr;
 	}
 
-	return Bool;
+	return BoolValue;
 }
 
 const float BFW::Assets::Json::GetNumber() const
@@ -2789,7 +2789,7 @@ const float BFW::Assets::Json::GetNumber() const
 		throw nullptr;
 	}
 
-	return Number;
+	return NumberValue;
 }
 
 const BFW_STRING_TYPE_A& BFW::Assets::Json::GetString() const
@@ -2799,7 +2799,7 @@ const BFW_STRING_TYPE_A& BFW::Assets::Json::GetString() const
 		throw nullptr;
 	}
 
-	return String;
+	return StringValue;
 }
 
 BFW::Vector<BFW::Assets::Json>& BFW::Assets::Json::GetArray()
@@ -2809,7 +2809,7 @@ BFW::Vector<BFW::Assets::Json>& BFW::Assets::Json::GetArray()
 		throw nullptr;
 	}
 
-	return Array;
+	return ArrayValue;
 }
 
 const BFW::Vector<BFW::Assets::Json>& BFW::Assets::Json::GetArray() const
@@ -2819,7 +2819,7 @@ const BFW::Vector<BFW::Assets::Json>& BFW::Assets::Json::GetArray() const
 		throw nullptr;
 	}
 
-	return Array;
+	return ArrayValue;
 }
 
 BFW::Assets::JsonObjectData& BFW::Assets::Json::GetObjectData()
@@ -2829,7 +2829,7 @@ BFW::Assets::JsonObjectData& BFW::Assets::Json::GetObjectData()
 		throw nullptr;
 	}
 
-	return ObjectData;
+	return ObjectDataValue;
 }
 
 const BFW::Assets::JsonObjectData& BFW::Assets::Json::GetObjectData() const
@@ -2839,7 +2839,7 @@ const BFW::Assets::JsonObjectData& BFW::Assets::Json::GetObjectData() const
 		throw nullptr;
 	}
 
-	return ObjectData;
+	return ObjectDataValue;
 }
 
 BFW::Assets::Json& BFW::Assets::Json::operator= (const Json& _Other)
@@ -2850,11 +2850,11 @@ BFW::Assets::Json& BFW::Assets::Json::operator= (const Json& _Other)
 	}
 
 	Type = _Other.Type;
-	Bool = _Other.Bool;
-	Number = _Other.Number;
-	String = _Other.String;
-	Array = _Other.Array;
-	ObjectData = _Other.ObjectData;
+	BoolValue = _Other.BoolValue;
+	NumberValue = _Other.NumberValue;
+	StringValue = _Other.StringValue;
+	ArrayValue = _Other.ArrayValue;
+	ObjectDataValue = _Other.ObjectDataValue;
 
 	return *this;
 }
@@ -2867,16 +2867,16 @@ BFW::Assets::Json& BFW::Assets::Json::operator= (Json&& _Other) noexcept
 	}
 
 	Type = _Other.Type;
-	Bool = _Other.Bool;
-	Number = _Other.Number;
-	String = _Other.String;
-	Array = (Vector<Json>&&)(_Other.Array);
-	ObjectData = (JsonObjectData&&)(_Other.ObjectData);
+	BoolValue = _Other.BoolValue;
+	NumberValue = _Other.NumberValue;
+	StringValue = _Other.StringValue;
+	ArrayValue = (Vector<Json>&&)(_Other.ArrayValue);
+	ObjectDataValue = (JsonObjectData&&)(_Other.ObjectDataValue);
 
 	_Other.Type = _NullJsonType;
-	_Other.Bool = false;
-	_Other.Number = 0.0f;
-	_Other.String = "";
+	_Other.BoolValue = false;
+	_Other.NumberValue = 0.0f;
+	_Other.StringValue = "";
 
 	return *this;
 }
