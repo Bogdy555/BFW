@@ -225,9 +225,34 @@ const bool BFW_API BFW::String::IsUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char)
 	return (_Char & 0b11111000) == 0b11110000;
 }
 
+const bool BFW_API BFW::String::IsValidUTF8MultiByte2(const BFW_CHAR_TYPE_A _Char)
+{
+	return _Char >= 0xC2;
+}
+
+const bool BFW_API BFW::String::IsValidUTF8MultiByte3(const BFW_CHAR_TYPE_A _Char)
+{
+	return true;
+}
+
+const bool BFW_API BFW::String::IsValidUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char)
+{
+	return _Char <= 0xF4;
+}
+
 const bool BFW_API BFW::String::IsUTF8MultiByteContinuation(const BFW_CHAR_TYPE_A _Char)
 {
 	return (_Char & 0b11000000) == 0b10000000;
+}
+
+const bool BFW_API BFW::String::IsValidUTF8MultiByte3FirstContinuation(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2)
+{
+	return (_Char1 != 0xE0 && _Char1 != 0xED) || (_Char1 == 0xE0 && _Char2 >= 0xA0) || (_Char1 == 0xED && _Char2 <= 0x9F);
+}
+
+const bool BFW_API BFW::String::IsValidUTF8MultiByte4FirstContinuation(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2)
+{
+	return (_Char1 != 0xF0 && _Char1 != 0xF4) || (_Char1 == 0xF0 && _Char2 >= 0x90) || (_Char1 == 0xF4 && _Char2 <= 0x8F);
 }
 
 const bool BFW_API BFW::String::IsUnicodeSurrogated(const uint32_t _Char)
@@ -238,6 +263,31 @@ const bool BFW_API BFW::String::IsUnicodeSurrogated(const uint32_t _Char)
 const bool BFW_API BFW::String::IsUnicodeSurrogatedContinuation(const uint32_t _Char)
 {
 	return _Char >= 0xDC00 && _Char <= 0xDFFF;
+}
+
+const bool BFW_API BFW::String::IsValidUnicodePoint1A(const uint32_t _Char)
+{
+	return _Char <= 0x7F;
+}
+
+const bool BFW_API BFW::String::IsValidUnicodePoint2A(const uint32_t _Char)
+{
+	return _Char >= 0x80 && _Char <= 0x7FF;
+}
+
+const bool BFW_API BFW::String::IsValidUnicodePoint3A(const uint32_t _Char)
+{
+	return _Char >= 0x800 && _Char <= 0xFFFF;
+}
+
+const bool BFW_API BFW::String::IsValidUnicodePoint4A(const uint32_t _Char)
+{
+	return _Char >= 0x10000 && _Char <= 0x10FFFF;
+}
+
+const bool BFW_API BFW::String::IsValidUnicodePointW(const uint32_t _Char)
+{
+	return _Char <= 0x10FFFF && (_Char & 0xFFFE) != 0xFFFE && (_Char < 0xFDD0 || _Char > 0xFDEF);
 }
 
 const uint32_t BFW_API BFW::String::ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char)
@@ -265,41 +315,17 @@ const uint32_t BFW_API BFW::String::ConstructUnicodePointW(const BFW_CHAR_TYPE_W
 	return 0x10000 + ((uint32_t)(_Char1 - 0xD800) << 10) + (uint32_t)(_Char2 - 0xDC00);
 }
 
-const bool BFW_API BFW::String::IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char)
-{
-	uint32_t _CodePoint = ConstructUnicodePointA(_Char);
-	return _CodePoint <= 0x7F;
-}
-
-const bool BFW_API BFW::String::IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2)
-{
-	uint32_t _CodePoint = ConstructUnicodePointA(_Char1, _Char2);
-	return _CodePoint >= 0x80 && _CodePoint <= 0x7FF;
-}
-
-const bool BFW_API BFW::String::IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3)
-{
-	uint32_t _CodePoint = ConstructUnicodePointA(_Char1, _Char2, _Char3);
-	return _CodePoint >= 0x800 && _CodePoint <= 0xFFFF;
-}
-
-const bool BFW_API BFW::String::IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3, const BFW_CHAR_TYPE_A _Char4)
-{
-	uint32_t _CodePoint = ConstructUnicodePointA(_Char1, _Char2, _Char3, _Char4);
-	return _CodePoint >= 0x10000 && _CodePoint <= 0x10FFFF;
-}
-
-const bool BFW_API BFW::String::IsValidUnicodePoint(const uint32_t _Char)
-{
-	return _Char <= 0x10FFFF && (_Char & 0xFFFE) != 0xFFFE && (_Char < 0xFDD0 || _Char > 0xFDEF);
-}
-
 const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& _String)
 {
 	for (size_t _Index = 0; _Index < _String.size(); _Index++)
 	{
 		if (IsUTF8MultiByte2(_String[_Index]))
 		{
+			if (!IsValidUTF8MultiByte2(_String[_Index]))
+			{
+				return false;
+			}
+
 			_Index++;
 
 			if (_Index >= _String.size())
@@ -314,7 +340,7 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 
 			uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index - 1], _String[_Index]);
 
-			if (!IsValidUnicodePoint(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+			if (!IsValidUnicodePoint2A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
 			{
 				return false;
 			}
@@ -324,6 +350,11 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 
 		if (IsUTF8MultiByte3(_String[_Index]))
 		{
+			if (!IsValidUTF8MultiByte3(_String[_Index]))
+			{
+				return false;
+			}
+
 			_Index++;
 
 			if (_Index >= _String.size())
@@ -331,7 +362,7 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 				return false;
 			}
 
-			if (!IsUTF8MultiByteContinuation(_String[_Index]))
+			if (!IsUTF8MultiByteContinuation(_String[_Index]) || !IsValidUTF8MultiByte3FirstContinuation(_String[_Index - 1], _String[_Index]))
 			{
 				return false;
 			}
@@ -350,7 +381,7 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 
 			uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index - 2], _String[_Index - 1], _String[_Index]);
 
-			if (!IsValidUnicodePoint(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+			if (!IsValidUnicodePoint3A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
 			{
 				return false;
 			}
@@ -360,6 +391,11 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 
 		if (IsUTF8MultiByte4(_String[_Index]))
 		{
+			if (!IsValidUTF8MultiByte4(_String[_Index]))
+			{
+				return false;
+			}
+
 			_Index++;
 
 			if (_Index >= _String.size())
@@ -367,7 +403,7 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 				return false;
 			}
 
-			if (!IsUTF8MultiByteContinuation(_String[_Index]))
+			if (!IsUTF8MultiByteContinuation(_String[_Index]) || !IsValidUTF8MultiByte4FirstContinuation(_String[_Index - 1], _String[_Index]))
 			{
 				return false;
 			}
@@ -398,7 +434,7 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 
 			uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index - 3], _String[_Index - 2], _String[_Index - 1], _String[_Index]);
 
-			if (!IsValidUnicodePoint(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+			if (!IsValidUnicodePoint4A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
 			{
 				return false;
 			}
@@ -413,7 +449,7 @@ const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& 
 
 		uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index]);
 
-		if (!IsValidUnicodePoint(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+		if (!IsValidUnicodePoint1A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
 		{
 			return false;
 		}
@@ -440,7 +476,7 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 				return false;
 			}
 
-			if (!IsValidUnicodePoint(ConstructUnicodePointW(_String[_Index - 1], _String[_Index])))
+			if (!IsValidUnicodePointW(ConstructUnicodePointW(_String[_Index - 1], _String[_Index])))
 			{
 				return false;
 			}
@@ -453,7 +489,7 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 			return false;
 		}
 
-		if (!IsValidUnicodePoint(_String[_Index]))
+		if (!IsValidUnicodePointW(_String[_Index]))
 		{
 			return false;
 		}
@@ -476,7 +512,7 @@ const bool BFW_API BFW::String::IsExtendedControlCharacter(const BFW_CHAR_TYPE_A
 {
 	return _Char >= 0x80 && _Char <= 0x9F;
 }
-	
+
 const bool BFW_API BFW::String::IsExtendedControlCharacter(const BFW_CHAR_TYPE_W _Char)
 {
 	return _Char >= 0x80 && _Char <= 0x9F;

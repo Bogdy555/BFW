@@ -33,20 +33,30 @@ namespace BFW
 		const bool BFW_API IsUTF8MultiByte2(const BFW_CHAR_TYPE_A _Char);
 		const bool BFW_API IsUTF8MultiByte3(const BFW_CHAR_TYPE_A _Char);
 		const bool BFW_API IsUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char);
+
+		const bool BFW_API IsValidUTF8MultiByte2(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsValidUTF8MultiByte3(const BFW_CHAR_TYPE_A _Char);
+		const bool BFW_API IsValidUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char);
+
 		const bool BFW_API IsUTF8MultiByteContinuation(const BFW_CHAR_TYPE_A _Char);
+
+		const bool BFW_API IsValidUTF8MultiByte3FirstContinuation(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2);
+		const bool BFW_API IsValidUTF8MultiByte4FirstContinuation(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2);
+
 		const bool BFW_API IsUnicodeSurrogated(const uint32_t _Char);
 		const bool BFW_API IsUnicodeSurrogatedContinuation(const uint32_t _Char);
+
+		const bool BFW_API IsValidUnicodePoint1A(const uint32_t _Char);
+		const bool BFW_API IsValidUnicodePoint2A(const uint32_t _Char);
+		const bool BFW_API IsValidUnicodePoint3A(const uint32_t _Char);
+		const bool BFW_API IsValidUnicodePoint4A(const uint32_t _Char);
+		const bool BFW_API IsValidUnicodePointW(const uint32_t _Char);
 
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char);
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2);
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3);
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3, const BFW_CHAR_TYPE_A _Char4);
 		const uint32_t BFW_API ConstructUnicodePointW(const BFW_CHAR_TYPE_W _Char1, const BFW_CHAR_TYPE_W _Char2);
-		const bool BFW_API IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char);
-		const bool BFW_API IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2);
-		const bool BFW_API IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3);
-		const bool BFW_API IsValidUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3, const BFW_CHAR_TYPE_A _Char4);
-		const bool BFW_API IsValidUnicodePoint(const uint32_t _Char);
 
 		const bool BFW_API IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& _String);
 		const bool BFW_API IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_W& _String);
