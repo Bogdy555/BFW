@@ -487,7 +487,7 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 			}
 		}
 
-		_Result.Path = _Path;
+		_Result.Path = std::filesystem::absolute(_Path).lexically_normal();
 
 		for (size_t _Index = 0; _Index < _Result.Path.size(); _Index++)
 		{
@@ -821,7 +821,7 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 			}
 		}
 
-		_Result.Path = _Path;
+		_Result.Path = std::filesystem::absolute(_Path).lexically_normal();
 
 		for (size_t _Index = 0; _Index < _Result.Path.size(); _Index++)
 		{
@@ -829,6 +829,11 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 			{
 				_Result.Path[_Index] = BFW_STRING_PREFIX('/');
 			}
+		}
+
+		while (_Result.Path[_Result.Path.size() - 1] == '/' || _Result.Path[_Result.Path.size() - 1] == '\\')
+		{
+			_Result.Path.erase(_Result.Path.begin() + _Result.Path.size() - 1);
 		}
 	}
 	catch (const std::filesystem::filesystem_error&)
@@ -1406,7 +1411,7 @@ const bool BFW_API BFW::FileSystem::SetWorkingDirectory(const BFW_STRING_TYPE& _
 
 const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 {
-	BFW_STRING_TYPE _Result = std::filesystem::current_path().BFW_STRING_METHOD();
+	BFW_STRING_TYPE _Result = std::filesystem::absolute(std::filesystem::current_path()).lexically_normal();
 
 	for (size_t _Index = 0; _Index < _Result.size(); _Index++)
 	{
@@ -1414,6 +1419,11 @@ const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 		{
 			_Result[_Index] = '/';
 		}
+	}
+
+	while (_Result[_Result.size() - 1] == '/' || _Result[_Result.size() - 1] == '\\')
+	{
+		_Result.erase(_Result.begin() + _Result.size() - 1);
 	}
 
 	return _Result;
