@@ -160,12 +160,12 @@ const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_
 
 const bool BFW_API BFW::String::IsHexA(const BFW_CHAR_TYPE_A _Char)
 {
-	return _Char >= '0' && _Char <= '9' || _Char >= 'A' && _Char <= 'F' || _Char >= 'a' && _Char <= 'f';
+	return (_Char >= '0' && _Char <= '9') || (_Char >= 'A' && _Char <= 'F') || (_Char >= 'a' && _Char <= 'f');
 }
 
 const bool BFW_API BFW::String::IsHexW(const BFW_CHAR_TYPE_W _Char)
 {
-	return _Char >= L'0' && _Char <= L'9' || _Char >= L'A' && _Char <= L'F' || _Char >= L'a' && _Char <= L'f';
+	return (_Char >= L'0' && _Char <= L'9') || (_Char >= L'A' && _Char <= L'F') || (_Char >= L'a' && _Char <= L'f');
 }
 
 const bool BFW_API BFW::String::IsHex(const BFW_CHAR_TYPE _Char)
@@ -310,10 +310,14 @@ const uint32_t BFW_API BFW::String::ConstructUnicodePointA(const BFW_CHAR_TYPE_A
 	return ((uint32_t)(_Char1 & 0x07) << 18) | ((uint32_t)(_Char2 & 0x3F) << 12) | ((uint32_t)(_Char3 & 0x3F) << 6) | (uint32_t)(_Char4 & 0x3F);
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 const uint32_t BFW_API BFW::String::ConstructUnicodePointW(const BFW_CHAR_TYPE_W _Char1, const BFW_CHAR_TYPE_W _Char2)
 {
 	return 0x10000 + ((uint32_t)(_Char1 - 0xD800) << 10) + (uint32_t)(_Char2 - 0xDC00);
 }
+
+#endif
 
 const bool BFW_API BFW::String::IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& _String)
 {
@@ -462,6 +466,8 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 {
 	for (size_t _Index = 0; _Index < _String.size(); _Index++)
 	{
+#ifdef BFW_WINDOWS_PLATFORM
+
 		if (IsUnicodeSurrogated(_String[_Index]))
 		{
 			_Index++;
@@ -483,6 +489,17 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 
 			continue;
 		}
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+		if (IsUnicodeSurrogated(_String[_Index]))
+		{
+			return false;
+		}
+
+#endif
 
 		if (IsUnicodeSurrogatedContinuation(_String[_Index]))
 		{

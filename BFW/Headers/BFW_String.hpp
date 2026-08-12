@@ -56,7 +56,12 @@ namespace BFW
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2);
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3);
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3, const BFW_CHAR_TYPE_A _Char4);
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 		const uint32_t BFW_API ConstructUnicodePointW(const BFW_CHAR_TYPE_W _Char1, const BFW_CHAR_TYPE_W _Char2);
+
+#endif
 
 		const bool BFW_API IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& _String);
 		const bool BFW_API IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_W& _String);
