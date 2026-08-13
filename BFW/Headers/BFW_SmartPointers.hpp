@@ -1010,6 +1010,26 @@ namespace BFW
 			return *this;
 		}
 
+		static void MoveAll(T* _Pointer, T* _Other) noexcept
+		{
+			_Pointer->SafePointers = (Vector<SafePointer*>&&)(_Other->SafePointers);
+
+			for (size_t _Index = 0; _Index < _Pointer->SafePointers.GetSize(); _Index++)
+			{
+				_Pointer->SafePointers[_Index]->Pointer = _Pointer;
+			}
+		}
+
+		static void ReleaseAll(T* _Pointer)
+		{
+			for (size_t _Index = 0; _Index < _Pointer->SafePointers.GetSize(); _Index++)
+			{
+				_Pointer->SafePointers[_Index]->Pointer = nullptr;
+			}
+
+			_Pointer->SafePointers.Clear();
+		}
+
 	private:
 
 		friend Type;

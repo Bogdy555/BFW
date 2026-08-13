@@ -1444,12 +1444,9 @@ BFW::GUI::PopUp::PopUp(const PopUp& _Other) : SafePointers(), FocusedPanel(_Othe
 
 }
 
-BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : SafePointers((Vector<SafePointer<PopUp>*>&&)(_Other.SafePointers)), FocusedPanel(_Other.FocusedPanel), Panels((Vector<PopUp>&&)(_Other.Panels)), FocusedNode(_Other.FocusedNode), Nodes((Vector<PopUp>&&)(_Other.Nodes)), FocusedPopUps((Vector<size_t>&&)(_Other.FocusedPopUps)), PopUps((Vector<Vector<PopUp>>&&)(_Other.PopUps)), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(_Other.UserData), RenderFunctions((RenderingDescriptor&&)(_Other.RenderFunctions)), HitBox(_Other.HitBox)
+BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : SafePointers(), FocusedPanel(_Other.FocusedPanel), Panels((Vector<PopUp>&&)(_Other.Panels)), FocusedNode(_Other.FocusedNode), Nodes((Vector<PopUp>&&)(_Other.Nodes)), FocusedPopUps((Vector<size_t>&&)(_Other.FocusedPopUps)), PopUps((Vector<Vector<PopUp>>&&)(_Other.PopUps)), Id(_Other.Id), PanelType(_Other.PanelType), TrueWidth(_Other.TrueWidth), TrueHeight(_Other.TrueHeight), Width(_Other.Width), Height(_Other.Height), PositionX(_Other.PositionX), PositionY(_Other.PositionY), ScrollX(_Other.ScrollX), ScrollY(_Other.ScrollY), UserData(_Other.UserData), RenderFunctions((RenderingDescriptor&&)(_Other.RenderFunctions)), HitBox(_Other.HitBox)
 {
-	for (size_t _Index = 0; _Index < SafePointers.GetSize(); _Index++)
-	{
-		SafePointers[_Index]->Pointer = this;
-	}
+	SafePointer<PopUp>::MoveAll(this, &_Other);
 
 	_Other.FocusedPanel = 0;
 	_Other.FocusedNode = 0;
@@ -1469,10 +1466,7 @@ BFW::GUI::PopUp::PopUp(PopUp&& _Other) noexcept : SafePointers((Vector<SafePoint
 
 BFW::GUI::PopUp::~PopUp()
 {
-	for (size_t _Index = 0; _Index < SafePointers.GetSize(); _Index++)
-	{
-		SafePointers[_Index]->Pointer = nullptr;
-	}
+	SafePointer<PopUp>::ReleaseAll(this);
 }
 
 BFW::GUI::PopUp& BFW::GUI::PopUp::Begin(const uint64_t _Id, const uint8_t _PanelType, const size_t _MinWidth, const size_t _MinHeight, const size_t _Width, const size_t _Height, const intptr_t _PositionX, const intptr_t _PositionY, const size_t _ScrollX, const size_t _ScrollY, const RenderingDescriptor& _RenderFunctions, const HitBoxFnc _HitBox, void* _UserData)
@@ -3867,7 +3861,8 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (PopUp&& _Other) noexcept
 		return *this;
 	}
 
-	SafePointers = (Vector<SafePointer<PopUp>*>&&)(_Other.SafePointers);
+	SafePointer<PopUp>::MoveAll(this, &_Other);
+
 	FocusedPanel = _Other.FocusedPanel;
 	Panels = (Vector<PopUp>&&)(_Other.Panels);
 	FocusedNode = _Other.FocusedNode;
@@ -3887,11 +3882,6 @@ BFW::GUI::PopUp& BFW::GUI::PopUp::operator= (PopUp&& _Other) noexcept
 	UserData = _Other.UserData;
 	RenderFunctions = (RenderingDescriptor&&)(_Other.RenderFunctions);
 	HitBox = _Other.HitBox;
-
-	for (size_t _Index = 0; _Index < SafePointers.GetSize(); _Index++)
-	{
-		SafePointers[_Index]->Pointer = this;
-	}
 
 	_Other.FocusedPanel = 0;
 	_Other.FocusedNode = 0;
