@@ -536,11 +536,40 @@
 
 
 
+#define BFW_MESSAGE_BOX_A(Window, Title, Msg) MessageBoxA(Window, Msg, Title, MB_OK)
+#define BFW_MESSAGE_BOX_W(Window, Title, Msg) MessageBoxW(Window, Msg, Title, MB_OK)
+#define BFW_MESSAGE_BOX_INFO_A(Window, Title, Msg) MessageBoxA(Window, Msg, Title, MB_OK | MB_ICONINFORMATION)
+#define BFW_MESSAGE_BOX_INFO_W(Window, Title, Msg) MessageBoxW(Window, Msg, Title, MB_OK | MB_ICONINFORMATION)
+#define BFW_MESSAGE_BOX_WARNING_A(Window, Title, Msg) MessageBoxA(Window, Msg, Title, MB_OK | MB_ICONWARNING)
+#define BFW_MESSAGE_BOX_WARNING_W(Window, Title, Msg) MessageBoxW(Window, Msg, Title, MB_OK | MB_ICONWARNING)
+#define BFW_MESSAGE_BOX_ERROR_A(Window, Title, Msg) MessageBoxA(Window, Msg, Title, MB_OK | MB_ICONERROR)
+#define BFW_MESSAGE_BOX_ERROR_W(Window, Title, Msg) MessageBoxW(Window, Msg, Title, MB_OK | MB_ICONERROR)
+
+#ifdef _UNICODE
+
+#define BFW_MESSAGE_BOX(Window, Title, Msg) BFW_MESSAGE_BOX_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_INFO(Window, Title, Msg) BFW_MESSAGE_BOX_INFO_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING(Window, Title, Msg) BFW_MESSAGE_BOX_WARNING_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR(Window, Title, Msg) BFW_MESSAGE_BOX_ERROR_W(Window, Title, Msg)
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_MESSAGE_BOX(Window, Title, Msg) BFW_MESSAGE_BOX_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_INFO(Window, Title, Msg) BFW_MESSAGE_BOX_INFO_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING(Window, Title, Msg) BFW_MESSAGE_BOX_WARNING_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR(Window, Title, Msg) BFW_MESSAGE_BOX_ERROR_A(Window, Title, Msg)
+
+#endif
+
+
+
 #ifdef BFW_DEBUG
 
 #define BFW_DEBUG_BREAK() __debugbreak()
-#define BFW_DEBUG_BREAK_MSG_A(Msg) MessageBoxA(NULL, Msg, "Debug break!", MB_OK | MB_ICONERROR); __debugbreak()
-#define BFW_DEBUG_BREAK_MSG_W(Msg) MessageBoxW(NULL, Msg, L"Debug break!", MB_OK | MB_ICONERROR); __debugbreak()
+#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW_MESSAGE_BOX_ERROR_A(NULL, "Debug break!", Msg); __debugbreak()
+#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW_MESSAGE_BOX_ERROR_W(NULL, L"Debug break!", Msg); __debugbreak()
 
 #ifdef _UNICODE
 
@@ -718,11 +747,40 @@
 
 
 
+#define BFW_MESSAGE_BOX_A(Window, Title, Msg) [](const BFW_CHAR_TYPE_A* _Title, const BFW_CHAR_TYPE_A* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send \"") + _Title + "\" \"" + _Msg + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_W(Window, Title, Msg) [](const BFW_CHAR_TYPE_W* _Title, const BFW_CHAR_TYPE_W* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send \"") + BFW::String::FromUnicodeToUTF8(_Title) + "\" \"" + BFW::String::FromUnicodeToUTF8(_Msg) + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_INFO_A(Window, Title, Msg) [](const BFW_CHAR_TYPE_A* _Title, const BFW_CHAR_TYPE_A* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send -i dialog-information \"") + _Title + "\" \"" + _Msg + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_INFO_W(Window, Title, Msg) [](const BFW_CHAR_TYPE_W* _Title, const BFW_CHAR_TYPE_W* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send -i dialog-information \"") + BFW::String::FromUnicodeToUTF8(_Title) + "\" \"" + BFW::String::FromUnicodeToUTF8(_Msg) + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING_A(Window, Title, Msg) [](const BFW_CHAR_TYPE_A* _Title, const BFW_CHAR_TYPE_A* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send -i dialog-warning \"") + _Title + "\" \"" + _Msg + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING_W(Window, Title, Msg) [](const BFW_CHAR_TYPE_W* _Title, const BFW_CHAR_TYPE_W* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send -i dialog-warning \"") + BFW::String::FromUnicodeToUTF8(_Title) + "\" \"" + BFW::String::FromUnicodeToUTF8(_Msg) + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR_A(Window, Title, Msg) [](const BFW_CHAR_TYPE_A* _Title, const BFW_CHAR_TYPE_A* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send -i dialog-error \"") + _Title + "\" \"" + _Msg + "\"").c_str()); }(Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR_W(Window, Title, Msg) [](const BFW_CHAR_TYPE_W* _Title, const BFW_CHAR_TYPE_W* _Msg){ int32_t _Result = system((BFW_STRING_TYPE_A("notify-send -i dialog-error \"") + BFW::String::FromUnicodeToUTF8(_Title) + "\" \"" + BFW::String::FromUnicodeToUTF8(_Msg) + "\"").c_str()); }(Title, Msg)
+
+#ifdef _UNICODE
+
+#define BFW_MESSAGE_BOX(Window, Title, Msg) BFW_MESSAGE_BOX_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_INFO(Window, Title, Msg) BFW_MESSAGE_BOX_INFO_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING(Window, Title, Msg) BFW_MESSAGE_BOX_WARNING_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR(Window, Title, Msg) BFW_MESSAGE_BOX_ERROR_W(Window, Title, Msg)
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_MESSAGE_BOX(Window, Title, Msg) BFW_MESSAGE_BOX_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_INFO(Window, Title, Msg) BFW_MESSAGE_BOX_INFO_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING(Window, Title, Msg) BFW_MESSAGE_BOX_WARNING_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR(Window, Title, Msg) BFW_MESSAGE_BOX_ERROR_A(Window, Title, Msg)
+
+#endif
+
+
+
 #ifdef BFW_DEBUG
 
 #define BFW_DEBUG_BREAK() __builtin_trap()
-#define BFW_DEBUG_BREAK_MSG_A(Msg) std::wcout << L"Debug break! " << Msg << L'\n'; __builtin_trap()
-#define BFW_DEBUG_BREAK_MSG_W(Msg) std::wcout << L"Debug break! " << Msg << L'\n'; __builtin_trap()
+#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW_MESSAGE_BOX_ERROR_A(NULL, "Debug break!", Msg); __builtin_trap()
+#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW_MESSAGE_BOX_ERROR_W(NULL, L"Debug break!", Msg); __builtin_trap()
 
 #ifdef _UNICODE
 
@@ -882,11 +940,40 @@
 
 
 
+#define BFW_MESSAGE_BOX_A(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT(Title); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(Msg); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_W(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT(BFW::String::FromUnicodeToUTF8(Title).c_str()); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(BFW::String::FromUnicodeToUTF8(Msg).c_str()); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_INFO_A(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT("[INFO] "); BFW_PRINT(Title); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(Msg); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_INFO_W(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT("[INFO] "); BFW_PRINT(BFW::String::FromUnicodeToUTF8(Title).c_str()); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(BFW::String::FromUnicodeToUTF8(Msg).c_str()); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_WARNING_A(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT("[WARNING] "); BFW_PRINT(Title); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(Msg); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_WARNING_W(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT("[WARNING] "); BFW_PRINT(BFW::String::FromUnicodeToUTF8(Title).c_str()); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(BFW::String::FromUnicodeToUTF8(Msg).c_str()); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_ERROR_A(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT("[ERROR] "); BFW_PRINT(Title); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(Msg); BFW::Log::Mutex->unlock()
+#define BFW_MESSAGE_BOX_ERROR_W(Window, Title, Msg) BFW::Log::Mutex->lock(); BFW_PRINT("[ERROR] "); BFW_PRINT(BFW::String::FromUnicodeToUTF8(Title).c_str()); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW_PRINT(" "); BFW_PRINT_LINE(BFW::String::FromUnicodeToUTF8(Msg).c_str()); BFW::Log::Mutex->unlock()
+
+#ifdef _UNICODE
+
+#define BFW_MESSAGE_BOX(Window, Title, Msg) BFW_MESSAGE_BOX_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_INFO(Window, Title, Msg) BFW_MESSAGE_BOX_INFO_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING(Window, Title, Msg) BFW_MESSAGE_BOX_WARNING_W(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR(Window, Title, Msg) BFW_MESSAGE_BOX_ERROR_W(Window, Title, Msg)
+
+#endif
+
+#ifndef _UNICODE
+
+#define BFW_MESSAGE_BOX(Window, Title, Msg) BFW_MESSAGE_BOX_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_INFO(Window, Title, Msg) BFW_MESSAGE_BOX_INFO_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_WARNING(Window, Title, Msg) BFW_MESSAGE_BOX_WARNING_A(Window, Title, Msg)
+#define BFW_MESSAGE_BOX_ERROR(Window, Title, Msg) BFW_MESSAGE_BOX_ERROR_A(Window, Title, Msg)
+
+#endif
+
+
+
 #ifdef BFW_DEBUG
 
-#define BFW_DEBUG_BREAK() BFW::Log::Mutex->lock(); BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG_LINE(__FUNCTION__); BFW::Log::Mutex->unlock()
-#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW::Log::Mutex->lock(); BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG(__FUNCTION__); BFW_LOG(" "); BFW_LOG_LINE(Msg); BFW::Log::Mutex->unlock()
-#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW::Log::Mutex->lock(); BFW_LOG("Debug break! "); BFW_LOG("\""); BFW_LOG(__FILE__); BFW_LOG("\" "); BFW_LOG("("); BFW_LOG(__LINE__); BFW_LOG(") "); BFW_LOG(__FUNCTION__); BFW_LOG(" "); BFW_LOG_LINE(Msg); BFW::Log::Mutex->unlock()
+#define BFW_DEBUG_BREAK() BFW::Log::Mutex->lock(); BFW_PRINT("[ERROR] "); BFW_PRINT(Title); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW::Log::Mutex->unlock()
+#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW_MESSAGE_BOX_ERROR_A(NULL, "Debug break!", Msg)
+#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW_MESSAGE_BOX_ERROR_W(NULL, L"Debug break!", Msg)
 
 #ifdef _UNICODE
 

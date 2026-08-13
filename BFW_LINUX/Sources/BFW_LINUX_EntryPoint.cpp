@@ -6,7 +6,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 {
 	if (!BFW::String::Init())
 	{
-		int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
 	}
 
@@ -14,7 +14,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 	(
 		if (!BFW::Log::Init())
 		{
-			int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
+			BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 			BFW::String::Stop();
 			return BFW::MultiProcessing::_UnknownErrorReturnValue;
 		}
@@ -22,7 +22,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 
 	if (!BFW::Time::Init())
 	{
-		int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 		BFW_DEBUG_CALL(BFW::Log::Stop());
 		BFW::String::Stop();
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
@@ -34,7 +34,7 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 
 	if (_ReturnValue != BFW::MultiProcessing::_NoErrorReturnValue)
 	{
-		int32_t _Result = system("notify-send \"Error!\" \"An unexpected error occurred!\"");
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 
 	BFW::Time::Stop();

@@ -6,7 +6,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 {
 	if (!BFW::String::Init())
 	{
-		MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
 	}
 
@@ -14,7 +14,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 	(
 		if (!BFW::Log::Init())
 		{
-			MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
+			BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 			BFW::String::Stop();
 			return BFW::MultiProcessing::_UnknownErrorReturnValue;
 		}
@@ -22,7 +22,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 
 	if (!BFW::Time::Init())
 	{
-		MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 		BFW_DEBUG_CALL(BFW::Log::Stop());
 		BFW::String::Stop();
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
@@ -34,7 +34,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 
 	if (_ReturnValue != BFW::MultiProcessing::_NoErrorReturnValue)
 	{
-		MessageBox(NULL, BFW_STRING_PREFIX("An unexpected error occurred!"), BFW_STRING_PREFIX("Error!"), MB_OK | MB_ICONERROR);
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 
 	BFW::Time::Stop();

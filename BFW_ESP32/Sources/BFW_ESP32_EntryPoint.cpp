@@ -6,20 +6,20 @@ void setup()
 {
 	if (!BFW::String::Init())
 	{
-		BFW_LOG_LINE(BFW_STRING_PREFIX("An unexpected error occurred!"));
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 
 	BFW_DEBUG_CALL
 	(
 		if (!BFW::Log::Init())
 		{
-			BFW_LOG_LINE(BFW_STRING_PREFIX("An unexpected error occurred!"));
+			BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 		}
 	);
 
 	if (!BFW::Time::Init())
 	{
-		BFW_LOG_LINE(BFW_STRING_PREFIX("An unexpected error occurred!"));
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 }
 
@@ -31,6 +31,6 @@ void loop()
 
 	if (_ReturnValue != BFW::MultiProcessing::_NoErrorReturnValue)
 	{
-		BFW_LOG_LINE(BFW_STRING_PREFIX("An unexpected error occurred!"));
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 }
