@@ -76,6 +76,7 @@ BFW_EXTERN template class BFW_API BFW::Vector<BFW::Vector<BFW::GUI::PopUp>>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::SafePopUpPointer*>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::Json>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::Xml>;
 
 #endif
 

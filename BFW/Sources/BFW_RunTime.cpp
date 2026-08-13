@@ -89,6 +89,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	Resources.Emplace(BFW_TO_STRING(BFW_MTL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
 	Resources.Emplace(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
 	Resources.Emplace(BFW_TO_STRING(BFW_JSON_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
+	Resources.Emplace(BFW_TO_STRING(BFW_XML_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
 
 	for (size_t _ResourceId = 0; _ResourceId < (size_t)(std::numeric_limits<uint16_t>::max()) + 1; _ResourceId++)
 	{
@@ -127,6 +128,11 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 		if (_FileContent.Load(BFW_JSON_RESOURCE, _ResourceId))
 		{
 			Resources.GetData(BFW_TO_STRING(BFW_JSON_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
+		}
+
+		if (_FileContent.Load(BFW_XML_RESOURCE, _ResourceId))
+		{
+			Resources.GetData(BFW_TO_STRING(BFW_XML_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
 		}
 	}
 

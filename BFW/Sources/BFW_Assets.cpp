@@ -1494,6 +1494,91 @@ static const bool SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _St
 
 
 
+static const bool SaveXmlText(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Xml& _Xml)
+{
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << _Xml.GetText() BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	return true;
+}
+
+static const bool SaveXmlTag(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Xml& _Xml)
+{
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << '<';
+
+	if (_Xml.GetTagNamespace().size())
+	{
+		_Stream << _Xml.GetTagNamespace() << ':';
+	}
+
+	_Stream << _Xml.GetTag();
+
+	for (size_t _Index = 0; _Index < _Xml.GetAttributeTags().GetSize(); _Index++)
+	{
+		_Stream << ' ';
+
+		if (_Xml.GetAttributeTagNamespaces()[_Index].size())
+		{
+			_Stream << _Xml.GetAttributeTagNamespaces()[_Index] << ':';
+		}
+
+		_Stream << _Xml.GetAttributeTags()[_Index] << '=' << '\"' << _Xml.GetAttributeValues()[_Index] << '\"';
+	}
+
+	if (!_Xml.GetChilds().GetSize())
+	{
+		_Stream << '/' << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+		return true;
+	}
+
+	_Stream << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	_TabLevel++;
+
+	for (size_t _Index = 0; _Index < _Xml.GetChilds().GetSize(); _Index++)
+	{
+		if (_Xml.GetChilds()[_Index].GetType() == BFW::Assets::_TextXmlType && !SaveXmlText(_TabLevel, _Stream, _Xml.GetChilds()[_Index]))
+		{
+			return false;
+		}
+
+		if (_Xml.GetChilds()[_Index].GetType() == BFW::Assets::_TagXmlType && !SaveXmlTag(_TabLevel, _Stream, _Xml.GetChilds()[_Index]))
+		{
+			return false;
+		}
+	}
+
+	_TabLevel--;
+
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << '<' << '/';
+
+	if (_Xml.GetTagNamespace().size())
+	{
+		_Stream << _Xml.GetTagNamespace() << ':';
+	}
+
+	_Stream << _Xml.GetTag() << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	return true;
+}
+
+
+
 BFW::Assets::BitMap::BitMap() : Data(nullptr), ChannelsCount(0), Width(0), Height(0)
 {
 
@@ -2877,6 +2962,267 @@ BFW::Assets::Json& BFW::Assets::Json::operator= (Json&& _Other) noexcept
 	_Other.BoolValue = false;
 	_Other.NumberValue = 0.0f;
 	_Other.StringValue = "";
+
+	return *this;
+}
+
+
+
+BFW::Assets::Xml::Xml() : Type(_TextXmlType), Text(""), Tag(""), TagNamespace(""), AttributeTags(), AttributeTagNamespaces(), AttributeValues(), Childs()
+{
+
+}
+
+BFW::Assets::Xml::Xml(const Xml& _Other) : Type(_Other.Type), Text(_Other.Text), Tag(_Other.Tag), TagNamespace(_Other.TagNamespace), AttributeTags(_Other.AttributeTags), AttributeTagNamespaces(_Other.AttributeTagNamespaces), AttributeValues(_Other.AttributeValues), Childs(_Other.Childs)
+{
+
+}
+
+BFW::Assets::Xml::Xml(Xml&& _Other) noexcept : Type(_Other.Type), Text(_Other.Text), Tag(_Other.Tag), TagNamespace(_Other.TagNamespace), AttributeTags((Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeTags)), AttributeTagNamespaces((Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeTagNamespaces)), AttributeValues((Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues)), Childs((Vector<Xml>&&)(_Other.Childs))
+{
+	_Other.Type = _TextXmlType;
+	_Other.Text = "";
+	_Other.Tag = "";
+	_Other.TagNamespace = "";
+}
+
+BFW::Assets::Xml::~Xml()
+{
+
+}
+
+const bool BFW::Assets::Xml::Load(const FileSystem::FileContent& _FileContent, const bool _IsHTML)
+{
+	return false;
+}
+
+void BFW::Assets::Xml::SetText(const BFW_STRING_TYPE_A& _Text)
+{
+	Type = _TextXmlType;
+	Text = _Text;
+	Tag = "";
+	TagNamespace = "";
+	AttributeTags = Vector<BFW_STRING_TYPE_A>();
+	AttributeTagNamespaces = Vector<BFW_STRING_TYPE_A>();
+	AttributeValues = Vector<BFW_STRING_TYPE_A>();
+	Childs = Vector<Xml>();
+}
+
+void BFW::Assets::Xml::SetTag(const BFW_STRING_TYPE_A& _Tag)
+{
+	Type = _TagXmlType;
+	Text = "";
+	Tag = _Tag;
+	TagNamespace = "";
+	AttributeTags = Vector<BFW_STRING_TYPE_A>();
+	AttributeTagNamespaces = Vector<BFW_STRING_TYPE_A>();
+	AttributeValues = Vector<BFW_STRING_TYPE_A>();
+	Childs = Vector<Xml>();
+}
+
+BFW::FileSystem::FileContent BFW::Assets::Xml::Save(const bool _IsHTML) const
+{
+	if (Type != _TagXmlType)
+	{
+		return FileSystem::FileContent();
+	}
+
+	size_t _TabLevel = 0;
+	BFW_STRING_STREAM_TYPE_A _Stream;
+
+	if (_IsHTML)
+	{
+		_Stream << "<!DOCTYPE html>" BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+	}
+
+	if (!SaveXmlTag(_TabLevel, _Stream, *this))
+	{
+		return FileSystem::FileContent();
+	}
+
+	BFW_STRING_TYPE_A _String = _Stream.str();
+
+	FileSystem::FileContent _FileContent;
+
+	if (!_FileContent.Create(_String.size() + 1))
+	{
+		return FileSystem::FileContent();
+	}
+
+	_FileContent[_FileContent.GetLength() - 1] = '\0';
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		_FileContent[_Index] = _String[_Index];
+	}
+
+	return _FileContent;
+}
+
+const uint8_t BFW::Assets::Xml::GetType() const
+{
+	return Type;
+}
+
+const BFW_STRING_TYPE_A& BFW::Assets::Xml::GetText() const
+{
+	if (Type != _TextXmlType)
+	{
+		throw nullptr;
+	}
+
+	return Text;
+}
+
+const BFW_STRING_TYPE_A& BFW::Assets::Xml::GetTag() const
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return Tag;
+}
+
+BFW_STRING_TYPE_A& BFW::Assets::Xml::GetTagNamespace()
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return TagNamespace;
+}
+
+const BFW_STRING_TYPE_A& BFW::Assets::Xml::GetTagNamespace() const
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return TagNamespace;
+}
+
+BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::Xml::GetAttributeTags()
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeTags;
+}
+
+const BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::Xml::GetAttributeTags() const
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeTags;
+}
+
+BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::Xml::GetAttributeTagNamespaces()
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeTagNamespaces;
+}
+
+const BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::Xml::GetAttributeTagNamespaces() const
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeTagNamespaces;
+}
+
+BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::Xml::GetAttributeValues()
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeValues;
+}
+
+const BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::Xml::GetAttributeValues() const
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeValues;
+}
+
+BFW::Vector<BFW::Assets::Xml>& BFW::Assets::Xml::GetChilds()
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return Childs;
+}
+
+const BFW::Vector<BFW::Assets::Xml>& BFW::Assets::Xml::GetChilds() const
+{
+	if (Type != _TagXmlType)
+	{
+		throw nullptr;
+	}
+
+	return Childs;
+}
+
+BFW::Assets::Xml& BFW::Assets::Xml::operator= (const Xml& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Type = _Other.Type;
+	Text = _Other.Text;
+	Tag = _Other.Tag;
+	TagNamespace = _Other.TagNamespace;
+	AttributeTags = _Other.AttributeTags;
+	AttributeTagNamespaces = _Other.AttributeTagNamespaces;
+	AttributeValues = _Other.AttributeValues;
+	Childs = _Other.Childs;
+
+	return *this;
+}
+
+BFW::Assets::Xml& BFW::Assets::Xml::operator= (Xml&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Type = _Other.Type;
+	Text = _Other.Text;
+	Tag = _Other.Tag;
+	TagNamespace = _Other.TagNamespace;
+	AttributeTags = (Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeTags);
+	AttributeTagNamespaces = (Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeTagNamespaces);
+	AttributeValues = (Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues);
+	Childs = (Vector<Xml>&&)(_Other.Childs);
+
+	_Other.Type = _TextXmlType;
+	_Other.Text = "";
+	_Other.Tag = "";
+	_Other.TagNamespace = "";
 
 	return *this;
 }
