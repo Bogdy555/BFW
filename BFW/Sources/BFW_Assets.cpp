@@ -1496,6 +1496,11 @@ static const bool SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _St
 
 static const bool SaveXmlText(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::Xml& _Xml)
 {
+	if (!BFW::String::IsValidUTF8String(_Xml.GetText()))
+	{
+		return false;
+	}
+
 	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
 	{
 		_Stream << '\t';
@@ -1517,7 +1522,17 @@ static const bool SaveXmlTag(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Strea
 
 	if (_Xml.GetTagNamespace().size())
 	{
+		if (!BFW::String::IsValidUTF8String(_Xml.GetTagNamespace()))
+		{
+			return false;
+		}
+
 		_Stream << _Xml.GetTagNamespace() << ':';
+	}
+
+	if (!BFW::String::IsValidUTF8String(_Xml.GetTag()))
+	{
+		return false;
 	}
 
 	_Stream << _Xml.GetTag();
@@ -1528,7 +1543,17 @@ static const bool SaveXmlTag(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Strea
 
 		if (_Xml.GetAttributeTagNamespaces()[_Index].size())
 		{
+			if (!BFW::String::IsValidUTF8String(_Xml.GetAttributeTagNamespaces()[_Index]))
+			{
+				return false;
+			}
+
 			_Stream << _Xml.GetAttributeTagNamespaces()[_Index] << ':';
+		}
+
+		if (!BFW::String::IsValidUTF8String(_Xml.GetAttributeTags()[_Index]) || BFW::String::IsValidUTF8String(_Xml.GetAttributeValues()[_Index]))
+		{
+			return false;
 		}
 
 		_Stream << _Xml.GetAttributeTags()[_Index] << '=' << '\"' << _Xml.GetAttributeValues()[_Index] << '\"';
