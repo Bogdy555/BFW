@@ -821,6 +821,203 @@ namespace BFW
 
 	};
 
+	template <typename T> class SafePointer
+	{
+
+	private:
+
+		using Type = std::remove_const_t<T>;
+		using ConstType = std::add_const_t<T>;
+
+	public:
+
+		SafePointer() : Pointer(nullptr)
+		{
+
+		}
+
+		SafePointer(T* _Pointer) : Pointer(_Pointer)
+		{
+			if (Pointer)
+			{
+				Pointer->SafePointers.PushBack(this);
+			}
+		}
+
+		SafePointer(const SafePointer& _Other) : Pointer(_Other.Pointer)
+		{
+			if (Pointer)
+			{
+				Pointer->SafePointers.PushBack(this);
+			}
+		}
+
+		SafePointer(SafePointer&& _Other) noexcept : Pointer(_Other.Pointer)
+		{
+			if (Pointer)
+			{
+				for (size_t _Index = 0; _Index < Pointer->SafePointers.GetSize(); _Index++)
+				{
+					if (Pointer->SafePointers[_Index] == &_Other)
+					{
+						Pointer->SafePointers[_Index] = this;
+						break;
+					}
+				}
+			}
+
+			_Other.Pointer = nullptr;
+		}
+
+		~SafePointer()
+		{
+			if (Pointer)
+			{
+				for (size_t _Index = 0; _Index < Pointer->SafePointers.GetSize(); _Index++)
+				{
+					if (Pointer->SafePointers[_Index] == this)
+					{
+						Pointer->SafePointers.Erase(_Index);
+						break;
+					}
+				}
+			}
+		}
+
+		explicit operator Type* () requires (!std::is_const_v<T>)
+		{
+			return Pointer;
+		}
+
+		explicit operator ConstType* () const
+		{
+			return Pointer;
+		}
+
+		Type* operator-> () requires (!std::is_const_v<T>)
+		{
+			return Pointer;
+		}
+
+		ConstType* operator-> () const
+		{
+			return Pointer;
+		}
+
+		Type& operator* () requires (!std::is_const_v<T>)
+		{
+			return *Pointer;
+		}
+
+		ConstType& operator* () const
+		{
+			return *Pointer;
+		}
+
+		SafePointer& operator= (T* _Pointer)
+		{
+			if (Pointer == _Pointer)
+			{
+				return *this;
+			}
+
+			if (Pointer)
+			{
+				for (size_t _Index = 0; _Index < Pointer->SafePointers.GetSize(); _Index++)
+				{
+					if (Pointer->SafePointers[_Index] == this)
+					{
+						Pointer->SafePointers.Erase(_Index);
+						break;
+					}
+				}
+			}
+
+			Pointer = _Pointer;
+
+			if (Pointer)
+			{
+				Pointer->SafePointers.PushBack(this);
+			}
+
+			return *this;
+		}
+
+		SafePointer& operator= (const SafePointer& _Other)
+		{
+			if (this == &_Other)
+			{
+				return *this;
+			}
+
+			if (Pointer)
+			{
+				for (size_t _Index = 0; _Index < Pointer->SafePointers.GetSize(); _Index++)
+				{
+					if (Pointer->SafePointers[_Index] == this)
+					{
+						Pointer->SafePointers.Erase(_Index);
+						break;
+					}
+				}
+			}
+
+			Pointer = _Other.Pointer;
+
+			if (Pointer)
+			{
+				Pointer->SafePointers.PushBack(this);
+			}
+
+			return *this;
+		}
+
+		SafePointer& operator= (SafePointer&& _Other) noexcept
+		{
+			if (this == &_Other)
+			{
+				return *this;
+			}
+
+			if (Pointer)
+			{
+				for (size_t _Index = 0; _Index < Pointer->SafePointers.GetSize(); _Index++)
+				{
+					if (Pointer->SafePointers[_Index] == this)
+					{
+						Pointer->SafePointers.Erase(_Index);
+						break;
+					}
+				}
+			}
+
+			Pointer = _Other.Pointer;
+
+			if (Pointer)
+			{
+				for (size_t _Index = 0; _Index < Pointer->SafePointers.GetSize(); _Index++)
+				{
+					if (Pointer->SafePointers[_Index] == &_Other)
+					{
+						Pointer->SafePointers[_Index] = this;
+						break;
+					}
+				}
+			}
+
+			_Other.Pointer = nullptr;
+
+			return *this;
+		}
+
+	private:
+
+		friend Type;
+
+		T* Pointer;
+
+	};
+
 }
 
 

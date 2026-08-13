@@ -69,11 +69,12 @@ BFW_EXTERN template class BFW_API BFW::Trie<BFW::Trie<BFW::FileSystem::FileConte
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::ClickEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::WheelEvent>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::SafePopUpPointer>;
-BFW_EXTERN template class BFW_API BFW::Vector<const BFW::GUI::SafePopUpPointer>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>*>;
+BFW_EXTERN template class BFW_API BFW::SafePointer<BFW::GUI::PopUp>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>;
+BFW_EXTERN template class BFW_API BFW::Vector<const BFW::SafePointer<BFW::GUI::PopUp>>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::PopUp>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Vector<BFW::GUI::PopUp>>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::SafePopUpPointer*>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::Json>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::Xml>;

@@ -710,7 +710,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 			intptr_t _MouseDeltaX = _MouseX - _WndData.LCaptureMouseXLastFrame;
 			intptr_t _MouseDeltaY = _MouseY - _WndData.LCaptureMouseYLastFrame;
 
-			BFW::GUI::SafePopUpPointer _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			BFW::SafePointer<BFW::GUI::PopUp> _ReleasePopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
 			if ((BFW::GUI::PopUp*)(_ReleasePopUp) && _WndData.LCapturePath.GetSize() && (BFW::GUI::PopUp*)(_ReleasePopUp) == (BFW::GUI::PopUp*)(_WndData.LCapturePath[0]))
 			{
@@ -851,7 +851,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 
 	for (size_t _Index = 0; _Index < _WheelEventsX.GetSize(); _Index++)
 	{
-		BFW::Vector<BFW::GUI::SafePopUpPointer> _Path;
+		BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> _Path;
 
 		_WndData.LayoutMutex->lock();
 		_WndData.Layout.GetChildFromMouse(_WheelEventsX[_Index].X, _WheelEventsX[_Index].Y, &_Path);
@@ -863,7 +863,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::HandleWindowInputs(BFW::GUI::Window& 
 
 	for (size_t _Index = 0; _Index < _WheelEventsY.GetSize(); _Index++)
 	{
-		BFW::Vector<BFW::GUI::SafePopUpPointer> _Path;
+		BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> _Path;
 
 		_WndData.LayoutMutex->lock();
 		_WndData.Layout.GetChildFromMouse(_WheelEventsY[_Index].X, _WheelEventsY[_Index].Y, &_Path);

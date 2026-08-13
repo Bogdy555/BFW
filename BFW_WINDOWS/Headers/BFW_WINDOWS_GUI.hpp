@@ -44,7 +44,7 @@ namespace BFW_WINDOWS
 			BFW::GUI::PopUp Layout;
 
 			bool LCapture;
-			BFW::Vector<BFW::GUI::SafePopUpPointer> LCapturePath;
+			BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> LCapturePath;
 			intptr_t LCaptureMouseX;
 			intptr_t LCaptureMouseY;
 			intptr_t LCaptureMouseXLastFrame;
@@ -53,7 +53,7 @@ namespace BFW_WINDOWS
 			intptr_t LAccumulationY;
 
 			bool MCapture;
-			BFW::Vector<BFW::GUI::SafePopUpPointer> MCapturePath;
+			BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> MCapturePath;
 			intptr_t MCaptureMouseX;
 			intptr_t MCaptureMouseY;
 			intptr_t MCaptureMouseXLastFrame;
@@ -62,7 +62,7 @@ namespace BFW_WINDOWS
 			intptr_t MAccumulationY;
 
 			bool RCapture;
-			BFW::Vector<BFW::GUI::SafePopUpPointer> RCapturePath;
+			BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> RCapturePath;
 			intptr_t RCaptureMouseX;
 			intptr_t RCaptureMouseY;
 			intptr_t RCaptureMouseXLastFrame;
@@ -71,7 +71,7 @@ namespace BFW_WINDOWS
 			intptr_t RAccumulationY;
 
 			bool X1Capture;
-			BFW::Vector<BFW::GUI::SafePopUpPointer> X1CapturePath;
+			BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> X1CapturePath;
 			intptr_t X1CaptureMouseX;
 			intptr_t X1CaptureMouseY;
 			intptr_t X1CaptureMouseXLastFrame;
@@ -80,7 +80,7 @@ namespace BFW_WINDOWS
 			intptr_t X1AccumulationY;
 
 			bool X2Capture;
-			BFW::Vector<BFW::GUI::SafePopUpPointer> X2CapturePath;
+			BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> X2CapturePath;
 			intptr_t X2CaptureMouseX;
 			intptr_t X2CaptureMouseY;
 			intptr_t X2CaptureMouseXLastFrame;
@@ -155,8 +155,8 @@ namespace BFW_WINDOWS
 		const bool HandleDefaultRCaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		const bool HandleDefaultX1CaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		const bool HandleDefaultX2CaptureDrag(const intptr_t _MouseX, const intptr_t _MouseY, const intptr_t _MouseDeltaX, const intptr_t _MouseDeltaY, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
-		void HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
-		void HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
+		void HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
+		void HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void HandleDefaultKeys(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void HandleDefaultControllers(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);
 		void RenderWindow(RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow);

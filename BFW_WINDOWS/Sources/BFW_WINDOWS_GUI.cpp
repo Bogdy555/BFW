@@ -88,11 +88,11 @@ BFW_WINDOWS::GUI::WindowData::WindowData() :
 
 BFW_WINDOWS::GUI::WindowData::WindowData(WindowData&& _Other) noexcept :
 	LayoutMutex(_Other.LayoutMutex), Layout((BFW::GUI::PopUp&&)(_Other.Layout)),
-	LCapture(_Other.LCapture), LCapturePath((BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.LCapturePath)), LCaptureMouseX(_Other.LCaptureMouseX), LCaptureMouseY(_Other.LCaptureMouseY), LCaptureMouseXLastFrame(_Other.LCaptureMouseXLastFrame), LCaptureMouseYLastFrame(_Other.LCaptureMouseYLastFrame), LAccumulationX(_Other.LAccumulationX), LAccumulationY(_Other.LAccumulationY),
-	MCapture(_Other.MCapture), MCapturePath((BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.MCapturePath)), MCaptureMouseX(_Other.MCaptureMouseX), MCaptureMouseY(_Other.MCaptureMouseY), MCaptureMouseXLastFrame(_Other.MCaptureMouseXLastFrame), MCaptureMouseYLastFrame(_Other.MCaptureMouseYLastFrame), MAccumulationX(_Other.MAccumulationX), MAccumulationY(_Other.MAccumulationY),
-	RCapture(_Other.RCapture), RCapturePath((BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.RCapturePath)), RCaptureMouseX(_Other.RCaptureMouseX), RCaptureMouseY(_Other.RCaptureMouseY), RCaptureMouseXLastFrame(_Other.RCaptureMouseXLastFrame), RCaptureMouseYLastFrame(_Other.RCaptureMouseYLastFrame), RAccumulationX(_Other.RAccumulationX), RAccumulationY(_Other.RAccumulationY),
-	X1Capture(_Other.X1Capture), X1CapturePath((BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.X1CapturePath)), X1CaptureMouseX(_Other.X1CaptureMouseX), X1CaptureMouseY(_Other.X1CaptureMouseY), X1CaptureMouseXLastFrame(_Other.X1CaptureMouseXLastFrame), X1CaptureMouseYLastFrame(_Other.X1CaptureMouseYLastFrame), X1AccumulationX(_Other.X1AccumulationX), X1AccumulationY(_Other.X1AccumulationY),
-	X2Capture(_Other.X2Capture), X2CapturePath((BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.X2CapturePath)), X2CaptureMouseX(_Other.X2CaptureMouseX), X2CaptureMouseY(_Other.X2CaptureMouseY), X2CaptureMouseXLastFrame(_Other.X2CaptureMouseXLastFrame), X2CaptureMouseYLastFrame(_Other.X2CaptureMouseYLastFrame), X2AccumulationX(_Other.X2AccumulationX), X2AccumulationY(_Other.X2AccumulationY)
+	LCapture(_Other.LCapture), LCapturePath((BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.LCapturePath)), LCaptureMouseX(_Other.LCaptureMouseX), LCaptureMouseY(_Other.LCaptureMouseY), LCaptureMouseXLastFrame(_Other.LCaptureMouseXLastFrame), LCaptureMouseYLastFrame(_Other.LCaptureMouseYLastFrame), LAccumulationX(_Other.LAccumulationX), LAccumulationY(_Other.LAccumulationY),
+	MCapture(_Other.MCapture), MCapturePath((BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.MCapturePath)), MCaptureMouseX(_Other.MCaptureMouseX), MCaptureMouseY(_Other.MCaptureMouseY), MCaptureMouseXLastFrame(_Other.MCaptureMouseXLastFrame), MCaptureMouseYLastFrame(_Other.MCaptureMouseYLastFrame), MAccumulationX(_Other.MAccumulationX), MAccumulationY(_Other.MAccumulationY),
+	RCapture(_Other.RCapture), RCapturePath((BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.RCapturePath)), RCaptureMouseX(_Other.RCaptureMouseX), RCaptureMouseY(_Other.RCaptureMouseY), RCaptureMouseXLastFrame(_Other.RCaptureMouseXLastFrame), RCaptureMouseYLastFrame(_Other.RCaptureMouseYLastFrame), RAccumulationX(_Other.RAccumulationX), RAccumulationY(_Other.RAccumulationY),
+	X1Capture(_Other.X1Capture), X1CapturePath((BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.X1CapturePath)), X1CaptureMouseX(_Other.X1CaptureMouseX), X1CaptureMouseY(_Other.X1CaptureMouseY), X1CaptureMouseXLastFrame(_Other.X1CaptureMouseXLastFrame), X1CaptureMouseYLastFrame(_Other.X1CaptureMouseYLastFrame), X1AccumulationX(_Other.X1AccumulationX), X1AccumulationY(_Other.X1AccumulationY),
+	X2Capture(_Other.X2Capture), X2CapturePath((BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.X2CapturePath)), X2CaptureMouseX(_Other.X2CaptureMouseX), X2CaptureMouseY(_Other.X2CaptureMouseY), X2CaptureMouseXLastFrame(_Other.X2CaptureMouseXLastFrame), X2CaptureMouseYLastFrame(_Other.X2CaptureMouseYLastFrame), X2AccumulationX(_Other.X2AccumulationX), X2AccumulationY(_Other.X2AccumulationY)
 {
 	_Other.LayoutMutex = nullptr;
 	_Other.LCapture = false;
@@ -142,7 +142,7 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 	LayoutMutex = _Other.LayoutMutex;
 	Layout = (BFW::GUI::PopUp&&)(_Other.Layout);
 	LCapture = _Other.LCapture;
-	LCapturePath = (BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.LCapturePath);
+	LCapturePath = (BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.LCapturePath);
 	LCaptureMouseX = _Other.LCaptureMouseX;
 	LCaptureMouseY = _Other.LCaptureMouseY;
 	LCaptureMouseXLastFrame = _Other.LCaptureMouseXLastFrame;
@@ -150,7 +150,7 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 	LAccumulationX = _Other.LAccumulationX;
 	LAccumulationY = _Other.LAccumulationY;
 	MCapture = _Other.MCapture;
-	MCapturePath = (BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.MCapturePath);
+	MCapturePath = (BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.MCapturePath);
 	MCaptureMouseX = _Other.MCaptureMouseX;
 	MCaptureMouseY = _Other.MCaptureMouseY;
 	MCaptureMouseXLastFrame = _Other.MCaptureMouseXLastFrame;
@@ -158,7 +158,7 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 	MAccumulationX = _Other.MAccumulationX;
 	MAccumulationY = _Other.MAccumulationY;
 	RCapture = _Other.RCapture;
-	RCapturePath = (BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.RCapturePath);
+	RCapturePath = (BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.RCapturePath);
 	RCaptureMouseX = _Other.RCaptureMouseX;
 	RCaptureMouseY = _Other.RCaptureMouseY;
 	RCaptureMouseXLastFrame = _Other.RCaptureMouseXLastFrame;
@@ -166,7 +166,7 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 	RAccumulationX = _Other.RAccumulationX;
 	RAccumulationY = _Other.RAccumulationY;
 	X1Capture = _Other.X1Capture;
-	X1CapturePath = (BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.X1CapturePath);
+	X1CapturePath = (BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.X1CapturePath);
 	X1CaptureMouseX = _Other.X1CaptureMouseX;
 	X1CaptureMouseY = _Other.X1CaptureMouseY;
 	X1CaptureMouseXLastFrame = _Other.X1CaptureMouseXLastFrame;
@@ -174,7 +174,7 @@ BFW_WINDOWS::GUI::WindowData& BFW_WINDOWS::GUI::WindowData::operator= (WindowDat
 	X1AccumulationX = _Other.X1AccumulationX;
 	X1AccumulationY = _Other.X1AccumulationY;
 	X2Capture = _Other.X2Capture;
-	X2CapturePath = (BFW::Vector<BFW::GUI::SafePopUpPointer>&&)(_Other.X2CapturePath);
+	X2CapturePath = (BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>&&)(_Other.X2CapturePath);
 	X2CaptureMouseX = _Other.X2CaptureMouseX;
 	X2CaptureMouseY = _Other.X2CaptureMouseY;
 	X2CaptureMouseXLastFrame = _Other.X2CaptureMouseXLastFrame;
@@ -539,9 +539,9 @@ LRESULT CALLBACK BFW_WINDOWS::GUI::ChildWindowProc(HWND _hWnd, UINT _Msg, WPARAM
 
 		_WndData.LayoutMutex->lock();
 
-		BFW::Vector<BFW::GUI::SafePopUpPointer> _Path;
+		BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>> _Path;
 
-		BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_Cursor.x, _Cursor.y, &_Path);
+		BFW::SafePointer<BFW::GUI::PopUp> _HoverPopUp = _WndData.Layout.GetChildFromMouse(_Cursor.x, _Cursor.y, &_Path);
 
 		size_t _MovableIndex = 0;
 
@@ -1441,7 +1441,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultX2CaptureDrag(const intptr_t _MouseX, 
 	return false;
 }
 
-void BFW_WINDOWS::GUI::HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+void BFW_WINDOWS::GUI::HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
 	size_t _ScrollableWindowIndex = 0;
 
@@ -1453,7 +1453,7 @@ void BFW_WINDOWS::GUI::HandleDefaultHWheelEvent(const BFW::Input::WheelEvent& _E
 	_Path[_ScrollableWindowIndex]->ScrollH(_Event.Delta, IgnoreHScroll);
 }
 
-void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::GUI::SafePopUpPointer>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
+void BFW_WINDOWS::GUI::HandleDefaultVWheelEvent(const BFW::Input::WheelEvent& _Event, BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>>& _Path, RunTime::Application& _ApplicationObj, BFW::RunTime::Menu* _Menu, BFW::GUI::Window& _Wnd, WindowData& _WndData, const bool _IsMainWindow)
 {
 	size_t _ScrollableWindowIndex = 0;
 
@@ -1605,7 +1605,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 
 		if (!_CursorSet)
 		{
-			BFW::GUI::SafePopUpPointer _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
+			BFW::SafePointer<BFW::GUI::PopUp> _HoverPopUp = _WndData.Layout.GetChildFromMouse(_MouseX, _MouseY);
 
 			if ((BFW::GUI::PopUp*)(_HoverPopUp))
 			{

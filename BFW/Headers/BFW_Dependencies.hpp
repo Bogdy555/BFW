@@ -83,6 +83,8 @@ namespace BFW
 
 	template <typename T> class WeakPointer;
 
+	template <typename T> class SafePointer;
+
 	template <typename T, typename CharT> requires (!std::is_const_v<CharT>) class Trie;
 
 	template <typename T, typename ValueT, const bool (*Rule)(const ValueT _Parent, const ValueT _Child)> requires (!std::is_const_v<ValueT>) class Heap;
@@ -259,8 +261,6 @@ namespace BFW
 		enum BFW_API PanelTypes : const uint8_t;
 
 		struct BFW_API RenderingDescriptor;
-
-		class BFW_API SafePopUpPointer;
 
 		class BFW_API PopUp;
 
