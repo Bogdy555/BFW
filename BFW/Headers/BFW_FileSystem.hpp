@@ -105,6 +105,7 @@ namespace BFW
 			~Directory();
 
 			const BFW_STRING_TYPE GetParentPath() const;
+			const BFW_STRING_TYPE GetName() const;
 
 			const bool FileExists(const BFW_STRING_TYPE& _Path) const;
 			const bool DirectoryExists(const BFW_STRING_TYPE& _Path) const;

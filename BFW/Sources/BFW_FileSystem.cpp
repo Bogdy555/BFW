@@ -257,7 +257,12 @@ const bool BFW::FileSystem::FileContent::Save(std::fstream& _File) const
 
 const uint64_t BFW::FileSystem::FileContent::Hash() const
 {
-	return BFW::Cryptography::HashA((const BFW_CHAR_TYPE_A*)(Data), Length);
+	if (!Length)
+	{
+		return BFW::Cryptography::HashA(nullptr, 0);
+	}
+
+	return BFW::Cryptography::HashA((const BFW_CHAR_TYPE_A*)(Data), Length - 1);
 }
 
 uint8_t* BFW::FileSystem::FileContent::GetData()
@@ -391,11 +396,6 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetParentPath() const
 		_Index++;
 	}
 
-	if (_Index == Path.size())
-	{
-		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
-	}
-
 	return Path.substr(0, Path.size() - _Index);
 }
 
@@ -403,7 +403,7 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetName() const
 {
 	BFW_STRING_TYPE _Parent = GetParentPath();
 
-	return Path.substr(_Parent.size(), Path.size());
+	return Path.substr(_Parent.size());
 }
 
 const BFW_STRING_TYPE BFW::FileSystem::File::GetExtension() const
@@ -427,7 +427,7 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetExtension() const
 		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
 	}
 
-	return _Name.substr(_Name.size() - _Index, _Name.size());
+	return _Name.substr(_Name.size() - _Index);
 }
 
 BFW::FileSystem::File& BFW::FileSystem::File::operator= (const File& _Other)
@@ -556,12 +556,19 @@ const BFW_STRING_TYPE BFW::FileSystem::Directory::GetParentPath() const
 		_Index++;
 	}
 
-	if (_Index == Path.size())
+	return Path.substr(0, Path.size() - _Index);
+}
+
+const BFW_STRING_TYPE BFW::FileSystem::Directory::GetName() const
+{
+	if (!Path.size())
 	{
 		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
 	}
 
-	return Path.substr(0, Path.size() - _Index);
+	BFW_STRING_TYPE _Parent = GetParentPath();
+
+	return Path.substr(_Parent.size(), Path.size() - _Parent.size() - 1);
 }
 
 const bool BFW::FileSystem::Directory::FileExists(const BFW_STRING_TYPE& _Path) const
@@ -880,52 +887,30 @@ const BFW::FileSystem::Directory BFW::FileSystem::DirectoryDiff::Apply(const Dir
 			continue;
 		}
 
-		BFW_STRING_TYPE _Path = AddedDirectories[_IndexAddedDirectories].Path;
+		Vector<BFW_STRING_TYPE> _Paths;
 
-		while (!_Result.DirectoryExists(_Path) && _Path.size())
+		Directory _PathDirectory;
+
+		_PathDirectory.Path = AddedDirectories[_IndexAddedDirectories].Path;
+
+		while (!_Result.DirectoryExists(_PathDirectory.Path) && _PathDirectory.Path.size())
 		{
-			size_t _Index = 0;
-
-			while (_Index < _Path.size())
-			{
-				if (_Path[_Path.size() - 1 - _Index] == BFW_STRING_PREFIX('/'))
-				{
-					break;
-				}
-
-				_Index++;
-			}
-
-			if (_Index == _Path.size())
-			{
-				_Path = BFW_STRING_TYPE();
-				continue;
-			}
-
-			_Path = _Path.substr(0, _Path.size() - 1 - _Index);
+			_Paths.PushBack(_PathDirectory.Path);
+			_PathDirectory.Path = _PathDirectory.GetParentPath();
 		}
 
-		if (!_Path.size())
+		if (!_PathDirectory.Path.size())
 		{
 			continue;
 		}
 
-		while (_Path != AddedDirectories[_IndexAddedDirectories].Path)
+		for (size_t _Index = 0; _Index < _Paths.GetSize(); _Index++)
 		{
-			size_t _NextIndex = _Path.size() + 1;
-
-			while (_NextIndex < AddedDirectories[_IndexAddedDirectories].Path.size() && AddedDirectories[_IndexAddedDirectories].Path[_NextIndex] != BFW_STRING_PREFIX('/'))
-			{
-				_NextIndex++;
-			}
-
 			Directory _TempDir;
 
-			_TempDir.Path = _Path + AddedDirectories[_IndexAddedDirectories].Path.substr(_Path.size(), _NextIndex - _Path.size());
+			_TempDir.Path = _Paths[_Paths.GetSize() - 1 - _Index];
 
-			_Result.GetDirectory(_Path).SubDirectories.EmplaceBack((Directory&&)(_TempDir));
-
-			_Path += AddedDirectories[_IndexAddedDirectories].Path.substr(_Path.size(), _NextIndex - _Path.size());
+			_Result.GetDirectory(_TempDir.GetParentPath()).SubDirectories.EmplaceBack((Directory&&)(_TempDir));
 		}
 	}
 
