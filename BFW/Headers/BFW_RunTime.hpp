@@ -38,7 +38,7 @@ namespace BFW
 
 #ifdef BFW_ESP32_PLATFORM
 
-			const int32_t Run(const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
+			const int32_t Run(const BFW_STRING_TYPE& _SDCardPath = "/sdcard/");
 
 #endif
 
@@ -68,9 +68,13 @@ namespace BFW
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
 
+			FileSystem::Directory& GetWorkingDirectory();
 			const FileSystem::Directory& GetWorkingDirectory() const;
+			FileSystem::DirectoryDiff& GetWorkingDirectoryDiff();
 			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
+			FileSystem::Directory& GetAssetsDirectory();
 			const FileSystem::Directory& GetAssetsDirectory() const;
+			FileSystem::DirectoryDiff& GetAssetsDirectoryDiff();
 			const FileSystem::DirectoryDiff& GetAssetsDirectoryDiff() const;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -211,9 +215,13 @@ namespace BFW
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
 
+			FileSystem::Directory& GetWorkingDirectory();
 			const FileSystem::Directory& GetWorkingDirectory() const;
+			FileSystem::DirectoryDiff& GetWorkingDirectoryDiff();
 			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
+			FileSystem::Directory& GetAssetsDirectory();
 			const FileSystem::Directory& GetAssetsDirectory() const;
+			FileSystem::DirectoryDiff& GetAssetsDirectoryDiff();
 			const FileSystem::DirectoryDiff& GetAssetsDirectoryDiff() const;
 
 #ifdef BFW_WINDOWS_PLATFORM

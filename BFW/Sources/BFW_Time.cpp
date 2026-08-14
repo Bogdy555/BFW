@@ -323,7 +323,7 @@ const std::chrono::system_clock::time_point BFW_API BFW::Time::GetTime()
 	return std::chrono::system_clock::now();
 }
 
-const tm BFW_API BFW::Time::TimeTToUTCTM(const std::chrono::system_clock::time_point& _Time)
+const tm BFW_API BFW::Time::TimePointToUTC(const std::chrono::system_clock::time_point& _Time)
 {
 	tm _ReturnTm = { 0 };
 
@@ -336,7 +336,7 @@ const tm BFW_API BFW::Time::TimeTToUTCTM(const std::chrono::system_clock::time_p
 	return _ReturnTm;
 }
 
-const tm BFW_API BFW::Time::TimeTToLocalTM(const std::chrono::system_clock::time_point& _Time)
+const tm BFW_API BFW::Time::TimePointToLocal(const std::chrono::system_clock::time_point& _Time)
 {
 	tm _ReturnTm = { 0 };
 

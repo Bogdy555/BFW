@@ -356,7 +356,7 @@ BFW::FileSystem::FileContent& BFW::FileSystem::FileContent::operator= (FileConte
 
 
 
-BFW::FileSystem::File::File() : Path(), Content(), LastWrite(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()))
+BFW::FileSystem::File::File() : Path(BFW_STRING_PREFIX("")), Content(), LastWrite(std::chrono::system_clock::now())
 {
 
 }
@@ -366,9 +366,10 @@ BFW::FileSystem::File::File(const File& _Other) : Path(_Other.Path), Content(_Ot
 
 }
 
-BFW::FileSystem::File::File(File&& _Other) noexcept : Path((BFW_STRING_TYPE&&)(_Other.Path)), Content((FileContent&&)(_Other.Content)), LastWrite(_Other.LastWrite)
+BFW::FileSystem::File::File(File&& _Other) noexcept : Path(_Other.Path), Content((FileContent&&)(_Other.Content)), LastWrite(_Other.LastWrite)
 {
-	_Other.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	_Other.Path = BFW_STRING_PREFIX("");
+	_Other.LastWrite = std::chrono::system_clock::now();
 }
 
 BFW::FileSystem::File::~File()
@@ -382,7 +383,7 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetParentPath() const
 
 	while (_Index < Path.size())
 	{
-		if (Path[Path.size() - 1 - _Index] == '/')
+		if (Path[Path.size() - 1 - _Index] == BFW_STRING_PREFIX('/'))
 		{
 			break;
 		}
@@ -392,17 +393,17 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetParentPath() const
 
 	if (_Index == Path.size())
 	{
-		return BFW_STRING_TYPE();
+		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
 	}
 
-	return Path.substr(0, Path.size() - 1 - _Index);
+	return Path.substr(0, Path.size() - _Index);
 }
 
 const BFW_STRING_TYPE BFW::FileSystem::File::GetName() const
 {
 	BFW_STRING_TYPE _Parent = GetParentPath();
 
-	return Path.substr(_Parent.size() + 1, Path.size());
+	return Path.substr(_Parent.size(), Path.size());
 }
 
 const BFW_STRING_TYPE BFW::FileSystem::File::GetExtension() const
@@ -413,7 +414,7 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetExtension() const
 
 	while (_Index < _Name.size())
 	{
-		if (_Name[_Name.size() - 1 - _Index] == '.')
+		if (_Name[_Name.size() - 1 - _Index] == BFW_STRING_PREFIX('.'))
 		{
 			break;
 		}
@@ -423,10 +424,10 @@ const BFW_STRING_TYPE BFW::FileSystem::File::GetExtension() const
 
 	if (_Index == _Name.size())
 	{
-		return BFW_STRING_TYPE();
+		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
 	}
 
-	return _Name.substr(_Name.size() - 1 - _Index, _Name.size());
+	return _Name.substr(_Name.size() - _Index, _Name.size());
 }
 
 BFW::FileSystem::File& BFW::FileSystem::File::operator= (const File& _Other)
@@ -450,11 +451,12 @@ BFW::FileSystem::File& BFW::FileSystem::File::operator= (File&& _Other) noexcept
 		return *this;
 	}
 
-	Path = (BFW_STRING_TYPE&&)(_Other.Path);
+	Path = _Other.Path;
 	Content = (FileContent&&)(_Other.Content);
 	LastWrite = _Other.LastWrite;
 
-	_Other.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	_Other.Path = BFW_STRING_PREFIX("");
+	_Other.LastWrite = std::chrono::system_clock::now();
 
 	return *this;
 }
@@ -474,7 +476,7 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 
 		if (_LoadContent)
 		{
-			std::ifstream _FileStream(_Entry.path().BFW_STRING_METHOD(), std::ios::binary);
+			std::ifstream _FileStream(_Entry.path(), std::ios::binary);
 
 			if (!_FileStream.is_open())
 			{
@@ -497,9 +499,9 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 			}
 		}
 
-		BFW_WINDOWS_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
-		BFW_LINUX_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
-		BFW_ESP32_PLATFORM_CALL(_Result.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
+		BFW_WINDOWS_PLATFORM_CALL(_Result.LastWrite = std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
+		BFW_LINUX_PLATFORM_CALL(_Result.LastWrite = std::chrono::file_clock::to_sys(_Entry.last_write_time()));
+		BFW_ESP32_PLATFORM_CALL(_Result.LastWrite = std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time()));
 	}
 	catch (const std::filesystem::filesystem_error&)
 	{
@@ -515,7 +517,7 @@ const BFW::FileSystem::File BFW::FileSystem::File::Load(const BFW_STRING_TYPE& _
 
 
 
-BFW::FileSystem::Directory::Directory() : Path(), Files(), SubDirectories()
+BFW::FileSystem::Directory::Directory() : Path(BFW_STRING_PREFIX("")), Files(), SubDirectories()
 {
 
 }
@@ -525,9 +527,9 @@ BFW::FileSystem::Directory::Directory(const Directory& _Other) : Path(_Other.Pat
 
 }
 
-BFW::FileSystem::Directory::Directory(Directory&& _Other) noexcept : Path((BFW_STRING_TYPE&&)(_Other.Path)), Files((Vector<File>&&)(_Other.Files)), SubDirectories((Vector<Directory>&&)(_Other.SubDirectories))
+BFW::FileSystem::Directory::Directory(Directory&& _Other) noexcept : Path(_Other.Path), Files((Vector<File>&&)(_Other.Files)), SubDirectories((Vector<Directory>&&)(_Other.SubDirectories))
 {
-
+	_Other.Path = BFW_STRING_PREFIX("");
 }
 
 BFW::FileSystem::Directory::~Directory()
@@ -537,11 +539,16 @@ BFW::FileSystem::Directory::~Directory()
 
 const BFW_STRING_TYPE BFW::FileSystem::Directory::GetParentPath() const
 {
-	size_t _Index = 0;
+	if (!Path.size())
+	{
+		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
+	}
+
+	size_t _Index = 1;
 
 	while (_Index < Path.size())
 	{
-		if (Path[Path.size() - 1 - _Index] == '/')
+		if (Path[Path.size() - 1 - _Index] == BFW_STRING_PREFIX('/'))
 		{
 			break;
 		}
@@ -551,10 +558,10 @@ const BFW_STRING_TYPE BFW::FileSystem::Directory::GetParentPath() const
 
 	if (_Index == Path.size())
 	{
-		return BFW_STRING_TYPE();
+		return BFW_STRING_TYPE(BFW_STRING_PREFIX(""));
 	}
 
-	return Path.substr(0, Path.size() - 1 - _Index);
+	return Path.substr(0, Path.size() - _Index);
 }
 
 const bool BFW::FileSystem::Directory::FileExists(const BFW_STRING_TYPE& _Path) const
@@ -741,9 +748,11 @@ BFW::FileSystem::Directory& BFW::FileSystem::Directory::operator= (Directory&& _
 		return *this;
 	}
 
-	Path = (BFW_STRING_TYPE&&)(_Other.Path);
+	Path = _Other.Path;
 	Files = (Vector<File>&&)(_Other.Files);
 	SubDirectories = (Vector<Directory>&&)(_Other.SubDirectories);
+
+	_Other.Path = BFW_STRING_PREFIX("");
 
 	return *this;
 }
@@ -758,7 +767,7 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 		{
 			if (_Entry.is_directory() && !_Entry.is_symlink())
 			{
-				Directory _TempDir = Load(_Entry.path().BFW_STRING_METHOD(), _LoadContent);
+				Directory _TempDir = Load(_Entry.path(), _LoadContent);
 
 				if (!_TempDir.Path.size())
 				{
@@ -767,57 +776,16 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 
 				_Result.SubDirectories.EmplaceBack((Directory&&)(_TempDir));
 			}
-			else if (_LoadContent)
-			{
-				std::ifstream _FileStream(_Entry.path().BFW_STRING_METHOD(), std::ios::binary);
-
-				if (!_FileStream.is_open())
-				{
-					continue;
-				}
-
-				File _File;
-
-				if (!_File.Content.Load(_FileStream))
-				{
-					continue;
-				}
-
-				_File.Path = _Entry.path().BFW_STRING_METHOD();
-
-				for (size_t _Index = 0; _Index < _File.Path.size(); _Index++)
-				{
-					if (_File.Path[_Index] == BFW_STRING_PREFIX('\\'))
-					{
-						_File.Path[_Index] = BFW_STRING_PREFIX('/');
-					}
-				}
-
-				BFW_WINDOWS_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
-				BFW_LINUX_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
-				BFW_ESP32_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
-
-				_Result.Files.EmplaceBack((File&&)(_File));
-			}
 			else
 			{
-				File _File;
+				File _TempFile = File::Load(_Entry.path(), _LoadContent);
 
-				_File.Path = _Entry.path().BFW_STRING_METHOD();
-
-				for (size_t _Index = 0; _Index < _File.Path.size(); _Index++)
+				if (!_TempFile.Path.size())
 				{
-					if (_File.Path[_Index] == BFW_STRING_PREFIX('\\'))
-					{
-						_File.Path[_Index] = BFW_STRING_PREFIX('/');
-					}
+					continue;
 				}
 
-				BFW_WINDOWS_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
-				BFW_LINUX_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::file_clock::to_sys(_Entry.last_write_time())));
-				BFW_ESP32_PLATFORM_CALL(_File.LastWrite = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(_Entry.last_write_time())));
-
-				_Result.Files.EmplaceBack((File&&)(_File));
+				_Result.Files.EmplaceBack((File&&)(_TempFile));
 			}
 		}
 
@@ -831,9 +799,9 @@ const BFW::FileSystem::Directory BFW::FileSystem::Directory::Load(const BFW_STRI
 			}
 		}
 
-		while (_Result.Path[_Result.Path.size() - 1] == '/' || _Result.Path[_Result.Path.size() - 1] == '\\')
+		if (_Result.Path[_Result.Path.size() - 1] != BFW_STRING_PREFIX('/'))
 		{
-			_Result.Path.erase(_Result.Path.begin() + _Result.Path.size() - 1);
+			_Result.Path += BFW_STRING_PREFIX('/');
 		}
 	}
 	catch (const std::filesystem::filesystem_error&)
@@ -920,7 +888,7 @@ const BFW::FileSystem::Directory BFW::FileSystem::DirectoryDiff::Apply(const Dir
 
 			while (_Index < _Path.size())
 			{
-				if (_Path[_Path.size() - 1 - _Index] == '/')
+				if (_Path[_Path.size() - 1 - _Index] == BFW_STRING_PREFIX('/'))
 				{
 					break;
 				}
@@ -946,7 +914,7 @@ const BFW::FileSystem::Directory BFW::FileSystem::DirectoryDiff::Apply(const Dir
 		{
 			size_t _NextIndex = _Path.size() + 1;
 
-			while (_NextIndex < AddedDirectories[_IndexAddedDirectories].Path.size() && AddedDirectories[_IndexAddedDirectories].Path[_NextIndex] != '/')
+			while (_NextIndex < AddedDirectories[_IndexAddedDirectories].Path.size() && AddedDirectories[_IndexAddedDirectories].Path[_NextIndex] != BFW_STRING_PREFIX('/'))
 			{
 				_NextIndex++;
 			}
@@ -1415,15 +1383,15 @@ const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 
 	for (size_t _Index = 0; _Index < _Result.size(); _Index++)
 	{
-		if (_Result[_Index] == '\\')
+		if (_Result[_Index] == BFW_STRING_PREFIX('\\'))
 		{
-			_Result[_Index] = '/';
+			_Result[_Index] = BFW_STRING_PREFIX('/');
 		}
 	}
 
-	while (_Result[_Result.size() - 1] == '/' || _Result[_Result.size() - 1] == '\\')
+	if (_Result[_Result.size() - 1] != BFW_STRING_PREFIX('/'))
 	{
-		_Result.erase(_Result.begin() + _Result.size() - 1);
+		_Result += BFW_STRING_PREFIX('/');
 	}
 
 	return _Result;
@@ -1435,7 +1403,22 @@ const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory()
 
 const BFW_STRING_TYPE BFW_API BFW::FileSystem::GetWorkingDirectory(const BFW_STRING_TYPE& _SDCardPath)
 {
-	return _SDCardPath;
+	BFW_STRING_TYPE _Result = _SDCardPath;
+
+	for (size_t _Index = 0; _Index < _Result.size(); _Index++)
+	{
+		if (_Result[_Index] == BFW_STRING_PREFIX('\\'))
+		{
+			_Result[_Index] = BFW_STRING_PREFIX('/');
+		}
+	}
+
+	if (_Result[_Result.size() - 1] != BFW_STRING_PREFIX('/'))
+	{
+		_Result += BFW_STRING_PREFIX('/');
+	}
+
+	return _Result;
 }
 
 #endif

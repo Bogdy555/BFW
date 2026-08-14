@@ -72,7 +72,7 @@ namespace BFW
 
 			BFW_STRING_TYPE Path;
 			FileContent Content;
-			time_t LastWrite;
+			std::chrono::system_clock::time_point LastWrite;
 
 			File();
 			File(const File& _Other);
@@ -172,7 +172,7 @@ namespace BFW
 
 #ifdef BFW_ESP32_PLATFORM
 
-		const BFW_STRING_TYPE BFW_API GetWorkingDirectory(const BFW_STRING_TYPE& _SDCardPath = "/sdcard");
+		const BFW_STRING_TYPE BFW_API GetWorkingDirectory(const BFW_STRING_TYPE& _SDCardPath = "/sdcard/");
 
 #endif
 

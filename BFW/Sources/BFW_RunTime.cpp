@@ -463,9 +463,19 @@ const uint64_t BFW::RunTime::Application::GetSync() const
 	return Sync;
 }
 
+BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory()
+{
+	return WorkingDirectory;
+}
+
 const BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory() const
 {
 	return WorkingDirectory;
+}
+
+BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirectoryDiff()
+{
+	return WorkingDirectoryDiff;
 }
 
 const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirectoryDiff() const
@@ -473,9 +483,19 @@ const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirec
 	return WorkingDirectoryDiff;
 }
 
+BFW::FileSystem::Directory& BFW::RunTime::Application::GetAssetsDirectory()
+{
+	return AssetsDirectory;
+}
+
 const BFW::FileSystem::Directory& BFW::RunTime::Application::GetAssetsDirectory() const
 {
 	return AssetsDirectory;
+}
+
+BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetAssetsDirectoryDiff()
+{
+	return AssetsDirectoryDiff;
 }
 
 const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetAssetsDirectoryDiff() const
@@ -761,9 +781,19 @@ const uint64_t BFW::RunTime::Menu::GetSync() const
 	return ApplicationObj->GetSync();
 }
 
+BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory()
+{
+	return ApplicationObj->GetWorkingDirectory();
+}
+
 const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory() const
 {
 	return ApplicationObj->GetWorkingDirectory();
+}
+
+BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDiff()
+{
+	return ApplicationObj->GetWorkingDirectoryDiff();
 }
 
 const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDiff() const
@@ -771,9 +801,19 @@ const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDif
 	return ApplicationObj->GetWorkingDirectoryDiff();
 }
 
+BFW::FileSystem::Directory& BFW::RunTime::Menu::GetAssetsDirectory()
+{
+	return ApplicationObj->GetAssetsDirectory();
+}
+
 const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetAssetsDirectory() const
 {
 	return ApplicationObj->GetAssetsDirectory();
+}
+
+BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetAssetsDirectoryDiff()
+{
+	return ApplicationObj->GetAssetsDirectoryDiff();
 }
 
 const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetAssetsDirectoryDiff() const

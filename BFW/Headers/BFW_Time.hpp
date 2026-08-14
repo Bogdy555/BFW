@@ -93,8 +93,8 @@ namespace BFW
 
 		const std::chrono::system_clock::time_point BFW_API GetTime();
 
-		const tm BFW_API TimeTToUTCTM(const std::chrono::system_clock::time_point& _Time);
-		const tm BFW_API TimeTToLocalTM(const std::chrono::system_clock::time_point& _Time);
+		const tm BFW_API TimePointToUTC(const std::chrono::system_clock::time_point& _Time);
+		const tm BFW_API TimePointToLocal(const std::chrono::system_clock::time_point& _Time);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
