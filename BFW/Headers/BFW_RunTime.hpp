@@ -38,7 +38,7 @@ namespace BFW
 
 #ifdef BFW_ESP32_PLATFORM
 
-			const int32_t Run(const BFW_STRING_TYPE& _SDCardPath = "/sdcard/");
+			const int32_t Run();
 
 #endif
 
@@ -52,9 +52,6 @@ namespace BFW
 			void SetSimulationSpeed(const float _SimulationSpeed);
 			void SetSync(const uint64_t _Sync);
 
-			void UpdateWorkingDirectory();
-			void UpdateAssetsDirectory();
-
 			const bool CheckOn() const;
 			const int32_t GetReturnValue() const;
 
@@ -67,21 +64,6 @@ namespace BFW
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
-
-			FileSystem::Directory& GetWorkingDirectory();
-			const FileSystem::Directory& GetWorkingDirectory() const;
-			FileSystem::DirectoryDiff& GetWorkingDirectoryDiff();
-			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
-			FileSystem::Directory& GetAssetsDirectory();
-			const FileSystem::Directory& GetAssetsDirectory() const;
-			FileSystem::DirectoryDiff& GetAssetsDirectoryDiff();
-			const FileSystem::DirectoryDiff& GetAssetsDirectoryDiff() const;
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-			const Trie<Trie<FileSystem::FileContent>>& GetResources() const;
-
-#endif
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -122,23 +104,6 @@ namespace BFW
 			float LagTime;
 			float SimulationSpeed;
 			uint64_t Sync;
-
-			FileSystem::Directory WorkingDirectory;
-			FileSystem::DirectoryDiff WorkingDirectoryDiff;
-			FileSystem::Directory AssetsDirectory;
-			FileSystem::DirectoryDiff AssetsDirectoryDiff;
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-			Trie<Trie<FileSystem::FileContent>> Resources;
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-			BFW_STRING_TYPE SDCardPath;
-
-#endif
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -195,9 +160,6 @@ namespace BFW
 			void SetSimulationSpeed(const float _SimulationSpeed);
 			void SetSync(const uint64_t _Sync);
 
-			void UpdateWorkingDirectory();
-			void UpdateAssetsDirectory();
-
 			const bool CheckOn() const;
 			const uint64_t GetNextMenu() const;
 			const uint64_t GetQueuedMenu() const;
@@ -214,21 +176,6 @@ namespace BFW
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
-
-			FileSystem::Directory& GetWorkingDirectory();
-			const FileSystem::Directory& GetWorkingDirectory() const;
-			FileSystem::DirectoryDiff& GetWorkingDirectoryDiff();
-			const FileSystem::DirectoryDiff& GetWorkingDirectoryDiff() const;
-			FileSystem::Directory& GetAssetsDirectory();
-			const FileSystem::Directory& GetAssetsDirectory() const;
-			FileSystem::DirectoryDiff& GetAssetsDirectoryDiff();
-			const FileSystem::DirectoryDiff& GetAssetsDirectoryDiff() const;
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-			const Trie<Trie<FileSystem::FileContent>>& GetResources() const;
-
-#endif
 
 		protected:
 

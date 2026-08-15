@@ -4,7 +4,7 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), Resources(), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
@@ -13,7 +13,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
@@ -22,7 +22,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), WorkingDirectory(), WorkingDirectoryDiff(), AssetsDirectory(), AssetsDirectoryDiff(), SDCardPath()
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60)
 {
 
 }
@@ -73,69 +73,6 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	CmdLine = _CmdLine;
 	ShowCmd = _ShowCmd;
 
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
-
-	{
-		BFW_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__wargv[0]));
-		BFW_NON_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__argv[0]));
-
-		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath());
-	}
-
-	Resources.Emplace(BFW_TO_STRING(BFW_BMP_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_HDR_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_WAV_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_WFOBJ_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_MTL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_JSON_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-	Resources.Emplace(BFW_TO_STRING(BFW_XML_RESOURCE).c_str(), Trie<FileSystem::FileContent>());
-
-	for (size_t _ResourceId = 0; _ResourceId < (size_t)(std::numeric_limits<uint16_t>::max()) + 1; _ResourceId++)
-	{
-		FileSystem::FileContent _FileContent;
-
-		if (_FileContent.Load(BFW_BMP_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_BMP_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_HDR_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_HDR_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_WAV_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_WAV_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_WFOBJ_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_WFOBJ_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_MTL_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_MTL_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_GLSL_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_GLSL_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_JSON_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_JSON_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-
-		if (_FileContent.Load(BFW_XML_RESOURCE, _ResourceId))
-		{
-			Resources.GetData(BFW_TO_STRING(BFW_XML_RESOURCE).c_str())->Emplace(BFW_TO_STRING(_ResourceId).c_str(), (FileSystem::FileContent&&)(_FileContent));
-		}
-	}
-
 	Setup();
 	while (On)
 	{
@@ -150,13 +87,6 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
-
-	WorkingDirectory = FileSystem::Directory();
-	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
-	AssetsDirectory = FileSystem::Directory();
-	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
-
-	Resources = Trie<Trie<FileSystem::FileContent>>();
 
 	InstanceHandle = NULL;
 	CmdLine = nullptr;
@@ -214,14 +144,6 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	ArgC = _ArgC;
 	ArgV = _ArgV;
 
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory());
-
-	{
-		FileSystem::File _Binary = FileSystem::File::Load(_ArgV[0]);
-
-		AssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath());
-	}
-
 	Setup();
 	while (On)
 	{
@@ -236,11 +158,6 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
-
-	WorkingDirectory = FileSystem::Directory();
-	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
-	AssetsDirectory = FileSystem::Directory();
-	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
 	ArgC = 0;
 	ArgV = nullptr;
@@ -262,13 +179,8 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 #ifdef BFW_ESP32_PLATFORM
 
-const int32_t BFW::RunTime::Application::Run(const BFW_STRING_TYPE& _SDCardPath)
+const int32_t BFW::RunTime::Application::Run()
 {
-	SDCardPath = _SDCardPath;
-
-	WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
-	AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
-
 	Setup();
 	while (On)
 	{
@@ -283,13 +195,6 @@ const int32_t BFW::RunTime::Application::Run(const BFW_STRING_TYPE& _SDCardPath)
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
-
-	SDCardPath = BFW_STRING_TYPE();
-
-	WorkingDirectory = FileSystem::Directory();
-	WorkingDirectoryDiff = FileSystem::DirectoryDiff();
-	AssetsDirectory = FileSystem::Directory();
-	AssetsDirectoryDiff = FileSystem::DirectoryDiff();
 
 	int32_t _ReturnValue = ReturnValue;
 	ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
@@ -334,74 +239,6 @@ void BFW::RunTime::Application::SetSync(const uint64_t _Sync)
 {
 	Sync = _Sync;
 }
-
-void BFW::RunTime::Application::UpdateWorkingDirectory()
-{
-	FileSystem::Directory _NewWorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(BFW_ESP32_PLATFORM_CALL(SDCardPath)));
-
-	if (_NewWorkingDirectory.Path != WorkingDirectory.Path)
-	{
-		WorkingDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(BFW_ESP32_PLATFORM_CALL(SDCardPath)));
-		WorkingDirectoryDiff = FileSystem::DirectoryDiff();
-		WorkingDirectoryDiff += WorkingDirectory;
-		return;
-	}
-
-	WorkingDirectoryDiff = FileSystem::DirectoryDiff::Get(WorkingDirectory, _NewWorkingDirectory);
-
-	if (WorkingDirectoryDiff.Empty())
-	{
-		return;
-	}
-
-	WorkingDirectory = WorkingDirectoryDiff.Apply(WorkingDirectory);
-}
-
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
-void BFW::RunTime::Application::UpdateAssetsDirectory()
-{
-	FileSystem::File _Binary = FileSystem::File::Load(GetArgV(0));
-
-	FileSystem::Directory _NewAssetsDirectory = FileSystem::Directory::Load(_Binary.GetParentPath());
-
-	AssetsDirectoryDiff = FileSystem::DirectoryDiff::Get(AssetsDirectory, _NewAssetsDirectory);
-
-	if (AssetsDirectoryDiff.Empty())
-	{
-		return;
-	}
-
-	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory);
-}
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-void BFW::RunTime::Application::UpdateAssetsDirectory()
-{
-	FileSystem::Directory _NewAssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
-
-	if (_NewAssetsDirectory.Path != AssetsDirectory.Path)
-	{
-		AssetsDirectory = FileSystem::Directory::Load(FileSystem::GetWorkingDirectory(SDCardPath));
-		AssetsDirectoryDiff = FileSystem::DirectoryDiff();
-		AssetsDirectoryDiff += AssetsDirectory;
-		return;
-	}
-
-	AssetsDirectoryDiff = FileSystem::DirectoryDiff::Get(AssetsDirectory, _NewAssetsDirectory);
-
-	if (AssetsDirectoryDiff.Empty())
-	{
-		return;
-	}
-
-	AssetsDirectory = AssetsDirectoryDiff.Apply(AssetsDirectory);
-}
-
-#endif
 
 const bool BFW::RunTime::Application::CheckOn() const
 {
@@ -462,55 +299,6 @@ const uint64_t BFW::RunTime::Application::GetSync() const
 {
 	return Sync;
 }
-
-BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory()
-{
-	return WorkingDirectory;
-}
-
-const BFW::FileSystem::Directory& BFW::RunTime::Application::GetWorkingDirectory() const
-{
-	return WorkingDirectory;
-}
-
-BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirectoryDiff()
-{
-	return WorkingDirectoryDiff;
-}
-
-const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetWorkingDirectoryDiff() const
-{
-	return WorkingDirectoryDiff;
-}
-
-BFW::FileSystem::Directory& BFW::RunTime::Application::GetAssetsDirectory()
-{
-	return AssetsDirectory;
-}
-
-const BFW::FileSystem::Directory& BFW::RunTime::Application::GetAssetsDirectory() const
-{
-	return AssetsDirectory;
-}
-
-BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetAssetsDirectoryDiff()
-{
-	return AssetsDirectoryDiff;
-}
-
-const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Application::GetAssetsDirectoryDiff() const
-{
-	return AssetsDirectoryDiff;
-}
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-const BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>& BFW::RunTime::Application::GetResources() const
-{
-	return Resources;
-}
-
-#endif
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -624,8 +412,6 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 		GetFrameTime(_CurrentState).Start();
 
 		Update();
-		UpdateWorkingDirectory();
-		UpdateAssetsDirectory();
 
 		if (GetSync())
 		{
@@ -701,16 +487,6 @@ void BFW::RunTime::Menu::SetSync(const uint64_t _Sync)
 	ApplicationObj->SetSync(_Sync);
 }
 
-void BFW::RunTime::Menu::UpdateWorkingDirectory()
-{
-	ApplicationObj->UpdateWorkingDirectory();
-}
-
-void BFW::RunTime::Menu::UpdateAssetsDirectory()
-{
-	ApplicationObj->UpdateAssetsDirectory();
-}
-
 const bool BFW::RunTime::Menu::CheckOn() const
 {
 	return On;
@@ -780,52 +556,3 @@ const uint64_t BFW::RunTime::Menu::GetSync() const
 {
 	return ApplicationObj->GetSync();
 }
-
-BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory()
-{
-	return ApplicationObj->GetWorkingDirectory();
-}
-
-const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetWorkingDirectory() const
-{
-	return ApplicationObj->GetWorkingDirectory();
-}
-
-BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDiff()
-{
-	return ApplicationObj->GetWorkingDirectoryDiff();
-}
-
-const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetWorkingDirectoryDiff() const
-{
-	return ApplicationObj->GetWorkingDirectoryDiff();
-}
-
-BFW::FileSystem::Directory& BFW::RunTime::Menu::GetAssetsDirectory()
-{
-	return ApplicationObj->GetAssetsDirectory();
-}
-
-const BFW::FileSystem::Directory& BFW::RunTime::Menu::GetAssetsDirectory() const
-{
-	return ApplicationObj->GetAssetsDirectory();
-}
-
-BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetAssetsDirectoryDiff()
-{
-	return ApplicationObj->GetAssetsDirectoryDiff();
-}
-
-const BFW::FileSystem::DirectoryDiff& BFW::RunTime::Menu::GetAssetsDirectoryDiff() const
-{
-	return ApplicationObj->GetAssetsDirectoryDiff();
-}
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-const BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>& BFW::RunTime::Menu::GetResources() const
-{
-	return ApplicationObj->GetResources();
-}
-
-#endif
