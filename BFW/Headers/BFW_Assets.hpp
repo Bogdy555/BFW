@@ -193,61 +193,6 @@ namespace BFW
 
 		};
 
-		enum BFW_API XmlTypes : const uint8_t
-		{
-			_TextXmlType = 0,
-			_TagXmlType = 1
-		};
-
-		class BFW_API Xml
-		{
-
-		public:
-
-			Xml();
-			Xml(const Xml& _Other);
-			Xml(Xml&& _Other) noexcept;
-			~Xml();
-
-			const bool Load(const FileSystem::FileContent& _FileContent, const bool _IsHTML = false);
-
-			void SetText(const BFW_STRING_TYPE_A& _Text);
-			void SetTag(const BFW_STRING_TYPE_A& _Tag);
-
-			FileSystem::FileContent Save(const bool _IsHTML = false) const;
-
-			const uint8_t GetType() const;
-			const BFW_STRING_TYPE_A& GetText() const;
-			const BFW_STRING_TYPE_A& GetTag() const;
-			BFW_STRING_TYPE_A& GetTagNamespace();
-			const BFW_STRING_TYPE_A& GetTagNamespace() const;
-			Vector<BFW_STRING_TYPE_A>& GetAttributeTags();
-			const Vector<BFW_STRING_TYPE_A>& GetAttributeTags() const;
-			Vector<BFW_STRING_TYPE_A>& GetAttributeTagNamespaces();
-			const Vector<BFW_STRING_TYPE_A>& GetAttributeTagNamespaces() const;
-			Vector<BFW_STRING_TYPE_A>& GetAttributeValues();
-			const Vector<BFW_STRING_TYPE_A>& GetAttributeValues() const;
-			Vector<Xml>& GetChilds();
-			const Vector<Xml>& GetChilds() const;
-
-			Xml& operator= (const Xml& _Other);
-			Xml& operator= (Xml&& _Other) noexcept;
-
-		private:
-
-			uint8_t Type;
-
-			BFW_STRING_TYPE_A Text;
-
-			BFW_STRING_TYPE_A Tag;
-			BFW_STRING_TYPE_A TagNamespace;
-			Vector<BFW_STRING_TYPE_A> AttributeTags;
-			Vector<BFW_STRING_TYPE_A> AttributeTagNamespaces;
-			Vector<BFW_STRING_TYPE_A> AttributeValues;
-			Vector<Xml> Childs;
-
-		};
-
 	}
 
 }

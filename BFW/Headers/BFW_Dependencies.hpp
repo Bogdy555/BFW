@@ -297,10 +297,6 @@ namespace BFW
 
 		class BFW_API Json;
 
-		enum BFW_API XmlTypes : const uint8_t;
-
-		class BFW_API Xml;
-
 	}
 
 }

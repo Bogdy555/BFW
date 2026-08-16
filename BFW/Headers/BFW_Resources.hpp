@@ -216,8 +216,6 @@
 
 #define BFW_JSON_RESOURCE 262
 
-#define BFW_XML_RESOURCE 263
-
 #if defined BFW_BUILD_DYNAMIC || defined BFW_LINK_DYNAMIC
 
 #define BFW_IDI_MAIN_ICON 1
