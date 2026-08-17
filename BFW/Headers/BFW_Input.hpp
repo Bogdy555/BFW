@@ -225,7 +225,7 @@ namespace BFW
 			const bool WasPressed() const;
 			const bool JustPressed() const;
 			const bool JustReleased() const;
-			const float GetHoldTime() const;
+			const Time::Timer& GetHoldTime() const;
 
 			Key& operator= (const Key& _Other);
 			Key& operator= (Key&& _Other) noexcept;

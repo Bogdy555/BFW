@@ -76,7 +76,7 @@ const bool BFW::Input::Key::JustReleased() const
 	return State[_PreviousState] && !State[_CurrentState];
 }
 
-const float BFW::Input::Key::GetHoldTime() const
+const BFW::Time::Timer& BFW::Input::Key::GetHoldTime() const
 {
 	return HoldTime;
 }

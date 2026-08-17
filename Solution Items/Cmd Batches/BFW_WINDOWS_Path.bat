@@ -2,7 +2,7 @@
 
 echo on
 
-if "%SolutionDir%" == "" call vcvars64.bat
+if "%SolutionDir%" == "" call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat"
 
 @echo off
 
