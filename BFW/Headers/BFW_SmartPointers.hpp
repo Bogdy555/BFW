@@ -209,7 +209,7 @@ namespace BFW
 			return _Result;
 		}
 
-		static UniquePointer MakeUnique(const std::initializer_list<Type>& _List)
+		static UniquePointer MakeUniqueArray(const std::initializer_list<Type>& _List)
 		{
 			if (_List.size() == 0)
 			{
@@ -235,7 +235,7 @@ namespace BFW
 			return _Result;
 		}
 
-		static UniquePointer MakeUnique(const size_t _Size)
+		static UniquePointer MakeUniqueArray(const size_t _Size)
 		{
 			if (_Size == 0)
 			{
@@ -505,7 +505,7 @@ namespace BFW
 			return _Result;
 		}
 
-		static SharedPointer MakeShared(const std::initializer_list<Type>& _List)
+		static SharedPointer MakeSharedArray(const std::initializer_list<Type>& _List)
 		{
 			if (_List.size() == 0)
 			{
@@ -544,7 +544,7 @@ namespace BFW
 			return _Result;
 		}
 
-		static SharedPointer MakeShared(const size_t _Size)
+		static SharedPointer MakeSharedArray(const size_t _Size)
 		{
 			if (_Size == 0)
 			{
