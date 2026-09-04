@@ -18,7 +18,7 @@ namespace BFW
 		float Begin;
 		float End;
 
-		AnimationState() : State(T()), Begin(0.0f), End(0.0f)
+		AnimationState() : State(), Begin(0.0f), End(0.0f)
 		{
 
 		}
