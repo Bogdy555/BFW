@@ -2,7 +2,7 @@
 
 
 
-std::mutex GUIDMutex;
+static std::mutex GUIDMutex;
 static BFW::Math::RandomUInt64 RandomGenerator;
 static BFW::Trie<bool> ExistentGUIDs;
 

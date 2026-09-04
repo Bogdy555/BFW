@@ -4,8 +4,8 @@
 
 #if defined BFW_WINDOWS_PLATFORM
 
-BFW::GUI::Window* LastWnd = nullptr;
-std::mutex LastWndMutex;
+static BFW::GUI::Window* LastWnd = nullptr;
+static std::mutex LastWndMutex;
 
 #endif
 
