@@ -318,11 +318,6 @@ const uint64_t BFW_API BFW::Time::GetTimeStamp(const std::chrono::system_clock::
 	return (uint64_t)(std::chrono::duration_cast<std::chrono::nanoseconds>(_Time.time_since_epoch()).count());
 }
 
-const std::chrono::system_clock::time_point BFW_API BFW::Time::GetTime()
-{
-	return std::chrono::system_clock::now();
-}
-
 const tm BFW_API BFW::Time::TimePointToUTC(const std::chrono::system_clock::time_point& _Time)
 {
 	tm _ReturnTm = { 0 };

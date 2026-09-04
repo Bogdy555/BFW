@@ -91,8 +91,6 @@ namespace BFW
 
 		const uint64_t BFW_API GetTimeStamp(const std::chrono::system_clock::time_point& _Time = std::chrono::system_clock::now());
 
-		const std::chrono::system_clock::time_point BFW_API GetTime();
-
 		const tm BFW_API TimePointToUTC(const std::chrono::system_clock::time_point& _Time);
 		const tm BFW_API TimePointToLocal(const std::chrono::system_clock::time_point& _Time);
 

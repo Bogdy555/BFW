@@ -89,13 +89,18 @@ namespace BFW
 
 	template <typename T, typename ValueT, const bool (*Rule)(const ValueT _Parent, const ValueT _Child)> requires (!std::is_const_v<ValueT>) class Heap;
 
-	template <typename T> struct AnimationState;
+	namespace Animation
+	{
 
-	template <typename T> class Animation;
+		template <typename T> struct State;
 
-	template <typename T> class StepAnimation;
+		template <typename T> class Sequence;
 
-	template <typename T, std::add_const_t<T> (*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearAnimation;
+		template <typename T> class StepSequence;
+
+		template <typename T, std::add_const_t<T>(*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearSequence;
+
+	}
 
 	namespace String
 	{

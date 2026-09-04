@@ -11,365 +11,370 @@
 namespace BFW
 {
 
-	template <typename T> struct AnimationState
+	namespace Animation
 	{
 
-		T State;
-		float Begin;
-		float End;
-
-		AnimationState() : State(), Begin(0.0f), End(0.0f)
+		template <typename T> struct State
 		{
 
-		}
+			T Value;
+			float Begin;
+			float End;
 
-		AnimationState(const T& _State, const float _Begin, const float _End) : State(_State), Begin(_Begin), End(_End)
-		{
-
-		}
-
-		AnimationState(const AnimationState& _Other) = default;
-
-		AnimationState(AnimationState&& _Other) noexcept : State((T&&)(_Other.State)), Begin(_Other.Begin), End(_Other.End)
-		{
-			_Other.Begin = 0.0f;
-			_Other.End = 0.0f;
-		}
-
-		AnimationState& operator= (const AnimationState& _Other) requires (!std::is_const_v<T>) = default;
-
-		AnimationState& operator= (AnimationState&& _Other) noexcept requires (!std::is_const_v<T>)
-		{
-			if (this == &_Other)
+			State() : Value(), Begin(0.0f), End(0.0f)
 			{
-				return *this;
+
 			}
 
-			State = (T&&)(_Other.State);
-			Begin = _Other.Begin;
-			End = _Other.End;
-
-			_Other.Begin = 0.0f;
-			_Other.End = 0.0f;
-
-			return *this;
-		}
-
-	};
-
-	template <typename T> class Animation
-	{
-
-	private:
-
-		using Type = std::remove_const_t<T>;
-		using ConstType = std::add_const_t<T>;
-
-	public:
-
-		Animation() : Time(0.0f), Loop(true), AnimationStates()
-		{
-
-		}
-
-		Animation(const Animation& _Other) : Time(_Other.Time), Loop(_Other.Loop), AnimationStates(_Other.AnimationStates)
-		{
-
-		}
-
-		Animation(Animation&& _Other) noexcept : Time(_Other.Time), Loop(_Other.Loop), AnimationStates((Vector<AnimationState<Type>>&&)(_Other.AnimationStates))
-		{
-			_Other.Time = 0.0f;
-			_Other.Loop = true;
-		}
-
-		virtual ~Animation()
-		{
-
-		}
-
-		void Update(const float _TimeStep)
-		{
-			Time += _TimeStep;
-
-			if (Loop)
+			State(const T& _Value, const float _Begin, const float _End) : Value(_Value), Begin(_Begin), End(_End)
 			{
-				while (Time >= AnimationStates[AnimationStates.GetSize() - 1].End)
+
+			}
+
+			State(const State& _Other) = default;
+
+			State(State&& _Other) noexcept : Value((T&&)(_Other.Value)), Begin(_Other.Begin), End(_Other.End)
+			{
+				_Other.Begin = 0.0f;
+				_Other.End = 0.0f;
+			}
+
+			State& operator= (const State& _Other) requires (!std::is_const_v<T>) = default;
+
+			State& operator= (State&& _Other) noexcept requires (!std::is_const_v<T>)
+			{
+				if (this == &_Other)
 				{
-					Time -= AnimationStates[AnimationStates.GetSize() - 1].End;
+					return *this;
 				}
-			}
-			else
-			{
-				if (Time > AnimationStates[AnimationStates.GetSize() - 1].End)
-				{
-					Time = AnimationStates[AnimationStates.GetSize() - 1].End;
-				}
-			}
-		}
 
-		void SetTime(const float _Time)
-		{
-			Time = _Time;
-		}
+				Value = (T&&)(_Other.Value);
+				Begin = _Other.Begin;
+				End = _Other.End;
 
-		void SetLoop(const bool _Loop)
-		{
-			Loop = _Loop;
-		}
+				_Other.Begin = 0.0f;
+				_Other.End = 0.0f;
 
-		virtual ConstType GetCurrentState() const = 0;
-
-		const size_t GetCurrentStateIndex() const
-		{
-			for (size_t _Index = 0; _Index < AnimationStates.GetSize(); _Index++)
-			{
-				if (AnimationStates[_Index].Begin <= Time && Time < AnimationStates[_Index].End)
-				{
-					return _Index;
-				}
-			}
-
-			if (Time == AnimationStates[AnimationStates.GetSize() - 1].End)
-			{
-				return AnimationStates.GetSize() - 1;
-			}
-
-			return std::numeric_limits<size_t>::max();
-		}
-
-		const float GetTime() const
-		{
-			return Time;
-		}
-
-		const bool GetLoop() const
-		{
-			return Loop;
-		}
-
-		Vector<AnimationState<Type>>& GetAnimationStates() requires (!std::is_const_v<T>)
-		{
-			return AnimationStates;
-		}
-
-		const Vector<AnimationState<Type>>& GetAnimationStates() const
-		{
-			return AnimationStates;
-		}
-
-		Animation& operator= (const Animation& _Other)
-		{
-			if (this == &_Other)
-			{
 				return *this;
 			}
 
-			Time = _Other.Time;
-			Loop = _Other.Loop;
-			AnimationStates = _Other.AnimationStates;
+		};
 
-			return *this;
-		}
-
-		Animation& operator= (Animation&& _Other) noexcept
+		template <typename T> class Sequence
 		{
-			if (this == &_Other)
+
+		private:
+
+			using Type = std::remove_const_t<T>;
+			using ConstType = std::add_const_t<T>;
+
+		public:
+
+			Sequence() : Time(0.0f), Loop(true), SequenceStates()
 			{
-				return *this;
+
 			}
 
-			Time = _Other.Time;
-			Loop = _Other.Loop;
-			AnimationStates = (Vector<AnimationState<Type>>&&)(_Other.AnimationStates);
-
-			_Other.Time = 0.0f;
-			_Other.Loop = true;
-
-			return *this;
-		}
-
-	protected:
-
-		float Time;
-		bool Loop;
-		Vector<AnimationState<Type>> AnimationStates;
-
-	};
-
-	template <typename T> class StepAnimation : public Animation<T>
-	{
-
-	private:
-
-		using Type = std::remove_const_t<T>;
-		using ConstType = std::add_const_t<T>;
-
-	public:
-
-		StepAnimation() : Animation<T>()
-		{
-
-		}
-
-		StepAnimation(const StepAnimation& _Other) : Animation<T>((const Animation<T>&)(_Other))
-		{
-
-		}
-
-		StepAnimation(StepAnimation&& _Other) noexcept : Animation<T>((Animation<T>&&)(_Other))
-		{
-
-		}
-
-		~StepAnimation()
-		{
-
-		}
-
-		ConstType GetCurrentState() const override
-		{
-			for (size_t _Index = 0; _Index < AnimationStates.GetSize(); _Index++)
+			Sequence(const Sequence& _Other) : Time(_Other.Time), Loop(_Other.Loop), SequenceStates(_Other.SequenceStates)
 			{
-				if (AnimationStates[_Index].Begin <= Time && Time < AnimationStates[_Index].End)
+
+			}
+
+			Sequence(Sequence&& _Other) noexcept : Time(_Other.Time), Loop(_Other.Loop), SequenceStates((Vector<State<Type>>&&)(_Other.SequenceStates))
+			{
+				_Other.Time = 0.0f;
+				_Other.Loop = true;
+			}
+
+			virtual ~Sequence()
+			{
+
+			}
+
+			void Update(const float _TimeStep)
+			{
+				Time += _TimeStep;
+
+				if (Loop)
 				{
-					return AnimationStates[_Index].State;
-				}
-			}
-
-			if (Time == AnimationStates[AnimationStates.GetSize() - 1].End)
-			{
-				return AnimationStates[AnimationStates.GetSize() - 1].State;
-			}
-
-			return Type();
-		}
-
-		StepAnimation& operator= (const StepAnimation& _Other)
-		{
-			if (this == &_Other)
-			{
-				return *this;
-			}
-
-			*(Animation<T>*)(this) = (const Animation<T>&)(_Other);
-
-			return *this;
-		}
-
-		StepAnimation& operator= (StepAnimation&& _Other) noexcept
-		{
-			if (this == &_Other)
-			{
-				return *this;
-			}
-
-			*(Animation<T>*)(this) = (Animation<T>&&)(_Other);
-
-			return *this;
-		}
-
-	private:
-
-		using Animation<T>::Time;
-		using Animation<T>::Loop;
-		using Animation<T>::AnimationStates;
-
-	};
-
-	template <typename T, std::add_const_t<T> (*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearAnimation : public Animation<T>
-	{
-
-	private:
-
-		using Type = std::remove_const_t<T>;
-		using ConstType = std::add_const_t<T>;
-
-	public:
-
-		LinearAnimation() : Animation<T>()
-		{
-
-		}
-
-		LinearAnimation(const LinearAnimation& _Other) : Animation<T>((const Animation<T>&)(_Other))
-		{
-
-		}
-
-		LinearAnimation(LinearAnimation&& _Other) noexcept : Animation<T>((Animation<T>&&)(_Other))
-		{
-
-		}
-
-		~LinearAnimation()
-		{
-
-		}
-
-		ConstType GetCurrentState() const override
-		{
-			for (size_t _Index = 0; _Index < AnimationStates.GetSize(); _Index++)
-			{
-				if (AnimationStates[_Index].Begin <= Time && Time < AnimationStates[_Index].End)
-				{
-					if (_Index != AnimationStates.GetSize() - 1)
+					while (Time >= SequenceStates[SequenceStates.GetSize() - 1].End)
 					{
-						return Lerper(AnimationStates[_Index].State, AnimationStates[_Index + 1].State, (Time - AnimationStates[_Index].Begin) / (AnimationStates[_Index].End - AnimationStates[_Index].Begin));
+						Time -= SequenceStates[SequenceStates.GetSize() - 1].End;
 					}
-					else
+				}
+				else
+				{
+					if (Time > SequenceStates[SequenceStates.GetSize() - 1].End)
 					{
-						if (Loop)
+						Time = SequenceStates[SequenceStates.GetSize() - 1].End;
+					}
+				}
+			}
+
+			void SetTime(const float _Time)
+			{
+				Time = _Time;
+			}
+
+			void SetLoop(const bool _Loop)
+			{
+				Loop = _Loop;
+			}
+
+			virtual ConstType GetCurrentState() const = 0;
+
+			const size_t GetCurrentStateIndex() const
+			{
+				for (size_t _Index = 0; _Index < SequenceStates.GetSize(); _Index++)
+				{
+					if (SequenceStates[_Index].Begin <= Time && Time < SequenceStates[_Index].End)
+					{
+						return _Index;
+					}
+				}
+
+				if (Time == SequenceStates[SequenceStates.GetSize() - 1].End)
+				{
+					return SequenceStates.GetSize() - 1;
+				}
+
+				return std::numeric_limits<size_t>::max();
+			}
+
+			const float GetTime() const
+			{
+				return Time;
+			}
+
+			const bool GetLoop() const
+			{
+				return Loop;
+			}
+
+			Vector<State<Type>>& GetSequenceStates() requires (!std::is_const_v<T>)
+			{
+				return SequenceStates;
+			}
+
+			const Vector<State<Type>>& GetSequenceStates() const
+			{
+				return SequenceStates;
+			}
+
+			Sequence& operator= (const Sequence& _Other)
+			{
+				if (this == &_Other)
+				{
+					return *this;
+				}
+
+				Time = _Other.Time;
+				Loop = _Other.Loop;
+				SequenceStates = _Other.SequenceStates;
+
+				return *this;
+			}
+
+			Sequence& operator= (Sequence&& _Other) noexcept
+			{
+				if (this == &_Other)
+				{
+					return *this;
+				}
+
+				Time = _Other.Time;
+				Loop = _Other.Loop;
+				SequenceStates = (Vector<State<Type>>&&)(_Other.SequenceStates);
+
+				_Other.Time = 0.0f;
+				_Other.Loop = true;
+
+				return *this;
+			}
+
+		protected:
+
+			float Time;
+			bool Loop;
+			Vector<State<Type>> SequenceStates;
+
+		};
+
+		template <typename T> class StepSequence : public Sequence<T>
+		{
+
+		private:
+
+			using Type = std::remove_const_t<T>;
+			using ConstType = std::add_const_t<T>;
+
+		public:
+
+			StepSequence() : Sequence<T>()
+			{
+
+			}
+
+			StepSequence(const StepSequence& _Other) : Sequence<T>((const Sequence<T>&)(_Other))
+			{
+
+			}
+
+			StepSequence(StepSequence&& _Other) noexcept : Sequence<T>((Sequence<T>&&)(_Other))
+			{
+
+			}
+
+			~StepSequence()
+			{
+
+			}
+
+			ConstType GetCurrentState() const override
+			{
+				for (size_t _Index = 0; _Index < SequenceStates.GetSize(); _Index++)
+				{
+					if (SequenceStates[_Index].Begin <= Time && Time < SequenceStates[_Index].End)
+					{
+						return SequenceStates[_Index].Value;
+					}
+				}
+
+				if (Time == SequenceStates[SequenceStates.GetSize() - 1].End)
+				{
+					return SequenceStates[SequenceStates.GetSize() - 1].Value;
+				}
+
+				return Type();
+			}
+
+			StepSequence& operator= (const StepSequence& _Other)
+			{
+				if (this == &_Other)
+				{
+					return *this;
+				}
+
+				*(Sequence<T>*)(this) = (const Sequence<T>&)(_Other);
+
+				return *this;
+			}
+
+			StepSequence& operator= (StepSequence&& _Other) noexcept
+			{
+				if (this == &_Other)
+				{
+					return *this;
+				}
+
+				*(Sequence<T>*)(this) = (Sequence<T>&&)(_Other);
+
+				return *this;
+			}
+
+		private:
+
+			using Sequence<T>::Time;
+			using Sequence<T>::Loop;
+			using Sequence<T>::SequenceStates;
+
+		};
+
+		template <typename T, std::add_const_t<T>(*Lerper)(std::add_const_t<T>&, std::add_const_t<T>&, const float)> class LinearSequence : public Sequence<T>
+		{
+
+		private:
+
+			using Type = std::remove_const_t<T>;
+			using ConstType = std::add_const_t<T>;
+
+		public:
+
+			LinearSequence() : Sequence<T>()
+			{
+
+			}
+
+			LinearSequence(const LinearSequence& _Other) : Sequence<T>((const Sequence<T>&)(_Other))
+			{
+
+			}
+
+			LinearSequence(LinearSequence&& _Other) noexcept : Sequence<T>((Sequence<T>&&)(_Other))
+			{
+
+			}
+
+			~LinearSequence()
+			{
+
+			}
+
+			ConstType GetCurrentState() const override
+			{
+				for (size_t _Index = 0; _Index < SequenceStates.GetSize(); _Index++)
+				{
+					if (SequenceStates[_Index].Begin <= Time && Time < SequenceStates[_Index].End)
+					{
+						if (_Index != SequenceStates.GetSize() - 1)
 						{
-							return Lerper(AnimationStates[_Index].State, AnimationStates[0].State, (Time - AnimationStates[_Index].Begin) / (AnimationStates[_Index].End - AnimationStates[_Index].Begin));
+							return Lerper(SequenceStates[_Index].Value, SequenceStates[_Index + 1].Value, (Time - SequenceStates[_Index].Begin) / (SequenceStates[_Index].End - SequenceStates[_Index].Begin));
 						}
 						else
 						{
-							return AnimationStates[_Index].State;
+							if (Loop)
+							{
+								return Lerper(SequenceStates[_Index].Value, SequenceStates[0].Value, (Time - SequenceStates[_Index].Begin) / (SequenceStates[_Index].End - SequenceStates[_Index].Begin));
+							}
+							else
+							{
+								return SequenceStates[_Index].Value;
+							}
 						}
 					}
 				}
+
+				if (Time == SequenceStates[SequenceStates.GetSize() - 1].End)
+				{
+					return SequenceStates[SequenceStates.GetSize() - 1].Value;
+				}
+
+				return Type();
 			}
 
-			if (Time == AnimationStates[AnimationStates.GetSize() - 1].End)
+			LinearSequence& operator= (const LinearSequence& _Other)
 			{
-				return AnimationStates[AnimationStates.GetSize() - 1].State;
-			}
+				if (this == &_Other)
+				{
+					return *this;
+				}
 
-			return Type();
-		}
+				*(Sequence<T>*)(this) = (const Sequence<T>&)(_Other);
 
-		LinearAnimation& operator= (const LinearAnimation& _Other)
-		{
-			if (this == &_Other)
-			{
 				return *this;
 			}
 
-			*(Animation<T>*)(this) = (const Animation<T>&)(_Other);
-
-			return *this;
-		}
-
-		LinearAnimation& operator= (LinearAnimation&& _Other) noexcept
-		{
-			if (this == &_Other)
+			LinearSequence& operator= (LinearSequence&& _Other) noexcept
 			{
+				if (this == &_Other)
+				{
+					return *this;
+				}
+
+				*(Sequence<T>*)(this) = (Sequence<T>&&)(_Other);
+
 				return *this;
 			}
 
-			*(Animation<T>*)(this) = (Animation<T>&&)(_Other);
+		private:
 
-			return *this;
-		}
+			using Sequence<T>::Time;
+			using Sequence<T>::Loop;
+			using Sequence<T>::SequenceStates;
 
-	private:
+		};
 
-		using Animation<T>::Time;
-		using Animation<T>::Loop;
-		using Animation<T>::AnimationStates;
-
-	};
+	}
 
 }
 
