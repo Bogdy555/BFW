@@ -172,25 +172,6 @@ namespace BFW
 
 	}
 
-	namespace FileSystem
-	{
-
-		class BFW_API FileContent;
-
-		class BFW_API File;
-
-		class BFW_API Directory;
-
-		class BFW_API DirectoryDiff;
-
-#ifdef BFW_WINDOWS_PLATFORM
-
-		typedef HANDLE LockedDirectoryHandle;
-
-#endif
-
-	}
-
 	namespace MultiProcessing
 	{
 
@@ -284,6 +265,8 @@ namespace BFW
 
 	namespace Assets
 	{
+
+		class BFW_API FileContent;
 
 		class BFW_API BitMap;
 

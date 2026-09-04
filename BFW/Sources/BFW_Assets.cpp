@@ -314,7 +314,7 @@ WaveChunkHeader& WaveChunkHeader::operator= (WaveChunkHeader& _Other) noexcept
 
 
 
-static const bool LoadJsonNull(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+static const bool LoadJsonNull(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'n')
 	{
@@ -349,7 +349,7 @@ static const bool LoadJsonNull(const BFW::FileSystem::FileContent& _FileContent,
 	return true;
 }
 
-static const bool LoadJsonBool(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+static const bool LoadJsonBool(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 't' && (const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'f')
 	{
@@ -421,7 +421,7 @@ static const bool LoadJsonBool(const BFW::FileSystem::FileContent& _FileContent,
 	return true;
 }
 
-static const bool LoadJsonNumber(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+static const bool LoadJsonNumber(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	bool _Negative = false;
 
@@ -544,7 +544,7 @@ static const bool LoadJsonNumber(const BFW::FileSystem::FileContent& _FileConten
 	return true;
 }
 
-static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+static const bool LoadJsonString(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\"')
 	{
@@ -724,9 +724,9 @@ static const bool LoadJsonString(const BFW::FileSystem::FileContent& _FileConten
 	return true;
 }
 
-static const bool LoadJsonArray(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json);
+static const bool LoadJsonArray(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json);
 
-static const bool LoadJsonObject(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+static const bool LoadJsonObject(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	_Json.SetObject();
 
@@ -967,7 +967,7 @@ static const bool LoadJsonObject(const BFW::FileSystem::FileContent& _FileConten
 	return true;
 }
 
-static const bool LoadJsonArray(const BFW::FileSystem::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
+static const bool LoadJsonArray(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	_Json.SetArray();
 
@@ -1494,6 +1494,357 @@ static const bool SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _St
 
 
 
+BFW::Assets::FileContent::FileContent() : Data(nullptr), Length(0)
+{
+
+}
+
+BFW::Assets::FileContent::FileContent(const FileContent& _Other) : Data(nullptr), Length(0)
+{
+	if (!_Other.Length)
+	{
+		return;
+	}
+
+	Data = new uint8_t[_Other.Length];
+
+	if (!Data)
+	{
+		throw nullptr;
+	}
+
+	Length = _Other.Length;
+
+	for (size_t _Index = 0; _Index < Length; _Index++)
+	{
+		Data[_Index] = _Other.Data[_Index];
+	}
+}
+
+BFW::Assets::FileContent::FileContent(FileContent&& _Other) noexcept : Data(_Other.Data), Length(_Other.Length)
+{
+	_Other.Data = nullptr;
+	_Other.Length = 0;
+}
+
+BFW::Assets::FileContent::~FileContent()
+{
+	delete[] Data;
+}
+
+const bool BFW::Assets::FileContent::Create(const size_t _Length)
+{
+	Destroy();
+
+	if (!_Length)
+	{
+		return false;
+	}
+
+	Data = new uint8_t[_Length];
+
+	if (!Data)
+	{
+		return false;
+	}
+
+	Length = _Length;
+
+	for (size_t _Index = 0; _Index < Length; _Index++)
+	{
+		Data[_Index] = 0;
+	}
+
+	return true;
+}
+
+const bool BFW::Assets::FileContent::Load(std::ifstream& _File)
+{
+	Destroy();
+
+	if (!_File.is_open())
+	{
+		return false;
+	}
+
+	size_t _CurrentPos = (size_t)(_File.tellg());
+
+	_File.seekg(0, std::ios::end);
+
+	size_t _Length = (size_t)(_File.tellg()) + 1;
+
+	uint8_t* _Data = new uint8_t[_Length];
+
+	if (!_Data)
+	{
+		_File.seekg(_CurrentPos, std::ios::beg);
+		return false;
+	}
+
+	_File.seekg(0, std::ios::beg);
+
+	_File.read((char*)(_Data), _Length - 1);
+
+	if ((size_t)(_File.gcount()) != _Length - 1)
+	{
+		delete[] _Data;
+		_File.seekg(_CurrentPos, std::ios::beg);
+		return false;
+	}
+
+	_Data[_Length - 1] = '\0';
+
+	Data = _Data;
+	Length = _Length;
+
+	_File.seekg(_CurrentPos, std::ios::beg);
+
+	return true;
+}
+
+const bool BFW::Assets::FileContent::Load(std::fstream& _File)
+{
+	Destroy();
+
+	if (!_File.is_open())
+	{
+		return false;
+	}
+
+	size_t _CurrentPos = (size_t)(_File.tellg());
+
+	_File.seekg(0, std::ios::end);
+
+	size_t _Length = (size_t)(_File.tellg()) + 1;
+
+	uint8_t* _Data = new uint8_t[_Length];
+
+	if (!_Data)
+	{
+		_File.seekg(_CurrentPos, std::ios::beg);
+		return false;
+	}
+
+	_File.seekg(0, std::ios::beg);
+
+	_File.read((char*)(_Data), _Length - 1);
+
+	if ((size_t)(_File.gcount()) != _Length - 1)
+	{
+		delete[] _Data;
+		_File.seekg(_CurrentPos, std::ios::beg);
+		return false;
+	}
+
+	_Data[_Length - 1] = '\0';
+
+	Data = _Data;
+	Length = _Length;
+
+	_File.seekg(_CurrentPos, std::ios::beg);
+
+	return true;
+}
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+const bool BFW::Assets::FileContent::Load(const size_t _ResourceType, const size_t _ResourceId)
+{
+	HINSTANCE _InstanceHandle = GetModuleHandle(nullptr);
+
+	if (!_InstanceHandle)
+	{
+		return false;
+	}
+
+	HRSRC _ResourceHandle = FindResource(_InstanceHandle, MAKEINTRESOURCE(_ResourceId), MAKEINTRESOURCE(_ResourceType));
+
+	if (!_ResourceHandle)
+	{
+		return false;
+	}
+
+	size_t _Length = (size_t)(SizeofResource(_InstanceHandle, _ResourceHandle)) + 1;
+
+	const uint8_t* _ResourceMemory = (const uint8_t*)(LoadResource(_InstanceHandle, _ResourceHandle));
+
+	if (!_ResourceMemory)
+	{
+		return false;
+	}
+
+	uint8_t* _Data = new uint8_t[_Length];
+
+	if (!_Data)
+	{
+		FreeResource((HGLOBAL)(_ResourceMemory));
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _Length - 1; _Index++)
+	{
+		_Data[_Index] = _ResourceMemory[_Index];
+	}
+
+	_Data[_Length - 1] = '\0';
+
+	Data = _Data;
+	Length = _Length;
+
+	FreeResource((HGLOBAL)(_ResourceMemory));
+
+	return true;
+}
+
+#endif
+
+void BFW::Assets::FileContent::Destroy()
+{
+	delete[] Data;
+	Data = nullptr;
+	Length = 0;
+}
+
+const bool BFW::Assets::FileContent::Save(std::ofstream& _File) const
+{
+	if (!Data || Length <= 1 || !_File.is_open())
+	{
+		return false;
+	}
+
+	_File.write((const char*)(Data), Length - 1);
+
+	if (!_File)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+const bool BFW::Assets::FileContent::Save(std::fstream& _File) const
+{
+	if (!Data || Length <= 1 || !_File.is_open())
+	{
+		return false;
+	}
+
+	_File.write((const char*)(Data), Length - 1);
+
+	if (!_File)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+const uint64_t BFW::Assets::FileContent::Hash() const
+{
+	if (!Length)
+	{
+		return BFW::Cryptography::HashA(nullptr, 0);
+	}
+
+	return BFW::Cryptography::HashA((const BFW_CHAR_TYPE_A*)(Data), Length - 1);
+}
+
+uint8_t* BFW::Assets::FileContent::GetData()
+{
+	return Data;
+}
+
+const uint8_t* BFW::Assets::FileContent::GetData() const
+{
+	return Data;
+}
+
+const size_t BFW::Assets::FileContent::GetLength() const
+{
+	return Length;
+}
+
+BFW::Assets::FileContent::operator uint8_t* ()
+{
+	return Data;
+}
+
+BFW::Assets::FileContent::operator const uint8_t* () const
+{
+	return Data;
+}
+
+uint8_t& BFW::Assets::FileContent::operator* ()
+{
+	return *Data;
+}
+
+const uint8_t& BFW::Assets::FileContent::operator* () const
+{
+	return *Data;
+}
+
+uint8_t& BFW::Assets::FileContent::operator[] (const size_t _Index)
+{
+	return Data[_Index];
+}
+
+const uint8_t& BFW::Assets::FileContent::operator[] (const size_t _Index) const
+{
+	return Data[_Index];
+}
+
+BFW::Assets::FileContent& BFW::Assets::FileContent::operator= (const FileContent& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Destroy();
+
+	if (!_Other.Length)
+	{
+		return *this;
+	}
+
+	Data = new uint8_t[_Other.Length];
+
+	if (!Data)
+	{
+		throw nullptr;
+	}
+
+	Length = _Other.Length;
+
+	for (size_t _Index = 0; _Index < Length; _Index++)
+	{
+		Data[_Index] = _Other.Data[_Index];
+	}
+
+	return *this;
+}
+
+BFW::Assets::FileContent& BFW::Assets::FileContent::operator= (FileContent&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Destroy();
+
+	Data = _Other.Data;
+	Length = _Other.Length;
+
+	_Other.Data = nullptr;
+	_Other.Length = 0;
+
+	return *this;
+}
+
+
+
 BFW::Assets::BitMap::BitMap() : Data(nullptr), ChannelsCount(0), Width(0), Height(0)
 {
 
@@ -1564,7 +1915,7 @@ const bool BFW::Assets::BitMap::Create(const size_t _Width, const size_t _Height
 	return true;
 }
 
-const bool BFW::Assets::BitMap::Load(const FileSystem::FileContent& _FileContent, const bool _Flip)
+const bool BFW::Assets::BitMap::Load(const FileContent& _FileContent, const bool _Flip)
 {
 	Destroy();
 
@@ -1742,11 +2093,11 @@ void BFW::Assets::BitMap::Destroy()
 	Height = 0;
 }
 
-BFW::FileSystem::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
+BFW::Assets::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 {
 	if (!Data)
 	{
-		return FileSystem::FileContent();
+		return FileContent();
 	}
 
 	BitMapFileHeader _FileHeader;
@@ -1774,11 +2125,11 @@ BFW::FileSystem::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 	_InfoHeader.ColorsUsed = BFW_MACHINE_TO_LITTLE_ENDIAN_32(0);
 	_InfoHeader.ColorsImportant = BFW_MACHINE_TO_LITTLE_ENDIAN_32(0);
 
-	FileSystem::FileContent _FileContent;
+	FileContent _FileContent;
 
 	if (!_FileContent.Create(sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader) + Width * Height * 4 + 1))
 	{
-		return FileSystem::FileContent();
+		return FileContent();
 	}
 
 	_FileContent[_FileContent.GetLength() - 1] = '\0';
@@ -2167,7 +2518,7 @@ const bool BFW::Assets::Wave::Create(const WaveFormat& _Info, const size_t _Size
 	return true;
 }
 
-const bool BFW::Assets::Wave::Load(const FileSystem::FileContent& _FileContent)
+const bool BFW::Assets::Wave::Load(const FileContent& _FileContent)
 {
 	Destroy();
 
@@ -2346,11 +2697,11 @@ void BFW::Assets::Wave::Destroy()
 	Size = 0;
 }
 
-BFW::FileSystem::FileContent BFW::Assets::Wave::Save() const
+BFW::Assets::FileContent BFW::Assets::Wave::Save() const
 {
 	if (!Data)
 	{
-		return FileSystem::FileContent();
+		return FileContent();
 	}
 
 	WaveFileHeader _FileHeader;
@@ -2394,11 +2745,11 @@ BFW::FileSystem::FileContent BFW::Assets::Wave::Save() const
 	_DataHeader.ID[3] = 'a';
 	_DataHeader.Size = BFW_MACHINE_TO_LITTLE_ENDIAN_32((uint32_t)(Size));
 
-	FileSystem::FileContent _FileContent;
+	FileContent _FileContent;
 
 	if (!_FileContent.Create(sizeof(WaveFileHeader) + sizeof(WaveChunkHeader) + sizeof(WaveFormat) + sizeof(WaveChunkHeader) + Size + 1))
 	{
-		return FileSystem::FileContent();
+		return FileContent();
 	}
 
 	_FileContent[_FileContent.GetLength() - 1] = '\0';
@@ -2607,7 +2958,7 @@ BFW::Assets::Json::~Json()
 
 }
 
-const bool BFW::Assets::Json::Load(const FileSystem::FileContent& _FileContent)
+const bool BFW::Assets::Json::Load(const FileContent& _FileContent)
 {
 	*this = Json();
 
@@ -2720,11 +3071,11 @@ void BFW::Assets::Json::SetObject()
 	ObjectDataValue = JsonObjectData();
 }
 
-BFW::FileSystem::FileContent BFW::Assets::Json::Save() const
+BFW::Assets::FileContent BFW::Assets::Json::Save() const
 {
 	if (Type != _ObjectJsonType && Type != _ArrayJsonType)
 	{
-		return FileSystem::FileContent();
+		return FileContent();
 	}
 
 	size_t _TabLevel = 0;
@@ -2734,7 +3085,7 @@ BFW::FileSystem::FileContent BFW::Assets::Json::Save() const
 	{
 		if (!SaveJsonObject(_TabLevel, _Stream, *this))
 		{
-			return FileSystem::FileContent();
+			return FileContent();
 		}
 	}
 
@@ -2742,7 +3093,7 @@ BFW::FileSystem::FileContent BFW::Assets::Json::Save() const
 	{
 		if (!SaveJsonArray(_TabLevel, _Stream, *this))
 		{
-			return FileSystem::FileContent();
+			return FileContent();
 		}
 	}
 
@@ -2750,11 +3101,11 @@ BFW::FileSystem::FileContent BFW::Assets::Json::Save() const
 
 	BFW_STRING_TYPE_A _String = _Stream.str();
 
-	FileSystem::FileContent _FileContent;
+	FileContent _FileContent;
 
 	if (!_FileContent.Create(_String.size() + 1))
 	{
-		return FileSystem::FileContent();
+		return FileContent();
 	}
 
 	_FileContent[_FileContent.GetLength() - 1] = '\0';

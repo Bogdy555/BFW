@@ -45,10 +45,10 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 
 	if (_EnforceWorkingDirectory)
 	{
-		BFW_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__wargv[0]));
-		BFW_NON_UNICODE_CALL(FileSystem::File _Binary = FileSystem::File::Load(__argv[0]));
+		BFW_UNICODE_CALL(std::filesystem::directory_entry _Binary(__wargv[0]));
+		BFW_NON_UNICODE_CALL(std::filesystem::directory_entry _Binary(__argv[0]));
 
-		if (_Binary.GetParentPath() != FileSystem::GetWorkingDirectory())
+		if (!std::filesystem::equivalent(_Binary.path().parent_path(), std::filesystem::current_path()))
 		{
 			return MultiProcessing::_UnknownErrorReturnValue;
 		}
@@ -118,9 +118,9 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 
 	if (_EnforceWorkingDirectory)
 	{
-		FileSystem::File _Binary = FileSystem::File::Load(_ArgV[0]);
+		std::filesystem::directory_entry _Binary(_ArgV[0]);
 
-		if (_Binary.GetParentPath() != FileSystem::GetWorkingDirectory())
+		if (!std::filesystem::equivalent(_Binary.path().parent_path(), std::filesystem::current_path()))
 		{
 			return MultiProcessing::_UnknownErrorReturnValue;
 		}

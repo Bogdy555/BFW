@@ -14,6 +14,57 @@ namespace BFW
 	namespace Assets
 	{
 
+		class BFW_API FileContent
+		{
+
+		public:
+
+			FileContent();
+			FileContent(const FileContent& _Other);
+			FileContent(FileContent&& _Other) noexcept;
+			~FileContent();
+
+			const bool Create(const size_t _Length);
+
+			const bool Load(std::ifstream& _File);
+			const bool Load(std::fstream& _File);
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+			const bool Load(const size_t _ResourceType, const size_t _ResourceId);
+
+#endif
+
+			void Destroy();
+
+			const bool Save(std::ofstream& _File) const;
+			const bool Save(std::fstream& _File) const;
+
+			const uint64_t Hash() const;
+
+			uint8_t* GetData();
+			const uint8_t* GetData() const;
+			const size_t GetLength() const;
+
+			explicit operator uint8_t* ();
+			explicit operator const uint8_t* () const;
+
+			uint8_t& operator* ();
+			const uint8_t& operator* () const;
+
+			uint8_t& operator[] (const size_t _Index);
+			const uint8_t& operator[] (const size_t _Index) const;
+
+			FileContent& operator= (const FileContent& _Other);
+			FileContent& operator= (FileContent&& _Other) noexcept;
+
+		private:
+
+			uint8_t* Data;
+			size_t Length;
+
+		};
+
 		class BFW_API BitMap
 		{
 
@@ -25,10 +76,10 @@ namespace BFW
 			~BitMap();
 
 			const bool Create(const size_t _Width, const size_t _Height, const size_t _ChannelsCount = 4);
-			const bool Load(const FileSystem::FileContent& _FileContent, const bool _Flip = true);
+			const bool Load(const FileContent& _FileContent, const bool _Flip = true);
 			void Destroy();
 
-			FileSystem::FileContent Save(const bool _Flip = true) const;
+			FileContent Save(const bool _Flip = true) const;
 
 			uint8_t* GetData();
 			const uint8_t* GetData() const;
@@ -91,10 +142,10 @@ namespace BFW
 			~Wave();
 
 			const bool Create(const WaveFormat& _Info, const size_t _Size);
-			const bool Load(const FileSystem::FileContent& _FileContent);
+			const bool Load(const FileContent& _FileContent);
 			void Destroy();
 
-			FileSystem::FileContent Save() const;
+			FileContent Save() const;
 
 			const WaveFormat GetInfo() const;
 			uint8_t* GetData8();
@@ -158,7 +209,7 @@ namespace BFW
 			Json(Json&& _Other) noexcept;
 			~Json();
 
-			const bool Load(const FileSystem::FileContent& _FileContent);
+			const bool Load(const FileContent& _FileContent);
 
 			void SetNull();
 			void SetBool(const bool _BoolValue);
@@ -167,7 +218,7 @@ namespace BFW
 			void SetArray();
 			void SetObject();
 
-			FileSystem::FileContent Save() const;
+			FileContent Save() const;
 
 			const uint8_t GetType() const;
 			const bool GetBool() const;

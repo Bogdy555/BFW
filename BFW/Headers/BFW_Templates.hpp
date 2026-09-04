@@ -57,16 +57,6 @@ BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
 BFW_EXTERN template class BFW_API std::chrono::duration<std::chrono::system_clock::rep, std::chrono::system_clock::period>;
 BFW_EXTERN template class BFW_API std::chrono::time_point<std::chrono::system_clock>;
 
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::FileSystem::File>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::FileSystem::Directory>;
-
-BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::FileSystem::FileContent>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::FileSystem::FileContent>>;
-BFW_EXTERN template class BFW_API BFW::Trie<BFW::FileSystem::FileContent>;
-BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::Trie<BFW::FileSystem::FileContent>>;
-BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>>;
-BFW_EXTERN template class BFW_API BFW::Trie<BFW::Trie<BFW::FileSystem::FileContent>>;
-
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::ClickEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::WheelEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::GUI::PopUp>*>;

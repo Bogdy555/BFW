@@ -112,9 +112,6 @@
     <ClInclude Include="Headers\BFW_String.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\BFW_FileSystem.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Resources\Manifests\BFW_MainManifest.manifest" />
@@ -171,9 +168,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_String.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\BFW_FileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_Math_Random.cpp">
