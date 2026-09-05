@@ -74,7 +74,7 @@ namespace BFW
 
 			static Window* GetWindowPtr(const HWND _Handle);
 			static const bool IsDefaultMessage(const UINT _Msg);
-			static LRESULT HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wParam, LPARAM _lParam);
+			static LRESULT CALLBACK HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wParam, LPARAM _lParam);
 
 		private:
 

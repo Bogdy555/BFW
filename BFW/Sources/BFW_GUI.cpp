@@ -890,7 +890,7 @@ const bool BFW::GUI::Window::IsDefaultMessage(const UINT _Msg)
 	return false;
 }
 
-LRESULT BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wParam, LPARAM _lParam)
+LRESULT CALLBACK BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wParam, LPARAM _lParam)
 {
 	Window* _Wnd = GetWindowPtr(_hWnd);
 
