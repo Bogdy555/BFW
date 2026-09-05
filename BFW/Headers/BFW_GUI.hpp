@@ -42,6 +42,8 @@ namespace BFW
 			void* GetUserData();
 			const void* GetUserData() const;
 			const bool IsFullScreen() const;
+			const RECT GetWindowedRect() const;
+			const WINDOWPLACEMENT GetWindowedPlacement() const;
 			const HCURSOR GetCursorIcon() const;
 			const bool ShouldClose() const;
 			const bool HasFocus() const;

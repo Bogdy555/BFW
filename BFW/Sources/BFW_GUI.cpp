@@ -352,6 +352,16 @@ const bool BFW::GUI::Window::IsFullScreen() const
 	return FullScreen;
 }
 
+const RECT BFW::GUI::Window::GetWindowedRect() const
+{
+	return WndRect;
+}
+
+const WINDOWPLACEMENT BFW::GUI::Window::GetWindowedPlacement() const
+{
+	return WndPlace;
+}
+
 const HCURSOR BFW::GUI::Window::GetCursorIcon() const
 {
 	if (!Handle)
