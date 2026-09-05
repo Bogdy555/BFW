@@ -380,7 +380,7 @@
 #ifdef BFW_DEBUG
 
 #define BFW_LOG_TO_FILE(X) BFW::Log::LoggingFile << X
-#define BFW_LOG_LINE_TO_FILE(X) BFW::Log::LoggingFile << X << L'\n'
+#define BFW_LOG_LINE_TO_FILE(X) BFW::Log::LoggingFile << X << '\n'
 
 #endif
 
