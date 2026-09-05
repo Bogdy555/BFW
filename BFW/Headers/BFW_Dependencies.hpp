@@ -231,7 +231,7 @@ namespace BFW
 	namespace GUI
 	{
 
-#if defined BFW_WINDOWS_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 		class BFW_API Window;
 

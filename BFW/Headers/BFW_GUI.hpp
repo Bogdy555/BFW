@@ -14,7 +14,7 @@ namespace BFW
 	namespace GUI
 	{
 
-#if defined BFW_WINDOWS_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 		class BFW_API Window
 		{
@@ -26,25 +26,108 @@ namespace BFW
 			Window(Window&& _Other) noexcept = delete;
 			~Window();
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 			const bool Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData);
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			void Destroy();
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			const bool GoFullScreen(const HWND _InsertAfter = HWND_TOP, const uint32_t _Flags = SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
 			const bool GoWindowed(const uint32_t _Style = WS_OVERLAPPEDWINDOW, const HWND _InsertAfter = HWND_TOP, const uint32_t _Flags = SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+			//???
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			void SetCursorIcon(const HCURSOR _Cursor);
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			void UpdateInputState();
 			void CleanInputState();
 			void CleanEvents();
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			const bool Show(const int32_t _ShowCmd);
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			const bool UpdateContent();
 
 			const bool CheckOn() const;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			const HWND GetHandle() const;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			void* GetUserData();
 			const void* GetUserData() const;
 			const bool IsFullScreen() const;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			const RECT GetWindowedRect() const;
 			const WINDOWPLACEMENT GetWindowedPlacement() const;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+			//???
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			const HCURSOR GetCursorIcon() const;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			const bool ShouldClose() const;
 			const bool HasFocus() const;
 			const Input::Key* GetKeys() const;
@@ -67,29 +150,96 @@ namespace BFW
 			const bool GetWindowSize(size_t& _Width, size_t& _Height) const;
 			const uint64_t GetRefreshRate() const;
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 			operator const HWND () const;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
 
 			Window& operator= (const Window& _Other) = delete;
 			Window& operator= (Window&& _Other) noexcept = delete;
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 			static Window* GetWindowPtr(const HWND _Handle);
 			static const bool IsDefaultMessage(const UINT _Msg);
 			static LRESULT CALLBACK HandleDefaultMessage(HWND _hWnd, UINT _Msg, WPARAM _wParam, LPARAM _lParam);
 
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+			//???
+			//???
+
+#endif
+
 		private:
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 			static void WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData);
 
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			HWND Handle;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			std::thread* WndThread;
 			void* UserData;
 
 			bool FullScreen;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			RECT WndRect;
 			WINDOWPLACEMENT WndPlace;
 
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+			//???
+
+#endif
+
 			std::mutex* WindowMutex;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 			HCURSOR Cursor;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			//???
+
+#endif
+
 			bool Close;
 			bool Focus;
 			bool RawKeys[256];
