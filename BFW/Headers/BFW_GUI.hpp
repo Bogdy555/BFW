@@ -146,6 +146,7 @@ namespace BFW
 			const Vector<Input::WheelEvent> GetWheelEvents() const;
 			const Vector<Input::WheelEvent> GetHorizontalWheelEvents() const;
 			const Vector<BFW_CHAR_TYPE> GetCharEvents() const;
+
 			const bool GetClientSize(size_t& _Width, size_t& _Height) const;
 			const bool GetWindowSize(size_t& _Width, size_t& _Height) const;
 			const uint64_t GetRefreshRate() const;

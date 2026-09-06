@@ -2,16 +2,22 @@
 
 
 
-#if defined BFW_WINDOWS_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 static BFW::GUI::Window* LastWnd = nullptr;
 static std::mutex LastWndMutex;
 
 #endif
 
+#endif
 
 
-#if defined BFW_WINDOWS_PLATFORM
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 BFW::GUI::Window::Window() : Handle(NULL), WndThread(nullptr), UserData(nullptr), FullScreen(false), WndRect({ 0 }), WndPlace({ 0 }), WindowMutex(nullptr), Cursor(LoadCursor(NULL, IDC_ARROW)), Close(false), Focus(false), RawKeys(), Keys(), Tracking(false), HasMouse(false), MouseX(0), MouseY(0), KeyEvents(), LClicks(), RClicks(), MClicks(), X1Clicks(), X2Clicks(), LDblClicks(), RDblClicks(), MDblClicks(), X1DblClicks(), X2DblClicks(), WheelEvents(), HWheelEvents(), CharEvents()
 {
@@ -21,10 +27,14 @@ BFW::GUI::Window::Window() : Handle(NULL), WndThread(nullptr), UserData(nullptr)
 	}
 }
 
+#endif
+
 BFW::GUI::Window::~Window()
 {
 	Destroy();
 }
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData)
 {
@@ -72,9 +82,13 @@ const bool BFW::GUI::Window::Create(const uint32_t _ExStyle, const BFW_CHAR_TYPE
 	return true;
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 void BFW::GUI::Window::Destroy()
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return;
 	}
@@ -119,9 +133,13 @@ void BFW::GUI::Window::Destroy()
 	CharEvents.Clear();
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 const bool BFW::GUI::Window::GoFullScreen(const HWND _InsertAfter, const uint32_t _Flags)
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -185,7 +203,7 @@ const bool BFW::GUI::Window::GoFullScreen(const HWND _InsertAfter, const uint32_
 
 const bool BFW::GUI::Window::GoWindowed(const uint32_t _Style, const HWND _InsertAfter, const uint32_t _Flags)
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -230,9 +248,13 @@ const bool BFW::GUI::Window::GoWindowed(const uint32_t _Style, const HWND _Inser
 	return true;
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 void BFW::GUI::Window::SetCursorIcon(const HCURSOR _Cursor)
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return;
 	}
@@ -244,9 +266,11 @@ void BFW::GUI::Window::SetCursorIcon(const HCURSOR _Cursor)
 	PostMessage(Handle, WM_SETCURSOR, (WPARAM)(Handle), MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
 }
 
+#endif
+
 void BFW::GUI::Window::UpdateInputState()
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return;
 	}
@@ -276,7 +300,7 @@ void BFW::GUI::Window::CleanInputState()
 
 void BFW::GUI::Window::CleanEvents()
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return;
 	}
@@ -302,9 +326,11 @@ void BFW::GUI::Window::CleanEvents()
 	WindowMutex->unlock();
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 const bool BFW::GUI::Window::Show(const int32_t _ShowCmd)
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -312,9 +338,13 @@ const bool BFW::GUI::Window::Show(const int32_t _ShowCmd)
 	return ShowWindowAsync(Handle, _ShowCmd);
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 const bool BFW::GUI::Window::UpdateContent()
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -327,15 +357,25 @@ const bool BFW::GUI::Window::UpdateContent()
 	return UpdateWindow(Handle);
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 const bool BFW::GUI::Window::CheckOn() const
 {
 	return Handle != NULL;
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 const HWND BFW::GUI::Window::GetHandle() const
 {
 	return Handle;
 }
+
+#endif
 
 void* BFW::GUI::Window::GetUserData()
 {
@@ -352,6 +392,8 @@ const bool BFW::GUI::Window::IsFullScreen() const
 	return FullScreen;
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 const RECT BFW::GUI::Window::GetWindowedRect() const
 {
 	return WndRect;
@@ -362,9 +404,13 @@ const WINDOWPLACEMENT BFW::GUI::Window::GetWindowedPlacement() const
 	return WndPlace;
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 const HCURSOR BFW::GUI::Window::GetCursorIcon() const
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return NULL;
 	}
@@ -376,9 +422,11 @@ const HCURSOR BFW::GUI::Window::GetCursorIcon() const
 	return _Cursor;
 }
 
+#endif
+
 const bool BFW::GUI::Window::ShouldClose() const
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -392,7 +440,7 @@ const bool BFW::GUI::Window::ShouldClose() const
 
 const bool BFW::GUI::Window::HasFocus() const
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -414,7 +462,7 @@ const bool BFW::GUI::Window::GetMousePosition(intptr_t& _MouseX, intptr_t& _Mous
 	_MouseX = 0;
 	_MouseY = 0;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -432,7 +480,7 @@ const BFW::Vector<uint8_t> BFW::GUI::Window::GetKeyEvents() const
 {
 	Vector<uint8_t> _KeyEvents;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _KeyEvents;
 	}
@@ -448,7 +496,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetLeftClicks() cons
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -464,7 +512,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetRightClicks() con
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -480,7 +528,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetMiddleClicks() co
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -496,7 +544,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetX1Clicks() const
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -512,7 +560,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetX2Clicks() const
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -528,7 +576,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetLeftDoubleClicks(
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -544,7 +592,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetRightDoubleClicks
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -560,7 +608,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetMiddleDoubleClick
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -576,7 +624,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetX1DoubleClicks() 
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -592,7 +640,7 @@ const BFW::Vector<BFW::Input::ClickEvent> BFW::GUI::Window::GetX2DoubleClicks() 
 {
 	Vector<Input::ClickEvent> _Clicks;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _Clicks;
 	}
@@ -608,7 +656,7 @@ const BFW::Vector<BFW::Input::WheelEvent> BFW::GUI::Window::GetWheelEvents() con
 {
 	Vector<Input::WheelEvent> _WheelEvents;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _WheelEvents;
 	}
@@ -624,7 +672,7 @@ const BFW::Vector<BFW::Input::WheelEvent> BFW::GUI::Window::GetHorizontalWheelEv
 {
 	Vector<Input::WheelEvent> _HWheelEvents;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _HWheelEvents;
 	}
@@ -640,7 +688,7 @@ const BFW::Vector<BFW_CHAR_TYPE> BFW::GUI::Window::GetCharEvents() const
 {
 	Vector<BFW_CHAR_TYPE> _CharEvents;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return _CharEvents;
 	}
@@ -652,12 +700,14 @@ const BFW::Vector<BFW_CHAR_TYPE> BFW::GUI::Window::GetCharEvents() const
 	return _CharEvents;
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 const bool BFW::GUI::Window::GetClientSize(size_t& _Width, size_t& _Height) const
 {
 	_Width = 0;
 	_Height = 0;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -680,7 +730,7 @@ const bool BFW::GUI::Window::GetWindowSize(size_t& _Width, size_t& _Height) cons
 	_Width = 0;
 	_Height = 0;
 
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return false;
 	}
@@ -700,7 +750,7 @@ const bool BFW::GUI::Window::GetWindowSize(size_t& _Width, size_t& _Height) cons
 
 const uint64_t BFW::GUI::Window::GetRefreshRate() const
 {
-	if (!Handle)
+	if (!CheckOn())
 	{
 		return 0;
 	}
@@ -733,10 +783,18 @@ const uint64_t BFW::GUI::Window::GetRefreshRate() const
 	return (uint64_t)(_DevMode.dmDisplayFrequency);
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 BFW::GUI::Window::operator const HWND () const
 {
 	return Handle;
 }
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
 
 BFW::GUI::Window* BFW::GUI::Window::GetWindowPtr(const HWND _Handle)
 {
@@ -1242,6 +1300,10 @@ LRESULT CALLBACK BFW::GUI::Window::HandleDefaultMessage(HWND _hWnd, UINT _Msg, W
 	return 0;
 }
 
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
 void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, const uint32_t _ExStyle, const BFW_CHAR_TYPE* _ClassName, const BFW_CHAR_TYPE* _WindowName, const uint32_t _Style, const int32_t _X, const int32_t _Y, const int32_t _Width, const int32_t _Height, const HWND _ParentHandle, const HMENU _MenuHandle, const HINSTANCE _InstanceHandle, void* _Param, const HACCEL _AccelHandle, const ThreadInitFnc _ThreadInit, const ThreadCleanUpFnc _ThreadCleanUp, const WndInitFnc _WndInit, const WndCleanUpFnc _WndCleanUp, void* _UserData)
 {
 	if (_ThreadInit)
@@ -1393,6 +1455,8 @@ void BFW::GUI::Window::WndThreadFnc(bool& _Done, bool& _Fail, Window* _Wnd, cons
 		DestroyAcceleratorTable(_AccelHandle);
 	}
 }
+
+#endif
 
 #endif
 
