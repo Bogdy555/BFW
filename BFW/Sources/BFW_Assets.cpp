@@ -4332,7 +4332,7 @@ BFW::SharedPointer<BFW::Assets::Wave> BFW::Assets::Manager::GetResourceWave(cons
 
 	FileContent _FileContent;
 
-	if (!_FileContent.Load(BFW_BMP_RESOURCE, _Id))
+	if (!_FileContent.Load(BFW_WAV_RESOURCE, _Id))
 	{
 		throw nullptr;
 	}
@@ -4380,7 +4380,7 @@ const BFW::SharedPointer<BFW::Assets::Wave> BFW::Assets::Manager::GetResourceWav
 
 	FileContent _FileContent;
 
-	if (!_FileContent.Load(BFW_BMP_RESOURCE, _Id))
+	if (!_FileContent.Load(BFW_WAV_RESOURCE, _Id))
 	{
 		throw nullptr;
 	}
@@ -4428,7 +4428,7 @@ BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetResourceJson(cons
 
 	FileContent _FileContent;
 
-	if (!_FileContent.Load(BFW_BMP_RESOURCE, _Id))
+	if (!_FileContent.Load(BFW_JSON_RESOURCE, _Id))
 	{
 		throw nullptr;
 	}
@@ -4476,7 +4476,7 @@ const BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetResourceJso
 
 	FileContent _FileContent;
 
-	if (!_FileContent.Load(BFW_BMP_RESOURCE, _Id))
+	if (!_FileContent.Load(BFW_JSON_RESOURCE, _Id))
 	{
 		throw nullptr;
 	}
