@@ -285,6 +285,8 @@ namespace BFW
 
 		class BFW_API Json;
 
+		class BFW_API Manager;
+
 	}
 
 }

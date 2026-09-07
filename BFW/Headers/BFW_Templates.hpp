@@ -51,6 +51,9 @@ BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE_A>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW_CHAR_TYPE_W>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW_STRING_TYPE_A>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW_STRING_TYPE_W>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<uint64_t>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<uint64_t>>;
+BFW_EXTERN template class BFW_API BFW::Trie<uint64_t>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
 
@@ -67,6 +70,27 @@ BFW_EXTERN template class BFW_API BFW::Vector<BFW::GUI::PopUp>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Vector<BFW::GUI::PopUp>>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::Json>;
+BFW_EXTERN template class BFW_API BFW::SharedPointer<BFW::Assets::BitMap>;
+BFW_EXTERN template class BFW_API BFW::SharedPointer<BFW::Assets::Wave>;
+BFW_EXTERN template class BFW_API BFW::SharedPointer<BFW::Assets::Json>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::SharedPointer<BFW::Assets::BitMap>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::SharedPointer<BFW::Assets::BitMap>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::SharedPointer<BFW::Assets::BitMap>>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::SharedPointer<BFW::Assets::Wave>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::SharedPointer<BFW::Assets::Wave>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::SharedPointer<BFW::Assets::Wave>>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::SharedPointer<BFW::Assets::Json>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::SharedPointer<BFW::Assets::Json>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::SharedPointer<BFW::Assets::Json>>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::WeakPointer<BFW::Assets::BitMap>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::WeakPointer<BFW::Assets::BitMap>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::WeakPointer<BFW::Assets::BitMap>>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::WeakPointer<BFW::Assets::Wave>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::WeakPointer<BFW::Assets::Wave>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::WeakPointer<BFW::Assets::Wave>>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::WeakPointer<BFW::Assets::Json>>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::WeakPointer<BFW::Assets::Json>>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW::WeakPointer<BFW::Assets::Json>>;
 
 #endif
 
