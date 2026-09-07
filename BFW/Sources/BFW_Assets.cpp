@@ -3943,6 +3943,16 @@ void BFW::Assets::Manager::Flush()
 		);
 	}
 
+	for (size_t _Index = 0; _Index < _Threads.GetSize(); _Index++)
+	{
+		_Threads[_Index].join();
+	}
+
+	if (_Fail)
+	{
+		throw nullptr;
+	}
+
 #endif
 
 	QueuedBitMaps.Clear();
@@ -3956,16 +3966,6 @@ void BFW::Assets::Manager::Flush()
 	QueuedResourceJsons.Clear();
 
 #endif
-
-	for (size_t _Index = 0; _Index < _Threads.GetSize(); _Index++)
-	{
-		_Threads[_Index].join();
-	}
-
-	if (_Fail)
-	{
-		throw nullptr;
-	}
 }
 
 void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
@@ -4194,7 +4194,7 @@ void BFW::Assets::Manager::Update()
 
 					_OldLastWrite = _LastWrite;
 				},
-				CachedBitMapNames[_Index],
+				CachedBitMapNames[_Index].c_str(),
 				_CachedShared,
 				std::ref(_OldLastWrite),
 				_LastWrite
@@ -4263,7 +4263,7 @@ void BFW::Assets::Manager::Update()
 
 					_OldLastWrite = _LastWrite;
 				},
-				CachedWaveNames[_Index],
+				CachedWaveNames[_Index].c_str(),
 				_CachedShared,
 				std::ref(_OldLastWrite),
 				_LastWrite
@@ -4332,7 +4332,7 @@ void BFW::Assets::Manager::Update()
 
 					_OldLastWrite = _LastWrite;
 				},
-				CachedJsonNames[_Index],
+				CachedJsonNames[_Index].c_str(),
 				_CachedShared,
 				std::ref(_OldLastWrite),
 				_LastWrite
