@@ -3441,66 +3441,177 @@ void BFW::Assets::Manager::Flush()
 	}
 
 #endif
+
+	QueuedBitMaps.Clear();
+	QueuedWaves.Clear();
+	QueuedJsons.Clear();
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	QueuedResourceBitMaps.Clear();
+	QueuedResourceWaves.Clear();
+	QueuedResourceJsons.Clear();
+
+#endif
 }
 
 void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
 {
-	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/"))
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/") || (BitMap*)(_Asset))
 	{
 		throw nullptr;
 	}
 
+	LoadedBitMaps.Push(_Name, _Asset);
+	CachedBitMaps.Emplace(_Name, _Asset);
 
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedBitMapNames.GetSize(); _Index++)
+	{
+		if (CachedBitMapNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedBitMapNames.PushBack(_Name);
+	}
 }
 
 void BFW::Assets::Manager::AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset)
 {
-	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/"))
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/") || (Wave*)(_Asset))
 	{
 		throw nullptr;
 	}
 
+	LoadedWaves.Push(_Name, _Asset);
+	CachedWaves.Emplace(_Name, _Asset);
 
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedWaveNames.GetSize(); _Index++)
+	{
+		if (CachedWaveNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedWaveNames.PushBack(_Name);
+	}
 }
 
 void BFW::Assets::Manager::AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset)
 {
-	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/"))
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/") || (Json*)(_Asset))
 	{
 		throw nullptr;
 	}
 
+	LoadedJsons.Push(_Name, _Asset);
+	CachedJsons.Emplace(_Name, _Asset);
 
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedJsonNames.GetSize(); _Index++)
+	{
+		if (CachedJsonNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedJsonNames.PushBack(_Name);
+	}
 }
 
 void BFW::Assets::Manager::AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
 {
-	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/"))
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/") || (BitMap*)(_Asset))
 	{
 		throw nullptr;
 	}
 
+	CachedBitMaps.Emplace(_Name, _Asset);
 
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedBitMapNames.GetSize(); _Index++)
+	{
+		if (CachedBitMapNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedBitMapNames.PushBack(_Name);
+	}
 }
 
 void BFW::Assets::Manager::AddDynamicWaveRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset)
 {
-	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/"))
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/") || (Wave*)(_Asset))
 	{
 		throw nullptr;
 	}
 
+	CachedWaves.Emplace(_Name, _Asset);
 
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedWaveNames.GetSize(); _Index++)
+	{
+		if (CachedWaveNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedWaveNames.PushBack(_Name);
+	}
 }
 
 void BFW::Assets::Manager::AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset)
 {
-	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/"))
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) != BFW_STRING_PREFIX("./Dynamic/") || (Json*)(_Asset))
 	{
 		throw nullptr;
 	}
 
+	CachedJsons.Emplace(_Name, _Asset);
 
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedJsonNames.GetSize(); _Index++)
+	{
+		if (CachedJsonNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedJsonNames.PushBack(_Name);
+	}
 }
 
 void BFW::Assets::Manager::Update()
@@ -3511,6 +3622,11 @@ void BFW::Assets::Manager::Update()
 
 	for (size_t _Index = 0; _Index < CachedBitMapNames.GetSize(); _Index++)
 	{
+		if (CachedBitMapNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) == BFW_STRING_PREFIX("./Dynamic/"))
+		{
+			continue;
+		}
+
 		uint64_t _LastWrite = 0;
 
 		try
@@ -3575,6 +3691,11 @@ void BFW::Assets::Manager::Update()
 
 	for (size_t _Index = 0; _Index < CachedWaveNames.GetSize(); _Index++)
 	{
+		if (CachedWaveNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) == BFW_STRING_PREFIX("./Dynamic/"))
+		{
+			continue;
+		}
+
 		uint64_t _LastWrite = 0;
 
 		try
@@ -3639,6 +3760,11 @@ void BFW::Assets::Manager::Update()
 
 	for (size_t _Index = 0; _Index < CachedJsonNames.GetSize(); _Index++)
 	{
+		if (CachedJsonNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("./Dynamic/")).length()) == BFW_STRING_PREFIX("./Dynamic/"))
+		{
+			continue;
+		}
+
 		uint64_t _LastWrite = 0;
 
 		try
