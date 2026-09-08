@@ -2376,6 +2376,207 @@ BFW::Assets::BitMap& BFW::Assets::BitMap::operator= (BitMap&& _Other) noexcept
 
 
 
+BFW::Assets::Hdr::Hdr() : Data(nullptr), ChannelsCount(0), Width(0), Height(0)
+{
+
+}
+
+BFW::Assets::Hdr::Hdr(const Hdr& _Other) : Data(nullptr), ChannelsCount(0), Width(0), Height(0)
+{
+	if (!_Other.Data)
+	{
+		return;
+	}
+
+	Data = new float[_Other.Width * _Other.Height * _Other.ChannelsCount];
+
+	if (!Data)
+	{
+		throw nullptr;
+	}
+
+	ChannelsCount = _Other.ChannelsCount;
+	Width = _Other.Width;
+	Height = _Other.Height;
+
+	for (size_t _Index = 0; _Index < Width * Height * ChannelsCount; _Index++)
+	{
+		Data[_Index] = _Other.Data[_Index];
+	}
+}
+
+BFW::Assets::Hdr::Hdr(Hdr&& _Other) noexcept : Data(_Other.Data), ChannelsCount(_Other.ChannelsCount), Width(_Other.Width), Height(_Other.Height)
+{
+	_Other.Data = nullptr;
+	_Other.ChannelsCount = 0;
+	_Other.Width = 0;
+	_Other.Height = 0;
+}
+
+BFW::Assets::Hdr::~Hdr()
+{
+	delete[] Data;
+}
+
+const bool BFW::Assets::Hdr::Create(const size_t _Width, const size_t _Height, const size_t _ChannelsCount)
+{
+	Destroy();
+
+	if (!_Width || !_Height || !_ChannelsCount || _ChannelsCount >= 4)
+	{
+		return false;
+	}
+
+	Data = new float[_Width * _Height * _ChannelsCount];
+
+	if (!Data)
+	{
+		return false;
+	}
+
+	ChannelsCount = _ChannelsCount;
+	Width = _Width;
+	Height = _Height;
+
+	for (size_t _Index = 0; _Index < Width * Height * ChannelsCount; _Index++)
+	{
+		Data[_Index] = 0;
+	}
+
+	return true;
+}
+
+const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _Flip)
+{
+	return false;
+}
+
+void BFW::Assets::Hdr::Destroy()
+{
+	delete[] Data;
+	Data = nullptr;
+	ChannelsCount = 0;
+	Width = 0;
+	Height = 0;
+}
+
+BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
+{
+	return FileContent();
+}
+
+float* BFW::Assets::Hdr::GetData()
+{
+	return Data;
+}
+
+const float* BFW::Assets::Hdr::GetData() const
+{
+	return Data;
+}
+
+const size_t BFW::Assets::Hdr::GetChannelsCount() const
+{
+	return ChannelsCount;
+}
+
+const size_t BFW::Assets::Hdr::GetWidth() const
+{
+	return Width;
+}
+
+const size_t BFW::Assets::Hdr::GetHeight() const
+{
+	return Height;
+}
+
+BFW::Assets::Hdr::operator float* ()
+{
+	return Data;
+}
+
+BFW::Assets::Hdr::operator const float* () const
+{
+	return Data;
+}
+
+float& BFW::Assets::Hdr::operator* ()
+{
+	return *Data;
+}
+
+const float& BFW::Assets::Hdr::operator* () const
+{
+	return *Data;
+}
+
+float* BFW::Assets::Hdr::operator[] (const size_t _PositionY)
+{
+	return Data + _PositionY * Width * ChannelsCount;
+}
+
+const float* BFW::Assets::Hdr::operator* (const size_t _PositionY) const
+{
+	return Data + _PositionY * Width * ChannelsCount;
+}
+
+BFW::Assets::Hdr& BFW::Assets::Hdr::operator= (const Hdr& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Destroy();
+
+	if (!_Other.Data)
+	{
+		return *this;
+	}
+
+	Data = new float[_Other.Width * _Other.Height * _Other.ChannelsCount];
+
+	if (!Data)
+	{
+		throw nullptr;
+	}
+
+	ChannelsCount = _Other.ChannelsCount;
+	Width = _Other.Width;
+	Height = _Other.Height;
+
+	for (size_t _Index = 0; _Index < Width * Height * ChannelsCount; _Index++)
+	{
+		Data[_Index] = _Other.Data[_Index];
+	}
+
+	return *this;
+}
+
+BFW::Assets::Hdr& BFW::Assets::Hdr::operator= (Hdr&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Destroy();
+
+	Data = _Other.Data;
+	ChannelsCount = _Other.ChannelsCount;
+	Width = _Other.Width;
+	Height = _Other.Height;
+
+	_Other.Data = nullptr;
+	_Other.ChannelsCount = 0;
+	_Other.Width = 0;
+	_Other.Height = 0;
+
+	return *this;
+}
+
+
+
 BFW::Assets::WaveFormat::WaveFormat() : FormatTag(0), Channels(0), SamplesPerSec(0), AvgBytesPerSec(0), BlockAlign(0), BitsPerSample(0)
 {
 
@@ -2910,6 +3111,11 @@ BFW::Assets::JsonObjectData::JsonObjectData() : Object(), Tags()
 
 }
 
+BFW::Assets::JsonObjectData::JsonObjectData(const JsonObjectData& _Other) : Object(_Other.Object), Tags(_Other.Tags)
+{
+
+}
+
 BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : Object((Vector<Json>&&)(_Other.Object)), Tags((Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags))
 {
 
@@ -2918,6 +3124,45 @@ BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : 
 BFW::Assets::JsonObjectData::~JsonObjectData()
 {
 
+}
+
+BFW::Assets::Json& BFW::Assets::JsonObjectData::operator[] (const BFW_CHAR_TYPE_A* _Tag)
+{
+	for (size_t _Index = 0; _Index < Tags.GetSize(); _Index++)
+	{
+		if (Tags[_Index] == _Tag)
+		{
+			return Object[_Index];
+		}
+	}
+
+	throw nullptr;
+}
+
+const BFW::Assets::Json& BFW::Assets::JsonObjectData::operator[] (const BFW_CHAR_TYPE_A* _Tag) const
+{
+	for (size_t _Index = 0; _Index < Tags.GetSize(); _Index++)
+	{
+		if (Tags[_Index] == _Tag)
+		{
+			return Object[_Index];
+		}
+	}
+
+	throw nullptr;
+}
+
+BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (const JsonObjectData& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Object = _Other.Object;
+	Tags = _Other.Tags;
+
+	return *this;
 }
 
 BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectData&& _Other) noexcept
@@ -3236,12 +3481,12 @@ BFW::Assets::Json& BFW::Assets::Json::operator= (Json&& _Other) noexcept
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedWaves(), QueuedJsons(), QueuedResourceBitMaps(), QueuedResourceWaves(), QueuedResourceJsons(), LoadedBitMaps(), LoadedWaves(), LoadedJsons(), LoadedResourceBitMaps(), LoadedResourceWaves(), LoadedResourceJsons(), CachedBitMapNames(), CachedWaveNames(), CachedJsonNames(), CachedBitMaps(), CachedWaves(), CachedJsons(), LastWriteBitMaps(), LastWriteWaves(), LastWriteJsons(), CachedResourceBitMapNames(), CachedResourceWaveNames(), CachedResourceJsonNames(), CachedResourceBitMaps(), CachedResourceWaves(), CachedResourceJsons()
+BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedHdrs(), QueuedWaves(), QueuedJsons(), QueuedResourceBitMaps(), QueuedResourceHdrs(), QueuedResourceWaves(), QueuedResourceJsons(), LoadedBitMaps(), LoadedHdrs(), LoadedWaves(), LoadedJsons(), LoadedResourceBitMaps(), LoadedResourceHdrs(), LoadedResourceWaves(), LoadedResourceJsons(), CachedBitMapNames(), CachedHdrNames(), CachedWaveNames(), CachedJsonNames(), CachedBitMaps(), CachedHdrs(), CachedWaves(), CachedJsons(), LastWriteBitMaps(), LastWriteHdrs(), LastWriteWaves(), LastWriteJsons(), CachedResourceBitMapNames(), CachedResourceHdrNames(), CachedResourceWaveNames(), CachedResourceJsonNames(), CachedResourceBitMaps(), CachedResourceHdrs(), CachedResourceWaves(), CachedResourceJsons()
 {
 
 }
 
-BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), QueuedResourceBitMaps((Vector<size_t>&&)(_Other.QueuedResourceBitMaps)), QueuedResourceWaves((Vector<size_t>&&)(_Other.QueuedResourceWaves)), QueuedResourceJsons((Vector<size_t>&&)(_Other.QueuedResourceJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), LoadedResourceBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps)), LoadedResourceWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves)), LoadedResourceJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)), CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)), CachedResourceWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames)), CachedResourceJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames)), CachedResourceBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps)), CachedResourceWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves)), CachedResourceJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons))
+BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), QueuedResourceBitMaps((Vector<size_t>&&)(_Other.QueuedResourceBitMaps)), QueuedResourceHdrs((Vector<size_t>&&)(_Other.QueuedResourceHdrs)), QueuedResourceWaves((Vector<size_t>&&)(_Other.QueuedResourceWaves)), QueuedResourceJsons((Vector<size_t>&&)(_Other.QueuedResourceJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), LoadedResourceBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps)), LoadedResourceHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs)), LoadedResourceWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves)), LoadedResourceJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)), CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)), CachedResourceHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames)), CachedResourceWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames)), CachedResourceJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames)), CachedResourceBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps)), CachedResourceHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs)), CachedResourceWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves)), CachedResourceJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons))
 {
 
 }
@@ -3250,12 +3495,12 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector
 
 #if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
 
-BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedWaves(), QueuedJsons(), LoadedBitMaps(), LoadedWaves(), LoadedJsons(), CachedBitMapNames(), CachedWaveNames(), CachedJsonNames(), CachedBitMaps(), CachedWaves(), CachedJsons(), LastWriteBitMaps(), LastWriteWaves(), LastWriteJsons()
+BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedHdrs(), QueuedWaves(), QueuedJsons(), LoadedBitMaps(), LoadedHdrs(), LoadedWaves(), LoadedJsons(), CachedBitMapNames(), CachedHdrNames(), CachedWaveNames(), CachedJsonNames(), CachedBitMaps(), CachedHdrs(), CachedWaves(), CachedJsons(), LastWriteBitMaps(), LastWriteHdrs(), LastWriteWaves(), LastWriteJsons()
 {
 
 }
 
-BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons))
+BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons))
 {
 
 }
@@ -3290,6 +3535,31 @@ void BFW::Assets::Manager::QueueBitMap(const BFW_CHAR_TYPE* _Name)
 	}
 
 	QueuedBitMaps.EmplaceBack(_Name);
+}
+
+void BFW::Assets::Manager::QueueHdr(const BFW_CHAR_TYPE* _Name)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < QueuedHdrs.GetSize(); _Index++)
+	{
+		if (QueuedHdrs[_Index] == _Name)
+		{
+			_Found = true;
+		}
+	}
+
+	if (_Found)
+	{
+		return;
+	}
+
+	QueuedHdrs.EmplaceBack(_Name);
 }
 
 void BFW::Assets::Manager::QueueWave(const BFW_CHAR_TYPE* _Name)
@@ -3362,6 +3632,26 @@ void BFW::Assets::Manager::QueueResourceBitMap(const size_t _Id)
 	}
 
 	QueuedResourceBitMaps.PushBack(_Id);
+}
+
+void BFW::Assets::Manager::QueueResourceHdr(const size_t _Id)
+{
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < QueuedResourceHdrs.GetSize(); _Index++)
+	{
+		if (QueuedResourceHdrs[_Index] == _Id)
+		{
+			_Found = true;
+		}
+	}
+
+	if (_Found)
+	{
+		return;
+	}
+
+	QueuedResourceHdrs.PushBack(_Id);
 }
 
 void BFW::Assets::Manager::QueueResourceWave(const size_t _Id)
@@ -3508,6 +3798,105 @@ void BFW::Assets::Manager::Flush()
 				QueuedBitMaps[_Index].c_str(),
 				*LoadedBitMaps.GetData(QueuedBitMaps[_Index].c_str()),
 				std::ref(*LastWriteBitMaps.GetData(QueuedBitMaps[_Index].c_str()))
+			)
+		);
+	}
+
+	for (size_t _Index = 0; _Index < QueuedHdrs.GetSize(); _Index++)
+	{
+		if (LoadedHdrs.GetData(QueuedHdrs[_Index].c_str()))
+		{
+			QueuedHdrs.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		{
+			WeakPointer<Hdr>* _CachedWeak = CachedHdrs.GetData(QueuedHdrs[_Index].c_str());
+
+			if (_CachedWeak)
+			{
+				SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+				if ((Hdr*)(_CachedShared))
+				{
+					LoadedHdrs.Emplace(QueuedHdrs[_Index].c_str(), (SharedPointer<Hdr>&&)(_CachedShared));
+					QueuedHdrs.Erase(_Index);
+					_Index--;
+					continue;
+				}
+			}
+		}
+
+		SharedPointer<Hdr> _Asset = SharedPointer<Hdr>::MakeShared(Hdr());
+
+		CachedHdrs.Emplace(QueuedHdrs[_Index].c_str(), _Asset);
+		LastWriteHdrs.Push(QueuedHdrs[_Index].c_str(), 0);
+		LoadedHdrs.Emplace(QueuedHdrs[_Index].c_str(), (SharedPointer<Hdr>&&)(_Asset));
+
+		bool _Found = false;
+
+		for (size_t _NameIndex = 0; _NameIndex < CachedHdrNames.GetSize(); _NameIndex++)
+		{
+			if (CachedHdrNames[_NameIndex] == QueuedHdrs[_Index])
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			CachedHdrNames.PushBack(QueuedHdrs[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < QueuedHdrs.GetSize(); _Index++)
+	{
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](bool& _Fail, const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr> _Asset, uint64_t& _LastWrite)
+				{
+					std::ifstream _InStream;
+
+					_InStream.open(_Name, std::ios::binary);
+
+					if (!_InStream.is_open())
+					{
+						_Fail = true;
+						return;
+					}
+
+					try
+					{
+						_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+					}
+					catch (...)
+					{
+						_Fail = true;
+						return;
+					}
+
+					FileContent _FileContent;
+
+					if (!_FileContent.Load(_InStream))
+					{
+						_Fail = true;
+						return;
+					}
+
+					if (!_Asset->Load(_FileContent))
+					{
+						_Fail = true;
+						return;
+					}
+				},
+				std::ref(_Fail),
+				QueuedHdrs[_Index].c_str(),
+				*LoadedHdrs.GetData(QueuedHdrs[_Index].c_str()),
+				std::ref(*LastWriteHdrs.GetData(QueuedHdrs[_Index].c_str()))
 			)
 		);
 	}
@@ -3789,6 +4178,83 @@ void BFW::Assets::Manager::Flush()
 		);
 	}
 
+	for (size_t _Index = 0; _Index < QueuedResourceHdrs.GetSize(); _Index++)
+	{
+		if (LoadedResourceHdrs.GetData(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index])))
+		{
+			QueuedResourceHdrs.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		{
+			WeakPointer<Hdr>* _CachedWeak = CachedResourceHdrs.GetData(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]));
+
+			if (_CachedWeak)
+			{
+				SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+				if ((Hdr*)(_CachedShared))
+				{
+					LoadedResourceHdrs.Emplace(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]), (SharedPointer<Hdr>&&)(_CachedShared));
+					QueuedResourceHdrs.Erase(_Index);
+					_Index--;
+					continue;
+				}
+			}
+		}
+
+		SharedPointer<Hdr> _Asset = SharedPointer<Hdr>::MakeShared(Hdr());
+
+		CachedResourceHdrs.Emplace(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]), _Asset);
+		LoadedResourceHdrs.Emplace(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]), (SharedPointer<Hdr>&&)(_Asset));
+
+		bool _Found = false;
+
+		for (size_t _NameIndex = 0; _NameIndex < CachedResourceHdrNames.GetSize(); _NameIndex++)
+		{
+			if (CachedResourceHdrNames[_NameIndex] == BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]))
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			CachedResourceHdrNames.PushBack(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]));
+		}
+	}
+
+	for (size_t _Index = 0; _Index < QueuedResourceHdrs.GetSize(); _Index++)
+	{
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](bool& _Fail, const size_t _Id, SharedPointer<Hdr> _Asset)
+				{
+					FileContent _FileContent;
+
+					if (!_FileContent.Load(BFW_HDR_RESOURCE, _Id))
+					{
+						_Fail = true;
+						return;
+					}
+
+					if (!_Asset->Load(_FileContent))
+					{
+						_Fail = true;
+						return;
+					}
+				},
+				std::ref(_Fail),
+				QueuedResourceHdrs[_Index],
+				*LoadedResourceHdrs.GetData(BFW_TO_STRING_PTR(QueuedResourceHdrs[_Index]))
+			)
+		);
+	}
+
 	for (size_t _Index = 0; _Index < QueuedResourceWaves.GetSize(); _Index++)
 	{
 		if (LoadedResourceWaves.GetData(BFW_TO_STRING_PTR(QueuedResourceWaves[_Index])))
@@ -3847,7 +4313,7 @@ void BFW::Assets::Manager::Flush()
 				{
 					FileContent _FileContent;
 
-					if (!_FileContent.Load(BFW_BMP_RESOURCE, _Id))
+					if (!_FileContent.Load(BFW_WAV_RESOURCE, _Id))
 					{
 						_Fail = true;
 						return;
@@ -3924,7 +4390,7 @@ void BFW::Assets::Manager::Flush()
 				{
 					FileContent _FileContent;
 
-					if (!_FileContent.Load(BFW_BMP_RESOURCE, _Id))
+					if (!_FileContent.Load(BFW_JSON_RESOURCE, _Id))
 					{
 						_Fail = true;
 						return;
@@ -3956,12 +4422,14 @@ void BFW::Assets::Manager::Flush()
 #endif
 
 	QueuedBitMaps.Clear();
+	QueuedHdrs.Clear();
 	QueuedWaves.Clear();
 	QueuedJsons.Clear();
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 	QueuedResourceBitMaps.Clear();
+	QueuedResourceHdrs.Clear();
 	QueuedResourceWaves.Clear();
 	QueuedResourceJsons.Clear();
 
@@ -3992,6 +4460,33 @@ void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPo
 	if (!_Found)
 	{
 		CachedBitMapNames.PushBack(_Name);
+	}
+}
+
+void BFW::Assets::Manager::AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) != BFW_STRING_PREFIX("Dynamic/") || (Hdr*)(_Asset))
+	{
+		throw nullptr;
+	}
+
+	LoadedHdrs.Push(_Name, _Asset);
+	CachedHdrs.Emplace(_Name, _Asset);
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		if (CachedHdrNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedHdrNames.PushBack(_Name);
 	}
 }
 
@@ -4072,6 +4567,32 @@ void BFW::Assets::Manager::AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, Share
 	if (!_Found)
 	{
 		CachedBitMapNames.PushBack(_Name);
+	}
+}
+
+void BFW::Assets::Manager::AddDynamicHdrRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) != BFW_STRING_PREFIX("Dynamic/") || (Hdr*)(_Asset))
+	{
+		throw nullptr;
+	}
+
+	CachedHdrs.Emplace(_Name, _Asset);
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		if (CachedHdrNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedHdrNames.PushBack(_Name);
 	}
 }
 
@@ -4195,6 +4716,75 @@ void BFW::Assets::Manager::Update()
 					_OldLastWrite = _LastWrite;
 				},
 				CachedBitMapNames[_Index].c_str(),
+				_CachedShared,
+				std::ref(_OldLastWrite),
+				_LastWrite
+			)
+		);
+	}
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		if (CachedHdrNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
+		{
+			continue;
+		}
+
+		uint64_t _LastWrite = 0;
+
+		try
+		{
+			_LastWrite = std::filesystem::directory_entry(CachedHdrNames[_Index]).last_write_time().time_since_epoch().count();
+		}
+		catch (...)
+		{
+			continue;
+		}
+
+		uint64_t& _OldLastWrite = *LastWriteHdrs.GetData(CachedHdrNames[_Index].c_str());
+
+		if (_LastWrite == _OldLastWrite)
+		{
+			continue;
+		}
+
+		SharedPointer<Hdr> _CachedShared = CachedHdrs.GetData(CachedHdrNames[_Index].c_str())->Lock();
+
+		if (!(Hdr*)(_CachedShared))
+		{
+			continue;
+		}
+
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr> _CachedShared, uint64_t& _OldLastWrite, const uint64_t _LastWrite)
+				{
+					std::ifstream _InStream;
+
+					_InStream.open(_Name, std::ios::binary);
+
+					if (!_InStream.is_open())
+					{
+						return;
+					}
+
+					FileContent _FileContent;
+
+					if (!_FileContent.Load(_InStream))
+					{
+						return;
+					}
+
+					if (!_CachedShared->Load(_FileContent))
+					{
+						return;
+					}
+
+					_OldLastWrite = _LastWrite;
+				},
+				CachedHdrNames[_Index].c_str(),
 				_CachedShared,
 				std::ref(_OldLastWrite),
 				_LastWrite
@@ -4362,6 +4952,22 @@ void BFW::Assets::Manager::ReleaseBitMap(const BFW_CHAR_TYPE* _Name)
 	}
 }
 
+void BFW::Assets::Manager::ReleaseHdr(const BFW_CHAR_TYPE* _Name)
+{
+	LoadedHdrs.Erase(_Name);
+	CachedHdrs.Erase(_Name);
+	LastWriteHdrs.Erase(_Name);
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		if (CachedHdrNames[_Index] == _Name)
+		{
+			CachedHdrNames.Erase(_Index);
+			break;
+		}
+	}
+}
+
 void BFW::Assets::Manager::ReleaseWave(const BFW_CHAR_TYPE* _Name)
 {
 	LoadedWaves.Erase(_Name);
@@ -4406,6 +5012,21 @@ void BFW::Assets::Manager::ReleaseResourceBitMap(const size_t _Id)
 		if (CachedResourceBitMapNames[_Index] == BFW_TO_STRING_PTR(_Id))
 		{
 			CachedResourceBitMapNames.Erase(_Index);
+			break;
+		}
+	}
+}
+
+void BFW::Assets::Manager::ReleaseResourceHdr(const size_t _Id)
+{
+	LoadedResourceHdrs.Erase(BFW_TO_STRING_PTR(_Id));
+	CachedResourceHdrs.Erase(BFW_TO_STRING_PTR(_Id));
+
+	for (size_t _Index = 0; _Index < CachedResourceHdrNames.GetSize(); _Index++)
+	{
+		if (CachedResourceHdrNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			CachedResourceHdrNames.Erase(_Index);
 			break;
 		}
 	}
@@ -4576,6 +5197,144 @@ const BFW::SharedPointer<BFW::Assets::BitMap> BFW::Assets::Manager::GetBitMap(co
 	if (!_FoundName)
 	{
 		CachedBitMapNames.PushBack(_Name);
+	}
+
+	return _Shared;
+}
+
+BFW::SharedPointer<BFW::Assets::Hdr> BFW::Assets::Manager::GetHdr(const BFW_CHAR_TYPE* _Name)
+{
+	WeakPointer<Hdr>* _CachedWeak = CachedHdrs.GetData(_Name);
+
+	if (_CachedWeak)
+	{
+		SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+		if ((Hdr*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	std::ifstream _InStream;
+
+	_InStream.open(_Name, std::ios::binary);
+
+	if (!_InStream.is_open())
+	{
+		throw nullptr;
+	}
+
+	uint64_t _LastWrite = 0;
+
+	try
+	{
+		_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(_InStream))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<Hdr> _Shared = SharedPointer<Hdr>::MakeShared(Hdr());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedHdrs.Emplace(_Name, _Shared);
+	LastWriteHdrs.Push(_Name, _LastWrite);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		if (CachedHdrNames[_Index] == _Name)
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedHdrNames.PushBack(_Name);
+	}
+
+	return _Shared;
+}
+
+const BFW::SharedPointer<BFW::Assets::Hdr> BFW::Assets::Manager::GetHdr(const BFW_CHAR_TYPE* _Name) const
+{
+	WeakPointer<Hdr>* _CachedWeak = CachedHdrs.GetData(_Name);
+
+	if (_CachedWeak)
+	{
+		SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+		if ((Hdr*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	std::ifstream _InStream;
+
+	_InStream.open(_Name, std::ios::binary);
+
+	if (!_InStream.is_open())
+	{
+		throw nullptr;
+	}
+
+	uint64_t _LastWrite = 0;
+
+	try
+	{
+		_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(_InStream))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<Hdr> _Shared = SharedPointer<Hdr>::MakeShared(Hdr());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedHdrs.Emplace(_Name, _Shared);
+	LastWriteHdrs.Push(_Name, _LastWrite);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		if (CachedHdrNames[_Index] == _Name)
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedHdrNames.PushBack(_Name);
 	}
 
 	return _Shared;
@@ -4955,6 +5714,102 @@ const BFW::SharedPointer<BFW::Assets::BitMap> BFW::Assets::Manager::GetResourceB
 	return _Shared;
 }
 
+BFW::SharedPointer<BFW::Assets::Hdr> BFW::Assets::Manager::GetResourceHdr(const size_t _Id)
+{
+	WeakPointer<Hdr>* _CachedWeak = CachedResourceHdrs.GetData(BFW_TO_STRING_PTR(_Id));
+
+	if (_CachedWeak)
+	{
+		SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+		if ((Hdr*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(BFW_HDR_RESOURCE, _Id))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<Hdr> _Shared = SharedPointer<Hdr>::MakeShared(Hdr());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedResourceHdrs.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedResourceHdrNames.GetSize(); _Index++)
+	{
+		if (CachedResourceHdrNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedResourceHdrNames.PushBack(BFW_TO_STRING_PTR(_Id));
+	}
+
+	return _Shared;
+}
+
+const BFW::SharedPointer<BFW::Assets::Hdr> BFW::Assets::Manager::GetResourceHdr(const size_t _Id) const
+{
+	WeakPointer<Hdr>* _CachedWeak = CachedResourceHdrs.GetData(BFW_TO_STRING_PTR(_Id));
+
+	if (_CachedWeak)
+	{
+		SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+		if ((Hdr*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(BFW_HDR_RESOURCE, _Id))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<Hdr> _Shared = SharedPointer<Hdr>::MakeShared(Hdr());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedResourceHdrs.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedResourceHdrNames.GetSize(); _Index++)
+	{
+		if (CachedResourceHdrNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedResourceHdrNames.PushBack(BFW_TO_STRING_PTR(_Id));
+	}
+
+	return _Shared;
+}
+
 BFW::SharedPointer<BFW::Assets::Wave> BFW::Assets::Manager::GetResourceWave(const size_t _Id)
 {
 	WeakPointer<Wave>* _CachedWeak = CachedResourceWaves.GetData(BFW_TO_STRING_PTR(_Id));
@@ -5159,30 +6014,39 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	}
 
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps);
+	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
 	QueuedResourceBitMaps = (Vector<size_t>&&)(_Other.QueuedResourceBitMaps);
+	QueuedResourceHdrs = (Vector<size_t>&&)(_Other.QueuedResourceHdrs);
 	QueuedResourceWaves = (Vector<size_t>&&)(_Other.QueuedResourceWaves);
 	QueuedResourceJsons = (Vector<size_t>&&)(_Other.QueuedResourceJsons);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
+	LoadedHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs);
 	LoadedWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
 	LoadedResourceBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps);
+	LoadedResourceHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs);
 	LoadedResourceWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves);
 	LoadedResourceJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
+	CachedHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames);
 	CachedWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
+	CachedHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs);
 	CachedWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
+	LastWriteHdrs = (Trie<uint64_t>&&)(_Other.LastWriteHdrs);
 	LastWriteWaves = (Trie<uint64_t>&&)(_Other.LastWriteWaves);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 	CachedResourceBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames);
+	CachedResourceHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames);
 	CachedResourceWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames);
 	CachedResourceJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames);
 	CachedResourceBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps);
+	CachedResourceHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs);
 	CachedResourceWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves);
 	CachedResourceJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons);
 
@@ -5201,18 +6065,23 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	}
 
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps);
+	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
+	LoadedHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs);
 	LoadedWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
+	CachedHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames);
 	CachedWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
+	CachedHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs);
 	CachedWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
+	LastWriteHdrs = (Trie<uint64_t>&&)(_Other.LastWriteHdrs);
 	LastWriteWaves = (Trie<uint64_t>&&)(_Other.LastWriteWaves);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 
@@ -5242,6 +6111,30 @@ void BFW::Assets::Manager::RefreshCache()
 			CachedBitMaps.Erase(CachedBitMapNames[_Index].c_str());
 			LastWriteBitMaps.Erase(CachedBitMapNames[_Index].c_str());
 			CachedBitMapNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < CachedHdrNames.GetSize(); _Index++)
+	{
+		WeakPointer<Hdr>* _CachedWeak = CachedHdrs.GetData(CachedHdrNames[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			LastWriteHdrs.Erase(CachedHdrNames[_Index].c_str());
+			CachedHdrNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+		if ((Hdr*)(_CachedShared) == nullptr)
+		{
+			CachedHdrs.Erase(CachedHdrNames[_Index].c_str());
+			LastWriteHdrs.Erase(CachedHdrNames[_Index].c_str());
+			CachedHdrNames.Erase(_Index);
 			_Index--;
 			continue;
 		}
@@ -5314,6 +6207,28 @@ void BFW::Assets::Manager::RefreshCache()
 		{
 			CachedResourceBitMaps.Erase(CachedResourceBitMapNames[_Index].c_str());
 			CachedResourceBitMapNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < CachedResourceHdrNames.GetSize(); _Index++)
+	{
+		WeakPointer<Hdr>* _CachedWeak = CachedResourceHdrs.GetData(CachedResourceHdrNames[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			CachedResourceHdrNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		SharedPointer<Hdr> _CachedShared = _CachedWeak->Lock();
+
+		if ((Hdr*)(_CachedShared) == nullptr)
+		{
+			CachedResourceHdrs.Erase(CachedResourceHdrNames[_Index].c_str());
+			CachedResourceHdrNames.Erase(_Index);
 			_Index--;
 			continue;
 		}

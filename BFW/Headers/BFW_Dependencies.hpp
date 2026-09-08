@@ -275,13 +275,15 @@ namespace BFW
 
 		class BFW_API BitMap;
 
+		class BFW_API Hdr;
+
 		struct BFW_API WaveFormat;
 
 		class BFW_API Wave;
 
 		enum BFW_API JsonTypes : const uint8_t;
 
-		struct BFW_API JsonObjectData;
+		class BFW_API JsonObjectData;
 
 		class BFW_API Json;
 

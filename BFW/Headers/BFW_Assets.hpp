@@ -108,6 +108,49 @@ namespace BFW
 
 		};
 
+		class BFW_API Hdr
+		{
+
+		public:
+
+			Hdr();
+			Hdr(const Hdr& _Other);
+			Hdr(Hdr&& _Other) noexcept;
+			~Hdr();
+
+			const bool Create(const size_t _Width, const size_t _Height, const size_t _ChannelsCount = 4);
+			const bool Load(const FileContent& _FileContent, const bool _Flip = true);
+			void Destroy();
+
+			FileContent Save(const bool _Flip = true) const;
+
+			float* GetData();
+			const float* GetData() const;
+			const size_t GetChannelsCount() const;
+			const size_t GetWidth() const;
+			const size_t GetHeight() const;
+
+			explicit operator float* ();
+			explicit operator const float* () const;
+
+			float& operator* ();
+			const float& operator* () const;
+
+			float* operator[] (const size_t _PositionY);
+			const float* operator* (const size_t _PositionY) const;
+
+			Hdr& operator= (const Hdr& _Other);
+			Hdr& operator= (Hdr&& _Other) noexcept;
+
+		private:
+
+			float* Data;
+			size_t ChannelsCount;
+			size_t Width;
+			size_t Height;
+
+		};
+
 #pragma pack(push, 1)
 
 		struct BFW_API WaveFormat
@@ -184,17 +227,23 @@ namespace BFW
 			_ObjectJsonType = 5
 		};
 
-		struct BFW_API JsonObjectData
+		class BFW_API JsonObjectData
 		{
+
+		public:
 
 			Vector<Json> Object;
 			Vector<BFW_STRING_TYPE_A> Tags;
 
 			JsonObjectData();
-			JsonObjectData(const JsonObjectData& _Other) = default;
+			JsonObjectData(const JsonObjectData& _Other);
 			JsonObjectData(JsonObjectData&& _Other) noexcept;
 			~JsonObjectData();
-			JsonObjectData& operator= (const JsonObjectData& _Other) = default;
+
+			Json& operator[] (const BFW_CHAR_TYPE_A* _Tag);
+			const Json& operator[] (const BFW_CHAR_TYPE_A* _Tag) const;
+
+			JsonObjectData& operator= (const JsonObjectData& _Other);
 			JsonObjectData& operator= (JsonObjectData&& _Other) noexcept;
 
 		};
@@ -255,12 +304,14 @@ namespace BFW
 			~Manager();
 
 			void QueueBitMap(const BFW_CHAR_TYPE* _Name);
+			void QueueHdr(const BFW_CHAR_TYPE* _Name);
 			void QueueWave(const BFW_CHAR_TYPE* _Name);
 			void QueueJson(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 			void QueueResourceBitMap(const size_t _Id);
+			void QueueResourceHdr(const size_t _Id);
 			void QueueResourceWave(const size_t _Id);
 			void QueueResourceJson(const size_t _Id);
 
@@ -269,22 +320,26 @@ namespace BFW
 			void Flush();
 
 			void AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
+			void AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
 			void AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
 			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
 			void AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
+			void AddDynamicHdrRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
 			void AddDynamicWaveRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
 			void AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
 			void Update();
 
 			void ReleaseBitMap(const BFW_CHAR_TYPE* _Name);
+			void ReleaseHdr(const BFW_CHAR_TYPE* _Name);
 			void ReleaseWave(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJson(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 			void ReleaseResourceBitMap(const size_t _Id);
+			void ReleaseResourceHdr(const size_t _Id);
 			void ReleaseResourceWave(const size_t _Id);
 			void ReleaseResourceJson(const size_t _Id);
 
@@ -292,6 +347,8 @@ namespace BFW
 
 			SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name) const;
+			SharedPointer<Hdr> GetHdr(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<Hdr> GetHdr(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Wave> GetWave(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<Wave> GetWave(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name);
@@ -301,6 +358,8 @@ namespace BFW
 
 			SharedPointer<BitMap> GetResourceBitMap(const size_t _Id);
 			const SharedPointer<BitMap> GetResourceBitMap(const size_t _Id) const;
+			SharedPointer<Hdr> GetResourceHdr(const size_t _Id);
+			const SharedPointer<Hdr> GetResourceHdr(const size_t _Id) const;
 			SharedPointer<Wave> GetResourceWave(const size_t _Id);
 			const SharedPointer<Wave> GetResourceWave(const size_t _Id) const;
 			SharedPointer<Json> GetResourceJson(const size_t _Id);
@@ -316,48 +375,57 @@ namespace BFW
 			void RefreshCache();
 
 			Vector<BFW_STRING_TYPE> QueuedBitMaps;
+			Vector<BFW_STRING_TYPE> QueuedHdrs;
 			Vector<BFW_STRING_TYPE> QueuedWaves;
 			Vector<BFW_STRING_TYPE> QueuedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 			Vector<size_t> QueuedResourceBitMaps;
+			Vector<size_t> QueuedResourceHdrs;
 			Vector<size_t> QueuedResourceWaves;
 			Vector<size_t> QueuedResourceJsons;
 
 #endif
 
 			Trie<SharedPointer<BitMap>> LoadedBitMaps;
+			Trie<SharedPointer<Hdr>> LoadedHdrs;
 			Trie<SharedPointer<Wave>> LoadedWaves;
 			Trie<SharedPointer<Json>> LoadedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 			Trie<SharedPointer<BitMap>> LoadedResourceBitMaps;
+			Trie<SharedPointer<Hdr>> LoadedResourceHdrs;
 			Trie<SharedPointer<Wave>> LoadedResourceWaves;
 			Trie<SharedPointer<Json>> LoadedResourceJsons;
 
 #endif
 
 			mutable Vector<BFW_STRING_TYPE> CachedBitMapNames;
+			mutable Vector<BFW_STRING_TYPE> CachedHdrNames;
 			mutable Vector<BFW_STRING_TYPE> CachedWaveNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJsonNames;
 
 			mutable Trie<WeakPointer<BitMap>> CachedBitMaps;
+			mutable Trie<WeakPointer<Hdr>> CachedHdrs;
 			mutable Trie<WeakPointer<Wave>> CachedWaves;
 			mutable Trie<WeakPointer<Json>> CachedJsons;
 
 			mutable Trie<uint64_t> LastWriteBitMaps;
+			mutable Trie<uint64_t> LastWriteHdrs;
 			mutable Trie<uint64_t> LastWriteWaves;
 			mutable Trie<uint64_t> LastWriteJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 			mutable Vector<BFW_STRING_TYPE> CachedResourceBitMapNames;
+			mutable Vector<BFW_STRING_TYPE> CachedResourceHdrNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceWaveNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJsonNames;
 
 			mutable Trie<WeakPointer<BitMap>> CachedResourceBitMaps;
+			mutable Trie<WeakPointer<Hdr>> CachedResourceHdrs;
 			mutable Trie<WeakPointer<Wave>> CachedResourceWaves;
 			mutable Trie<WeakPointer<Json>> CachedResourceJsons;
 
