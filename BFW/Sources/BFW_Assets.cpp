@@ -570,6 +570,41 @@ static void HdrPlaceScanLine(float* _Data, const uint8_t* _ScanLine, const size_
 	}
 }
 
+static void HdrEncodeRGBE(const float _R, const float _G, const float _B, uint8_t& _ResultR, uint8_t& _ResultG, uint8_t& _ResultB, uint8_t& _ResultE)
+{
+	float _Min = _R;
+
+	if (_G < _Min)
+	{
+		_Min = _G;
+	}
+
+	if (_B < _Min)
+	{
+		_Min = _B;
+	}
+
+	if (_Min < 1e-32f)
+	{
+		_ResultR = 0;
+		_ResultG = 0;
+		_ResultB = 0;
+		_ResultE = 0;
+
+		return;
+	}
+
+	int32_t _Exponent = 0;
+	float _Mantissa = std::frexpf(_Min, &_Exponent);
+
+	float _Scale = _Mantissa * 256.0f / _Min;
+
+	_ResultR = (uint8_t)(_R * _Scale);
+	_ResultG = (uint8_t)(_G * _Scale);
+	_ResultB = (uint8_t)(_B * _Scale);
+	_ResultE = (uint8_t)(_Exponent + 128);
+}
+
 
 
 static const bool LoadJsonNull(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
@@ -3081,7 +3116,197 @@ void BFW::Assets::Hdr::Destroy()
 
 BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 {
-	return FileContent();
+	if (!Data)
+	{
+		return FileContent();
+	}
+
+	BFW_STRING_STREAM_TYPE_A _Stream;
+
+	_Stream << "#?RADIANCE\x0A" << "FORMAT=32-bit_rle_rgbe\x0A\x0A+Y " << Height << " +X " << Width << "\x0A";
+
+	BFW_STRING_TYPE_A _StreamStr = _Stream.str();
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Create(_StreamStr.length() + Width * Height * 4 + 1))
+	{
+		return FileContent();
+	}
+
+	_FileContent[_FileContent.GetLength() - 1] = '\0';
+
+	for (size_t _Index = 0; _Index < _StreamStr.size(); _Index++)
+	{
+		_FileContent[_Index] = _StreamStr[_Index];
+	}
+
+	if (_Flip)
+	{
+		if (ChannelsCount == 1)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
+						0.0f,
+						0.0f,
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+
+		if (ChannelsCount == 2)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1],
+						0.0f,
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+
+		if (ChannelsCount == 3)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1],
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 2],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+
+		if (ChannelsCount == 4)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1],
+						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 2],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+	}
+	else
+	{
+		if (ChannelsCount == 1)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
+						0.0f,
+						0.0f,
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+
+		if (ChannelsCount == 2)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1],
+						0.0f,
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+
+		if (ChannelsCount == 3)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1],
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+
+		if (ChannelsCount == 4)
+		{
+			for (size_t _PositionY = 0; _PositionY < Height; _PositionY++)
+			{
+				for (size_t _PositionX = 0; _PositionX < Width; _PositionX++)
+				{
+					HdrEncodeRGBE
+					(
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1],
+						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+					);
+				}
+			}
+		}
+	}
+
+	return _FileContent;
 }
 
 float* BFW::Assets::Hdr::GetData()
