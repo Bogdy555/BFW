@@ -46,6 +46,20 @@ struct BitMapInfoHeader
 
 };
 
+struct HdrFileHeader
+{
+
+	BFW_CHAR_TYPE_A MagicNumbers[11];
+
+	HdrFileHeader();
+	HdrFileHeader(const HdrFileHeader& _Other) = default;
+	HdrFileHeader(HdrFileHeader&& _Other) noexcept;
+	~HdrFileHeader();
+	HdrFileHeader& operator= (const HdrFileHeader& _Other) = default;
+	HdrFileHeader& operator= (HdrFileHeader&& _Other) noexcept;
+
+};
+
 struct WaveFileHeader
 {
 
@@ -192,6 +206,46 @@ BitMapInfoHeader& BitMapInfoHeader::operator= (BitMapInfoHeader& _Other) noexcep
 
 
 
+HdrFileHeader::HdrFileHeader() : MagicNumbers()
+{
+	for (size_t _Index = 0; _Index < 11; _Index++)
+	{
+		MagicNumbers[_Index] = 0;
+	}
+}
+
+HdrFileHeader::HdrFileHeader(HdrFileHeader&& _Other) noexcept : MagicNumbers()
+{
+	for (size_t _Index = 0; _Index < 11; _Index++)
+	{
+		MagicNumbers[_Index] = _Other.MagicNumbers[_Index];
+		_Other.MagicNumbers[_Index] = 0;
+	}
+}
+
+HdrFileHeader::~HdrFileHeader()
+{
+
+}
+
+HdrFileHeader& HdrFileHeader::operator= (HdrFileHeader&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	for (size_t _Index = 0; _Index < 11; _Index++)
+	{
+		MagicNumbers[_Index] = _Other.MagicNumbers[_Index];
+		_Other.MagicNumbers[_Index] = 0;
+	}
+
+	return *this;
+}
+
+
+
 WaveFileHeader::WaveFileHeader() : RIFF(), FileSize(0), WAVE()
 {
 	RIFF[0] = '\0';
@@ -310,6 +364,210 @@ WaveChunkHeader& WaveChunkHeader::operator= (WaveChunkHeader& _Other) noexcept
 	_Other.Size = 0;
 
 	return *this;
+}
+
+
+
+static const float HdrConvertComponent(const uint8_t _Component, const uint8_t _Exponent)
+{
+	return ldexpf(_Component + 0.5f, _Exponent - (128 + 8));
+}
+
+static const float HdrGetRFromXYZ(const float _X, const float _Y, const float _Z)
+{
+	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_X, _Y, _Z), BFW::Math::Vec3(3.2406f, -1.5372f, -0.4986f));
+}
+
+static const float HdrGetGFromXYZ(const float _X, const float _Y, const float _Z)
+{
+	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_X, _Y, _Z), BFW::Math::Vec3(-0.9689f, 1.8758f, 0.0415f));
+}
+
+static const float HdrGetBFromXYZ(const float _X, const float _Y, const float _Z)
+{
+	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_X, _Y, _Z), BFW::Math::Vec3(0.0557f, -0.2040f, 1.0570f));
+}
+
+static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileContent, size_t& _FileIndex, uint8_t* _ScanLine, const size_t _Width)
+{
+	size_t _Length = 0;
+	size_t _LeftShift = 0;
+
+	while (_Length < _Width)
+	{
+		if (_FileContent.GetLength() - 1 == _FileIndex)
+		{
+			return false;
+		}
+
+		uint8_t _R = _FileContent[_FileIndex];
+
+		_FileIndex++;
+
+		if (_FileContent.GetLength() - 1 == _FileIndex)
+		{
+			return false;
+		}
+
+		uint8_t _G = _FileContent[_FileIndex];
+
+		_FileIndex++;
+
+		if (_FileContent.GetLength() - 1 == _FileIndex)
+		{
+			return false;
+		}
+
+		uint8_t _B = _FileContent[_FileIndex];
+
+		_FileIndex++;
+
+		if (_FileContent.GetLength() - 1 == _FileIndex)
+		{
+			return false;
+		}
+
+		uint8_t _E = _FileContent[_FileIndex];
+
+		_FileIndex++;
+
+		if (_R != 1 || _G != 1 || _B != 1)
+		{
+			_ScanLine[_Length * 4 + 0] = _R;
+			_ScanLine[_Length * 4 + 1] = _G;
+			_ScanLine[_Length * 4 + 2] = _B;
+			_ScanLine[_Length * 4 + 3] = _E;
+
+			_Length++;
+			_LeftShift = 0;
+
+			continue;
+		}
+
+		for (size_t _Index = 0; _Index < (size_t)(_E) << _LeftShift; _Index++)
+		{
+			if (_Length == _Width || _Length == 0)
+			{
+				return false;
+			}
+
+			_ScanLine[_Length * 4 + 0] = _ScanLine[(_Length - 1) * 4 + 0];
+			_ScanLine[_Length * 4 + 1] = _ScanLine[(_Length - 1) * 4 + 1];
+			_ScanLine[_Length * 4 + 2] = _ScanLine[(_Length - 1) * 4 + 2];
+			_ScanLine[_Length * 4 + 3] = _ScanLine[(_Length - 1) * 4 + 3];
+
+			_Length++;
+		}
+
+		_LeftShift += 8;
+	}
+
+	return true;
+}
+
+static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent, size_t& _FileIndex, uint8_t* _ScanLine, const size_t _Width)
+{
+	if (_Width < 8 || _Width > std::numeric_limits<int16_t>::max())
+	{
+		return HdrSimpleDecodeScanLine(_FileContent, _FileIndex, _ScanLine, _Width);
+	}
+
+	if (_FileContent.GetLength() - 1 == _FileIndex || _FileContent.GetLength() - 1 == _FileIndex + 1 || _FileContent.GetLength() - 1 == _FileIndex + 2 || _FileContent.GetLength() - 1 == _FileIndex + 3)
+	{
+		return false;
+	}
+
+	if (_FileContent[_FileIndex] != 2 || _FileContent[_FileIndex + 1] != 2 || _FileContent[_FileIndex + 2] & 0b10000000)
+	{
+		return HdrSimpleDecodeScanLine(_FileContent, _FileIndex, _ScanLine, _Width);
+	}
+
+	if (((uint16_t)(_FileContent[_FileIndex + 2]) << 8) + _FileContent[_FileIndex + 3] != _Width)
+	{
+		return false;
+	}
+
+	_FileIndex += 4;
+
+	for (size_t _Channel = 0; _Channel < 4; _Channel++)
+	{
+		size_t _X = 0;
+
+		while (_X < _Width)
+		{
+			if (_FileContent.GetLength() - 1 == _FileIndex)
+			{
+				return false;
+			}
+
+			uint8_t _Length = _FileContent[_FileIndex];
+
+			_FileIndex++;
+
+			if (_Length <= 128)
+			{
+				if (_Length + _X > _Width)
+				{
+					return false;
+				}
+
+				while (_Length)
+				{
+					if (_FileContent.GetLength() - 1 == _FileIndex)
+					{
+						return false;
+					}
+
+					_ScanLine[_X * 4 + _Channel] = _FileContent[_FileIndex];
+
+					_FileIndex++;
+					_X++;
+
+					_Length--;
+				}
+
+				continue;
+			}
+
+			_Length -= 128;
+
+			if (_Length + _X > _Width)
+			{
+				return false;
+			}
+
+			if (_FileContent.GetLength() - 1 == _FileIndex)
+			{
+				return false;
+			}
+
+			uint8_t _Value = _FileContent[_FileIndex];
+
+			_FileIndex++;
+
+			while (_Length)
+			{
+				_ScanLine[_X * 4 + _Channel] = _Value;
+
+				_X++;
+
+				_Length--;
+			}
+		}
+	}
+
+	return true;
+}
+
+static void HdrPlaceScanLine(float* _Data, const uint8_t* _ScanLine, const size_t _Width, const size_t _Y)
+{
+	for (size_t _X = 0; _X < _Width; _X++)
+	{
+		_Data[(_X + _Y * _Width) * 4 + 0] = HdrConvertComponent(_ScanLine[_X * 4 + 0], _ScanLine[_X * 4 + 3]);
+		_Data[(_X + _Y * _Width) * 4 + 1] = HdrConvertComponent(_ScanLine[_X * 4 + 1], _ScanLine[_X * 4 + 3]);
+		_Data[(_X + _Y * _Width) * 4 + 2] = HdrConvertComponent(_ScanLine[_X * 4 + 2], _ScanLine[_X * 4 + 3]);
+		_Data[(_X + _Y * _Width) * 4 + 3] = 1.0f;
+	}
 }
 
 
@@ -1583,7 +1841,7 @@ const bool BFW::Assets::FileContent::Load(std::ifstream& _File)
 
 	_File.seekg(0, std::ios::beg);
 
-	_File.read((char*)(_Data), _Length - 1);
+	_File.read((BFW_CHAR_TYPE_A*)(_Data), _Length - 1);
 
 	if ((size_t)(_File.gcount()) != _Length - 1)
 	{
@@ -1627,7 +1885,7 @@ const bool BFW::Assets::FileContent::Load(std::fstream& _File)
 
 	_File.seekg(0, std::ios::beg);
 
-	_File.read((char*)(_Data), _Length - 1);
+	_File.read((BFW_CHAR_TYPE_A*)(_Data), _Length - 1);
 
 	if ((size_t)(_File.gcount()) != _Length - 1)
 	{
@@ -1712,7 +1970,7 @@ const bool BFW::Assets::FileContent::Save(std::ofstream& _File) const
 		return false;
 	}
 
-	_File.write((const char*)(Data), Length - 1);
+	_File.write((const BFW_CHAR_TYPE_A*)(Data), Length - 1);
 
 	if (!_File)
 	{
@@ -1729,7 +1987,7 @@ const bool BFW::Assets::FileContent::Save(std::fstream& _File) const
 		return false;
 	}
 
-	_File.write((const char*)(Data), Length - 1);
+	_File.write((const BFW_CHAR_TYPE_A*)(Data), Length - 1);
 
 	if (!_File)
 	{
@@ -2448,7 +2706,368 @@ const bool BFW::Assets::Hdr::Create(const size_t _Width, const size_t _Height, c
 
 const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _Flip)
 {
-	return false;
+	Destroy();
+
+	if (!_FileContent.GetData() || _FileContent.GetLength() < sizeof(HdrFileHeader) + BFW_STRING_TYPE_A("FORMAT=32-bit_rle_rgbe\x0A\x0A").length() + BFW_STRING_TYPE_A("-Y  +X \x0A").length() + 1)
+	{
+		return false;
+	}
+
+	HdrFileHeader _FileHeader = *(const HdrFileHeader*)(_FileContent.GetData());
+
+	if (_FileHeader.MagicNumbers[0] != '#' || _FileHeader.MagicNumbers[1] != '?' || _FileHeader.MagicNumbers[2] != 'R' || _FileHeader.MagicNumbers[3] != 'A' || _FileHeader.MagicNumbers[4] != 'D' || _FileHeader.MagicNumbers[5] != 'I' || _FileHeader.MagicNumbers[6] != 'A' || _FileHeader.MagicNumbers[7] != 'N' || _FileHeader.MagicNumbers[8] != 'C' || _FileHeader.MagicNumbers[9] != 'E' || _FileHeader.MagicNumbers[10] != '\x0A')
+	{
+		return false;
+	}
+
+	size_t _FileIndex = 11;
+
+	bool _IsXYZE = false;
+
+	{
+		size_t _FormatRGBECount = 0;
+		size_t _FormatXYZECount = 0;
+
+		if (_FileContent[_FileIndex] == '\x0A')
+		{
+			return false;
+		}
+
+		while (_FileContent[_FileIndex] != '\x0A')
+		{
+			if (_FileContent[_FileIndex] == 0)
+			{
+				return false;
+			}
+
+			size_t _StringStart = _FileIndex;
+
+			while (_FileContent[_FileIndex] != '\x0A')
+			{
+				if (_FileContent[_FileIndex] == 0)
+				{
+					return false;
+				}
+
+				_FileIndex++;
+			}
+
+			_FileIndex++;
+
+			BFW_STRING_VIEW_TYPE_A _HeaderTag = BFW_STRING_VIEW_TYPE_A((const BFW_CHAR_TYPE_A*)(_FileContent.GetData()) + _StringStart, _FileIndex - 1 - _StringStart);
+
+			if (_HeaderTag == "FORMAT=32-bit_rle_rgbe")
+			{
+				_FormatRGBECount++;
+			}
+
+			if (_HeaderTag == "FORMAT=32-bit_rle_xyze")
+			{
+				_FormatXYZECount++;
+			}
+		}
+
+		_FileIndex++;
+
+		if (_FormatRGBECount > 1 || _FormatXYZECount > 1 || (!_FormatRGBECount && !_FormatXYZECount) || (_FormatRGBECount && _FormatXYZECount))
+		{
+			return false;
+		}
+
+		_IsXYZE = _FormatXYZECount;
+	}
+
+	size_t _Width = 0;
+	size_t _Height = 0;
+	bool _FlippedX = false;
+	bool _FlippedY = false;
+	bool _ColumnMajor = false;
+
+	{
+		while (_FileContent[_FileIndex] == ' ' || _FileContent[_FileIndex] == '\t')
+		{
+			_FileIndex++;
+		}
+
+		size_t _Flip1Index = _FileIndex;
+
+		if (_FileContent[_FileIndex] != '+' && _FileContent[_FileIndex] != '-')
+		{
+			return false;
+		}
+
+		_FileIndex++;
+
+		size_t _Axis1Index = _FileIndex;
+
+		if (_FileContent[_FileIndex] != 'X' && _FileContent[_FileIndex] != 'Y')
+		{
+			return false;
+		}
+
+		_FileIndex++;
+
+		if (_FileContent[_FileIndex] != ' ' && _FileContent[_FileIndex] != '\t')
+		{
+			return false;
+		}
+
+		while (_FileContent[_FileIndex] == ' ' || _FileContent[_FileIndex] == '\t')
+		{
+			_FileIndex++;
+		}
+
+		size_t _Number1Index = _FileIndex;
+
+		if (BFW_STRING_TYPE_A("0123456789").find(_FileContent[_FileIndex]) == BFW_STRING_TYPE_A::npos || _FileContent[_FileIndex] == 0)
+		{
+			return false;
+		}
+
+		while (BFW_STRING_TYPE_A("0123456789").find(_FileContent[_FileIndex]) != BFW_STRING_TYPE_A::npos && _FileContent[_FileIndex] != 0)
+		{
+			_FileIndex++;
+		}
+
+		size_t _Number1EndIndex = _FileIndex;
+
+		if (_FileContent[_FileIndex] != ' ' && _FileContent[_FileIndex] != '\t')
+		{
+			return false;
+		}
+
+		while (_FileContent[_FileIndex] == ' ' || _FileContent[_FileIndex] == '\t')
+		{
+			_FileIndex++;
+		}
+
+		size_t _Flip2Index = _FileIndex;
+
+		if (_FileContent[_FileIndex] != '+' && _FileContent[_FileIndex] != '-')
+		{
+			return false;
+		}
+
+		_FileIndex++;
+
+		size_t _Axis2Index = _FileIndex;
+
+		if (_FileContent[_FileIndex] != 'X' && _FileContent[_FileIndex] != 'Y')
+		{
+			return false;
+		}
+
+		_FileIndex++;
+
+		if (_FileContent[_FileIndex] != ' ' && _FileContent[_FileIndex] != '\t')
+		{
+			return false;
+		}
+
+		while (_FileContent[_FileIndex] == ' ' || _FileContent[_FileIndex] == '\t')
+		{
+			_FileIndex++;
+		}
+
+		size_t _Number2Index = _FileIndex;
+
+		if (BFW_STRING_TYPE_A("0123456789").find(_FileContent[_FileIndex]) == BFW_STRING_TYPE_A::npos || _FileContent[_FileIndex] == 0)
+		{
+			return false;
+		}
+
+		while (BFW_STRING_TYPE_A("0123456789").find(_FileContent[_FileIndex]) != BFW_STRING_TYPE_A::npos && _FileContent[_FileIndex] != 0)
+		{
+			_FileIndex++;
+		}
+
+		size_t _Number2EndIndex = _FileIndex;
+
+		while (_FileContent[_FileIndex] == ' ' || _FileContent[_FileIndex] == '\t')
+		{
+			_FileIndex++;
+		}
+
+		if (_FileContent[_FileIndex] != '\x0A')
+		{
+			return false;
+		}
+
+		_FileIndex++;
+
+		if (_FileContent[_Axis1Index] == _FileContent[_Axis2Index])
+		{
+			return false;
+		}
+
+		if (_FileContent[_Axis1Index] == 'Y')
+		{
+			_FlippedX = _FileContent[_Flip2Index] == '-';
+			_FlippedY = _FileContent[_Flip1Index] == '-';
+		}
+		else
+		{
+			_ColumnMajor = true;
+			_FlippedX = _FileContent[_Flip1Index] == '-';
+			_FlippedY = _FileContent[_Flip2Index] == '-';
+		}
+
+		{
+			BFW_STRING_STREAM_TYPE_A _Stream;
+			_Stream << BFW_STRING_VIEW_TYPE_A((const BFW_CHAR_TYPE_A*)(_FileContent.GetData()) + _Number1Index, _Number1EndIndex - _Number1Index);
+			_Stream >> _Height;
+		}
+
+		{
+			BFW_STRING_STREAM_TYPE_A _Stream;
+			_Stream << BFW_STRING_VIEW_TYPE_A((const BFW_CHAR_TYPE_A*)(_FileContent.GetData()) + _Number2Index, _Number2EndIndex - _Number2Index);
+			_Stream >> _Width;
+		}
+	}
+
+	if (!_Width || !_Height)
+	{
+		return false;
+	}
+
+	uint8_t* _ScanLine = new uint8_t[_Width * 4];
+
+	if (!_ScanLine)
+	{
+		return false;
+	}
+
+	Data = new float[_Width * _Height * 4];
+
+	if (!Data)
+	{
+		delete[] _ScanLine;
+		return false;
+	}
+
+	for (size_t _Y = 0; _Y < _Height; _Y++)
+	{
+		if (!HdrDecodeScanLine(_FileContent, _FileIndex, _ScanLine, _Width))
+		{
+			delete[] _ScanLine;
+			delete[] Data;
+			Data = nullptr;
+			return false;
+		}
+
+		HdrPlaceScanLine(Data, _ScanLine, _Width, _Y);
+	}
+
+	if (_FileContent.GetLength() - 1 != _FileIndex)
+	{
+		delete[] _ScanLine;
+		delete[] Data;
+		Data = nullptr;
+		return false;
+	}
+
+	if (_IsXYZE)
+	{
+		for (size_t _Index = 0; _Index < _Width * _Height; _Index++)
+		{
+			float _X = Data[_Index * 4 + 0];
+			float _Y = Data[_Index * 4 + 1];
+			float _Z = Data[_Index * 4 + 2];
+
+			Data[_Index * 4 + 0] = HdrGetRFromXYZ(_X, _Y, _Z);
+			Data[_Index * 4 + 1] = HdrGetGFromXYZ(_X, _Y, _Z);
+			Data[_Index * 4 + 2] = HdrGetBFromXYZ(_X, _Y, _Z);
+		}
+	}
+
+	if (_ColumnMajor)
+	{
+		float* _NewData = new float[_Width * _Height * 4];
+
+		if (!_NewData)
+		{
+			delete[] _ScanLine;
+			delete[] Data;
+			Data = nullptr;
+			return false;
+		}
+
+		{
+			size_t _Aux = _Width;
+			_Width = _Height;
+			_Height = _Aux;
+		}
+
+		for (size_t _Y = 0; _Y < _Height; _Y++)
+		{
+			for (size_t _X = 0; _X < _Width; _X++)
+			{
+				_NewData[(_X + _Y * _Width) * 4 + 0] = Data[(_Y + _X * _Height) * 4 + 0];
+				_NewData[(_X + _Y * _Width) * 4 + 1] = Data[(_Y + _X * _Height) * 4 + 1];
+				_NewData[(_X + _Y * _Width) * 4 + 2] = Data[(_Y + _X * _Height) * 4 + 2];
+				_NewData[(_X + _Y * _Width) * 4 + 3] = Data[(_Y + _X * _Height) * 4 + 3];
+			}
+		}
+
+		delete[] Data;
+		Data = _NewData;
+	}
+
+	if (_FlippedX)
+	{
+		for (size_t _Y = 0; _Y < _Height; _Y++)
+		{
+			for (size_t _X = 0; _X < _Width / 2; _X++)
+			{
+				float _R = Data[(_X + _Y * _Width) * 4 + 0];
+				float _G = Data[(_X + _Y * _Width) * 4 + 1];
+				float _B = Data[(_X + _Y * _Width) * 4 + 2];
+				float _A = Data[(_X + _Y * _Width) * 4 + 3];
+
+				Data[(_X + _Y * _Width) * 4 + 0] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 0];
+				Data[(_X + _Y * _Width) * 4 + 1] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 1];
+				Data[(_X + _Y * _Width) * 4 + 2] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 2];
+				Data[(_X + _Y * _Width) * 4 + 3] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 3];
+
+				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 0] = _R;
+				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 1] = _G;
+				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 2] = _B;
+				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 3] = _A;
+			}
+		}
+	}
+
+	if (_FlippedY != _Flip)
+	{
+		for (size_t _Y = 0; _Y < _Height / 2; _Y++)
+		{
+			for (size_t _X = 0; _X < _Width; _X++)
+			{
+				float _R = Data[(_X + _Y * _Width) * 4 + 0];
+				float _G = Data[(_X + _Y * _Width) * 4 + 1];
+				float _B = Data[(_X + _Y * _Width) * 4 + 2];
+				float _A = Data[(_X + _Y * _Width) * 4 + 3];
+
+				Data[(_X + _Y * _Width) * 4 + 0] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 0];
+				Data[(_X + _Y * _Width) * 4 + 1] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 1];
+				Data[(_X + _Y * _Width) * 4 + 2] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 2];
+				Data[(_X + _Y * _Width) * 4 + 3] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 3];
+
+				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 0] = _R;
+				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 1] = _G;
+				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 2] = _B;
+				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 3] = _A;
+			}
+		}
+	}
+
+	delete[] _ScanLine;
+
+	ChannelsCount = 4;
+	Width = _Width;
+	Height = _Height;
+
+	return true;
 }
 
 void BFW::Assets::Hdr::Destroy()
