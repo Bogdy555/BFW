@@ -373,19 +373,19 @@ static const float HdrConvertComponent(const uint8_t _Component, const uint8_t _
 	return ldexpf(_Component + 0.5f, _Exponent - (128 + 8));
 }
 
-static const float HdrGetRFromXYZ(const float _X, const float _Y, const float _Z)
+static const float HdrGetRFromXYZ(const float _XValue, const float _YValue, const float _ZValue)
 {
-	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_X, _Y, _Z), BFW::Math::Vec3(3.2406f, -1.5372f, -0.4986f));
+	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_XValue, _YValue, _ZValue), BFW::Math::Vec3(3.2406f, -1.5372f, -0.4986f));
 }
 
-static const float HdrGetGFromXYZ(const float _X, const float _Y, const float _Z)
+static const float HdrGetGFromXYZ(const float _XValue, const float _YValue, const float _ZValue)
 {
-	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_X, _Y, _Z), BFW::Math::Vec3(-0.9689f, 1.8758f, 0.0415f));
+	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_XValue, _YValue, _ZValue), BFW::Math::Vec3(-0.9689f, 1.8758f, 0.0415f));
 }
 
-static const float HdrGetBFromXYZ(const float _X, const float _Y, const float _Z)
+static const float HdrGetBFromXYZ(const float _XValue, const float _YValue, const float _ZValue)
 {
-	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_X, _Y, _Z), BFW::Math::Vec3(0.0557f, -0.2040f, 1.0570f));
+	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_XValue, _YValue, _ZValue), BFW::Math::Vec3(0.0557f, -0.2040f, 1.0570f));
 }
 
 static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileContent, size_t& _FileIndex, uint8_t* _ScanLine, const size_t _Width)
@@ -400,7 +400,7 @@ static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileC
 			return false;
 		}
 
-		uint8_t _R = _FileContent[_FileIndex];
+		uint8_t _RByte = _FileContent[_FileIndex];
 
 		_FileIndex++;
 
@@ -409,7 +409,7 @@ static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileC
 			return false;
 		}
 
-		uint8_t _G = _FileContent[_FileIndex];
+		uint8_t _GByte = _FileContent[_FileIndex];
 
 		_FileIndex++;
 
@@ -418,7 +418,7 @@ static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileC
 			return false;
 		}
 
-		uint8_t _B = _FileContent[_FileIndex];
+		uint8_t _BByte = _FileContent[_FileIndex];
 
 		_FileIndex++;
 
@@ -427,16 +427,16 @@ static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileC
 			return false;
 		}
 
-		uint8_t _E = _FileContent[_FileIndex];
+		uint8_t _EByte = _FileContent[_FileIndex];
 
 		_FileIndex++;
 
-		if (_R != 1 || _G != 1 || _B != 1)
+		if (_RByte != 1 || _GByte != 1 || _BByte != 1)
 		{
-			_ScanLine[_Length * 4 + 0] = _R;
-			_ScanLine[_Length * 4 + 1] = _G;
-			_ScanLine[_Length * 4 + 2] = _B;
-			_ScanLine[_Length * 4 + 3] = _E;
+			_ScanLine[_Length * 4 + 0] = _RByte;
+			_ScanLine[_Length * 4 + 1] = _GByte;
+			_ScanLine[_Length * 4 + 2] = _BByte;
+			_ScanLine[_Length * 4 + 3] = _EByte;
 
 			_Length++;
 			_LeftShift = 0;
@@ -444,7 +444,7 @@ static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileC
 			continue;
 		}
 
-		for (size_t _Index = 0; _Index < (size_t)(_E) << _LeftShift; _Index++)
+		for (size_t _Index = 0; _Index < (size_t)(_EByte) << _LeftShift; _Index++)
 		{
 			if (_Length == _Width || _Length == 0)
 			{
@@ -491,9 +491,9 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 
 	for (size_t _Channel = 0; _Channel < 4; _Channel++)
 	{
-		size_t _X = 0;
+		size_t _PositionX = 0;
 
-		while (_X < _Width)
+		while (_PositionX < _Width)
 		{
 			if (_FileContent.GetLength() - 1 == _FileIndex)
 			{
@@ -506,7 +506,7 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 
 			if (_Length <= 128)
 			{
-				if (_Length + _X > _Width)
+				if (_Length + _PositionX > _Width)
 				{
 					return false;
 				}
@@ -518,10 +518,10 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 						return false;
 					}
 
-					_ScanLine[_X * 4 + _Channel] = _FileContent[_FileIndex];
+					_ScanLine[_PositionX * 4 + _Channel] = _FileContent[_FileIndex];
 
 					_FileIndex++;
-					_X++;
+					_PositionX++;
 
 					_Length--;
 				}
@@ -531,7 +531,7 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 
 			_Length -= 128;
 
-			if (_Length + _X > _Width)
+			if (_Length + _PositionX > _Width)
 			{
 				return false;
 			}
@@ -547,9 +547,9 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 
 			while (_Length)
 			{
-				_ScanLine[_X * 4 + _Channel] = _Value;
+				_ScanLine[_PositionX * 4 + _Channel] = _Value;
 
-				_X++;
+				_PositionX++;
 
 				_Length--;
 			}
@@ -559,29 +559,29 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 	return true;
 }
 
-static void HdrPlaceScanLine(float* _Data, const uint8_t* _ScanLine, const size_t _Width, const size_t _Y)
+static void HdrPlaceScanLine(float* _Data, const uint8_t* _ScanLine, const size_t _Width, const size_t _PositionY)
 {
-	for (size_t _X = 0; _X < _Width; _X++)
+	for (size_t _PositionX = 0; _PositionX < _Width; _PositionX++)
 	{
-		_Data[(_X + _Y * _Width) * 4 + 0] = HdrConvertComponent(_ScanLine[_X * 4 + 0], _ScanLine[_X * 4 + 3]);
-		_Data[(_X + _Y * _Width) * 4 + 1] = HdrConvertComponent(_ScanLine[_X * 4 + 1], _ScanLine[_X * 4 + 3]);
-		_Data[(_X + _Y * _Width) * 4 + 2] = HdrConvertComponent(_ScanLine[_X * 4 + 2], _ScanLine[_X * 4 + 3]);
-		_Data[(_X + _Y * _Width) * 4 + 3] = 1.0f;
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 0] = HdrConvertComponent(_ScanLine[_PositionX * 4 + 0], _ScanLine[_PositionX * 4 + 3]);
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 1] = HdrConvertComponent(_ScanLine[_PositionX * 4 + 1], _ScanLine[_PositionX * 4 + 3]);
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 2] = HdrConvertComponent(_ScanLine[_PositionX * 4 + 2], _ScanLine[_PositionX * 4 + 3]);
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 3] = 1.0f;
 	}
 }
 
-static void HdrEncodeRGBE(const float _R, const float _G, const float _B, uint8_t& _ResultR, uint8_t& _ResultG, uint8_t& _ResultB, uint8_t& _ResultE)
+static void HdrEncodeRGBE(const float _RValue, const float _GValue, const float _BValue, uint8_t& _ResultR, uint8_t& _ResultG, uint8_t& _ResultB, uint8_t& _ResultE)
 {
-	float _Min = _R;
+	float _Min = _RValue;
 
-	if (_G < _Min)
+	if (_GValue < _Min)
 	{
-		_Min = _G;
+		_Min = _GValue;
 	}
 
-	if (_B < _Min)
+	if (_BValue < _Min)
 	{
-		_Min = _B;
+		_Min = _BValue;
 	}
 
 	if (_Min < 1e-32f)
@@ -595,13 +595,13 @@ static void HdrEncodeRGBE(const float _R, const float _G, const float _B, uint8_
 	}
 
 	int32_t _Exponent = 0;
-	float _Mantissa = std::frexpf(_Min, &_Exponent);
+	float _Mantissa = std::frexpf(_Min, (int*)(&_Exponent));
 
 	float _Scale = _Mantissa * 256.0f / _Min;
 
-	_ResultR = (uint8_t)(_R * _Scale);
-	_ResultG = (uint8_t)(_G * _Scale);
-	_ResultB = (uint8_t)(_B * _Scale);
+	_ResultR = (uint8_t)(_RValue * _Scale);
+	_ResultG = (uint8_t)(_GValue * _Scale);
+	_ResultB = (uint8_t)(_BValue * _Scale);
 	_ResultE = (uint8_t)(_Exponent + 128);
 }
 
@@ -3005,13 +3005,13 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 	{
 		for (size_t _Index = 0; _Index < _Width * _Height; _Index++)
 		{
-			float _X = Data[_Index * 4 + 0];
-			float _Y = Data[_Index * 4 + 1];
-			float _Z = Data[_Index * 4 + 2];
+			float _XValue = Data[_Index * 4 + 0];
+			float _YValue = Data[_Index * 4 + 1];
+			float _ZValue = Data[_Index * 4 + 2];
 
-			Data[_Index * 4 + 0] = HdrGetRFromXYZ(_X, _Y, _Z);
-			Data[_Index * 4 + 1] = HdrGetGFromXYZ(_X, _Y, _Z);
-			Data[_Index * 4 + 2] = HdrGetBFromXYZ(_X, _Y, _Z);
+			Data[_Index * 4 + 0] = HdrGetRFromXYZ(_XValue, _YValue, _ZValue);
+			Data[_Index * 4 + 1] = HdrGetGFromXYZ(_XValue, _YValue, _ZValue);
+			Data[_Index * 4 + 2] = HdrGetBFromXYZ(_XValue, _YValue, _ZValue);
 		}
 	}
 
@@ -3033,14 +3033,14 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 			_Height = _Aux;
 		}
 
-		for (size_t _Y = 0; _Y < _Height; _Y++)
+		for (size_t _PositionY = 0; _PositionY < _Height; _PositionY++)
 		{
-			for (size_t _X = 0; _X < _Width; _X++)
+			for (size_t _PositionX = 0; _PositionX < _Width; _PositionX++)
 			{
-				_NewData[(_X + _Y * _Width) * 4 + 0] = Data[(_Y + _X * _Height) * 4 + 0];
-				_NewData[(_X + _Y * _Width) * 4 + 1] = Data[(_Y + _X * _Height) * 4 + 1];
-				_NewData[(_X + _Y * _Width) * 4 + 2] = Data[(_Y + _X * _Height) * 4 + 2];
-				_NewData[(_X + _Y * _Width) * 4 + 3] = Data[(_Y + _X * _Height) * 4 + 3];
+				_NewData[(_PositionX + _PositionY * _Width) * 4 + 0] = Data[(_PositionY + _PositionX * _Height) * 4 + 0];
+				_NewData[(_PositionX + _PositionY * _Width) * 4 + 1] = Data[(_PositionY + _PositionX * _Height) * 4 + 1];
+				_NewData[(_PositionX + _PositionY * _Width) * 4 + 2] = Data[(_PositionY + _PositionX * _Height) * 4 + 2];
+				_NewData[(_PositionX + _PositionY * _Width) * 4 + 3] = Data[(_PositionY + _PositionX * _Height) * 4 + 3];
 			}
 		}
 
@@ -3050,48 +3050,48 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 
 	if (_FlippedX)
 	{
-		for (size_t _Y = 0; _Y < _Height; _Y++)
+		for (size_t _PositionY = 0; _PositionY < _Height; _PositionY++)
 		{
-			for (size_t _X = 0; _X < _Width / 2; _X++)
+			for (size_t _PositionX = 0; _PositionX < _Width / 2; _PositionX++)
 			{
-				float _R = Data[(_X + _Y * _Width) * 4 + 0];
-				float _G = Data[(_X + _Y * _Width) * 4 + 1];
-				float _B = Data[(_X + _Y * _Width) * 4 + 2];
-				float _A = Data[(_X + _Y * _Width) * 4 + 3];
+				float _RValue = Data[(_PositionX + _PositionY * _Width) * 4 + 0];
+				float _GValue = Data[(_PositionX + _PositionY * _Width) * 4 + 1];
+				float _BValue = Data[(_PositionX + _PositionY * _Width) * 4 + 2];
+				float _AValue = Data[(_PositionX + _PositionY * _Width) * 4 + 3];
 
-				Data[(_X + _Y * _Width) * 4 + 0] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 0];
-				Data[(_X + _Y * _Width) * 4 + 1] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 1];
-				Data[(_X + _Y * _Width) * 4 + 2] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 2];
-				Data[(_X + _Y * _Width) * 4 + 3] = Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 3];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 0] = Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 0];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 1] = Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 1];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 2] = Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 2];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 3] = Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 3];
 
-				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 0] = _R;
-				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 1] = _G;
-				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 2] = _B;
-				Data[((_Width - 1 - _X) + _Y * _Width) * 4 + 3] = _A;
+				Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 0] = _RValue;
+				Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 1] = _GValue;
+				Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 2] = _BValue;
+				Data[((_Width - 1 - _PositionX) + _PositionY * _Width) * 4 + 3] = _AValue;
 			}
 		}
 	}
 
 	if (_FlippedY != _Flip)
 	{
-		for (size_t _Y = 0; _Y < _Height / 2; _Y++)
+		for (size_t _PositionY = 0; _PositionY < _Height / 2; _PositionY++)
 		{
-			for (size_t _X = 0; _X < _Width; _X++)
+			for (size_t _PositionX = 0; _PositionX < _Width; _PositionX++)
 			{
-				float _R = Data[(_X + _Y * _Width) * 4 + 0];
-				float _G = Data[(_X + _Y * _Width) * 4 + 1];
-				float _B = Data[(_X + _Y * _Width) * 4 + 2];
-				float _A = Data[(_X + _Y * _Width) * 4 + 3];
+				float _RValue = Data[(_PositionX + _PositionY * _Width) * 4 + 0];
+				float _GValue = Data[(_PositionX + _PositionY * _Width) * 4 + 1];
+				float _BValue = Data[(_PositionX + _PositionY * _Width) * 4 + 2];
+				float _AValue = Data[(_PositionX + _PositionY * _Width) * 4 + 3];
 
-				Data[(_X + _Y * _Width) * 4 + 0] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 0];
-				Data[(_X + _Y * _Width) * 4 + 1] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 1];
-				Data[(_X + _Y * _Width) * 4 + 2] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 2];
-				Data[(_X + _Y * _Width) * 4 + 3] = Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 3];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 0] = Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 0];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 1] = Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 1];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 2] = Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 2];
+				Data[(_PositionX + _PositionY * _Width) * 4 + 3] = Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 3];
 
-				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 0] = _R;
-				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 1] = _G;
-				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 2] = _B;
-				Data[(_X + (_Height - 1 - _Y) * _Width) * 4 + 3] = _A;
+				Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 0] = _RValue;
+				Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 1] = _GValue;
+				Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 2] = _BValue;
+				Data[(_PositionX + (_Height - 1 - _PositionY) * _Width) * 4 + 3] = _AValue;
 			}
 		}
 	}
