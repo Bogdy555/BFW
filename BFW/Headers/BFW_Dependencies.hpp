@@ -281,6 +281,18 @@ namespace BFW
 
 		class BFW_API Wave;
 
+		struct BFW_API TriangleVertexData;
+
+		struct BFW_API TriangleIndexData;
+
+		struct BFW_API LineVertexData;
+
+		struct BFW_API LineIndexData;
+
+		class BFW_API Mesh;
+
+		class BFW_API WaveFrontObj;
+
 		enum BFW_API JsonTypes : const uint8_t;
 
 		class BFW_API JsonObjectData;

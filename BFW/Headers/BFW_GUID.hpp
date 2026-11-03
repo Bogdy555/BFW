@@ -22,9 +22,9 @@ namespace BFW
 		const BFW_STRING_TYPE_W BFW_API GetStringW();
 		const BFW_STRING_TYPE BFW_API GetString();
 
-		void BFW_API ReleaseStringA(const BFW_STRING_TYPE_A& _GUID);
-		void BFW_API ReleaseStringW(const BFW_STRING_TYPE_W& _GUID);
-		void BFW_API ReleaseString(const BFW_STRING_TYPE& _GUID);
+		void BFW_API ReleaseStringA(const BFW_STRING_VIEW_TYPE_A _GUID);
+		void BFW_API ReleaseStringW(const BFW_STRING_VIEW_TYPE_W _GUID);
+		void BFW_API ReleaseString(const BFW_STRING_VIEW_TYPE _GUID);
 
 	}
 

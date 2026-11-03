@@ -482,7 +482,7 @@ static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent
 		return HdrSimpleDecodeScanLine(_FileContent, _FileIndex, _ScanLine, _Width);
 	}
 
-	if (((uint16_t)(_FileContent[_FileIndex + 2]) << 8) + _FileContent[_FileIndex + 3] != _Width)
+	if (((int16_t)(_FileContent[_FileIndex + 2]) << 8) + _FileContent[_FileIndex + 3] != (int16_t)(_Width))
 	{
 		return false;
 	}
@@ -595,7 +595,7 @@ static void HdrEncodeRGBE(const float _RValue, const float _GValue, const float 
 	}
 
 	int32_t _Exponent = 0;
-	float _Mantissa = std::frexpf(_Min, (int*)(&_Exponent));
+	float _Mantissa = std::frexp(_Min, (int*)(&_Exponent));
 
 	float _Scale = _Mantissa * 256.0f / _Min;
 
@@ -847,6 +847,9 @@ static const bool LoadJsonString(const BFW::Assets::FileContent& _FileContent, s
 	_CurrentPos++;
 
 	BFW_STRING_TYPE_A _String;
+
+	BFW_WINDOWS_PLATFORM_CALL(_String.reserve(64));
+	BFW_LINUX_PLATFORM_CALL(_String.reserve(64));
 
 	while ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\"')
 	{
@@ -2755,7 +2758,7 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 		return false;
 	}
 
-	size_t _FileIndex = 11;
+	size_t _FileIndex = sizeof(HdrFileHeader);
 
 	bool _IsXYZE = false;
 
@@ -3950,6 +3953,845 @@ BFW::Assets::Wave& BFW::Assets::Wave::operator= (Wave&& _Other) noexcept
 
 
 
+BFW::Assets::TriangleVertexData::TriangleVertexData() : Position(), Color(), Normal(), Tangent(), TextureCoords()
+{
+
+}
+
+BFW::Assets::TriangleVertexData::TriangleVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color, const Math::Vec3& _Normal, const Math::Vec3& _Tangent, const Math::Vec3& _TextureCoords) : Position(_Position), Color(_Color), Normal(_Normal), Tangent(_Tangent), TextureCoords(_TextureCoords)
+{
+
+}
+
+BFW::Assets::TriangleVertexData::TriangleVertexData(TriangleVertexData&& _Other) noexcept : Position((Math::Vec4&&)(_Other.Position)), Color((Math::Vec4&&)(_Other.Color)), Normal((Math::Vec3&&)(_Other.Normal)), Tangent((Math::Vec3&&)(_Other.Tangent)), TextureCoords((Math::Vec3&&)(_Other.TextureCoords))
+{
+
+}
+
+BFW::Assets::TriangleVertexData::~TriangleVertexData()
+{
+
+}
+
+BFW::Assets::TriangleVertexData& BFW::Assets::TriangleVertexData::operator= (TriangleVertexData&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Position = (Math::Vec4&&)(_Other.Position);
+	Color = (Math::Vec4&&)(_Other.Color);
+	Normal = (Math::Vec3&&)(_Other.Normal);
+	Tangent = (Math::Vec3&&)(_Other.Tangent);
+	TextureCoords = (Math::Vec3&&)(_Other.TextureCoords);
+
+	return *this;
+}
+
+
+
+BFW::Assets::TriangleIndexData::TriangleIndexData() : IndexA(0), IndexB(0), IndexC(0)
+{
+
+}
+
+BFW::Assets::TriangleIndexData::TriangleIndexData(const uint32_t _IndexA, const uint32_t _IndexB, const uint32_t _IndexC) : IndexA(_IndexA), IndexB(_IndexB), IndexC(_IndexC)
+{
+
+}
+
+BFW::Assets::TriangleIndexData::TriangleIndexData(TriangleIndexData&& _Other) noexcept : IndexA(_Other.IndexA), IndexB(_Other.IndexB), IndexC(_Other.IndexC)
+{
+	_Other.IndexA = 0;
+	_Other.IndexB = 0;
+	_Other.IndexC = 0;
+}
+
+BFW::Assets::TriangleIndexData::~TriangleIndexData()
+{
+
+}
+
+BFW::Assets::TriangleIndexData& BFW::Assets::TriangleIndexData::operator= (TriangleIndexData&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	IndexA = _Other.IndexA;
+	IndexB = _Other.IndexB;
+	IndexC = _Other.IndexC;
+
+	_Other.IndexA = 0;
+	_Other.IndexB = 0;
+	_Other.IndexC = 0;
+
+	return *this;
+}
+
+
+
+BFW::Assets::LineVertexData::LineVertexData() : Position(), Color()
+{
+
+}
+
+BFW::Assets::LineVertexData::LineVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color) : Position(_Position), Color(_Color)
+{
+
+}
+
+BFW::Assets::LineVertexData::LineVertexData(LineVertexData&& _Other) noexcept : Position((Math::Vec4&&)(_Other.Position)), Color((Math::Vec4&&)(_Other.Color))
+{
+
+}
+
+BFW::Assets::LineVertexData::~LineVertexData()
+{
+
+}
+
+BFW::Assets::LineVertexData& BFW::Assets::LineVertexData::operator= (LineVertexData&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Position = (Math::Vec4&&)(_Other.Position);
+	Color = (Math::Vec4&&)(_Other.Color);
+
+	return *this;
+}
+
+
+
+BFW::Assets::LineIndexData::LineIndexData() : IndexA(0), IndexB(0)
+{
+
+}
+
+BFW::Assets::LineIndexData::LineIndexData(const uint32_t _IndexA, const uint32_t _IndexB) : IndexA(_IndexA), IndexB(_IndexB)
+{
+
+}
+
+BFW::Assets::LineIndexData::LineIndexData(LineIndexData&& _Other) noexcept : IndexA(_Other.IndexA), IndexB(_Other.IndexB)
+{
+	_Other.IndexA = 0;
+	_Other.IndexB = 0;
+}
+
+BFW::Assets::LineIndexData::~LineIndexData()
+{
+
+}
+
+BFW::Assets::LineIndexData& BFW::Assets::LineIndexData::operator= (LineIndexData&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	IndexA = _Other.IndexA;
+	IndexB = _Other.IndexB;
+
+	_Other.IndexA = 0;
+	_Other.IndexB = 0;
+
+	return *this;
+}
+
+
+
+BFW::Assets::Mesh::Mesh() : Name(BFW_STRING_PREFIX("")), MaterialLib(BFW_STRING_PREFIX("")), MaterialName(BFW_STRING_PREFIX("")), TriangleVBO(), TriangleIBO(), LineVBO(), LineIBO()
+{
+
+}
+
+BFW::Assets::Mesh::Mesh(const Mesh& _Other) : Name(_Other.Name), MaterialLib(_Other.MaterialLib), MaterialName(_Other.MaterialName), TriangleVBO(_Other.TriangleVBO), TriangleIBO(_Other.TriangleIBO), LineVBO(_Other.LineVBO), LineIBO(_Other.LineIBO)
+{
+
+}
+
+BFW::Assets::Mesh::Mesh(Mesh&& _Other) noexcept : Name(_Other.Name), MaterialLib(_Other.MaterialLib), MaterialName(_Other.MaterialName), TriangleVBO((Vector<TriangleVertexData>&&)(_Other.TriangleVBO)), TriangleIBO((Vector<TriangleIndexData>&&)(_Other.TriangleIBO)), LineVBO((Vector<LineVertexData>&&)(_Other.LineVBO)), LineIBO((Vector<LineIndexData>&&)(_Other.LineIBO))
+{
+	_Other.Name = BFW_STRING_PREFIX("");
+	_Other.MaterialLib = BFW_STRING_PREFIX("");
+	_Other.MaterialName = BFW_STRING_PREFIX("");
+}
+
+BFW::Assets::Mesh::~Mesh()
+{
+
+}
+
+void BFW::Assets::Mesh::GenerateUnitQuad()
+{
+	TriangleVBO.Clear();
+	TriangleIBO.Clear();
+	LineVBO.Clear();
+	LineIBO.Clear();
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, 0.0f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, 0.0f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, 0.0f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, 0.0f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(0, 2, 1));
+	TriangleIBO.EmplaceBack(TriangleIndexData(1, 2, 3));
+}
+
+void BFW::Assets::Mesh::GenerateUnitCube()
+{
+	TriangleVBO.Clear();
+	TriangleIBO.Clear();
+	LineVBO.Clear();
+	LineIBO.Clear();
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(-1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, -1.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 0.0f, 1.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, -1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, -1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, -1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, -1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, -1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, -0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, -1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, -0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 1.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(-0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(0.0f, 0.0f, 0.0f)));
+	TriangleVBO.EmplaceBack(TriangleVertexData(Math::Vec4(0.5f, 0.5f, 0.5f, 1.0f), Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f), Math::Vec3(0.0f, 1.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f), Math::Vec3(1.0f, 0.0f, 0.0f)));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(0, 1, 2));
+	TriangleIBO.EmplaceBack(TriangleIndexData(3, 4, 5));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(6, 7, 8));
+	TriangleIBO.EmplaceBack(TriangleIndexData(9, 10, 11));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(12, 13, 14));
+	TriangleIBO.EmplaceBack(TriangleIndexData(15, 16, 17));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(18, 19, 20));
+	TriangleIBO.EmplaceBack(TriangleIndexData(21, 22, 23));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(24, 25, 26));
+	TriangleIBO.EmplaceBack(TriangleIndexData(27, 28, 29));
+
+	TriangleIBO.EmplaceBack(TriangleIndexData(30, 31, 32));
+	TriangleIBO.EmplaceBack(TriangleIndexData(33, 34, 35));
+}
+
+BFW::Assets::Mesh& BFW::Assets::Mesh::operator= (const Mesh& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Name = _Other.Name;
+	MaterialLib = _Other.MaterialLib;
+	MaterialName = _Other.MaterialName;
+	TriangleVBO = _Other.TriangleVBO;
+	TriangleIBO = _Other.TriangleIBO;
+	LineVBO = _Other.LineVBO;
+	LineIBO = _Other.LineIBO;
+
+	return *this;
+}
+
+BFW::Assets::Mesh& BFW::Assets::Mesh::operator= (Mesh&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Name = _Other.Name;
+	MaterialLib = _Other.MaterialLib;
+	MaterialName = _Other.MaterialName;
+	TriangleVBO = (Vector<TriangleVertexData>&&)(_Other.TriangleVBO);
+	TriangleIBO = (Vector<TriangleIndexData>&&)(_Other.TriangleIBO);
+	LineVBO = (Vector<LineVertexData>&&)(_Other.LineVBO);
+	LineIBO = (Vector<LineIndexData>&&)(_Other.LineIBO);
+
+	_Other.Name = BFW_STRING_PREFIX("");
+	_Other.MaterialLib = BFW_STRING_PREFIX("");
+	_Other.MaterialName = BFW_STRING_PREFIX("");
+
+	return *this;
+}
+
+
+
+BFW::Assets::WaveFrontObj::WaveFrontObj() : MeshNames(), Meshes()
+{
+
+}
+
+BFW::Assets::WaveFrontObj::WaveFrontObj(const WaveFrontObj& _Other) : MeshNames(MeshNames), Meshes(Meshes)
+{
+
+}
+
+BFW::Assets::WaveFrontObj::WaveFrontObj(WaveFrontObj&& _Other) noexcept : MeshNames((Vector<BFW_STRING_TYPE>&&)(MeshNames)), Meshes((Trie<Mesh>&&)(Meshes))
+{
+
+}
+
+BFW::Assets::WaveFrontObj::~WaveFrontObj()
+{
+
+}
+
+const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
+{
+	Clear();
+
+	if (!_FileContent.GetData())
+	{
+		return false;
+	}
+
+	Vector<BFW_STRING_TYPE> _Names;
+	Vector<size_t> _FaceStarts;
+	Vector<size_t> _LineStarts;
+
+	Vector<Math::Vec4> _Positions;
+	Vector<Math::Vec4> _Colors;
+	Vector<Math::Vec3> _Normals;
+	Vector<Math::Vec3> _TextureCoords;
+
+	Vector<Vector<size_t>> _FacePositions;
+	Vector<Vector<size_t>> _FaceNormals;
+	Vector<Vector<size_t>> _FaceTextureCoords;
+	Vector<Vector<size_t>> _LinePositions;
+
+	size_t _FileIndex = 0;
+
+	while (_FileContent[_FileIndex] != '\0')
+	{
+		BFW_STRING_TYPE_A _FileLine;
+
+		BFW_WINDOWS_PLATFORM_CALL(_FileLine.reserve(512));
+		BFW_LINUX_PLATFORM_CALL(_FileLine.reserve(512));
+
+		bool _KeepLine = true;
+
+		while (_KeepLine)
+		{
+			_KeepLine = false;
+
+			size_t _FileLineStart = _FileLine.size();
+
+			while (_FileContent[_FileIndex] != '\n' && _FileContent[_FileIndex] != '\0')
+			{
+				if (_FileContent[_FileIndex] == '#')
+				{
+					break;
+				}
+
+				_FileLine += _FileContent[_FileIndex];
+				_FileIndex++;
+			}
+
+			while (_FileContent[_FileIndex] != '\n' && _FileContent[_FileIndex] != '\0')
+			{
+				_FileIndex++;
+			}
+
+			if (_FileLine.size() != 0 && _FileLine[_FileLine.size() - 1] == '\r')
+			{
+				_FileLine.erase(_FileLine.begin() + _FileLine.size() - 1);
+			}
+
+			size_t _CharIndex = _FileLineStart;
+
+			while (_CharIndex < _FileLine.size() && std::isspace(_FileLine[_FileLine.size() - 1 - _CharIndex + _FileLineStart]))
+			{
+				_CharIndex++;
+			}
+
+			size_t _BackSlashCount = 0;
+
+			while (_CharIndex < _FileLine.size() && _FileLine[_FileLine.size() - 1 - _CharIndex + _FileLineStart] == '\\')
+			{
+				_BackSlashCount++;
+				_CharIndex++;
+			}
+
+			for (size_t _Index = 0; _Index < _BackSlashCount / 2; _Index++)
+			{
+				_FileLine.erase(_FileLine.begin() + _FileLine.size() - 1 - _CharIndex + 1 + _FileLineStart);
+				_CharIndex--;
+			}
+
+			if (_BackSlashCount % 2 == 1)
+			{
+				_KeepLine = true;
+				_FileLine[_FileLine.size() - 1 - _CharIndex + _BackSlashCount / 2 + 1 + _FileLineStart] = ' ';
+			}
+
+			if (_FileContent[_FileIndex] == '\0')
+			{
+				break;
+			}
+
+			_FileIndex++;
+		}
+
+		if (!_FileLine.size())
+		{
+			continue;
+		}
+
+		size_t _CharIndex = 0;
+
+		while (std::isspace(_FileLine[_CharIndex]))
+		{
+			_CharIndex++;
+		}
+
+		if (_CharIndex == _FileLine.size())
+		{
+			continue;
+		}
+
+		Vector<BFW_STRING_TYPE_A> _LineTokens;
+
+		while (_FileLine[_CharIndex] != '\0')
+		{
+			BFW_STRING_TYPE_A& _Token = _LineTokens.EmplaceBack(BFW_STRING_TYPE_A());
+
+			BFW_WINDOWS_PLATFORM_CALL(_Token.reserve(16));
+			BFW_LINUX_PLATFORM_CALL(_Token.reserve(16));
+
+			if (_FileLine[_CharIndex] == '\"')
+			{
+				_CharIndex++;
+
+				while (_FileLine[_CharIndex] != '\"' && _FileLine[_CharIndex] != '\0')
+				{
+					if (String::IsControlCharacter(_FileLine[_CharIndex]))
+					{
+						return false;
+					}
+
+					if (_FileLine[_CharIndex] == '\\' && _FileLine[_CharIndex + 1] == '\"')
+					{
+						_Token += '\"';
+						_CharIndex += 2;
+						continue;
+					}
+
+					_Token += _FileLine[_CharIndex];
+					_CharIndex++;
+				}
+
+				if (_FileLine[_CharIndex] == '\0')
+				{
+					return false;
+				}
+
+				_CharIndex++;
+
+				while (std::isspace(_FileLine[_CharIndex]))
+				{
+					_CharIndex++;
+				}
+
+				continue;
+			}
+
+			while (!std::isspace(_FileLine[_CharIndex]) && _FileLine[_CharIndex] != '\0')
+			{
+				if (_FileLine[_CharIndex] == '\"')
+				{
+					break;
+				}
+
+				_Token += _FileLine[_CharIndex];
+				_CharIndex++;
+			}
+
+			while (std::isspace(_FileLine[_CharIndex]))
+			{
+				_CharIndex++;
+			}
+		}
+
+		if (_LineTokens[0] == "o")
+		{
+			if (_LineTokens.GetSize() != 2)
+			{
+				return false;
+			}
+
+			bool _Error = false;
+
+			BFW_STRING_TYPE _Name = BFW_UTF8_TO_MACHINE(_LineTokens[1], &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			for (size_t _Index = 0; _Index < _Names.GetSize(); _Index++)
+			{
+				if (_Names[_Index] == _Name)
+				{
+					return false;
+				}
+			}
+
+			_Names.PushBack(_Name);
+			_FaceStarts.PushBack(_FacePositions.GetSize());
+			_LineStarts.PushBack(_LinePositions.GetSize());
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "v")
+		{
+			switch (_LineTokens.GetSize())
+			{
+			case 4:
+			{
+				_Positions.PushBack(Math::Vec4(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str()), 1.0f));
+				_Colors.PushBack(Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+				break;
+			}
+			case 5:
+			{
+				_Positions.PushBack(Math::Vec4(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str()), atof(_LineTokens[4].c_str())));
+				_Colors.PushBack(Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+				break;
+			}
+			case 7:
+			{
+				_Positions.PushBack(Math::Vec4(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str()), 1.0f));
+				_Colors.PushBack(Math::Vec4(atof(_LineTokens[4].c_str()), atof(_LineTokens[5].c_str()), atof(_LineTokens[6].c_str()), 1.0f));
+
+				break;
+			}
+			default:
+			{
+				return false;
+			}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "vt")
+		{
+			switch (_LineTokens.GetSize())
+			{
+			case 2:
+			{
+				_TextureCoords.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), 0.0f, 0.0f));
+				break;
+			}
+			case 3:
+			{
+				_TextureCoords.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), 0.0f));
+				break;
+			}
+			case 4:
+			{
+				_TextureCoords.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str())));
+				break;
+			}
+			default:
+			{
+				return false;
+			}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "vn")
+		{
+			if (_LineTokens.GetSize() != 4)
+			{
+				return false;
+			}
+
+			_Normals.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str())));
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "f")
+		{
+			if (_LineTokens.GetSize() < 4)
+			{
+				return false;
+			}
+
+			...;
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "l")
+		{
+			if (_LineTokens.GetSize() < 3)
+			{
+				return false;
+			}
+
+			for (size_t _Index = 1; _Index < _LineTokens.GetSize() - 1; _Index++)
+			{
+				Vector<size_t>& _CurrentLinePositions = _LinePositions.EmplaceBack(Vector<size_t>());
+
+				BFW_STRING_STREAM_TYPE_A(_LineTokens[_Index]) >> _CurrentLinePositions.PushBack(0);
+				BFW_STRING_STREAM_TYPE_A(_LineTokens[_Index + 1]) >> _CurrentLinePositions.PushBack(0);
+
+				_CurrentLinePositions[0]--;
+				_CurrentLinePositions[1]--;
+			}
+
+			continue;
+		}
+	}
+
+	if (_FileIndex != _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	if (_Names.GetSize() == 0)
+	{
+		_Names.EmplaceBack(BFW_STRING_PREFIX("Default"));
+		_FaceStarts.PushBack(0);
+		_LineStarts.PushBack(0);
+	}
+
+	_FaceStarts.PushBack(_FacePositions.GetSize());
+	_LineStarts.PushBack(_LinePositions.GetSize());
+
+
+
+	return true;
+}
+
+BFW::Assets::Mesh& BFW::Assets::WaveFrontObj::Push(const BFW_CHAR_TYPE* _Name, const Mesh& _Data)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < MeshNames.GetSize(); _Index++)
+	{
+		if (MeshNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		MeshNames.EmplaceBack(_Name);
+	}
+
+	return Meshes.Push(_Name, _Data);
+}
+
+BFW::Assets::Mesh& BFW::Assets::WaveFrontObj::Emplace(const BFW_CHAR_TYPE* _Name, Mesh&& _Data)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < MeshNames.GetSize(); _Index++)
+	{
+		if (MeshNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		MeshNames.EmplaceBack(_Name);
+	}
+
+	return Meshes.Emplace(_Name, (Mesh&&)(_Data));
+}
+
+void BFW::Assets::WaveFrontObj::Erase(const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	for (size_t _Index = 0; _Index < MeshNames.GetSize(); _Index++)
+	{
+		if (MeshNames[_Index] == _Name)
+		{
+			MeshNames.Erase(_Index);
+			break;
+		}
+	}
+
+	Meshes.Erase(_Name);
+}
+
+void BFW::Assets::WaveFrontObj::Clear()
+{
+	MeshNames.Clear();
+	Meshes.Clear();
+}
+
+BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save() const
+{
+	if (!MeshNames.GetSize())
+	{
+		return FileContent();
+	}
+
+	...;
+
+	BFW_STRING_STREAM_TYPE_A _Stream;
+
+	...;
+
+	BFW_STRING_TYPE_A _String = _Stream.str();
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Create(_String.size() + 1))
+	{
+		return FileContent();
+	}
+
+	_FileContent[_FileContent.GetLength() - 1] = '\0';
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		_FileContent[_Index] = _String[_Index];
+	}
+
+	return _FileContent;
+}
+
+const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMeshNames() const
+{
+	return MeshNames;
+}
+
+BFW::Assets::Mesh* BFW::Assets::WaveFrontObj::GetData(const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Meshes.GetData(_Name);
+}
+
+const BFW::Assets::Mesh* BFW::Assets::WaveFrontObj::GetData(const BFW_CHAR_TYPE* _Name) const
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Meshes.GetData(_Name);
+}
+
+BFW::Assets::Mesh& BFW::Assets::WaveFrontObj::operator[] (const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Meshes[_Name];
+}
+
+const BFW::Assets::Mesh& BFW::Assets::WaveFrontObj::operator[] (const BFW_CHAR_TYPE* _Name) const
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Meshes[_Name];
+}
+
+BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (const WaveFrontObj& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	MeshNames = _Other.MeshNames;
+	Meshes = _Other.Meshes;
+
+	return *this;
+}
+
+BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	MeshNames = (Vector<BFW_STRING_TYPE>&&)(MeshNames);
+	Meshes = (Trie<Mesh>&&)(Meshes);
+
+	return *this;
+}
+
+
+
 BFW::Assets::JsonObjectData::JsonObjectData() : Object(), Tags()
 {
 
@@ -4091,7 +4933,7 @@ const bool BFW::Assets::Json::Load(const FileContent& _FileContent)
 		_CurrentPos++;
 	}
 
-	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != '\0')
+	if (_CurrentPos != _FileContent.GetLength() - 1)
 	{
 		*this = Json();
 		return false;
@@ -4130,7 +4972,7 @@ void BFW::Assets::Json::SetNumber(const float _NumberValue)
 	ObjectDataValue = JsonObjectData();
 }
 
-void BFW::Assets::Json::SetString(const BFW_STRING_TYPE_A _StringValue)
+void BFW::Assets::Json::SetString(const BFW_STRING_VIEW_TYPE_A& _StringValue)
 {
 	Type = _StringJsonType;
 	BoolValue = false;
@@ -4325,12 +5167,12 @@ BFW::Assets::Json& BFW::Assets::Json::operator= (Json&& _Other) noexcept
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedHdrs(), QueuedWaves(), QueuedJsons(), QueuedResourceBitMaps(), QueuedResourceHdrs(), QueuedResourceWaves(), QueuedResourceJsons(), LoadedBitMaps(), LoadedHdrs(), LoadedWaves(), LoadedJsons(), LoadedResourceBitMaps(), LoadedResourceHdrs(), LoadedResourceWaves(), LoadedResourceJsons(), CachedBitMapNames(), CachedHdrNames(), CachedWaveNames(), CachedJsonNames(), CachedBitMaps(), CachedHdrs(), CachedWaves(), CachedJsons(), LastWriteBitMaps(), LastWriteHdrs(), LastWriteWaves(), LastWriteJsons(), CachedResourceBitMapNames(), CachedResourceHdrNames(), CachedResourceWaveNames(), CachedResourceJsonNames(), CachedResourceBitMaps(), CachedResourceHdrs(), CachedResourceWaves(), CachedResourceJsons()
+BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedHdrs(), QueuedWaves(), QueuedWaveFrontObjs(), QueuedGLSLs(), QueuedJsons(), QueuedResourceBitMaps(), QueuedResourceHdrs(), QueuedResourceWaves(), QueuedResourceWaveFrontObjs(), QueuedResourceGLSLs(), QueuedResourceJsons(), LoadedBitMaps(), LoadedHdrs(), LoadedWaves(), LoadedWaveFrontObjs(), LoadedGLSLs(), LoadedJsons(), LoadedResourceBitMaps(), LoadedResourceHdrs(), LoadedResourceWaves(), LoadedResourceWaveFrontObjs(), LoadedResourceGLSLs(), LoadedResourceJsons(), CachedBitMapNames(), CachedHdrNames(), CachedWaveNames(), CachedWaveFrontObjNames(), CachedGLSLNames(), CachedJsonNames(), CachedBitMaps(), CachedHdrs(), CachedWaves(), CachedWaveFrontObjs(), CachedGLSLs(), CachedJsons(), LastWriteBitMaps(), LastWriteHdrs(), LastWriteWaves(), LastWriteWaveFrontObjs(), LastWriteGLSLs(), LastWriteJsons(), CachedResourceBitMapNames(), CachedResourceHdrNames(), CachedResourceWaveNames(), CachedResourceWaveFrontObjNames(), CachedResourceGLSLNames(), CachedResourceJsonNames(), CachedResourceBitMaps(), CachedResourceHdrs(), CachedResourceWaves(), CachedResourceWaveFrontObjs(), CachedResourceGLSLs(), CachedResourceJsons()
 {
 
 }
 
-BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), QueuedResourceBitMaps((Vector<size_t>&&)(_Other.QueuedResourceBitMaps)), QueuedResourceHdrs((Vector<size_t>&&)(_Other.QueuedResourceHdrs)), QueuedResourceWaves((Vector<size_t>&&)(_Other.QueuedResourceWaves)), QueuedResourceJsons((Vector<size_t>&&)(_Other.QueuedResourceJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), LoadedResourceBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps)), LoadedResourceHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs)), LoadedResourceWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves)), LoadedResourceJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)), CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)), CachedResourceHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames)), CachedResourceWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames)), CachedResourceJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames)), CachedResourceBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps)), CachedResourceHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs)), CachedResourceWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves)), CachedResourceJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons))
+BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedWaveFrontObjs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaveFrontObjs)), QueuedGLSLs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedGLSLs)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), QueuedResourceBitMaps((Vector<size_t>&&)(_Other.QueuedResourceBitMaps)), QueuedResourceHdrs((Vector<size_t>&&)(_Other.QueuedResourceHdrs)), QueuedResourceWaves((Vector<size_t>&&)(_Other.QueuedResourceWaves)), QueuedResourceWaveFrontObjs((Vector<size_t>&&)(_Other.QueuedResourceWaveFrontObjs)), QueuedResourceGLSLs((Vector<size_t>&&)(_Other.QueuedResourceGLSLs)), QueuedResourceJsons((Vector<size_t>&&)(_Other.QueuedResourceJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedWaveFrontObjs((Trie<SharedPointer<WaveFrontObj>>&&)(_Other.LoadedWaveFrontObjs)), LoadedGLSLs((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedGLSLs)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), LoadedResourceBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps)), LoadedResourceHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs)), LoadedResourceWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves)), LoadedResourceWaveFrontObjs((Trie<SharedPointer<WaveFrontObj>>&&)(_Other.LoadedResourceWaveFrontObjs)), LoadedResourceGLSLs((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceGLSLs)), LoadedResourceJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedWaveFrontObjNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveFrontObjNames)), CachedGLSLNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedGLSLNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedWaveFrontObjs((Trie<WeakPointer<WaveFrontObj>>&&)(_Other.CachedWaveFrontObjs)), CachedGLSLs((Trie<WeakPointer<FileContent>>&&)(_Other.CachedGLSLs)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteWaveFrontObjs((Trie<uint64_t>&&)(_Other.LastWriteWaveFrontObjs)), LastWriteGLSLs((Trie<uint64_t>&&)(_Other.LastWriteGLSLs)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)), CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)), CachedResourceHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames)), CachedResourceWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames)), CachedResourceWaveFrontObjNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveFrontObjNames)), CachedResourceGLSLNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceGLSLNames)), CachedResourceJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames)), CachedResourceBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps)), CachedResourceHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs)), CachedResourceWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves)), CachedResourceWaveFrontObjs((Trie<WeakPointer<WaveFrontObj>>&&)(_Other.CachedResourceWaveFrontObjs)), CachedResourceGLSLs((Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceGLSLs)), CachedResourceJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons))
 {
 
 }
@@ -4339,12 +5181,12 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector
 
 #if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
 
-BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedHdrs(), QueuedWaves(), QueuedJsons(), LoadedBitMaps(), LoadedHdrs(), LoadedWaves(), LoadedJsons(), CachedBitMapNames(), CachedHdrNames(), CachedWaveNames(), CachedJsonNames(), CachedBitMaps(), CachedHdrs(), CachedWaves(), CachedJsons(), LastWriteBitMaps(), LastWriteHdrs(), LastWriteWaves(), LastWriteJsons()
+BFW::Assets::Manager::Manager() : QueuedBitMaps(), QueuedHdrs(), QueuedWaves(), QueuedWaveFrontObjs(), QueuedGLSLs(), QueuedJsons(), LoadedBitMaps(), LoadedHdrs(), LoadedWaves(), LoadedWaveFrontObjs(), LoadedGLSLs(), LoadedJsons(), CachedBitMapNames(), CachedHdrNames(), CachedWaveNames(), CachedWaveFrontObjNames(), CachedGLSLNames(), CachedJsonNames(), CachedBitMaps(), CachedHdrs(), CachedWaves(), CachedWaveFrontObjs(), CachedGLSLs(), CachedJsons(), LastWriteBitMaps(), LastWriteHdrs(), LastWriteWaves(), LastWriteWaveFrontObjs(), LastWriteGLSLs(), LastWriteJsons()
 {
 
 }
 
-BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons))
+BFW::Assets::Manager::Manager(Manager&& _Other) noexcept : QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)), QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)), QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)), QueuedWaveFrontObjs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaveFrontObjs)), QueuedGLSLs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedGLSLs)), QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)), LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)), LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)), LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)), LoadedWaveFrontObjs((Trie<SharedPointer<WaveFrontObj>>&&)(_Other.LoadedWaveFrontObjs)), LoadedGLSLs((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedGLSLs)), LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)), CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)), CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)), CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)), CachedWaveFrontObjNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveFrontObjNames)), CachedGLSLNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedGLSLNames)), CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)), CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)), CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)), CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)), CachedWaveFrontObjs((Trie<WeakPointer<WaveFrontObj>>&&)(_Other.CachedWaveFrontObjs)), CachedGLSLs((Trie<WeakPointer<FileContent>>&&)(_Other.CachedGLSLs)), CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)), LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)), LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)), LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)), LastWriteWaveFrontObjs((Trie<uint64_t>&&)(_Other.LastWriteWaveFrontObjs)), LastWriteGLSLs((Trie<uint64_t>&&)(_Other.LastWriteGLSLs)), LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons))
 {
 
 }
@@ -4429,6 +5271,56 @@ void BFW::Assets::Manager::QueueWave(const BFW_CHAR_TYPE* _Name)
 	}
 
 	QueuedWaves.EmplaceBack(_Name);
+}
+
+void BFW::Assets::Manager::QueueWaveFrontObj(const BFW_CHAR_TYPE* _Name)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < QueuedWaveFrontObjs.GetSize(); _Index++)
+	{
+		if (QueuedWaveFrontObjs[_Index] == _Name)
+		{
+			_Found = true;
+		}
+	}
+
+	if (_Found)
+	{
+		return;
+	}
+
+	QueuedWaveFrontObjs.EmplaceBack(_Name);
+}
+
+void BFW::Assets::Manager::QueueGLSL(const BFW_CHAR_TYPE* _Name)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < QueuedGLSLs.GetSize(); _Index++)
+	{
+		if (QueuedGLSLs[_Index] == _Name)
+		{
+			_Found = true;
+		}
+	}
+
+	if (_Found)
+	{
+		return;
+	}
+
+	QueuedGLSLs.EmplaceBack(_Name);
 }
 
 void BFW::Assets::Manager::QueueJson(const BFW_CHAR_TYPE* _Name)
@@ -4516,6 +5408,46 @@ void BFW::Assets::Manager::QueueResourceWave(const size_t _Id)
 	}
 
 	QueuedResourceWaves.PushBack(_Id);
+}
+
+void BFW::Assets::Manager::QueueResourceWaveFrontObj(const size_t _Id)
+{
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < QueuedResourceWaveFrontObjs.GetSize(); _Index++)
+	{
+		if (QueuedResourceWaveFrontObjs[_Index] == _Id)
+		{
+			_Found = true;
+		}
+	}
+
+	if (_Found)
+	{
+		return;
+	}
+
+	QueuedResourceWaveFrontObjs.PushBack(_Id);
+}
+
+void BFW::Assets::Manager::QueueResourceGLSL(const size_t _Id)
+{
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < QueuedResourceGLSLs.GetSize(); _Index++)
+	{
+		if (QueuedResourceGLSLs[_Index] == _Id)
+		{
+			_Found = true;
+		}
+	}
+
+	if (_Found)
+	{
+		return;
+	}
+
+	QueuedResourceGLSLs.PushBack(_Id);
 }
 
 void BFW::Assets::Manager::QueueResourceJson(const size_t _Id)
@@ -4840,6 +5772,196 @@ void BFW::Assets::Manager::Flush()
 				QueuedWaves[_Index].c_str(),
 				*LoadedWaves.GetData(QueuedWaves[_Index].c_str()),
 				std::ref(*LastWriteWaves.GetData(QueuedWaves[_Index].c_str()))
+			)
+		);
+	}
+
+	for (size_t _Index = 0; _Index < QueuedWaveFrontObjs.GetSize(); _Index++)
+	{
+		if (LoadedWaveFrontObjs.GetData(QueuedWaveFrontObjs[_Index].c_str()))
+		{
+			QueuedWaveFrontObjs.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		{
+			WeakPointer<WaveFrontObj>* _CachedWeak = CachedWaveFrontObjs.GetData(QueuedWaveFrontObjs[_Index].c_str());
+
+			if (_CachedWeak)
+			{
+				SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+				if ((WaveFrontObj*)(_CachedShared))
+				{
+					LoadedWaveFrontObjs.Emplace(QueuedWaveFrontObjs[_Index].c_str(), (SharedPointer<WaveFrontObj>&&)(_CachedShared));
+					QueuedWaveFrontObjs.Erase(_Index);
+					_Index--;
+					continue;
+				}
+			}
+		}
+
+		SharedPointer<WaveFrontObj> _Asset = SharedPointer<WaveFrontObj>::MakeShared(WaveFrontObj());
+
+		CachedWaveFrontObjs.Emplace(QueuedWaveFrontObjs[_Index].c_str(), _Asset);
+		LastWriteWaveFrontObjs.Push(QueuedWaveFrontObjs[_Index].c_str(), 0);
+		LoadedWaveFrontObjs.Emplace(QueuedWaveFrontObjs[_Index].c_str(), (SharedPointer<WaveFrontObj>&&)(_Asset));
+
+		bool _Found = false;
+
+		for (size_t _NameIndex = 0; _NameIndex < CachedWaveFrontObjNames.GetSize(); _NameIndex++)
+		{
+			if (CachedWaveFrontObjNames[_NameIndex] == QueuedWaveFrontObjs[_Index])
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			CachedWaveFrontObjNames.PushBack(QueuedWaveFrontObjs[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < QueuedWaveFrontObjs.GetSize(); _Index++)
+	{
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](bool& _Fail, const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj> _Asset, uint64_t& _LastWrite)
+				{
+					std::ifstream _InStream;
+
+					_InStream.open(_Name, std::ios::binary);
+
+					if (!_InStream.is_open())
+					{
+						_Fail = true;
+						return;
+					}
+
+					try
+					{
+						_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+					}
+					catch (...)
+					{
+						_Fail = true;
+						return;
+					}
+
+					FileContent _FileContent;
+
+					if (!_FileContent.Load(_InStream))
+					{
+						_Fail = true;
+						return;
+					}
+
+					if (!_Asset->Load(_FileContent))
+					{
+						_Fail = true;
+						return;
+					}
+				},
+				std::ref(_Fail),
+				QueuedWaveFrontObjs[_Index].c_str(),
+				*LoadedWaveFrontObjs.GetData(QueuedWaveFrontObjs[_Index].c_str()),
+				std::ref(*LastWriteWaveFrontObjs.GetData(QueuedWaveFrontObjs[_Index].c_str()))
+			)
+		);
+	}
+
+	for (size_t _Index = 0; _Index < QueuedGLSLs.GetSize(); _Index++)
+	{
+		if (LoadedGLSLs.GetData(QueuedGLSLs[_Index].c_str()))
+		{
+			QueuedGLSLs.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		{
+			WeakPointer<FileContent>* _CachedWeak = CachedGLSLs.GetData(QueuedGLSLs[_Index].c_str());
+
+			if (_CachedWeak)
+			{
+				SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+				if ((FileContent*)(_CachedShared))
+				{
+					LoadedGLSLs.Emplace(QueuedGLSLs[_Index].c_str(), (SharedPointer<FileContent>&&)(_CachedShared));
+					QueuedGLSLs.Erase(_Index);
+					_Index--;
+					continue;
+				}
+			}
+		}
+
+		SharedPointer<FileContent> _Asset = SharedPointer<FileContent>::MakeShared(FileContent());
+
+		CachedGLSLs.Emplace(QueuedGLSLs[_Index].c_str(), _Asset);
+		LastWriteGLSLs.Push(QueuedGLSLs[_Index].c_str(), 0);
+		LoadedGLSLs.Emplace(QueuedGLSLs[_Index].c_str(), (SharedPointer<FileContent>&&)(_Asset));
+
+		bool _Found = false;
+
+		for (size_t _NameIndex = 0; _NameIndex < CachedGLSLNames.GetSize(); _NameIndex++)
+		{
+			if (CachedGLSLNames[_NameIndex] == QueuedGLSLs[_Index])
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			CachedGLSLNames.PushBack(QueuedGLSLs[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < QueuedGLSLs.GetSize(); _Index++)
+	{
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](bool& _Fail, const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset, uint64_t& _LastWrite)
+				{
+					std::ifstream _InStream;
+
+					_InStream.open(_Name, std::ios::binary);
+
+					if (!_InStream.is_open())
+					{
+						_Fail = true;
+						return;
+					}
+
+					try
+					{
+						_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+					}
+					catch (...)
+					{
+						_Fail = true;
+						return;
+					}
+
+					if (!_Asset->Load(_InStream))
+					{
+						_Fail = true;
+						return;
+					}
+				},
+				std::ref(_Fail),
+				QueuedGLSLs[_Index].c_str(),
+				*LoadedGLSLs.GetData(QueuedGLSLs[_Index].c_str()),
+				std::ref(*LastWriteGLSLs.GetData(QueuedGLSLs[_Index].c_str()))
 			)
 		);
 	}
@@ -5176,6 +6298,152 @@ void BFW::Assets::Manager::Flush()
 		);
 	}
 
+	for (size_t _Index = 0; _Index < QueuedResourceWaveFrontObjs.GetSize(); _Index++)
+	{
+		if (LoadedResourceWaveFrontObjs.GetData(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index])))
+		{
+			QueuedResourceWaveFrontObjs.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		{
+			WeakPointer<WaveFrontObj>* _CachedWeak = CachedResourceWaveFrontObjs.GetData(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]));
+
+			if (_CachedWeak)
+			{
+				SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+				if ((WaveFrontObj*)(_CachedShared))
+				{
+					LoadedResourceWaveFrontObjs.Emplace(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]), (SharedPointer<WaveFrontObj>&&)(_CachedShared));
+					QueuedResourceWaveFrontObjs.Erase(_Index);
+					_Index--;
+					continue;
+				}
+			}
+		}
+
+		SharedPointer<WaveFrontObj> _Asset = SharedPointer<WaveFrontObj>::MakeShared(WaveFrontObj());
+
+		CachedResourceWaveFrontObjs.Emplace(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]), _Asset);
+		LoadedResourceWaveFrontObjs.Emplace(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]), (SharedPointer<WaveFrontObj>&&)(_Asset));
+
+		bool _Found = false;
+
+		for (size_t _NameIndex = 0; _NameIndex < CachedResourceWaveFrontObjNames.GetSize(); _NameIndex++)
+		{
+			if (CachedResourceWaveFrontObjNames[_NameIndex] == BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]))
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			CachedResourceWaveFrontObjNames.PushBack(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]));
+		}
+	}
+
+	for (size_t _Index = 0; _Index < QueuedResourceWaveFrontObjs.GetSize(); _Index++)
+	{
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](bool& _Fail, const size_t _Id, SharedPointer<WaveFrontObj> _Asset)
+				{
+					FileContent _FileContent;
+
+					if (!_FileContent.Load(BFW_WFOBJ_RESOURCE, _Id))
+					{
+						_Fail = true;
+						return;
+					}
+
+					if (!_Asset->Load(_FileContent))
+					{
+						_Fail = true;
+						return;
+					}
+				},
+				std::ref(_Fail),
+				QueuedResourceWaveFrontObjs[_Index],
+				*LoadedResourceWaveFrontObjs.GetData(BFW_TO_STRING_PTR(QueuedResourceWaveFrontObjs[_Index]))
+			)
+		);
+	}
+
+	for (size_t _Index = 0; _Index < QueuedResourceGLSLs.GetSize(); _Index++)
+	{
+		if (LoadedResourceGLSLs.GetData(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index])))
+		{
+			QueuedResourceGLSLs.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		{
+			WeakPointer<FileContent>* _CachedWeak = CachedResourceGLSLs.GetData(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]));
+
+			if (_CachedWeak)
+			{
+				SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+				if ((FileContent*)(_CachedShared))
+				{
+					LoadedResourceGLSLs.Emplace(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]), (SharedPointer<FileContent>&&)(_CachedShared));
+					QueuedResourceGLSLs.Erase(_Index);
+					_Index--;
+					continue;
+				}
+			}
+		}
+
+		SharedPointer<FileContent> _Asset = SharedPointer<FileContent>::MakeShared(FileContent());
+
+		CachedResourceGLSLs.Emplace(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]), _Asset);
+		LoadedResourceGLSLs.Emplace(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]), (SharedPointer<FileContent>&&)(_Asset));
+
+		bool _Found = false;
+
+		for (size_t _NameIndex = 0; _NameIndex < CachedResourceGLSLNames.GetSize(); _NameIndex++)
+		{
+			if (CachedResourceGLSLNames[_NameIndex] == BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]))
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			CachedResourceGLSLNames.PushBack(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]));
+		}
+	}
+
+	for (size_t _Index = 0; _Index < QueuedResourceGLSLs.GetSize(); _Index++)
+	{
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](bool& _Fail, const size_t _Id, SharedPointer<FileContent> _Asset)
+				{
+					if (!_Asset->Load(BFW_GLSL_RESOURCE, _Id))
+					{
+						_Fail = true;
+						return;
+					}
+				},
+				std::ref(_Fail),
+				QueuedResourceGLSLs[_Index],
+				*LoadedResourceGLSLs.GetData(BFW_TO_STRING_PTR(QueuedResourceGLSLs[_Index]))
+			)
+		);
+	}
+
 	for (size_t _Index = 0; _Index < QueuedResourceJsons.GetSize(); _Index++)
 	{
 		if (LoadedResourceJsons.GetData(BFW_TO_STRING_PTR(QueuedResourceJsons[_Index])))
@@ -5268,6 +6536,8 @@ void BFW::Assets::Manager::Flush()
 	QueuedBitMaps.Clear();
 	QueuedHdrs.Clear();
 	QueuedWaves.Clear();
+	QueuedWaveFrontObjs.Clear();
+	QueuedGLSLs.Clear();
 	QueuedJsons.Clear();
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -5275,6 +6545,8 @@ void BFW::Assets::Manager::Flush()
 	QueuedResourceBitMaps.Clear();
 	QueuedResourceHdrs.Clear();
 	QueuedResourceWaves.Clear();
+	QueuedResourceWaveFrontObjs.Clear();
+	QueuedResourceGLSLs.Clear();
 	QueuedResourceJsons.Clear();
 
 #endif
@@ -5358,6 +6630,60 @@ void BFW::Assets::Manager::AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPoin
 	if (!_Found)
 	{
 		CachedWaveNames.PushBack(_Name);
+	}
+}
+
+void BFW::Assets::Manager::AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) != BFW_STRING_PREFIX("Dynamic/") || (WaveFrontObj*)(_Asset))
+	{
+		throw nullptr;
+	}
+
+	LoadedWaveFrontObjs.Push(_Name, _Asset);
+	CachedWaveFrontObjs.Emplace(_Name, _Asset);
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedWaveFrontObjNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedWaveFrontObjNames.PushBack(_Name);
+	}
+}
+
+void BFW::Assets::Manager::AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) != BFW_STRING_PREFIX("Dynamic/") || (FileContent*)(_Asset))
+	{
+		throw nullptr;
+	}
+
+	LoadedGLSLs.Push(_Name, _Asset);
+	CachedGLSLs.Emplace(_Name, _Asset);
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedGLSLNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedGLSLNames.PushBack(_Name);
 	}
 }
 
@@ -5463,6 +6789,58 @@ void BFW::Assets::Manager::AddDynamicWaveRef(const BFW_CHAR_TYPE* _Name, SharedP
 	if (!_Found)
 	{
 		CachedWaveNames.PushBack(_Name);
+	}
+}
+
+void BFW::Assets::Manager::AddDynamicWaveFrontObjRef(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) != BFW_STRING_PREFIX("Dynamic/") || (WaveFrontObj*)(_Asset))
+	{
+		throw nullptr;
+	}
+
+	CachedWaveFrontObjs.Emplace(_Name, _Asset);
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedWaveFrontObjNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedWaveFrontObjNames.PushBack(_Name);
+	}
+}
+
+void BFW::Assets::Manager::AddDynamicGLSLRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+{
+	if (BFW_STRING_TYPE(_Name).substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) != BFW_STRING_PREFIX("Dynamic/") || (FileContent*)(_Asset))
+	{
+		throw nullptr;
+	}
+
+	CachedGLSLs.Emplace(_Name, _Asset);
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedGLSLNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		CachedGLSLNames.PushBack(_Name);
 	}
 }
 
@@ -5705,6 +7083,137 @@ void BFW::Assets::Manager::Update()
 		);
 	}
 
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedWaveFrontObjNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
+		{
+			continue;
+		}
+
+		uint64_t _LastWrite = 0;
+
+		try
+		{
+			_LastWrite = std::filesystem::directory_entry(CachedWaveFrontObjNames[_Index]).last_write_time().time_since_epoch().count();
+		}
+		catch (...)
+		{
+			continue;
+		}
+
+		uint64_t& _OldLastWrite = *LastWriteWaveFrontObjs.GetData(CachedWaveFrontObjNames[_Index].c_str());
+
+		if (_LastWrite == _OldLastWrite)
+		{
+			continue;
+		}
+
+		SharedPointer<WaveFrontObj> _CachedShared = CachedWaveFrontObjs.GetData(CachedWaveFrontObjNames[_Index].c_str())->Lock();
+
+		if (!(WaveFrontObj*)(_CachedShared))
+		{
+			continue;
+		}
+
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj> _CachedShared, uint64_t& _OldLastWrite, const uint64_t _LastWrite)
+				{
+					std::ifstream _InStream;
+
+					_InStream.open(_Name, std::ios::binary);
+
+					if (!_InStream.is_open())
+					{
+						return;
+					}
+
+					FileContent _FileContent;
+
+					if (!_FileContent.Load(_InStream))
+					{
+						return;
+					}
+
+					if (!_CachedShared->Load(_FileContent))
+					{
+						return;
+					}
+
+					_OldLastWrite = _LastWrite;
+				},
+				CachedWaveFrontObjNames[_Index].c_str(),
+				_CachedShared,
+				std::ref(_OldLastWrite),
+				_LastWrite
+			)
+		);
+	}
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedGLSLNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
+		{
+			continue;
+		}
+
+		uint64_t _LastWrite = 0;
+
+		try
+		{
+			_LastWrite = std::filesystem::directory_entry(CachedGLSLNames[_Index]).last_write_time().time_since_epoch().count();
+		}
+		catch (...)
+		{
+			continue;
+		}
+
+		uint64_t& _OldLastWrite = *LastWriteGLSLs.GetData(CachedGLSLNames[_Index].c_str());
+
+		if (_LastWrite == _OldLastWrite)
+		{
+			continue;
+		}
+
+		SharedPointer<FileContent> _CachedShared = CachedGLSLs.GetData(CachedGLSLNames[_Index].c_str())->Lock();
+
+		if (!(FileContent*)(_CachedShared))
+		{
+			continue;
+		}
+
+		_Threads.EmplaceBack
+		(
+			std::thread
+			(
+				[](const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _CachedShared, uint64_t& _OldLastWrite, const uint64_t _LastWrite)
+				{
+					std::ifstream _InStream;
+
+					_InStream.open(_Name, std::ios::binary);
+
+					if (!_InStream.is_open())
+					{
+						return;
+					}
+
+					if (!_CachedShared->Load(_InStream))
+					{
+						return;
+					}
+
+					_OldLastWrite = _LastWrite;
+				},
+				CachedGLSLNames[_Index].c_str(),
+				_CachedShared,
+				std::ref(_OldLastWrite),
+				_LastWrite
+			)
+		);
+	}
+
 	for (size_t _Index = 0; _Index < CachedJsonNames.GetSize(); _Index++)
 	{
 		if (CachedJsonNames[_Index].substr(0, BFW_STRING_TYPE(BFW_STRING_PREFIX("Dynamic/")).length()) == BFW_STRING_PREFIX("Dynamic/"))
@@ -5828,6 +7337,38 @@ void BFW::Assets::Manager::ReleaseWave(const BFW_CHAR_TYPE* _Name)
 	}
 }
 
+void BFW::Assets::Manager::ReleaseWaveFrontObj(const BFW_CHAR_TYPE* _Name)
+{
+	LoadedWaveFrontObjs.Erase(_Name);
+	CachedWaveFrontObjs.Erase(_Name);
+	LastWriteWaveFrontObjs.Erase(_Name);
+
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedWaveFrontObjNames[_Index] == _Name)
+		{
+			CachedWaveFrontObjNames.Erase(_Index);
+			break;
+		}
+	}
+}
+
+void BFW::Assets::Manager::ReleaseGLSL(const BFW_CHAR_TYPE* _Name)
+{
+	LoadedGLSLs.Erase(_Name);
+	CachedGLSLs.Erase(_Name);
+	LastWriteGLSLs.Erase(_Name);
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedGLSLNames[_Index] == _Name)
+		{
+			CachedGLSLNames.Erase(_Index);
+			break;
+		}
+	}
+}
+
 void BFW::Assets::Manager::ReleaseJson(const BFW_CHAR_TYPE* _Name)
 {
 	LoadedJsons.Erase(_Name);
@@ -5886,6 +7427,36 @@ void BFW::Assets::Manager::ReleaseResourceWave(const size_t _Id)
 		if (CachedResourceWaveNames[_Index] == BFW_TO_STRING_PTR(_Id))
 		{
 			CachedResourceWaveNames.Erase(_Index);
+			break;
+		}
+	}
+}
+
+void BFW::Assets::Manager::ReleaseResourceWaveFrontObj(const size_t _Id)
+{
+	LoadedResourceWaveFrontObjs.Erase(BFW_TO_STRING_PTR(_Id));
+	CachedResourceWaveFrontObjs.Erase(BFW_TO_STRING_PTR(_Id));
+
+	for (size_t _Index = 0; _Index < CachedResourceWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedResourceWaveFrontObjNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			CachedResourceWaveFrontObjNames.Erase(_Index);
+			break;
+		}
+	}
+}
+
+void BFW::Assets::Manager::ReleaseResourceGLSL(const size_t _Id)
+{
+	LoadedResourceGLSLs.Erase(BFW_TO_STRING_PTR(_Id));
+	CachedResourceGLSLs.Erase(BFW_TO_STRING_PTR(_Id));
+
+	for (size_t _Index = 0; _Index < CachedResourceGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedResourceGLSLNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			CachedResourceGLSLNames.Erase(_Index);
 			break;
 		}
 	}
@@ -6322,6 +7893,268 @@ const BFW::SharedPointer<BFW::Assets::Wave> BFW::Assets::Manager::GetWave(const 
 	return _Shared;
 }
 
+BFW::SharedPointer<BFW::Assets::WaveFrontObj> BFW::Assets::Manager::GetWaveFrontObj(const BFW_CHAR_TYPE* _Name)
+{
+	WeakPointer<WaveFrontObj>* _CachedWeak = CachedWaveFrontObjs.GetData(_Name);
+
+	if (_CachedWeak)
+	{
+		SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+		if ((WaveFrontObj*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	std::ifstream _InStream;
+
+	_InStream.open(_Name, std::ios::binary);
+
+	if (!_InStream.is_open())
+	{
+		throw nullptr;
+	}
+
+	uint64_t _LastWrite = 0;
+
+	try
+	{
+		_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(_InStream))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<WaveFrontObj> _Shared = SharedPointer<WaveFrontObj>::MakeShared(WaveFrontObj());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedWaveFrontObjs.Emplace(_Name, _Shared);
+	LastWriteWaveFrontObjs.Push(_Name, _LastWrite);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedWaveFrontObjNames[_Index] == _Name)
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedWaveFrontObjNames.PushBack(_Name);
+	}
+
+	return _Shared;
+}
+
+const BFW::SharedPointer<BFW::Assets::WaveFrontObj> BFW::Assets::Manager::GetWaveFrontObj(const BFW_CHAR_TYPE* _Name) const
+{
+	WeakPointer<WaveFrontObj>* _CachedWeak = CachedWaveFrontObjs.GetData(_Name);
+
+	if (_CachedWeak)
+	{
+		SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+		if ((WaveFrontObj*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	std::ifstream _InStream;
+
+	_InStream.open(_Name, std::ios::binary);
+
+	if (!_InStream.is_open())
+	{
+		throw nullptr;
+	}
+
+	uint64_t _LastWrite = 0;
+
+	try
+	{
+		_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(_InStream))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<WaveFrontObj> _Shared = SharedPointer<WaveFrontObj>::MakeShared(WaveFrontObj());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedWaveFrontObjs.Emplace(_Name, _Shared);
+	LastWriteWaveFrontObjs.Push(_Name, _LastWrite);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedWaveFrontObjNames[_Index] == _Name)
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedWaveFrontObjNames.PushBack(_Name);
+	}
+
+	return _Shared;
+}
+
+BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetGLSL(const BFW_CHAR_TYPE* _Name)
+{
+	WeakPointer<FileContent>* _CachedWeak = CachedGLSLs.GetData(_Name);
+
+	if (_CachedWeak)
+	{
+		SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+		if ((FileContent*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	std::ifstream _InStream;
+
+	_InStream.open(_Name, std::ios::binary);
+
+	if (!_InStream.is_open())
+	{
+		throw nullptr;
+	}
+
+	uint64_t _LastWrite = 0;
+
+	try
+	{
+		_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<FileContent> _Shared = SharedPointer<FileContent>::MakeShared(FileContent());
+
+	if (!_Shared->Load(_InStream))
+	{
+		throw nullptr;
+	}
+
+	CachedGLSLs.Emplace(_Name, _Shared);
+	LastWriteGLSLs.Push(_Name, _LastWrite);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedGLSLNames[_Index] == _Name)
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedGLSLNames.PushBack(_Name);
+	}
+
+	return _Shared;
+}
+
+const BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetGLSL(const BFW_CHAR_TYPE* _Name) const
+{
+	WeakPointer<FileContent>* _CachedWeak = CachedGLSLs.GetData(_Name);
+
+	if (_CachedWeak)
+	{
+		SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+		if ((FileContent*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	std::ifstream _InStream;
+
+	_InStream.open(_Name, std::ios::binary);
+
+	if (!_InStream.is_open())
+	{
+		throw nullptr;
+	}
+
+	uint64_t _LastWrite = 0;
+
+	try
+	{
+		_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+	}
+	catch (...)
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<FileContent> _Shared = SharedPointer<FileContent>::MakeShared(FileContent());
+
+	if (!_Shared->Load(_InStream))
+	{
+		throw nullptr;
+	}
+
+	CachedGLSLs.Emplace(_Name, _Shared);
+	LastWriteGLSLs.Push(_Name, _LastWrite);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedGLSLNames[_Index] == _Name)
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedGLSLNames.PushBack(_Name);
+	}
+
+	return _Shared;
+}
+
 BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetJson(const BFW_CHAR_TYPE* _Name)
 {
 	WeakPointer<Json>* _CachedWeak = CachedJsons.GetData(_Name);
@@ -6750,6 +8583,184 @@ const BFW::SharedPointer<BFW::Assets::Wave> BFW::Assets::Manager::GetResourceWav
 	return _Shared;
 }
 
+BFW::SharedPointer<BFW::Assets::WaveFrontObj> BFW::Assets::Manager::GetResourceWaveFrontObj(const size_t _Id)
+{
+	WeakPointer<WaveFrontObj>* _CachedWeak = CachedResourceWaveFrontObjs.GetData(BFW_TO_STRING_PTR(_Id));
+
+	if (_CachedWeak)
+	{
+		SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+		if ((WaveFrontObj*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(BFW_WFOBJ_RESOURCE, _Id))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<WaveFrontObj> _Shared = SharedPointer<WaveFrontObj>::MakeShared(WaveFrontObj());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedResourceWaveFrontObjs.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedResourceWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedResourceWaveFrontObjNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedResourceWaveFrontObjNames.PushBack(BFW_TO_STRING_PTR(_Id));
+	}
+
+	return _Shared;
+}
+
+const BFW::SharedPointer<BFW::Assets::WaveFrontObj> BFW::Assets::Manager::GetResourceWaveFrontObj(const size_t _Id) const
+{
+	WeakPointer<WaveFrontObj>* _CachedWeak = CachedResourceWaveFrontObjs.GetData(BFW_TO_STRING_PTR(_Id));
+
+	if (_CachedWeak)
+	{
+		SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+		if ((WaveFrontObj*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Load(BFW_WFOBJ_RESOURCE, _Id))
+	{
+		throw nullptr;
+	}
+
+	SharedPointer<WaveFrontObj> _Shared = SharedPointer<WaveFrontObj>::MakeShared(WaveFrontObj());
+
+	if (!_Shared->Load(_FileContent))
+	{
+		throw nullptr;
+	}
+
+	CachedResourceWaveFrontObjs.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedResourceWaveFrontObjNames.GetSize(); _Index++)
+	{
+		if (CachedResourceWaveFrontObjNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedResourceWaveFrontObjNames.PushBack(BFW_TO_STRING_PTR(_Id));
+	}
+
+	return _Shared;
+}
+
+BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetResourceGLSL(const size_t _Id)
+{
+	WeakPointer<FileContent>* _CachedWeak = CachedResourceGLSLs.GetData(BFW_TO_STRING_PTR(_Id));
+
+	if (_CachedWeak)
+	{
+		SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+		if ((FileContent*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	SharedPointer<FileContent> _Shared = SharedPointer<FileContent>::MakeShared(FileContent());
+
+	if (!_Shared->Load(BFW_GLSL_RESOURCE, _Id))
+	{
+		throw nullptr;
+	}
+
+	CachedResourceGLSLs.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedResourceGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedResourceGLSLNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedResourceGLSLNames.PushBack(BFW_TO_STRING_PTR(_Id));
+	}
+
+	return _Shared;
+}
+
+const BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetResourceGLSL(const size_t _Id) const
+{
+	WeakPointer<FileContent>* _CachedWeak = CachedResourceGLSLs.GetData(BFW_TO_STRING_PTR(_Id));
+
+	if (_CachedWeak)
+	{
+		SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+		if ((FileContent*)(_CachedShared))
+		{
+			return _CachedShared;
+		}
+	}
+
+	SharedPointer<FileContent> _Shared = SharedPointer<FileContent>::MakeShared(FileContent());
+
+	if (!_Shared->Load(BFW_GLSL_RESOURCE, _Id))
+	{
+		throw nullptr;
+	}
+
+	CachedResourceGLSLs.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
+
+	bool _FoundName = false;
+
+	for (size_t _Index = 0; _Index < CachedResourceGLSLNames.GetSize(); _Index++)
+	{
+		if (CachedResourceGLSLNames[_Index] == BFW_TO_STRING_PTR(_Id))
+		{
+			_FoundName = true;
+		}
+	}
+
+	if (!_FoundName)
+	{
+		CachedResourceGLSLNames.PushBack(BFW_TO_STRING_PTR(_Id));
+	}
+
+	return _Shared;
+}
+
 BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetResourceJson(const size_t _Id)
 {
 	WeakPointer<Json>* _CachedWeak = CachedResourceJsons.GetData(BFW_TO_STRING_PTR(_Id));
@@ -6860,38 +8871,56 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps);
 	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves);
+	QueuedWaveFrontObjs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaveFrontObjs);
+	QueuedGLSLs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedGLSLs);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
 	QueuedResourceBitMaps = (Vector<size_t>&&)(_Other.QueuedResourceBitMaps);
 	QueuedResourceHdrs = (Vector<size_t>&&)(_Other.QueuedResourceHdrs);
 	QueuedResourceWaves = (Vector<size_t>&&)(_Other.QueuedResourceWaves);
+	QueuedResourceWaveFrontObjs = (Vector<size_t>&&)(_Other.QueuedResourceWaveFrontObjs);
+	QueuedResourceGLSLs = (Vector<size_t>&&)(_Other.QueuedResourceGLSLs);
 	QueuedResourceJsons = (Vector<size_t>&&)(_Other.QueuedResourceJsons);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
 	LoadedHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs);
 	LoadedWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves);
+	LoadedWaveFrontObjs = (Trie<SharedPointer<WaveFrontObj>>&&)(_Other.LoadedWaveFrontObjs);
+	LoadedGLSLs = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedGLSLs);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
 	LoadedResourceBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps);
 	LoadedResourceHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs);
 	LoadedResourceWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves);
+	LoadedResourceWaveFrontObjs = (Trie<SharedPointer<WaveFrontObj>>&&)(_Other.LoadedResourceWaveFrontObjs);
+	LoadedResourceGLSLs = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceGLSLs);
 	LoadedResourceJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
 	CachedHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames);
 	CachedWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames);
+	CachedWaveFrontObjNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveFrontObjNames);
+	CachedGLSLNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedGLSLNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
 	CachedHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs);
 	CachedWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves);
+	CachedWaveFrontObjs = (Trie<WeakPointer<WaveFrontObj>>&&)(_Other.CachedWaveFrontObjs);
+	CachedGLSLs = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedGLSLs);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
 	LastWriteHdrs = (Trie<uint64_t>&&)(_Other.LastWriteHdrs);
 	LastWriteWaves = (Trie<uint64_t>&&)(_Other.LastWriteWaves);
+	LastWriteWaveFrontObjs = (Trie<uint64_t>&&)(_Other.LastWriteWaveFrontObjs);
+	LastWriteGLSLs = (Trie<uint64_t>&&)(_Other.LastWriteGLSLs);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 	CachedResourceBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames);
 	CachedResourceHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames);
 	CachedResourceWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames);
+	CachedResourceWaveFrontObjNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveFrontObjNames);
+	CachedResourceGLSLNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceGLSLNames);
 	CachedResourceJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames);
 	CachedResourceBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps);
 	CachedResourceHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs);
 	CachedResourceWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves);
+	CachedResourceWaveFrontObjs = (Trie<WeakPointer<WaveFrontObj>>&&)(_Other.CachedResourceWaveFrontObjs);
+	CachedResourceGLSLs = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceGLSLs);
 	CachedResourceJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons);
 
 	return *this;
@@ -6911,22 +8940,32 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps);
 	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves);
+	QueuedWaveFrontObjs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaveFrontObjs);
+	QueuedGLSLs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedGLSLs);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
 	LoadedHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs);
 	LoadedWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves);
+	LoadedWaveFrontObjs = (Trie<SharedPointer<WaveFrontObj>>&&)(_Other.LoadedWaveFrontObjs);
+	LoadedGLSLs = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedGLSLs);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
 	CachedHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames);
 	CachedWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames);
+	CachedWaveFrontObjNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveFrontObjNames);
+	CachedGLSLNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedGLSLNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
 	CachedHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs);
 	CachedWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves);
+	CachedWaveFrontObjs = (Trie<WeakPointer<WaveFrontObj>>&&)(_Other.CachedWaveFrontObjs);
+	CachedGLSLs = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedGLSLs);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
 	LastWriteHdrs = (Trie<uint64_t>&&)(_Other.LastWriteHdrs);
 	LastWriteWaves = (Trie<uint64_t>&&)(_Other.LastWriteWaves);
+	LastWriteWaveFrontObjs = (Trie<uint64_t>&&)(_Other.LastWriteWaveFrontObjs);
+	LastWriteGLSLs = (Trie<uint64_t>&&)(_Other.LastWriteGLSLs);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 
 	return *this;
@@ -7003,6 +9042,54 @@ void BFW::Assets::Manager::RefreshCache()
 			CachedWaves.Erase(CachedWaveNames[_Index].c_str());
 			LastWriteWaves.Erase(CachedWaveNames[_Index].c_str());
 			CachedWaveNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < CachedWaveFrontObjNames.GetSize(); _Index++)
+	{
+		WeakPointer<WaveFrontObj>* _CachedWeak = CachedWaveFrontObjs.GetData(CachedWaveFrontObjNames[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			LastWriteWaveFrontObjs.Erase(CachedWaveFrontObjNames[_Index].c_str());
+			CachedWaveFrontObjNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+		if ((WaveFrontObj*)(_CachedShared) == nullptr)
+		{
+			CachedWaveFrontObjs.Erase(CachedWaveFrontObjNames[_Index].c_str());
+			LastWriteWaveFrontObjs.Erase(CachedWaveFrontObjNames[_Index].c_str());
+			CachedWaveFrontObjNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < CachedGLSLNames.GetSize(); _Index++)
+	{
+		WeakPointer<FileContent>* _CachedWeak = CachedGLSLs.GetData(CachedGLSLNames[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			LastWriteGLSLs.Erase(CachedGLSLNames[_Index].c_str());
+			CachedGLSLNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+		if ((FileContent*)(_CachedShared) == nullptr)
+		{
+			CachedGLSLs.Erase(CachedGLSLNames[_Index].c_str());
+			LastWriteGLSLs.Erase(CachedGLSLNames[_Index].c_str());
+			CachedGLSLNames.Erase(_Index);
 			_Index--;
 			continue;
 		}
@@ -7095,6 +9182,50 @@ void BFW::Assets::Manager::RefreshCache()
 		{
 			CachedResourceWaves.Erase(CachedResourceWaveNames[_Index].c_str());
 			CachedResourceWaveNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < CachedResourceWaveFrontObjNames.GetSize(); _Index++)
+	{
+		WeakPointer<WaveFrontObj>* _CachedWeak = CachedResourceWaveFrontObjs.GetData(CachedResourceWaveFrontObjNames[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			CachedResourceWaveFrontObjNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		SharedPointer<WaveFrontObj> _CachedShared = _CachedWeak->Lock();
+
+		if ((WaveFrontObj*)(_CachedShared) == nullptr)
+		{
+			CachedResourceWaveFrontObjs.Erase(CachedResourceWaveFrontObjNames[_Index].c_str());
+			CachedResourceWaveFrontObjNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < CachedResourceGLSLNames.GetSize(); _Index++)
+	{
+		WeakPointer<FileContent>* _CachedWeak = CachedResourceGLSLs.GetData(CachedResourceGLSLNames[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			CachedResourceGLSLNames.Erase(_Index);
+			_Index--;
+			continue;
+		}
+
+		SharedPointer<FileContent> _CachedShared = _CachedWeak->Lock();
+
+		if ((FileContent*)(_CachedShared) == nullptr)
+		{
+			CachedResourceGLSLs.Erase(CachedResourceGLSLNames[_Index].c_str());
+			CachedResourceGLSLNames.Erase(_Index);
 			_Index--;
 			continue;
 		}

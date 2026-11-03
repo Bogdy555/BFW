@@ -517,12 +517,14 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 
 const bool BFW_API BFW::String::IsControlCharacter(const BFW_CHAR_TYPE_A _Char)
 {
-	return (unsigned BFW_CHAR_TYPE_A)(_Char) < 0x20;
+	return (uint8_t)(_Char) < 0x20;
 }
 
 const bool BFW_API BFW::String::IsControlCharacter(const BFW_CHAR_TYPE_W _Char)
 {
-	return _Char < 0x20;
+	BFW_WINDOWS_PLATFORM_CALL(return (uint16_t)(_Char) < 0x20);
+	BFW_LINUX_PLATFORM_CALL(return (uint32_t)(_Char) < 0x20);
+	BFW_ESP32_PLATFORM_CALL(return (uint32_t)(_Char) < 0x20);
 }
 
 const bool BFW_API BFW::String::IsExtendedControlCharacter(const BFW_CHAR_TYPE_A _Char)

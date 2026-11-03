@@ -144,15 +144,15 @@ void BFW_API BFW::Log::Stop()
 
 #ifdef BFW_ESP32_PLATFORM
 
-const bool BFW_API BFW::Log::Init(const size_t _BaudRate, const BFW_STRING_TYPE& _SDCardPath)
+const bool BFW_API BFW::Log::Init(const size_t _BaudRate, const BFW_STRING_VIEW_TYPE _SDCardPath)
 {
 	Serial.begin(_BaudRate);
 
 	BFW_DEBUG_CALL(uint64_t _TimeStamp = Time::GetTimeStamp());
 
-	BFW_DEBUG_CALL(LoggingFile.open(_SDCardPath + BFW_STRING_PREFIX("BFW_Log_LoggingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary));
+	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(_SDCardPath) + BFW_STRING_PREFIX("BFW_Log_LoggingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary));
 
-	BFW_DEBUG_CALL(ProfilingFile.open(_SDCardPath + BFW_STRING_PREFIX("BFW_Log_ProfilingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary));
+	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(_SDCardPath) + BFW_STRING_PREFIX("BFW_Log_ProfilingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary));
 	BFW_DEBUG_CALL
 	(
 		ProfilingJson->SetObject();

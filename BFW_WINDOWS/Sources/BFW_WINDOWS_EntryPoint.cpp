@@ -28,29 +28,18 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
 	}
 
-	std::ifstream _In("D:\\Saves\\Resources\\HDR\\Alexs_Apt_Ref.hdr", std::ios::binary);
-	BFW::Assets::FileContent _FileContent;
-	_FileContent.Load(_In);
+	BFW_WINDOWS::RunTime::Application _Application;
 
-	BFW::Assets::Hdr _Hdr;
-	BFW_LOG_LINE(_Hdr.Load(_FileContent));
+	int32_t _ReturnValue = _Application.Run(_hInstance, _CmdLine, _ShowCmd, BFW_STRING_PREFIX("BFW_WINDOWS_Memory"), BFW_STRING_PREFIX("BFW_WINDOWS_Mutex"));
 
-	std::ofstream _Out("C:\\Users\\Bogdan\\Desktop\\Test.hdr", std::ios::binary);
-	BFW::Assets::FileContent _OutContent = _Hdr.Save();
-	_OutContent.Save(_Out);
-
-	//BFW_WINDOWS::RunTime::Application _Application;
-
-	//int32_t _ReturnValue = _Application.Run(_hInstance, _CmdLine, _ShowCmd, BFW_STRING_PREFIX("BFW_WINDOWS_Memory"), BFW_STRING_PREFIX("BFW_WINDOWS_Mutex"));
-
-	//if (_ReturnValue != BFW::MultiProcessing::_NoErrorReturnValue)
-	//{
-	//	BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
-	//}
+	if (_ReturnValue != BFW::MultiProcessing::_NoErrorReturnValue)
+	{
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
+	}
 
 	BFW::Time::Stop();
 	BFW_DEBUG_CALL(BFW::Log::Stop());
 	BFW::String::Stop();
 
-	return 0;
+	return _ReturnValue;
 }

@@ -217,6 +217,138 @@ namespace BFW
 
 		};
 
+		struct BFW_API TriangleVertexData
+		{
+
+			Math::Vec4 Position;
+			Math::Vec4 Color;
+			Math::Vec3 Normal;
+			Math::Vec3 Tangent;
+			Math::Vec3 TextureCoords;
+
+			TriangleVertexData();
+			TriangleVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color, const Math::Vec3& _Normal, const Math::Vec3& _Tangent, const Math::Vec3& _TextureCoords);
+			TriangleVertexData(const TriangleVertexData& _Other) = default;
+			TriangleVertexData(TriangleVertexData&& _Other) noexcept;
+			~TriangleVertexData();
+			TriangleVertexData& operator= (const TriangleVertexData& _Other) = default;
+			TriangleVertexData& operator= (TriangleVertexData&& _Other) noexcept;
+
+		};
+
+		struct BFW_API TriangleIndexData
+		{
+
+			uint32_t IndexA;
+			uint32_t IndexB;
+			uint32_t IndexC;
+
+			TriangleIndexData();
+			TriangleIndexData(const uint32_t _IndexA, const uint32_t _IndexB, const uint32_t _IndexC);
+			TriangleIndexData(const TriangleIndexData& _Other) = default;
+			TriangleIndexData(TriangleIndexData&& _Other) noexcept;
+			~TriangleIndexData();
+			TriangleIndexData& operator= (const TriangleIndexData& _Other) = default;
+			TriangleIndexData& operator= (TriangleIndexData&& _Other) noexcept;
+
+		};
+
+		struct BFW_API LineVertexData
+		{
+
+			Math::Vec4 Position;
+			Math::Vec4 Color;
+
+			LineVertexData();
+			LineVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color);
+			LineVertexData(const LineVertexData& _Other) = default;
+			LineVertexData(LineVertexData&& _Other) noexcept;
+			~LineVertexData();
+			LineVertexData& operator= (const LineVertexData& _Other) = default;
+			LineVertexData& operator= (LineVertexData&& _Other) noexcept;
+
+		};
+
+		struct BFW_API LineIndexData
+		{
+
+			uint32_t IndexA;
+			uint32_t IndexB;
+
+			LineIndexData();
+			LineIndexData(const uint32_t _IndexA, const uint32_t _IndexB);
+			LineIndexData(const LineIndexData& _Other) = default;
+			LineIndexData(LineIndexData&& _Other) noexcept;
+			~LineIndexData();
+			LineIndexData& operator= (const LineIndexData& _Other) = default;
+			LineIndexData& operator= (LineIndexData&& _Other) noexcept;
+
+		};
+
+		class BFW_API Mesh
+		{
+
+		public:
+
+			BFW_STRING_TYPE Name;
+			BFW_STRING_TYPE MaterialLib;
+			BFW_STRING_TYPE MaterialName;
+			Vector<TriangleVertexData> TriangleVBO;
+			Vector<TriangleIndexData> TriangleIBO;
+			Vector<LineVertexData> LineVBO;
+			Vector<LineIndexData> LineIBO;
+
+			Mesh();
+			Mesh(const Mesh& _Other);
+			Mesh(Mesh&& _Other) noexcept;
+			~Mesh();
+
+			void GenerateUnitQuad();
+			void GenerateUnitCube();
+
+			Mesh& operator= (const Mesh& _Other);
+			Mesh& operator= (Mesh&& _Other) noexcept;
+
+		};
+
+		class BFW_API WaveFrontObj
+		{
+
+		public:
+
+			WaveFrontObj();
+			WaveFrontObj(const WaveFrontObj& _Other);
+			WaveFrontObj(WaveFrontObj&& _Other) noexcept;
+			~WaveFrontObj();
+
+			const bool Load(const FileContent& _FileContent);
+
+			Mesh& Push(const BFW_CHAR_TYPE* _Name, const Mesh& _Data);
+			Mesh& Emplace(const BFW_CHAR_TYPE* _Name, Mesh&& _Data);
+
+			void Erase(const BFW_CHAR_TYPE* _Name);
+			void Clear();
+
+			FileContent Save() const;
+
+			const Vector<BFW_STRING_TYPE>& GetMeshNames() const;
+
+			Mesh* GetData(const BFW_CHAR_TYPE* _Name);
+			const Mesh* GetData(const BFW_CHAR_TYPE* _Name) const;
+
+			Mesh& operator[] (const BFW_CHAR_TYPE* _Name);
+			const Mesh& operator[] (const BFW_CHAR_TYPE* _Name) const;
+
+			WaveFrontObj& operator= (const WaveFrontObj& _Other);
+			WaveFrontObj& operator= (WaveFrontObj&& _Other) noexcept;
+
+		private:
+
+			Vector<BFW_STRING_TYPE> MeshNames;
+			Trie<Mesh> Meshes;
+
+		};
+
 		enum BFW_API JsonTypes : const uint8_t
 		{
 			_NullJsonType = 0,
@@ -263,7 +395,7 @@ namespace BFW
 			void SetNull();
 			void SetBool(const bool _BoolValue);
 			void SetNumber(const float _NumberValue);
-			void SetString(const BFW_STRING_TYPE_A _StringValue);
+			void SetString(const BFW_STRING_VIEW_TYPE_A& _StringValue);
 			void SetArray();
 			void SetObject();
 
@@ -306,6 +438,8 @@ namespace BFW
 			void QueueBitMap(const BFW_CHAR_TYPE* _Name);
 			void QueueHdr(const BFW_CHAR_TYPE* _Name);
 			void QueueWave(const BFW_CHAR_TYPE* _Name);
+			void QueueWaveFrontObj(const BFW_CHAR_TYPE* _Name);
+			void QueueGLSL(const BFW_CHAR_TYPE* _Name);
 			void QueueJson(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -313,6 +447,8 @@ namespace BFW
 			void QueueResourceBitMap(const size_t _Id);
 			void QueueResourceHdr(const size_t _Id);
 			void QueueResourceWave(const size_t _Id);
+			void QueueResourceWaveFrontObj(const size_t _Id);
+			void QueueResourceGLSL(const size_t _Id);
 			void QueueResourceJson(const size_t _Id);
 
 #endif
@@ -322,11 +458,15 @@ namespace BFW
 			void AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
 			void AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
 			void AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
+			void AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
+			void AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
 			void AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
 			void AddDynamicHdrRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
 			void AddDynamicWaveRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
+			void AddDynamicWaveFrontObjRef(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
+			void AddDynamicGLSLRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
 			void Update();
@@ -334,6 +474,8 @@ namespace BFW
 			void ReleaseBitMap(const BFW_CHAR_TYPE* _Name);
 			void ReleaseHdr(const BFW_CHAR_TYPE* _Name);
 			void ReleaseWave(const BFW_CHAR_TYPE* _Name);
+			void ReleaseWaveFrontObj(const BFW_CHAR_TYPE* _Name);
+			void ReleaseGLSL(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJson(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -341,6 +483,8 @@ namespace BFW
 			void ReleaseResourceBitMap(const size_t _Id);
 			void ReleaseResourceHdr(const size_t _Id);
 			void ReleaseResourceWave(const size_t _Id);
+			void ReleaseResourceWaveFrontObj(const size_t _Id);
+			void ReleaseResourceGLSL(const size_t _Id);
 			void ReleaseResourceJson(const size_t _Id);
 
 #endif
@@ -351,6 +495,10 @@ namespace BFW
 			const SharedPointer<Hdr> GetHdr(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Wave> GetWave(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<Wave> GetWave(const BFW_CHAR_TYPE* _Name) const;
+			SharedPointer<WaveFrontObj> GetWaveFrontObj(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<WaveFrontObj> GetWaveFrontObj(const BFW_CHAR_TYPE* _Name) const;
+			SharedPointer<FileContent> GetGLSL(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<FileContent> GetGLSL(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name) const;
 
@@ -362,6 +510,10 @@ namespace BFW
 			const SharedPointer<Hdr> GetResourceHdr(const size_t _Id) const;
 			SharedPointer<Wave> GetResourceWave(const size_t _Id);
 			const SharedPointer<Wave> GetResourceWave(const size_t _Id) const;
+			SharedPointer<WaveFrontObj> GetResourceWaveFrontObj(const size_t _Id);
+			const SharedPointer<WaveFrontObj> GetResourceWaveFrontObj(const size_t _Id) const;
+			SharedPointer<FileContent> GetResourceGLSL(const size_t _Id);
+			const SharedPointer<FileContent> GetResourceGLSL(const size_t _Id) const;
 			SharedPointer<Json> GetResourceJson(const size_t _Id);
 			const SharedPointer<Json> GetResourceJson(const size_t _Id) const;
 
@@ -377,6 +529,8 @@ namespace BFW
 			Vector<BFW_STRING_TYPE> QueuedBitMaps;
 			Vector<BFW_STRING_TYPE> QueuedHdrs;
 			Vector<BFW_STRING_TYPE> QueuedWaves;
+			Vector<BFW_STRING_TYPE> QueuedWaveFrontObjs;
+			Vector<BFW_STRING_TYPE> QueuedGLSLs;
 			Vector<BFW_STRING_TYPE> QueuedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -384,6 +538,8 @@ namespace BFW
 			Vector<size_t> QueuedResourceBitMaps;
 			Vector<size_t> QueuedResourceHdrs;
 			Vector<size_t> QueuedResourceWaves;
+			Vector<size_t> QueuedResourceWaveFrontObjs;
+			Vector<size_t> QueuedResourceGLSLs;
 			Vector<size_t> QueuedResourceJsons;
 
 #endif
@@ -391,6 +547,8 @@ namespace BFW
 			Trie<SharedPointer<BitMap>> LoadedBitMaps;
 			Trie<SharedPointer<Hdr>> LoadedHdrs;
 			Trie<SharedPointer<Wave>> LoadedWaves;
+			Trie<SharedPointer<WaveFrontObj>> LoadedWaveFrontObjs;
+			Trie<SharedPointer<FileContent>> LoadedGLSLs;
 			Trie<SharedPointer<Json>> LoadedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -398,6 +556,8 @@ namespace BFW
 			Trie<SharedPointer<BitMap>> LoadedResourceBitMaps;
 			Trie<SharedPointer<Hdr>> LoadedResourceHdrs;
 			Trie<SharedPointer<Wave>> LoadedResourceWaves;
+			Trie<SharedPointer<WaveFrontObj>> LoadedResourceWaveFrontObjs;
+			Trie<SharedPointer<FileContent>> LoadedResourceGLSLs;
 			Trie<SharedPointer<Json>> LoadedResourceJsons;
 
 #endif
@@ -405,16 +565,22 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedBitMapNames;
 			mutable Vector<BFW_STRING_TYPE> CachedHdrNames;
 			mutable Vector<BFW_STRING_TYPE> CachedWaveNames;
+			mutable Vector<BFW_STRING_TYPE> CachedWaveFrontObjNames;
+			mutable Vector<BFW_STRING_TYPE> CachedGLSLNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJsonNames;
 
 			mutable Trie<WeakPointer<BitMap>> CachedBitMaps;
 			mutable Trie<WeakPointer<Hdr>> CachedHdrs;
 			mutable Trie<WeakPointer<Wave>> CachedWaves;
+			mutable Trie<WeakPointer<WaveFrontObj>> CachedWaveFrontObjs;
+			mutable Trie<WeakPointer<FileContent>> CachedGLSLs;
 			mutable Trie<WeakPointer<Json>> CachedJsons;
 
 			mutable Trie<uint64_t> LastWriteBitMaps;
 			mutable Trie<uint64_t> LastWriteHdrs;
 			mutable Trie<uint64_t> LastWriteWaves;
+			mutable Trie<uint64_t> LastWriteWaveFrontObjs;
+			mutable Trie<uint64_t> LastWriteGLSLs;
 			mutable Trie<uint64_t> LastWriteJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -422,11 +588,15 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedResourceBitMapNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceHdrNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceWaveNames;
+			mutable Vector<BFW_STRING_TYPE> CachedResourceWaveFrontObjNames;
+			mutable Vector<BFW_STRING_TYPE> CachedResourceGLSLNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJsonNames;
 
 			mutable Trie<WeakPointer<BitMap>> CachedResourceBitMaps;
 			mutable Trie<WeakPointer<Hdr>> CachedResourceHdrs;
 			mutable Trie<WeakPointer<Wave>> CachedResourceWaves;
+			mutable Trie<WeakPointer<WaveFrontObj>> CachedResourceWaveFrontObjs;
+			mutable Trie<WeakPointer<FileContent>> CachedResourceGLSLs;
 			mutable Trie<WeakPointer<Json>> CachedResourceJsons;
 
 #endif

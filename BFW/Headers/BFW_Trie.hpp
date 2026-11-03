@@ -206,6 +206,35 @@ namespace BFW
 			}
 		}
 
+		void Erase(const CharT* _Name, const size_t _Length)
+		{
+			if (!_Name)
+			{
+				throw nullptr;
+			}
+
+			if (_Length == 0)
+			{
+				Data = UniquePointer<Type>();
+				return;
+			}
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
+				{
+					Childs[_Index].Erase(_Name + 1, _Length - 1);
+
+					if ((Type*)(Childs[_Index].Data) == nullptr && Childs[_Index].Childs.GetSize() == 0)
+					{
+						Childs.Erase(_Index);
+					}
+
+					return;
+				}
+			}
+		}
+
 		void Clear()
 		{
 			Id = (CharT)('\0');
@@ -220,23 +249,43 @@ namespace BFW
 				throw nullptr;
 			}
 
-			if (_Name[0] != (CharT)('\0'))
+			if (_Name[0] == (CharT)('\0'))
 			{
-				for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+				return Data.GetData();
+			}
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
 				{
-					if (_Name[0] == Childs[_Index].Id)
-					{
-						return Childs[_Index].GetData(_Name + 1);
-					}
+					return Childs[_Index].GetData(_Name + 1);
 				}
 			}
 
-			if ((Type*)(Data) == nullptr)
+			return nullptr;
+		}
+
+		Type* GetData(const CharT* _Name, const size_t _Length) requires (!std::is_const_v<T>)
+		{
+			if (!_Name)
 			{
-				return nullptr;
+				throw nullptr;
 			}
 
-			return Data.GetData();
+			if (_Length == 0)
+			{
+				return Data.GetData();
+			}
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
+				{
+					return Childs[_Index].GetData(_Name + 1, _Length - 1);
+				}
+			}
+
+			return nullptr;
 		}
 
 		ConstType* GetData(const CharT* _Name) const
@@ -246,23 +295,67 @@ namespace BFW
 				throw nullptr;
 			}
 
-			if (_Name[0] != (CharT)('\0'))
+			if (_Name[0] == (CharT)('\0'))
 			{
-				for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+				return Data.GetData();
+			}
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
 				{
-					if (_Name[0] == Childs[_Index].Id)
-					{
-						return Childs[_Index].GetData(_Name + 1);
-					}
+					return Childs[_Index].GetData(_Name + 1);
 				}
 			}
 
-			if ((ConstType*)(Data) == nullptr)
+			return nullptr;
+		}
+
+		ConstType* GetData(const CharT* _Name, const size_t _Length) const
+		{
+			if (!_Name)
 			{
-				return nullptr;
+				throw nullptr;
 			}
 
-			return Data.GetData();
+			if (_Length == 0)
+			{
+				return Data.GetData();
+			}
+
+			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			{
+				if (_Name[0] == Childs[_Index].Id)
+				{
+					return Childs[_Index].GetData(_Name + 1, _Length - 1);
+				}
+			}
+
+			return nullptr;
+		}
+
+		Type& operator[] (const CharT* _Name) requires (!std::is_const_v<T>)
+		{
+			Type* _Result = GetData(_Name);
+
+			if (!_Result)
+			{
+				throw nullptr;
+			}
+
+			return *_Result;
+		}
+
+		ConstType& operator[] (const CharT* _Name) const
+		{
+			ConstType* _Result = GetData(_Name);
+
+			if (!_Result)
+			{
+				throw nullptr;
+			}
+
+			return *_Result;
 		}
 
 		Trie& operator= (const Trie& _Other)

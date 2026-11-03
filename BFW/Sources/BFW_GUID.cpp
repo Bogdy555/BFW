@@ -51,7 +51,7 @@ const BFW_STRING_TYPE BFW_API BFW::GUID::GetString()
 	BFW_NON_UNICODE_CALL(return GetStringA());
 }
 
-void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_TYPE_A& _GUID)
+void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_VIEW_TYPE_A _GUID)
 {
 	GUIDMutex.lock();
 
@@ -60,7 +60,7 @@ void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_TYPE_A& _GUID)
 	GUIDMutex.unlock();
 }
 
-void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_TYPE_W& _GUID)
+void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_VIEW_TYPE_W _GUID)
 {
 	GUIDMutex.lock();
 
@@ -69,7 +69,7 @@ void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_TYPE_W& _GUID)
 	GUIDMutex.unlock();
 }
 
-void BFW_API BFW::GUID::ReleaseString(const BFW_STRING_TYPE& _GUID)
+void BFW_API BFW::GUID::ReleaseString(const BFW_STRING_VIEW_TYPE _GUID)
 {
 	BFW_UNICODE_CALL(ReleaseStringW(_GUID));
 	BFW_NON_UNICODE_CALL(ReleaseStringA(_GUID));
