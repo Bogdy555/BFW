@@ -314,7 +314,7 @@ static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileC
 
 static const bool HdrDecodeScanLine(const BFW::Assets::FileContent& _FileContent, size_t& _FileIndex, uint8_t* _ScanLine, const size_t _Width)
 {
-	if (_Width < 8 || _Width > std::numeric_limits<int16_t>::max())
+	if (_Width < 8 || _Width > (size_t)(std::numeric_limits<int16_t>::max()))
 	{
 		return HdrSimpleDecodeScanLine(_FileContent, _FileIndex, _ScanLine, _Width);
 	}
