@@ -293,6 +293,10 @@ namespace BFW
 
 		class BFW_API WaveFrontObj;
 
+		struct BFW_API Material;
+
+		class BFW_API MaterialLib;
+
 		enum BFW_API JsonTypes : const uint8_t;
 
 		class BFW_API JsonObjectData;

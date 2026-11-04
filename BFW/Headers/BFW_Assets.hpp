@@ -352,6 +352,56 @@ namespace BFW
 
 		};
 
+		struct BFW_API Material
+		{
+
+			Material();
+			Material(const Material& _Other) = default;
+			Material(Material&& _Other) noexcept;
+			~Material();
+			Material& operator= (const Material& _Other) = default;
+			Material& operator= (Material&& _Other) noexcept;
+
+		};
+
+		class BFW_API MaterialLib
+		{
+
+		public:
+
+			MaterialLib();
+			MaterialLib(const MaterialLib& _Other);
+			MaterialLib(MaterialLib&& _Other) noexcept;
+			~MaterialLib();
+
+			const bool Load(const FileContent& _FileContent);
+
+			Material& Push(const BFW_CHAR_TYPE* _Name, const Material& _Data);
+			Material& Emplace(const BFW_CHAR_TYPE* _Name, Material&& _Data);
+
+			void Erase(const BFW_CHAR_TYPE* _Name);
+			void Clear();
+
+			FileContent Save() const;
+
+			const Vector<BFW_STRING_TYPE>& GetMaterialNames() const;
+
+			Material* GetData(const BFW_CHAR_TYPE* _Name);
+			const Material* GetData(const BFW_CHAR_TYPE* _Name) const;
+
+			Material& operator[] (const BFW_CHAR_TYPE* _Name);
+			const Material& operator[] (const BFW_CHAR_TYPE* _Name) const;
+
+			MaterialLib& operator= (const MaterialLib& _Other);
+			MaterialLib& operator= (MaterialLib&& _Other) noexcept;
+
+		private:
+
+			Vector<BFW_STRING_TYPE> MaterialNames;
+			Trie<Material> Materials;
+
+		};
+
 		enum BFW_API JsonTypes : const uint8_t
 		{
 			_NullJsonType = 0,

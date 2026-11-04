@@ -1720,3 +1720,390 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 
 	return *this;
 }
+
+
+
+BFW::Assets::Material::Material()
+{
+
+}
+
+BFW::Assets::Material::Material(Material&& _Other) noexcept
+{
+
+}
+
+BFW::Assets::Material::~Material()
+{
+
+}
+
+BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	return *this;
+}
+
+
+
+BFW::Assets::MaterialLib::MaterialLib() : MaterialNames(), Materials()
+{
+
+}
+
+BFW::Assets::MaterialLib::MaterialLib(const MaterialLib& _Other) : MaterialNames(_Other.MaterialNames), Materials(_Other.Materials)
+{
+
+}
+
+BFW::Assets::MaterialLib::MaterialLib(MaterialLib&& _Other) noexcept : MaterialNames((Vector<BFW_STRING_TYPE>&&)(_Other.MaterialNames)), Materials((Trie<Material>&&)(_Other.Materials))
+{
+
+}
+
+BFW::Assets::MaterialLib::~MaterialLib()
+{
+
+}
+
+const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
+{
+	Clear();
+
+	if (!_FileContent.GetData())
+	{
+		return false;
+	}
+
+	size_t _FileIndex = 0;
+
+	while (_FileContent[_FileIndex] != '\0')
+	{
+		BFW_STRING_TYPE_A _FileLine;
+
+		BFW_WINDOWS_PLATFORM_CALL(_FileLine.reserve(512));
+		BFW_LINUX_PLATFORM_CALL(_FileLine.reserve(512));
+
+		bool _KeepLine = true;
+
+		while (_KeepLine)
+		{
+			_KeepLine = false;
+
+			size_t _FileLineStart = _FileLine.size();
+
+			while (_FileContent[_FileIndex] != '\n' && _FileContent[_FileIndex] != '\0')
+			{
+				if (_FileContent[_FileIndex] == '#')
+				{
+					break;
+				}
+
+				_FileLine += _FileContent[_FileIndex];
+				_FileIndex++;
+			}
+
+			while (_FileContent[_FileIndex] != '\n' && _FileContent[_FileIndex] != '\0')
+			{
+				_FileIndex++;
+			}
+
+			if (_FileLine.size() != 0 && _FileLine[_FileLine.size() - 1] == '\r')
+			{
+				_FileLine.erase(_FileLine.begin() + _FileLine.size() - 1);
+			}
+
+			size_t _CharIndex = _FileLineStart;
+
+			while (_CharIndex < _FileLine.size() && std::isspace((unsigned BFW_CHAR_TYPE_A)(_FileLine[_FileLine.size() - 1 - _CharIndex + _FileLineStart])))
+			{
+				_CharIndex++;
+			}
+
+			size_t _BackSlashCount = 0;
+
+			while (_CharIndex < _FileLine.size() && _FileLine[_FileLine.size() - 1 - _CharIndex + _FileLineStart] == '\\')
+			{
+				_BackSlashCount++;
+				_CharIndex++;
+			}
+
+			for (size_t _Index = 0; _Index < _BackSlashCount / 2; _Index++)
+			{
+				_FileLine.erase(_FileLine.begin() + _FileLine.size() - 1 - _CharIndex + 1 + _FileLineStart);
+				_CharIndex--;
+			}
+
+			if (_BackSlashCount % 2 == 1)
+			{
+				_KeepLine = true;
+				_FileLine[_FileLine.size() - 1 - _CharIndex + _BackSlashCount / 2 + 1 + _FileLineStart] = ' ';
+			}
+
+			if (_FileContent[_FileIndex] == '\0')
+			{
+				break;
+			}
+
+			_FileIndex++;
+		}
+
+		if (!_FileLine.size())
+		{
+			continue;
+		}
+
+		size_t _CharIndex = 0;
+
+		while (std::isspace((unsigned BFW_CHAR_TYPE_A)(_FileLine[_CharIndex])))
+		{
+			_CharIndex++;
+		}
+
+		if (_CharIndex == _FileLine.size())
+		{
+			continue;
+		}
+
+		Vector<BFW_STRING_TYPE_A> _LineTokens;
+
+		while (_FileLine[_CharIndex] != '\0')
+		{
+			BFW_STRING_TYPE_A& _Token = _LineTokens.EmplaceBack(BFW_STRING_TYPE_A());
+
+			BFW_WINDOWS_PLATFORM_CALL(_Token.reserve(16));
+			BFW_LINUX_PLATFORM_CALL(_Token.reserve(16));
+
+			if (_FileLine[_CharIndex] == '\"')
+			{
+				_CharIndex++;
+
+				while (_FileLine[_CharIndex] != '\"' && _FileLine[_CharIndex] != '\0')
+				{
+					if (String::IsControlCharacter(_FileLine[_CharIndex]))
+					{
+						return false;
+					}
+
+					if (_FileLine[_CharIndex] == '\\' && _FileLine[_CharIndex + 1] == '\"')
+					{
+						_Token += '\"';
+						_CharIndex += 2;
+						continue;
+					}
+
+					_Token += _FileLine[_CharIndex];
+					_CharIndex++;
+				}
+
+				if (_FileLine[_CharIndex] == '\0')
+				{
+					return false;
+				}
+
+				_CharIndex++;
+
+				while (std::isspace((unsigned BFW_CHAR_TYPE_A)(_FileLine[_CharIndex])))
+				{
+					_CharIndex++;
+				}
+
+				continue;
+			}
+
+			while (!std::isspace((unsigned BFW_CHAR_TYPE_A)(_FileLine[_CharIndex])) && _FileLine[_CharIndex] != '\0')
+			{
+				if (_FileLine[_CharIndex] == '\"')
+				{
+					break;
+				}
+
+				_Token += _FileLine[_CharIndex];
+				_CharIndex++;
+			}
+
+			while (std::isspace((unsigned BFW_CHAR_TYPE_A)(_FileLine[_CharIndex])))
+			{
+				_CharIndex++;
+			}
+		}
+
+		if (_LineTokens[0] == "newmtl")
+		{
+			if (_LineTokens.GetSize() != 2)
+			{
+				return false;
+			}
+
+			// if no active name in alte case uri atunci error
+
+			continue;
+		}
+	}
+
+	if (_FileIndex != _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+
+
+	return true;
+}
+
+BFW::Assets::Material& BFW::Assets::MaterialLib::Push(const BFW_CHAR_TYPE* _Name, const Material& _Data)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < MaterialNames.GetSize(); _Index++)
+	{
+		if (MaterialNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		MaterialNames.EmplaceBack(_Name);
+	}
+
+	return Materials.Push(_Name, _Data);
+}
+
+BFW::Assets::Material& BFW::Assets::MaterialLib::Emplace(const BFW_CHAR_TYPE* _Name, Material&& _Data)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	bool _Found = false;
+
+	for (size_t _Index = 0; _Index < MaterialNames.GetSize(); _Index++)
+	{
+		if (MaterialNames[_Index] == _Name)
+		{
+			_Found = true;
+			break;
+		}
+	}
+
+	if (!_Found)
+	{
+		MaterialNames.EmplaceBack(_Name);
+	}
+
+	return Materials.Emplace(_Name, (Material&&)(_Data));
+}
+
+void BFW::Assets::MaterialLib::Erase(const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	for (size_t _Index = 0; _Index < MaterialNames.GetSize(); _Index++)
+	{
+		if (MaterialNames[_Index] == _Name)
+		{
+			MaterialNames.Erase(_Index);
+			break;
+		}
+	}
+
+	Materials.Erase(_Name);
+}
+
+void BFW::Assets::MaterialLib::Clear()
+{
+	MaterialNames.Clear();
+	Materials.Clear();
+}
+
+BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
+{
+	...;
+}
+
+const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::MaterialLib::GetMaterialNames() const
+{
+	return MaterialNames;
+}
+
+BFW::Assets::Material* BFW::Assets::MaterialLib::GetData(const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Materials.GetData(_Name);
+}
+
+const BFW::Assets::Material* BFW::Assets::MaterialLib::GetData(const BFW_CHAR_TYPE* _Name) const
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Materials.GetData(_Name);
+}
+
+BFW::Assets::Material& BFW::Assets::MaterialLib::operator[] (const BFW_CHAR_TYPE* _Name)
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Materials[_Name];
+}
+
+const BFW::Assets::Material& BFW::Assets::MaterialLib::operator[] (const BFW_CHAR_TYPE* _Name) const
+{
+	if (!_Name || _Name[0] == '\0')
+	{
+		throw nullptr;
+	}
+
+	return Materials[_Name];
+}
+
+BFW::Assets::MaterialLib& BFW::Assets::MaterialLib::operator= (const MaterialLib& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	MaterialNames = _Other.MaterialNames;
+	Materials = _Other.Materials;
+
+	return *this;
+}
+
+BFW::Assets::MaterialLib& BFW::Assets::MaterialLib::operator= (MaterialLib&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	MaterialNames = (Vector<BFW_STRING_TYPE>&&)(_Other.MaterialNames);
+	Materials = (Trie<Material>&&)(_Other.Materials);
+
+	return *this;
+}
