@@ -43,6 +43,9 @@ BFW_EXTERN template class BFW_API std::basic_string<BFW_CHAR_TYPE_W, std::char_t
 BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint32_t, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253>;
 BFW_EXTERN template class BFW_API std::mersenne_twister_engine<uint64_t, 64, 312, 156, 31, 13043109905998158313, 29, 6148914691236517205, 17, 8202884508482404352, 37, 18444473444759240704, 43, 6364136223846793005>;
 
+BFW_EXTERN template class BFW_API std::chrono::duration<std::chrono::system_clock::rep, std::chrono::system_clock::period>;
+BFW_EXTERN template class BFW_API std::chrono::time_point<std::chrono::system_clock>;
+
 #endif
 
 BFW_EXTERN template class BFW_API BFW::Vector<uint8_t>;
@@ -54,11 +57,14 @@ BFW_EXTERN template class BFW_API BFW::Vector<BFW_STRING_TYPE_W>;
 BFW_EXTERN template class BFW_API BFW::UniquePointer<uint64_t>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<uint64_t>>;
 BFW_EXTERN template class BFW_API BFW::Trie<uint64_t>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW_STRING_TYPE_A>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW_STRING_TYPE_A>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW_STRING_TYPE_A>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW_STRING_TYPE_W>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW_STRING_TYPE_W>>;
+BFW_EXTERN template class BFW_API BFW::Trie<BFW_STRING_TYPE_W>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
-
-BFW_EXTERN template class BFW_API std::chrono::duration<std::chrono::system_clock::rep, std::chrono::system_clock::period>;
-BFW_EXTERN template class BFW_API std::chrono::time_point<std::chrono::system_clock>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::ClickEvent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Input::WheelEvent>;

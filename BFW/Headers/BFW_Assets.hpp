@@ -291,8 +291,6 @@ namespace BFW
 
 		public:
 
-			BFW_STRING_TYPE Name;
-			BFW_STRING_TYPE MaterialLib;
 			BFW_STRING_TYPE MaterialName;
 			Vector<TriangleVertexData> TriangleVBO;
 			Vector<TriangleIndexData> TriangleIBO;
@@ -330,7 +328,7 @@ namespace BFW
 			void Erase(const BFW_CHAR_TYPE* _Name);
 			void Clear();
 
-			FileContent Save() const;
+			FileContent Save(const bool _SaveColors = false, const bool _SaveNormals = true, const bool _SaveTextureCoords = true, const bool _SaveMaterials = true) const;
 
 			const Vector<BFW_STRING_TYPE>& GetMeshNames() const;
 

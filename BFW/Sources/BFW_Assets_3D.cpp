@@ -157,20 +157,18 @@ BFW::Assets::LineIndexData& BFW::Assets::LineIndexData::operator= (LineIndexData
 
 
 
-BFW::Assets::Mesh::Mesh() : Name(BFW_STRING_PREFIX("")), MaterialLib(BFW_STRING_PREFIX("")), MaterialName(BFW_STRING_PREFIX("")), TriangleVBO(), TriangleIBO(), LineVBO(), LineIBO()
+BFW::Assets::Mesh::Mesh() : MaterialName(BFW_STRING_PREFIX("")), TriangleVBO(), TriangleIBO(), LineVBO(), LineIBO()
 {
 
 }
 
-BFW::Assets::Mesh::Mesh(const Mesh& _Other) : Name(_Other.Name), MaterialLib(_Other.MaterialLib), MaterialName(_Other.MaterialName), TriangleVBO(_Other.TriangleVBO), TriangleIBO(_Other.TriangleIBO), LineVBO(_Other.LineVBO), LineIBO(_Other.LineIBO)
+BFW::Assets::Mesh::Mesh(const Mesh& _Other) : MaterialName(_Other.MaterialName), TriangleVBO(_Other.TriangleVBO), TriangleIBO(_Other.TriangleIBO), LineVBO(_Other.LineVBO), LineIBO(_Other.LineIBO)
 {
 
 }
 
-BFW::Assets::Mesh::Mesh(Mesh&& _Other) noexcept : Name(_Other.Name), MaterialLib(_Other.MaterialLib), MaterialName(_Other.MaterialName), TriangleVBO((Vector<TriangleVertexData>&&)(_Other.TriangleVBO)), TriangleIBO((Vector<TriangleIndexData>&&)(_Other.TriangleIBO)), LineVBO((Vector<LineVertexData>&&)(_Other.LineVBO)), LineIBO((Vector<LineIndexData>&&)(_Other.LineIBO))
+BFW::Assets::Mesh::Mesh(Mesh&& _Other) noexcept : MaterialName(_Other.MaterialName), TriangleVBO((Vector<TriangleVertexData>&&)(_Other.TriangleVBO)), TriangleIBO((Vector<TriangleIndexData>&&)(_Other.TriangleIBO)), LineVBO((Vector<LineVertexData>&&)(_Other.LineVBO)), LineIBO((Vector<LineIndexData>&&)(_Other.LineIBO))
 {
-	_Other.Name = BFW_STRING_PREFIX("");
-	_Other.MaterialLib = BFW_STRING_PREFIX("");
 	_Other.MaterialName = BFW_STRING_PREFIX("");
 }
 
@@ -270,8 +268,6 @@ BFW::Assets::Mesh& BFW::Assets::Mesh::operator= (const Mesh& _Other)
 		return *this;
 	}
 
-	Name = _Other.Name;
-	MaterialLib = _Other.MaterialLib;
 	MaterialName = _Other.MaterialName;
 	TriangleVBO = _Other.TriangleVBO;
 	TriangleIBO = _Other.TriangleIBO;
@@ -288,16 +284,12 @@ BFW::Assets::Mesh& BFW::Assets::Mesh::operator= (Mesh&& _Other) noexcept
 		return *this;
 	}
 
-	Name = _Other.Name;
-	MaterialLib = _Other.MaterialLib;
 	MaterialName = _Other.MaterialName;
 	TriangleVBO = (Vector<TriangleVertexData>&&)(_Other.TriangleVBO);
 	TriangleIBO = (Vector<TriangleIndexData>&&)(_Other.TriangleIBO);
 	LineVBO = (Vector<LineVertexData>&&)(_Other.LineVBO);
 	LineIBO = (Vector<LineIndexData>&&)(_Other.LineIBO);
 
-	_Other.Name = BFW_STRING_PREFIX("");
-	_Other.MaterialLib = BFW_STRING_PREFIX("");
 	_Other.MaterialName = BFW_STRING_PREFIX("");
 
 	return *this;
@@ -1213,7 +1205,6 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 	{
 		Mesh _Mesh;
 
-		_Mesh.Name = _Names[_NameIndex];
 		_Mesh.MaterialName = _MaterialNames[_NameIndex];
 
 		for (size_t _FaceIndex = _FaceStarts[_NameIndex]; _FaceIndex < _FaceStarts[_NameIndex + 1]; _FaceIndex++)
@@ -1451,18 +1442,182 @@ void BFW::Assets::WaveFrontObj::Clear()
 	MaterialLibs.Clear();
 }
 
-BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save() const
+BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save(const bool _SaveColors, const bool _SaveNormals, const bool _SaveTextureCoords, const bool _SaveMaterials) const
 {
 	if (!MeshNames.GetSize())
 	{
 		return FileContent();
 	}
 
-	//...;
+	size_t _GlobalIndex = 0;
 
 	BFW_STRING_STREAM_TYPE_A _Stream;
 
-	//...;
+	if (_SaveMaterials)
+	{
+		for (size_t _Index = 0; _Index < MaterialLibs.GetSize(); _Index++)
+		{
+			bool _Error = false;
+
+			_Stream << "mtllib " << BFW_MACHINE_TO_UTF8(MaterialLibs[_Index], &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+			if (_Error)
+			{
+				return FileContent();
+			}
+		}
+	}
+
+	for (size_t _NameIndex = 0; _NameIndex < MeshNames.GetSize(); _NameIndex++)
+	{
+		const Mesh& _CurrentMesh = *Meshes.GetData(MeshNames[_NameIndex].c_str());
+
+		bool _Error = false;
+
+		_Stream << "o " << BFW_MACHINE_TO_UTF8(MeshNames[_NameIndex], &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+		if (_Error)
+		{
+			return FileContent();
+		}
+
+		if (_CurrentMesh.MaterialName.size() && _SaveMaterials)
+		{
+			_Stream << "usemtl " << BFW_MACHINE_TO_UTF8(_CurrentMesh.MaterialName, &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+			if (_Error)
+			{
+				return FileContent();
+			}
+		}
+
+		for (size_t _VBOIndex = 0; _VBOIndex < _CurrentMesh.TriangleVBO.GetSize(); _VBOIndex++)
+		{
+			const TriangleVertexData& _CurrentVO = _CurrentMesh.TriangleVBO[_VBOIndex];
+
+			if (_SaveColors)
+			{
+				_Stream << "v " <<
+					_CurrentVO.Position.x << ' ' << _CurrentVO.Position.y << ' ' << _CurrentVO.Position.z << ' ' <<
+					_CurrentVO.Color.x << ' ' << _CurrentVO.Color.y << ' ' << _CurrentVO.Color.z
+					BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+			else
+			{
+				_Stream << "v " << _CurrentVO.Position.x << ' ' << _CurrentVO.Position.y << ' ' << _CurrentVO.Position.z << ' ' << _CurrentVO.Position.w BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+
+			if (_SaveNormals)
+			{
+				_Stream << "vn " << _CurrentVO.Normal.x << ' ' << _CurrentVO.Normal.y << ' ' << _CurrentVO.Normal.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+
+			if (_SaveTextureCoords)
+			{
+				_Stream << "vt " << _CurrentVO.TextureCoords.x << ' ' << _CurrentVO.TextureCoords.y << ' ' << _CurrentVO.TextureCoords.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+		}
+
+		for (size_t _IBOIndex = 0; _IBOIndex < _CurrentMesh.TriangleIBO.GetSize(); _IBOIndex++)
+		{
+			const TriangleIndexData& _CurrentIO = _CurrentMesh.TriangleIBO[_IBOIndex];
+
+			if (_CurrentIO.IndexA >= _CurrentMesh.TriangleVBO.GetSize() || _CurrentIO.IndexB >= _CurrentMesh.TriangleVBO.GetSize() || _CurrentIO.IndexC >= _CurrentMesh.TriangleVBO.GetSize())
+			{
+				return FileContent();
+			}
+
+			if (_SaveTextureCoords)
+			{
+				if (_SaveNormals)
+				{
+					_Stream << "f " <<
+						_CurrentIO.IndexA + _GlobalIndex + 1 << '/' << _CurrentIO.IndexA + _GlobalIndex + 1 << '/' << _CurrentIO.IndexA + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexB + _GlobalIndex + 1 << '/' << _CurrentIO.IndexB + _GlobalIndex + 1 << '/' << _CurrentIO.IndexB + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexC + _GlobalIndex + 1 << '/' << _CurrentIO.IndexC + _GlobalIndex + 1 << '/' << _CurrentIO.IndexC + _GlobalIndex + 1
+						BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+				}
+				else
+				{
+					_Stream << "f " <<
+						_CurrentIO.IndexA + _GlobalIndex + 1 << '/' << _CurrentIO.IndexA + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexB + _GlobalIndex + 1 << '/' << _CurrentIO.IndexB + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexC + _GlobalIndex + 1 << '/' << _CurrentIO.IndexC + _GlobalIndex + 1
+						BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+				}
+			}
+			else
+			{
+				if (_SaveNormals)
+				{
+					_Stream << "f " <<
+						_CurrentIO.IndexA + _GlobalIndex + 1 << "//" << _CurrentIO.IndexA + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexB + _GlobalIndex + 1 << "//" << _CurrentIO.IndexB + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexC + _GlobalIndex + 1 << "//" << _CurrentIO.IndexC + _GlobalIndex + 1
+						BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+				}
+				else
+				{
+					_Stream << "f " <<
+						_CurrentIO.IndexA + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexB + _GlobalIndex + 1 << ' ' <<
+						_CurrentIO.IndexC + _GlobalIndex + 1
+						BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+				}
+			}
+		}
+
+		_GlobalIndex += _CurrentMesh.TriangleVBO.GetSize();
+
+		for (size_t _VBOIndex = 0; _VBOIndex < _CurrentMesh.LineVBO.GetSize(); _VBOIndex++)
+		{
+			const LineVertexData& _CurrentVO = _CurrentMesh.LineVBO[_VBOIndex];
+
+			if (_SaveColors)
+			{
+				_Stream << "v " <<
+					_CurrentVO.Position.x << ' ' << _CurrentVO.Position.y << ' ' << _CurrentVO.Position.z << ' ' <<
+					_CurrentVO.Color.x << ' ' << _CurrentVO.Color.y << ' ' << _CurrentVO.Color.z
+					BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+			else
+			{
+				_Stream << "v " << _CurrentVO.Position.x << ' ' << _CurrentVO.Position.y << ' ' << _CurrentVO.Position.z << ' ' << _CurrentVO.Position.w BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+
+			if (_SaveTextureCoords)
+			{
+				_Stream << "vt " << _CurrentVO.TextureCoords.x << ' ' << _CurrentVO.TextureCoords.y << ' ' << _CurrentVO.TextureCoords.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+		}
+
+		for (size_t _IBOIndex = 0; _IBOIndex < _CurrentMesh.LineIBO.GetSize(); _IBOIndex++)
+		{
+			const LineIndexData& _CurrentIO = _CurrentMesh.LineIBO[_IBOIndex];
+
+			if (_CurrentIO.IndexA >= _CurrentMesh.LineVBO.GetSize() || _CurrentIO.IndexB >= _CurrentMesh.LineVBO.GetSize())
+			{
+				return FileContent();
+			}
+
+			if (_SaveTextureCoords)
+			{
+				_Stream << "l " <<
+					_CurrentIO.IndexA + _GlobalIndex + 1 << '/' << _CurrentIO.IndexA + _GlobalIndex + 1 << ' ' <<
+					_CurrentIO.IndexB + _GlobalIndex + 1 << '/' << _CurrentIO.IndexB + _GlobalIndex + 1
+					BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+			else
+			{
+				_Stream << "l " <<
+					_CurrentIO.IndexA + _GlobalIndex + 1 << ' ' <<
+					_CurrentIO.IndexB + _GlobalIndex + 1
+					BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			}
+		}
+
+		_GlobalIndex += _CurrentMesh.LineVBO.GetSize();
+	}
 
 	BFW_STRING_TYPE_A _String = _Stream.str();
 
