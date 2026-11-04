@@ -258,9 +258,10 @@ namespace BFW
 
 			Math::Vec4 Position;
 			Math::Vec4 Color;
+			Math::Vec3 TextureCoords;
 
 			LineVertexData();
-			LineVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color);
+			LineVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color, const Math::Vec3& _TextureCoords);
 			LineVertexData(const LineVertexData& _Other) = default;
 			LineVertexData(LineVertexData&& _Other) noexcept;
 			~LineVertexData();
