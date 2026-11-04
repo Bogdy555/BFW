@@ -227,7 +227,7 @@ const bool BFW_API BFW::String::IsUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char)
 
 const bool BFW_API BFW::String::IsValidUTF8MultiByte2(const BFW_CHAR_TYPE_A _Char)
 {
-	return _Char >= 0xC2;
+	return (uint8_t)(_Char) >= 0xC2;
 }
 
 const bool BFW_API BFW::String::IsValidUTF8MultiByte3(const BFW_CHAR_TYPE_A _Char)
@@ -237,7 +237,7 @@ const bool BFW_API BFW::String::IsValidUTF8MultiByte3(const BFW_CHAR_TYPE_A _Cha
 
 const bool BFW_API BFW::String::IsValidUTF8MultiByte4(const BFW_CHAR_TYPE_A _Char)
 {
-	return _Char <= 0xF4;
+	return (uint8_t)(_Char) <= 0xF4;
 }
 
 const bool BFW_API BFW::String::IsUTF8MultiByteContinuation(const BFW_CHAR_TYPE_A _Char)
@@ -247,12 +247,12 @@ const bool BFW_API BFW::String::IsUTF8MultiByteContinuation(const BFW_CHAR_TYPE_
 
 const bool BFW_API BFW::String::IsValidUTF8MultiByte3FirstContinuation(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2)
 {
-	return (_Char1 != 0xE0 && _Char1 != 0xED) || (_Char1 == 0xE0 && _Char2 >= 0xA0) || (_Char1 == 0xED && _Char2 <= 0x9F);
+	return (_Char1 != 0xE0 && _Char1 != 0xED) || (_Char1 == 0xE0 && (uint8_t)(_Char2) >= 0xA0) || (_Char1 == 0xED && (uint8_t)(_Char2) <= 0x9F);
 }
 
 const bool BFW_API BFW::String::IsValidUTF8MultiByte4FirstContinuation(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2)
 {
-	return (_Char1 != 0xF0 && _Char1 != 0xF4) || (_Char1 == 0xF0 && _Char2 >= 0x90) || (_Char1 == 0xF4 && _Char2 <= 0x8F);
+	return (_Char1 != 0xF0 && _Char1 != 0xF4) || (_Char1 == 0xF0 && (uint8_t)(_Char2) >= 0x90) || (_Char1 == 0xF4 && (uint8_t)(_Char2) <= 0x8F);
 }
 
 const bool BFW_API BFW::String::IsUnicodeSurrogated(const uint32_t _Char)
@@ -522,17 +522,15 @@ const bool BFW_API BFW::String::IsControlCharacter(const BFW_CHAR_TYPE_A _Char)
 
 const bool BFW_API BFW::String::IsControlCharacter(const BFW_CHAR_TYPE_W _Char)
 {
-	BFW_WINDOWS_PLATFORM_CALL(return (uint16_t)(_Char) < 0x20);
-	BFW_LINUX_PLATFORM_CALL(return (uint32_t)(_Char) < 0x20);
-	BFW_ESP32_PLATFORM_CALL(return (uint32_t)(_Char) < 0x20);
+	return (uint32_t)(_Char) < 0x20;
 }
 
 const bool BFW_API BFW::String::IsExtendedControlCharacter(const BFW_CHAR_TYPE_A _Char)
 {
-	return _Char >= 0x80 && _Char <= 0x9F;
+	return (uint8_t)(_Char) >= 0x80 && (uint8_t)(_Char) <= 0x9F;
 }
 
 const bool BFW_API BFW::String::IsExtendedControlCharacter(const BFW_CHAR_TYPE_W _Char)
 {
-	return _Char >= 0x80 && _Char <= 0x9F;
+	return (uint32_t)(_Char) >= 0x80 && (uint32_t)(_Char) <= 0x9F;
 }
