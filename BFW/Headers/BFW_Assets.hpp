@@ -337,6 +337,9 @@ namespace BFW
 			Mesh* GetData(const BFW_CHAR_TYPE* _Name);
 			const Mesh* GetData(const BFW_CHAR_TYPE* _Name) const;
 
+			Vector<BFW_STRING_TYPE>& GetMaterialLibs();
+			const Vector<BFW_STRING_TYPE>& GetMaterialLibs() const;
+
 			Mesh& operator[] (const BFW_CHAR_TYPE* _Name);
 			const Mesh& operator[] (const BFW_CHAR_TYPE* _Name) const;
 
@@ -347,6 +350,7 @@ namespace BFW
 
 			Vector<BFW_STRING_TYPE> MeshNames;
 			Trie<Mesh> Meshes;
+			Vector<BFW_STRING_TYPE> MaterialLibs;
 
 		};
 

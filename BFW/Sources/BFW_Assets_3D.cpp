@@ -305,17 +305,17 @@ BFW::Assets::Mesh& BFW::Assets::Mesh::operator= (Mesh&& _Other) noexcept
 
 
 
-BFW::Assets::WaveFrontObj::WaveFrontObj() : MeshNames(), Meshes()
+BFW::Assets::WaveFrontObj::WaveFrontObj() : MeshNames(), Meshes(), MaterialLibs()
 {
 
 }
 
-BFW::Assets::WaveFrontObj::WaveFrontObj(const WaveFrontObj& _Other) : MeshNames(_Other.MeshNames), Meshes(_Other.Meshes)
+BFW::Assets::WaveFrontObj::WaveFrontObj(const WaveFrontObj& _Other) : MeshNames(_Other.MeshNames), Meshes(_Other.Meshes), MaterialLibs(_Other.MaterialLibs)
 {
 
 }
 
-BFW::Assets::WaveFrontObj::WaveFrontObj(WaveFrontObj&& _Other) noexcept : MeshNames((Vector<BFW_STRING_TYPE>&&)(_Other.MeshNames)), Meshes((Trie<Mesh>&&)(_Other.Meshes))
+BFW::Assets::WaveFrontObj::WaveFrontObj(WaveFrontObj&& _Other) noexcept : MeshNames((Vector<BFW_STRING_TYPE>&&)(_Other.MeshNames)), Meshes((Trie<Mesh>&&)(_Other.Meshes)), MaterialLibs((Vector<BFW_STRING_TYPE>&&)(_Other.MaterialLibs))
 {
 
 }
@@ -334,7 +334,10 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 		return false;
 	}
 
+	Vector<BFW_STRING_TYPE> _MaterialLibs;
+
 	Vector<BFW_STRING_TYPE> _Names;
+	Vector<BFW_STRING_TYPE> _MaterialNames;
 	Vector<size_t> _FaceStarts;
 	Vector<size_t> _LineStarts;
 
@@ -527,6 +530,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 			}
 
 			_Names.PushBack(_Name);
+			_MaterialNames.PushBack(BFW_STRING_TYPE(BFW_STRING_PREFIX("")));
 			_FaceStarts.PushBack(_FacePositions.GetSize());
 			_LineStarts.PushBack(_LinePositions.GetSize());
 
@@ -1150,6 +1154,44 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 
 			continue;
 		}
+
+		if (_LineTokens[0] == "mtllib")
+		{
+			if (_LineTokens.GetSize() != 2)
+			{
+				return false;
+			}
+
+			bool _Error = false;
+
+			_MaterialLibs.PushBack(BFW_UTF8_TO_MACHINE(_LineTokens[1], &_Error));
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "usemtl")
+		{
+			if (_LineTokens.GetSize() != 2 || _MaterialNames.GetSize() == 0)
+			{
+				return false;
+			}
+
+			bool _Error = false;
+
+			_MaterialNames[_MaterialNames.GetSize() - 1] = BFW_UTF8_TO_MACHINE(_LineTokens[1], &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			continue;
+		}
 	}
 
 	if (_FileIndex != _FileContent.GetLength() - 1)
@@ -1172,6 +1214,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 		Mesh _Mesh;
 
 		_Mesh.Name = _Names[_NameIndex];
+		_Mesh.MaterialName = _MaterialNames[_NameIndex];
 
 		for (size_t _FaceIndex = _FaceStarts[_NameIndex]; _FaceIndex < _FaceStarts[_NameIndex + 1]; _FaceIndex++)
 		{
@@ -1325,6 +1368,8 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 		Meshes.Emplace(_Names[_NameIndex].c_str(), (Mesh&&)(_Mesh));
 	}
 
+	MaterialLibs = (Vector<BFW_STRING_TYPE>&&)(_MaterialLibs);
+
 	return true;
 }
 
@@ -1403,6 +1448,7 @@ void BFW::Assets::WaveFrontObj::Clear()
 {
 	MeshNames.Clear();
 	Meshes.Clear();
+	MaterialLibs.Clear();
 }
 
 BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save() const
@@ -1462,6 +1508,16 @@ const BFW::Assets::Mesh* BFW::Assets::WaveFrontObj::GetData(const BFW_CHAR_TYPE*
 	return Meshes.GetData(_Name);
 }
 
+BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMaterialLibs()
+{
+	return MaterialLibs;
+}
+
+const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMaterialLibs() const
+{
+	return MaterialLibs;
+}
+
 BFW::Assets::Mesh& BFW::Assets::WaveFrontObj::operator[] (const BFW_CHAR_TYPE* _Name)
 {
 	if (!_Name || _Name[0] == '\0')
@@ -1491,6 +1547,7 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (const WaveFront
 
 	MeshNames = _Other.MeshNames;
 	Meshes = _Other.Meshes;
+	MaterialLibs = _Other.MaterialLibs;
 
 	return *this;
 }
@@ -1504,6 +1561,7 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 
 	MeshNames = (Vector<BFW_STRING_TYPE>&&)(_Other.MeshNames);
 	Meshes = (Trie<Mesh>&&)(_Other.Meshes);
+	MaterialLibs = (Vector<BFW_STRING_TYPE>&&)(_Other.MaterialLibs);
 
 	return *this;
 }
