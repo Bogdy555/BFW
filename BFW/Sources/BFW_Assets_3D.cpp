@@ -310,12 +310,12 @@ BFW::Assets::WaveFrontObj::WaveFrontObj() : MeshNames(), Meshes()
 
 }
 
-BFW::Assets::WaveFrontObj::WaveFrontObj(const WaveFrontObj& _Other) : MeshNames(MeshNames), Meshes(Meshes)
+BFW::Assets::WaveFrontObj::WaveFrontObj(const WaveFrontObj& _Other) : MeshNames(_Other.MeshNames), Meshes(_Other.Meshes)
 {
 
 }
 
-BFW::Assets::WaveFrontObj::WaveFrontObj(WaveFrontObj&& _Other) noexcept : MeshNames((Vector<BFW_STRING_TYPE>&&)(MeshNames)), Meshes((Trie<Mesh>&&)(Meshes))
+BFW::Assets::WaveFrontObj::WaveFrontObj(WaveFrontObj&& _Other) noexcept : MeshNames((Vector<BFW_STRING_TYPE>&&)(_Other.MeshNames)), Meshes((Trie<Mesh>&&)(_Other.Meshes))
 {
 
 }
@@ -1502,8 +1502,8 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 		return *this;
 	}
 
-	MeshNames = (Vector<BFW_STRING_TYPE>&&)(MeshNames);
-	Meshes = (Trie<Mesh>&&)(Meshes);
+	MeshNames = (Vector<BFW_STRING_TYPE>&&)(_Other.MeshNames);
+	Meshes = (Trie<Mesh>&&)(_Other.Meshes);
 
 	return *this;
 }
