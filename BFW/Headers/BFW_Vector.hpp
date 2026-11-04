@@ -81,6 +81,25 @@ namespace BFW
 			}
 		}
 
+		Vector(const size_t _Size) : Size(0), Capacity(0), Data(nullptr)
+		{
+			if (_Size == 0)
+			{
+				return;
+			}
+
+			Size = _Size;
+			Capacity = _Size;
+			Data = new Type[Capacity];
+
+			if (!Data)
+			{
+				Size = 0;
+				Capacity = 0;
+				throw nullptr;
+			}
+		}
+
 		~Vector()
 		{
 			delete[] Data;
@@ -237,6 +256,31 @@ namespace BFW
 			{
 				Data[Size] = Type();
 			}
+		}
+
+		void Reserve(const size_t _Size)
+		{
+			if (_Size <= Capacity)
+			{
+				return;
+			}
+
+			Type* _NewData = new Type[_Size];
+
+			if (!_NewData)
+			{
+				throw nullptr;
+			}
+
+			Capacity = _Size;
+
+			for (size_t _Index = 0; _Index < Size; _Index++)
+			{
+				_NewData[_Index] = (Type&&)(Data[_Index]);
+			}
+
+			delete[] Data;
+			Data = _NewData;
 		}
 
 		void Clear()

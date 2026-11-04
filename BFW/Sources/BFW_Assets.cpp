@@ -4490,22 +4490,58 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 			{
 			case 4:
 			{
-				_Positions.PushBack(Math::Vec4(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str()), 1.0f));
+				Vector<float> _Values(3);
+
+				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+				{
+					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					{
+						return false;
+					}
+				}
+
+				_Positions.PushBack(Math::Vec4(_Values[0], _Values[1], _Values[2], 1.0f));
 				_Colors.PushBack(Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 				break;
 			}
 			case 5:
 			{
-				_Positions.PushBack(Math::Vec4(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str()), atof(_LineTokens[4].c_str())));
+				Vector<float> _Values(4);
+
+				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+				{
+					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					{
+						return false;
+					}
+				}
+
+				_Positions.PushBack(Math::Vec4(_Values[0], _Values[1], _Values[2], _Values[3]));
 				_Colors.PushBack(Math::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 				break;
 			}
 			case 7:
 			{
-				_Positions.PushBack(Math::Vec4(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str()), 1.0f));
-				_Colors.PushBack(Math::Vec4(atof(_LineTokens[4].c_str()), atof(_LineTokens[5].c_str()), atof(_LineTokens[6].c_str()), 1.0f));
+				Vector<float> _Values(6);
+
+				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+				{
+					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					{
+						return false;
+					}
+				}
+
+				_Positions.PushBack(Math::Vec4(_Values[0], _Values[1], _Values[2], 1.0f));
+				_Colors.PushBack(Math::Vec4(_Values[3], _Values[4], _Values[5], 1.0f));
 
 				break;
 			}
@@ -4524,17 +4560,56 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 			{
 			case 2:
 			{
-				_TextureCoords.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), 0.0f, 0.0f));
+				Vector<float> _Values(1);
+
+				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+				{
+					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					{
+						return false;
+					}
+				}
+
+				_TextureCoords.PushBack(Math::Vec3(_Values[0], 0.0f, 0.0f));
+
 				break;
 			}
 			case 3:
 			{
-				_TextureCoords.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), 0.0f));
+				Vector<float> _Values(2);
+
+				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+				{
+					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					{
+						return false;
+					}
+				}
+
+				_TextureCoords.PushBack(Math::Vec3(_Values[0], _Values[1], 0.0f));
+
 				break;
 			}
 			case 4:
 			{
-				_TextureCoords.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str())));
+				Vector<float> _Values(3);
+
+				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+				{
+					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					{
+						return false;
+					}
+				}
+
+				_TextureCoords.PushBack(Math::Vec3(_Values[0], _Values[1], _Values[2]));
+
 				break;
 			}
 			default:
@@ -4553,7 +4628,19 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			_Normals.PushBack(Math::Vec3(atof(_LineTokens[1].c_str()), atof(_LineTokens[2].c_str()), atof(_LineTokens[3].c_str())));
+			Vector<float> _Values(3);
+
+			for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+
+				if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+				{
+					return false;
+				}
+			}
+
+			_Normals.PushBack(Math::Vec3(_Values[0], _Values[1], _Values[2]));
 
 			continue;
 		}
@@ -4576,16 +4663,16 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					return false;
 				}
 
-				for (size_t _CharIndex = 0; _CharIndex < _LineTokens[_TokenIndex].size(); _CharIndex++)
+				for (size_t _TokenCharIndex = 0; _TokenCharIndex < _LineTokens[_TokenIndex].size(); _TokenCharIndex++)
 				{
-					if (BFW_STRING_TYPE_A("+-0123456789/").find(_LineTokens[_TokenIndex][_CharIndex]) == BFW_STRING_TYPE_A::npos || _LineTokens[_TokenIndex][_CharIndex] == '\0')
+					if (BFW_STRING_TYPE_A("+-0123456789/").find(_LineTokens[_TokenIndex][_TokenCharIndex]) == BFW_STRING_TYPE_A::npos || _LineTokens[_TokenIndex][_TokenCharIndex] == '\0')
 					{
 						return false;
 					}
 
-					if (_LineTokens[_TokenIndex][_CharIndex] == '/')
+					if (_LineTokens[_TokenIndex][_TokenCharIndex] == '/')
 					{
-						_CurrentSlashIndices.PushBack(_CharIndex);
+						_CurrentSlashIndices.PushBack(_TokenCharIndex);
 					}
 				}
 
@@ -4886,16 +4973,16 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					return false;
 				}
 
-				for (size_t _CharIndex = 0; _CharIndex < _LineTokens[_TokenIndex].size(); _CharIndex++)
+				for (size_t _TokenCharIndex = 0; _TokenCharIndex < _LineTokens[_TokenIndex].size(); _TokenCharIndex++)
 				{
-					if (BFW_STRING_TYPE_A("-0123456789/").find(_LineTokens[_TokenIndex][_CharIndex]) == BFW_STRING_TYPE_A::npos || _LineTokens[_TokenIndex][_CharIndex] == '\0')
+					if (BFW_STRING_TYPE_A("+-0123456789/").find(_LineTokens[_TokenIndex][_TokenCharIndex]) == BFW_STRING_TYPE_A::npos || _LineTokens[_TokenIndex][_TokenCharIndex] == '\0')
 					{
 						return false;
 					}
 
-					if (_LineTokens[_TokenIndex][_CharIndex] == '/')
+					if (_LineTokens[_TokenIndex][_TokenCharIndex] == '/')
 					{
-						_CurrentSlashIndices.PushBack(_CharIndex);
+						_CurrentSlashIndices.PushBack(_TokenCharIndex);
 					}
 				}
 
@@ -5127,7 +5214,25 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						_VertexB.Tangent = _Tangent;
 						_VertexC.Tangent = _Tangent;
 					}
+					else
+					{
+						_VertexA.Tangent = _VertexB.Position - _VertexA.Position;
+						_VertexB.Tangent = _VertexB.Position - _VertexA.Position;
+						_VertexC.Tangent = _VertexB.Position - _VertexA.Position;
+					}
 				}
+				else
+				{
+					_VertexA.Tangent = _VertexB.Position - _VertexA.Position;
+					_VertexB.Tangent = _VertexB.Position - _VertexA.Position;
+					_VertexC.Tangent = _VertexB.Position - _VertexA.Position;
+				}
+			}
+			else
+			{
+				_VertexA.Tangent = _VertexB.Position - _VertexA.Position;
+				_VertexB.Tangent = _VertexB.Position - _VertexA.Position;
+				_VertexC.Tangent = _VertexB.Position - _VertexA.Position;
 			}
 
 			_Mesh.TriangleVBO.PushBack(_VertexA);
@@ -5258,11 +5363,11 @@ BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save() const
 		return FileContent();
 	}
 
-	...;
+	//...;
 
 	BFW_STRING_STREAM_TYPE_A _Stream;
 
-	...;
+	//...;
 
 	BFW_STRING_TYPE_A _String = _Stream.str();
 
