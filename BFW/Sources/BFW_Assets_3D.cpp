@@ -770,7 +770,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						return false;
 					}
 
-					_CurrentTokenIndices.PushBack(_TempValue);
+					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					_CurrentTokenIndices.PushBack(std::numeric_limits<size_t>::max());
 					_CurrentTokenIndices.PushBack(std::numeric_limits<size_t>::max());
@@ -807,7 +807,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						return false;
 					}
 
-					_CurrentTokenIndices.PushBack(_TempValue);
+					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][0] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][0] - 1));
 
@@ -834,7 +834,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						return false;
 					}
 
-					_CurrentTokenIndices.PushBack(_TempValue);
+					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					_CurrentTokenIndices.PushBack(std::numeric_limits<size_t>::max());
 				}
@@ -872,7 +872,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 							return false;
 						}
 
-						_CurrentTokenIndices.PushBack(_TempValue);
+						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 						_CurrentTokenIndices.PushBack(std::numeric_limits<size_t>::max());
 
@@ -901,7 +901,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 							return false;
 						}
 
-						_CurrentTokenIndices.PushBack(_TempValue);
+						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 					}
 				}
 				else
@@ -935,7 +935,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 							return false;
 						}
 
-						_CurrentTokenIndices.PushBack(_TempValue);
+						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 						BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][0] + 1, _SlashIndices[_TokenIndex - 1][1] - _SlashIndices[_TokenIndex - 1][0] - 1));
 
@@ -962,7 +962,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 							return false;
 						}
 
-						_CurrentTokenIndices.PushBack(_TempValue);
+						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 						BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][1] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][1] - 1));
 
@@ -989,7 +989,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 							return false;
 						}
 
-						_CurrentTokenIndices.PushBack(_TempValue);
+						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 					}
 				}
 			}
@@ -1075,7 +1075,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						return false;
 					}
 
-					_CurrentTokenIndices.PushBack(_TempValue);
+					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					_CurrentTokenIndices.PushBack(std::numeric_limits<size_t>::max());
 				}
@@ -1111,7 +1111,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						return false;
 					}
 
-					_CurrentTokenIndices.PushBack(_TempValue);
+					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][0] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][0] - 1));
 
@@ -1138,7 +1138,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						return false;
 					}
 
-					_CurrentTokenIndices.PushBack(_TempValue);
+					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 				}
 			}
 
