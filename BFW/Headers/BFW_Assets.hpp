@@ -375,54 +375,55 @@ namespace BFW
 		struct BFW_API Material
 		{
 
-			Math::Vec3 Color;
-			Math::Vec3 DiffuseColor;
-			Math::Vec3 SpecularColor;
-			float SpecularExponent;
-			Math::Vec3 EmissionColor;
-			float Roughness;
-			float Metalness;
-			float AmbientOcclusion;
-			float Sheen;
-			Math::Vec3 SheenColor;
-			float ClearCoat;
-			Math::Vec3 ClearCoatColor;
-			float ClearCoatRoughness;
-			float Anisotropy;
-			float AnisotropyRotation;
-			float Alpha;
-			float IndexOfRefraction;
-			float Displacement;
-			uint8_t IlluminationModel;
+			Math::Vec3 DiffuseColor;		// Kd
+			Math::Vec3 SpecularColor;		// Ks
+			float SpecularExponent;			// Ns
+			Math::Vec3 EmissionColor;		// Ke
+			float Roughness;				// Pr
+			float Metalness;				// Pm
+			float AmbientOcclusion;			// Pao
+			Math::Vec3 AmbientColor;		// Ka
+			float Sheen;					// Ps
+			Math::Vec3 SheenColor;			// Psc
+			float ClearCoat;				// Pc
+			Math::Vec3 ClearCoatColor;		// Pcc
+			float ClearCoatRoughness;		// Pcr
+			float Anisotropy;				// aniso
+			float AnisotropyRotation;		// anisor
+			float Alpha;					// d / Tr
+			Math::Vec3 TransmissionFilter;	// Tf
+			float IndexOfRefraction;		// Ni
+			float Displacement;				// Kdisp
+			uint8_t IlluminationModel;		// illum
 			Math::Vec3 Normal;
 			Math::Vec3 Tangent;
 			Math::Vec3 ClearCoatNormal;
 
-			BFW_STRING_TYPE ColorTexture;
-			BFW_STRING_TYPE DiffuseColorTexture;
-			BFW_STRING_TYPE SpecularColorTexture;
-			BFW_STRING_TYPE SpecularExponentTexture;
-			BFW_STRING_TYPE EmissionColorTexture;
-			BFW_STRING_TYPE RoughnessTexture;
-			BFW_STRING_TYPE MetalnessTexture;
-			BFW_STRING_TYPE AmbientOcclusionTexture;
-			BFW_STRING_TYPE SheenTexture;
-			BFW_STRING_TYPE SheenColorTexture;
-			BFW_STRING_TYPE ClearCoatTexture;
-			BFW_STRING_TYPE ClearCoatColorTexture;
-			BFW_STRING_TYPE ClearCoatRoughnessTexture;
-			BFW_STRING_TYPE AnisotropyTexture;
-			BFW_STRING_TYPE AnisotropyRotationTexture;
-			BFW_STRING_TYPE AlphaTexture;
-			BFW_STRING_TYPE DisplacementTexture;
-			BFW_STRING_TYPE NormalTexture;
-			BFW_STRING_TYPE TangentTexture;
-			BFW_STRING_TYPE ClearCoatNormalTexture;
-			BFW_STRING_TYPE DecalTexture;
-			BFW_STRING_TYPE BumpTexture;
-			Vector<BFW_STRING_TYPE> ReflectionTextures;
+			BFW_STRING_TYPE DiffuseColorTexture;		// map_Kd
+			BFW_STRING_TYPE SpecularColorTexture;		// map_Ks
+			BFW_STRING_TYPE SpecularExponentTexture;	// map_Ns
+			BFW_STRING_TYPE EmissionColorTexture;		// map_Ke
+			BFW_STRING_TYPE RoughnessTexture;			// map_Pr
+			BFW_STRING_TYPE MetalnessTexture;			// map_Pm
+			BFW_STRING_TYPE AmbientOcclusionTexture;	// map_Pao
+			BFW_STRING_TYPE AmbientColorTexture;		// map_Ka
+			BFW_STRING_TYPE SheenTexture;				// map_Ps
+			BFW_STRING_TYPE SheenColorTexture;			// map_Psc
+			BFW_STRING_TYPE ClearCoatTexture;			// map_Pc
+			BFW_STRING_TYPE ClearCoatColorTexture;		// map_Pcc
+			BFW_STRING_TYPE ClearCoatRoughnessTexture;	// map_Pcr
+			BFW_STRING_TYPE AnisotropyTexture;			// map_aniso
+			BFW_STRING_TYPE AnisotropyRotationTexture;	// map_anisor
+			BFW_STRING_TYPE AlphaTexture;				// map_d
+			BFW_STRING_TYPE TransmissionFilterTexture;	// map_Tf
+			BFW_STRING_TYPE DisplacementTexture;		// disp
+			BFW_STRING_TYPE NormalTexture;				// norm
+			BFW_STRING_TYPE TangentTexture;				// tang
+			BFW_STRING_TYPE ClearCoatNormalTexture;		// map_Pcn
+			BFW_STRING_TYPE DecalTexture;				// decal
+			BFW_STRING_TYPE BumpTexture;				// bump / map_Bump
+			Vector<BFW_STRING_TYPE> ReflectionTextures;	// refl / map_refl
 
-			TextureSettings ColorTextureSettings;
 			TextureSettings DiffuseColorTextureSettings;
 			TextureSettings SpecularColorTextureSettings;
 			TextureSettings SpecularExponentTextureSettings;
@@ -430,6 +431,7 @@ namespace BFW
 			TextureSettings RoughnessTextureSettings;
 			TextureSettings MetalnessTextureSettings;
 			TextureSettings AmbientOcclusionTextureSettings;
+			TextureSettings AmbientColorTextureSettings;
 			TextureSettings SheenTextureSettings;
 			TextureSettings SheenColorTextureSettings;
 			TextureSettings ClearCoatTextureSettings;
@@ -438,6 +440,7 @@ namespace BFW
 			TextureSettings AnisotropyTextureSettings;
 			TextureSettings AnisotropyRotationTextureSettings;
 			TextureSettings AlphaTextureSettings;
+			TextureSettings TransmissionFilterTextureSettings;
 			TextureSettings DisplacementTextureSettings;
 			TextureSettings NormalTextureSettings;
 			TextureSettings TangentTextureSettings;

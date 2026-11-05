@@ -1766,7 +1766,6 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 
 
 BFW::Assets::Material::Material() :
-	Color(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	DiffuseColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	SpecularColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	SpecularExponent(1.0f),
@@ -1774,6 +1773,7 @@ BFW::Assets::Material::Material() :
 	Roughness(0.0f),
 	Metalness(0.0f),
 	AmbientOcclusion(1.0f),
+	AmbientColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	Sheen(0.0f),
 	SheenColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	ClearCoat(0.0f),
@@ -1782,6 +1782,7 @@ BFW::Assets::Material::Material() :
 	Anisotropy(0.0f),
 	AnisotropyRotation(0.0f),
 	Alpha(1.0f),
+	TransmissionFilter(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	IndexOfRefraction(1.0f),
 	Displacement(0.0f),
 	IlluminationModel(9),
@@ -1789,7 +1790,6 @@ BFW::Assets::Material::Material() :
 	Tangent(Math::Vec3(1.0f, 0.5f, 0.5f)),
 	ClearCoatNormal(Math::Vec3(0.5f, 0.5f, 1.0f)),
 
-	ColorTexture(BFW_STRING_PREFIX("")),
 	DiffuseColorTexture(BFW_STRING_PREFIX("")),
 	SpecularColorTexture(BFW_STRING_PREFIX("")),
 	SpecularExponentTexture(BFW_STRING_PREFIX("")),
@@ -1797,6 +1797,7 @@ BFW::Assets::Material::Material() :
 	RoughnessTexture(BFW_STRING_PREFIX("")),
 	MetalnessTexture(BFW_STRING_PREFIX("")),
 	AmbientOcclusionTexture(BFW_STRING_PREFIX("")),
+	AmbientColorTexture(BFW_STRING_PREFIX("")),
 	SheenTexture(BFW_STRING_PREFIX("")),
 	SheenColorTexture(BFW_STRING_PREFIX("")),
 	ClearCoatTexture(BFW_STRING_PREFIX("")),
@@ -1805,6 +1806,7 @@ BFW::Assets::Material::Material() :
 	AnisotropyTexture(BFW_STRING_PREFIX("")),
 	AnisotropyRotationTexture(BFW_STRING_PREFIX("")),
 	AlphaTexture(BFW_STRING_PREFIX("")),
+	TransmissionFilterTexture(BFW_STRING_PREFIX("")),
 	DisplacementTexture(BFW_STRING_PREFIX("")),
 	NormalTexture(BFW_STRING_PREFIX("")),
 	TangentTexture(BFW_STRING_PREFIX("")),
@@ -1813,7 +1815,6 @@ BFW::Assets::Material::Material() :
 	BumpTexture(BFW_STRING_PREFIX("")),
 	ReflectionTextures({ BFW_STRING_PREFIX("") }),
 
-	ColorTextureSettings(),
 	DiffuseColorTextureSettings(),
 	SpecularColorTextureSettings(),
 	SpecularExponentTextureSettings(),
@@ -1821,6 +1822,7 @@ BFW::Assets::Material::Material() :
 	RoughnessTextureSettings(),
 	MetalnessTextureSettings(),
 	AmbientOcclusionTextureSettings(),
+	AmbientColorTextureSettings(),
 	SheenTextureSettings(),
 	SheenColorTextureSettings(),
 	ClearCoatTextureSettings(),
@@ -1829,6 +1831,7 @@ BFW::Assets::Material::Material() :
 	AnisotropyTextureSettings(),
 	AnisotropyRotationTextureSettings(),
 	AlphaTextureSettings(),
+	TransmissionFilterTextureSettings(),
 	DisplacementTextureSettings(),
 	NormalTextureSettings(),
 	TangentTextureSettings(),
@@ -1841,7 +1844,6 @@ BFW::Assets::Material::Material() :
 }
 
 BFW::Assets::Material::Material(Material&& _Other) noexcept :
-	Color(_Other.Color),
 	DiffuseColor(_Other.DiffuseColor),
 	SpecularColor(_Other.SpecularColor),
 	SpecularExponent(_Other.SpecularExponent),
@@ -1849,6 +1851,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	Roughness(_Other.Roughness),
 	Metalness(_Other.Metalness),
 	AmbientOcclusion(_Other.AmbientOcclusion),
+	AmbientColor(_Other.AmbientColor),
 	Sheen(_Other.Sheen),
 	SheenColor(_Other.SheenColor),
 	ClearCoat(_Other.ClearCoat),
@@ -1857,6 +1860,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	Anisotropy(_Other.Anisotropy),
 	AnisotropyRotation(_Other.AnisotropyRotation),
 	Alpha(_Other.Alpha),
+	TransmissionFilter(_Other.TransmissionFilter),
 	IndexOfRefraction(_Other.IndexOfRefraction),
 	Displacement(_Other.Displacement),
 	IlluminationModel(_Other.IlluminationModel),
@@ -1864,7 +1868,6 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	Tangent(_Other.Tangent),
 	ClearCoatNormal(_Other.ClearCoatNormal),
 
-	ColorTexture(_Other.ColorTexture),
 	DiffuseColorTexture(_Other.DiffuseColorTexture),
 	SpecularColorTexture(_Other.SpecularColorTexture),
 	SpecularExponentTexture(_Other.SpecularExponentTexture),
@@ -1872,6 +1875,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	RoughnessTexture(_Other.RoughnessTexture),
 	MetalnessTexture(_Other.MetalnessTexture),
 	AmbientOcclusionTexture(_Other.AmbientOcclusionTexture),
+	AmbientColorTexture(_Other.AmbientColorTexture),
 	SheenTexture(_Other.SheenTexture),
 	SheenColorTexture(_Other.SheenColorTexture),
 	ClearCoatTexture(_Other.ClearCoatTexture),
@@ -1880,6 +1884,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	AnisotropyTexture(_Other.AnisotropyTexture),
 	AnisotropyRotationTexture(_Other.AnisotropyRotationTexture),
 	AlphaTexture(_Other.AlphaTexture),
+	TransmissionFilterTexture(_Other.TransmissionFilterTexture),
 	DisplacementTexture(_Other.DisplacementTexture),
 	NormalTexture(_Other.NormalTexture),
 	TangentTexture(_Other.TangentTexture),
@@ -1888,7 +1893,6 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	BumpTexture(_Other.BumpTexture),
 	ReflectionTextures(_Other.ReflectionTextures),
 
-	ColorTextureSettings(_Other.ColorTextureSettings),
 	DiffuseColorTextureSettings(_Other.DiffuseColorTextureSettings),
 	SpecularColorTextureSettings(_Other.SpecularColorTextureSettings),
 	SpecularExponentTextureSettings(_Other.SpecularExponentTextureSettings),
@@ -1896,6 +1900,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	RoughnessTextureSettings(_Other.RoughnessTextureSettings),
 	MetalnessTextureSettings(_Other.MetalnessTextureSettings),
 	AmbientOcclusionTextureSettings(_Other.AmbientOcclusionTextureSettings),
+	AmbientColorTextureSettings(_Other.AmbientColorTextureSettings),
 	SheenTextureSettings(_Other.SheenTextureSettings),
 	SheenColorTextureSettings(_Other.SheenColorTextureSettings),
 	ClearCoatTextureSettings(_Other.ClearCoatTextureSettings),
@@ -1904,6 +1909,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	AnisotropyTextureSettings(_Other.AnisotropyTextureSettings),
 	AnisotropyRotationTextureSettings(_Other.AnisotropyRotationTextureSettings),
 	AlphaTextureSettings(_Other.AlphaTextureSettings),
+	TransmissionFilterTextureSettings(_Other.TransmissionFilterTextureSettings),
 	DisplacementTextureSettings(_Other.DisplacementTextureSettings),
 	NormalTextureSettings(_Other.NormalTextureSettings),
 	TangentTextureSettings(_Other.TangentTextureSettings),
@@ -1922,7 +1928,6 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 		return *this;
 	}
 
-	Color = _Other.Color;
 	DiffuseColor = _Other.DiffuseColor;
 	SpecularColor = _Other.SpecularColor;
 	SpecularExponent = _Other.SpecularExponent;
@@ -1930,6 +1935,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	Roughness = _Other.Roughness;
 	Metalness = _Other.Metalness;
 	AmbientOcclusion = _Other.AmbientOcclusion;
+	AmbientColor = _Other.AmbientColor;
 	Sheen = _Other.Sheen;
 	SheenColor = _Other.SheenColor;
 	ClearCoat = _Other.ClearCoat;
@@ -1938,6 +1944,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	Anisotropy = _Other.Anisotropy;
 	AnisotropyRotation = _Other.AnisotropyRotation;
 	Alpha = _Other.Alpha;
+	TransmissionFilter = _Other.TransmissionFilter;
 	IndexOfRefraction = _Other.IndexOfRefraction;
 	Displacement = _Other.Displacement;
 	IlluminationModel = _Other.IlluminationModel;
@@ -1945,7 +1952,6 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	Tangent = _Other.Tangent;
 	ClearCoatNormal = _Other.ClearCoatNormal;
 
-	ColorTexture = _Other.ColorTexture;
 	DiffuseColorTexture = _Other.DiffuseColorTexture;
 	SpecularColorTexture = _Other.SpecularColorTexture;
 	SpecularExponentTexture = _Other.SpecularExponentTexture;
@@ -1953,6 +1959,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	RoughnessTexture = _Other.RoughnessTexture;
 	MetalnessTexture = _Other.MetalnessTexture;
 	AmbientOcclusionTexture = _Other.AmbientOcclusionTexture;
+	AmbientColorTexture = _Other.AmbientColorTexture;
 	SheenTexture = _Other.SheenTexture;
 	SheenColorTexture = _Other.SheenColorTexture;
 	ClearCoatTexture = _Other.ClearCoatTexture;
@@ -1961,6 +1968,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	AnisotropyTexture = _Other.AnisotropyTexture;
 	AnisotropyRotationTexture = _Other.AnisotropyRotationTexture;
 	AlphaTexture = _Other.AlphaTexture;
+	TransmissionFilterTexture = _Other.TransmissionFilterTexture;
 	DisplacementTexture = _Other.DisplacementTexture;
 	NormalTexture = _Other.NormalTexture;
 	TangentTexture = _Other.TangentTexture;
@@ -1969,7 +1977,6 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	BumpTexture = _Other.BumpTexture;
 	ReflectionTextures = _Other.ReflectionTextures;
 
-	ColorTextureSettings = _Other.ColorTextureSettings;
 	DiffuseColorTextureSettings = _Other.DiffuseColorTextureSettings;
 	SpecularColorTextureSettings = _Other.SpecularColorTextureSettings;
 	SpecularExponentTextureSettings = _Other.SpecularExponentTextureSettings;
@@ -1977,6 +1984,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	RoughnessTextureSettings = _Other.RoughnessTextureSettings;
 	MetalnessTextureSettings = _Other.MetalnessTextureSettings;
 	AmbientOcclusionTextureSettings = _Other.AmbientOcclusionTextureSettings;
+	AmbientColorTextureSettings = _Other.AmbientColorTextureSettings;
 	SheenTextureSettings = _Other.SheenTextureSettings;
 	SheenColorTextureSettings = _Other.SheenColorTextureSettings;
 	ClearCoatTextureSettings = _Other.ClearCoatTextureSettings;
@@ -1985,6 +1993,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	AnisotropyTextureSettings = _Other.AnisotropyTextureSettings;
 	AnisotropyRotationTextureSettings = _Other.AnisotropyRotationTextureSettings;
 	AlphaTextureSettings = _Other.AlphaTextureSettings;
+	TransmissionFilterTextureSettings = _Other.TransmissionFilterTextureSettings;
 	DisplacementTextureSettings = _Other.DisplacementTextureSettings;
 	NormalTextureSettings = _Other.NormalTextureSettings;
 	TangentTextureSettings = _Other.TangentTextureSettings;
