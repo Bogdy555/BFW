@@ -515,6 +515,11 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				_FileLine[_FileLine.size() - 1 - _CharIndex + _BackSlashCount / 2 + 1 + _FileLineStart] = ' ';
 			}
 
+			if (_QuoteCount == 1)
+			{
+				return false;
+			}
+
 			if (_FileContent[_FileIndex] == '\0')
 			{
 				break;
@@ -2240,6 +2245,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			{
 				_KeepLine = true;
 				_FileLine[_FileLine.size() - 1 - _CharIndex + _BackSlashCount / 2 + 1 + _FileLineStart] = ' ';
+			}
+
+			if (_QuoteCount == 1)
+			{
+				return false;
 			}
 
 			if (_FileContent[_FileIndex] == '\0')
