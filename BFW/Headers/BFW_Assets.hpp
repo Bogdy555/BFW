@@ -395,9 +395,9 @@ namespace BFW
 			float IndexOfRefraction;		// Ni
 			float Displacement;				// Kdisp
 			uint8_t IlluminationModel;		// illum
-			Math::Vec3 Normal;
-			Math::Vec3 Tangent;
-			Math::Vec3 ClearCoatNormal;
+			Math::Vec3 Normal;				// Kn
+			Math::Vec3 Tangent;				// Kt
+			Math::Vec3 ClearCoatNormal;		// Pcn
 
 			BFW_STRING_TYPE DiffuseColorTexture;		// map_Kd
 			BFW_STRING_TYPE SpecularColorTexture;		// map_Ks

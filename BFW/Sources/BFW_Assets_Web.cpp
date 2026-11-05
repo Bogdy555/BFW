@@ -1405,6 +1405,8 @@ BFW::Assets::FileContent BFW::Assets::Json::Save() const
 	size_t _TabLevel = 0;
 	BFW_STRING_STREAM_TYPE_A _Stream;
 
+	_Stream.imbue(std::locale::classic());
+
 	if (Type == _ObjectJsonType)
 	{
 		if (!SaveJsonObject(_TabLevel, _Stream, *this))
