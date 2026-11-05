@@ -1734,6 +1734,11 @@ BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save(const bool _SaveColors,
 		_GlobalIndex += _CurrentMesh.LineVBO.GetSize();
 	}
 
+	if (!_Stream)
+	{
+		return FileContent();
+	}
+
 	BFW_STRING_TYPE_A _String = _Stream.str();
 
 	FileContent _FileContent;
@@ -2637,7 +2642,10 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 		{
 			if (_CurrentMaterial.ReflectionTextures.GetSize() == 1)
 			{
-				...; // Verifica sa fie sfera
+				if (_CurrentMaterial.ReflectionTextureSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
+				{
+					return FileContent();
+				}
 
 				if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[0], _CurrentMaterial.ReflectionTextures[0]))
 				{
@@ -2646,7 +2654,32 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 			}
 			else if (_CurrentMaterial.ReflectionTextures.GetSize() == 6)
 			{
-				...; // Verifica sa fie 6 diferite de cub
+				Vector<BFW_STRING_TYPE> _Types =
+				{
+					BFW_STRING_PREFIX("cube_top"),
+					BFW_STRING_PREFIX("cube_bottom"),
+					BFW_STRING_PREFIX("cube_front"),
+					BFW_STRING_PREFIX("cube_back"),
+					BFW_STRING_PREFIX("cube_left"),
+					BFW_STRING_PREFIX("cube_right")
+				};
+
+				for (size_t _SettingIndex = 0; _SettingIndex < _CurrentMaterial.ReflectionTextureSettings.GetSize(); _SettingIndex++)
+				{
+					for (size_t _TypeIndex = 0; _TypeIndex < _Types.GetSize(); _TypeIndex++)
+					{
+						if (_Types[_TypeIndex] == _CurrentMaterial.ReflectionTextureSettings[_SettingIndex].ReflectionType)
+						{
+							_Types.Erase(_TypeIndex);
+							break;
+						}
+					}
+				}
+
+				if (_Types.GetSize() != 0)
+				{
+					return FileContent();
+				}
 
 				for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
 				{
@@ -2666,6 +2699,11 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 		{
 			_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		}
+	}
+
+	if (!_Stream)
+	{
+		return FileContent();
 	}
 
 	BFW_STRING_TYPE_A _String = _Stream.str();

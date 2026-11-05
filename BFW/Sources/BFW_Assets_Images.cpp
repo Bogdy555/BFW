@@ -1249,12 +1249,22 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 			BFW_STRING_STREAM_TYPE_A _Stream;
 			_Stream << BFW_STRING_VIEW_TYPE_A((const BFW_CHAR_TYPE_A*)(_FileContent.GetData()) + _Number1Index, _Number1EndIndex - _Number1Index);
 			_Stream >> _Height;
+
+			if (!_Stream)
+			{
+				return false;
+			}
 		}
 
 		{
 			BFW_STRING_STREAM_TYPE_A _Stream;
 			_Stream << BFW_STRING_VIEW_TYPE_A((const BFW_CHAR_TYPE_A*)(_FileContent.GetData()) + _Number2Index, _Number2EndIndex - _Number2Index);
 			_Stream >> _Width;
+
+			if (!_Stream)
+			{
+				return false;
+			}
 		}
 	}
 
@@ -1422,6 +1432,11 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 	BFW_STRING_STREAM_TYPE_A _Stream;
 
 	_Stream << "#?RADIANCE\x0A" << "FORMAT=32-bit_rle_rgbe\x0A\x0A+Y " << Height << " +X " << Width << "\x0A";
+
+	if (!_Stream)
+	{
+		return FileContent();
+	}
 
 	BFW_STRING_TYPE_A _StreamStr = _Stream.str();
 

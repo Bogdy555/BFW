@@ -1425,6 +1425,11 @@ BFW::Assets::FileContent BFW::Assets::Json::Save() const
 
 	_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
+	if (!_Stream)
+	{
+		return FileContent();
+	}
+
 	BFW_STRING_TYPE_A _String = _Stream.str();
 
 	FileContent _FileContent;
