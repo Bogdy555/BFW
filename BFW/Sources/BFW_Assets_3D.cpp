@@ -17,11 +17,6 @@ BFW::Assets::TriangleVertexData::TriangleVertexData(TriangleVertexData&& _Other)
 
 }
 
-BFW::Assets::TriangleVertexData::~TriangleVertexData()
-{
-
-}
-
 BFW::Assets::TriangleVertexData& BFW::Assets::TriangleVertexData::operator= (TriangleVertexData&& _Other) noexcept
 {
 	if (this == &_Other)
@@ -55,11 +50,6 @@ BFW::Assets::TriangleIndexData::TriangleIndexData(TriangleIndexData&& _Other) no
 	_Other.IndexA = 0;
 	_Other.IndexB = 0;
 	_Other.IndexC = 0;
-}
-
-BFW::Assets::TriangleIndexData::~TriangleIndexData()
-{
-
 }
 
 BFW::Assets::TriangleIndexData& BFW::Assets::TriangleIndexData::operator= (TriangleIndexData&& _Other) noexcept
@@ -97,11 +87,6 @@ BFW::Assets::LineVertexData::LineVertexData(LineVertexData&& _Other) noexcept : 
 
 }
 
-BFW::Assets::LineVertexData::~LineVertexData()
-{
-
-}
-
 BFW::Assets::LineVertexData& BFW::Assets::LineVertexData::operator= (LineVertexData&& _Other) noexcept
 {
 	if (this == &_Other)
@@ -132,11 +117,6 @@ BFW::Assets::LineIndexData::LineIndexData(LineIndexData&& _Other) noexcept : Ind
 {
 	_Other.IndexA = 0;
 	_Other.IndexB = 0;
-}
-
-BFW::Assets::LineIndexData::~LineIndexData()
-{
-
 }
 
 BFW::Assets::LineIndexData& BFW::Assets::LineIndexData::operator= (LineIndexData&& _Other) noexcept
@@ -1723,19 +1703,216 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 
 
 
-BFW::Assets::Material::Material()
+BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(0.0f), Brightness(0.0f), Contrast(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulance(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX("sphere"))
 {
 
 }
 
-BFW::Assets::Material::Material(Material&& _Other) noexcept
+BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Brightness(_Other.Brightness), Contrast(_Other.Contrast), Offset(_Other.Offset), Scale(_Other.Scale), Turbulance(_Other.Turbulance), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
 {
-
+	_Other.BlendU = true;
+	_Other.BlendV = true;
+	_Other.Clamp = false;
+	_Other.Channel = 'l';
+	_Other.Boost = 0.0f;
+	_Other.Brightness = 0.0f;
+	_Other.Contrast = 1.0f;
+	_Other.Offset = Math::Vec3(0.0f, 0.0f, 0.0f);
+	_Other.Scale = Math::Vec3(1.0f, 1.0f, 1.0f);
+	_Other.Turbulance = Math::Vec3(0.0f, 0.0f, 0.0f);
+	_Other.Resolution = 0;
+	_Other.BumpMultiplier = 1.0f;
+	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
 }
 
-BFW::Assets::Material::~Material()
+BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSettings&& _Other) noexcept
 {
+	if (this == &_Other)
+	{
+		return *this;
+	}
 
+	BlendU = _Other.BlendU;
+	BlendV = _Other.BlendV;
+	Clamp = _Other.Clamp;
+	Channel = _Other.Channel;
+	Boost = _Other.Boost;
+	Brightness = _Other.Brightness;
+	Contrast = _Other.Contrast;
+	Offset = _Other.Offset;
+	Scale = _Other.Scale;
+	Turbulance = _Other.Turbulance;
+	Resolution = _Other.Resolution;
+	BumpMultiplier = _Other.BumpMultiplier;
+	ReflectionType = _Other.ReflectionType;
+
+	_Other.BlendU = true;
+	_Other.BlendV = true;
+	_Other.Clamp = false;
+	_Other.Channel = 'l';
+	_Other.Boost = 0.0f;
+	_Other.Brightness = 0.0f;
+	_Other.Contrast = 1.0f;
+	_Other.Offset = Math::Vec3(0.0f, 0.0f, 0.0f);
+	_Other.Scale = Math::Vec3(1.0f, 1.0f, 1.0f);
+	_Other.Turbulance = Math::Vec3(0.0f, 0.0f, 0.0f);
+	_Other.Resolution = 0;
+	_Other.BumpMultiplier = 1.0f;
+	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
+
+	return *this;
+}
+
+
+
+BFW::Assets::Material::Material() :
+	Color(Math::Vec3(1.0f, 1.0f, 1.0f)),
+	DiffuseColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
+	SpecularColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
+	SpecularExponent(1.0f),
+	EmissionColor(Math::Vec3(0.0f, 0.0f, 0.0f)),
+	Roughness(0.0f),
+	Metalness(0.0f),
+	AmbientOcclusion(1.0f),
+	Sheen(0.0f),
+	SheenColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
+	ClearCoat(0.0f),
+	ClearCoatColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
+	ClearCoatRoughness(0.0f),
+	Anisotropy(0.0f),
+	AnisotropyRotation(0.0f),
+	Alpha(1.0f),
+	IndexOfRefraction(1.0f),
+	Displacement(0.0f),
+	IlluminationModel(9),
+	Normal(Math::Vec3(0.5f, 0.5f, 1.0f)),
+	Tangent(Math::Vec3(1.0f, 0.5f, 0.5f)),
+	ClearCoatNormal(Math::Vec3(0.5f, 0.5f, 1.0f)),
+
+	ColorTexture(BFW_STRING_PREFIX("")),
+	DiffuseColorTexture(BFW_STRING_PREFIX("")),
+	SpecularColorTexture(BFW_STRING_PREFIX("")),
+	SpecularExponentTexture(BFW_STRING_PREFIX("")),
+	EmissionColorTexture(BFW_STRING_PREFIX("")),
+	RoughnessTexture(BFW_STRING_PREFIX("")),
+	MetalnessTexture(BFW_STRING_PREFIX("")),
+	AmbientOcclusionTexture(BFW_STRING_PREFIX("")),
+	SheenTexture(BFW_STRING_PREFIX("")),
+	SheenColorTexture(BFW_STRING_PREFIX("")),
+	ClearCoatTexture(BFW_STRING_PREFIX("")),
+	ClearCoatColorTexture(BFW_STRING_PREFIX("")),
+	ClearCoatRoughnessTexture(BFW_STRING_PREFIX("")),
+	AnisotropyTexture(BFW_STRING_PREFIX("")),
+	AnisotropyRotationTexture(BFW_STRING_PREFIX("")),
+	AlphaTexture(BFW_STRING_PREFIX("")),
+	DisplacementTexture(BFW_STRING_PREFIX("")),
+	NormalTexture(BFW_STRING_PREFIX("")),
+	TangentTexture(BFW_STRING_PREFIX("")),
+	ClearCoatNormalTexture(BFW_STRING_PREFIX("")),
+	DecalTexture(BFW_STRING_PREFIX("")),
+	BumpTexture(BFW_STRING_PREFIX("")),
+	ReflectionTextures({ BFW_STRING_PREFIX("") }),
+
+	ColorTextureSettings(),
+	DiffuseColorTextureSettings(),
+	SpecularColorTextureSettings(),
+	SpecularExponentTextureSettings(),
+	EmissionColorTextureSettings(),
+	RoughnessTextureSettings(),
+	MetalnessTextureSettings(),
+	AmbientOcclusionTextureSettings(),
+	SheenTextureSettings(),
+	SheenColorTextureSettings(),
+	ClearCoatTextureSettings(),
+	ClearCoatColorTextureSettings(),
+	ClearCoatRoughnessTextureSettings(),
+	AnisotropyTextureSettings(),
+	AnisotropyRotationTextureSettings(),
+	AlphaTextureSettings(),
+	DisplacementTextureSettings(),
+	NormalTextureSettings(),
+	TangentTextureSettings(),
+	ClearCoatNormalTextureSettings(),
+	DecalTextureSettings(),
+	BumpTextureSettings(),
+	ReflectionTextureSettings(1)
+{
+	DecalTextureSettings.Channel = 'm';
+}
+
+BFW::Assets::Material::Material(Material&& _Other) noexcept :
+	Color(_Other.Color),
+	DiffuseColor(_Other.DiffuseColor),
+	SpecularColor(_Other.SpecularColor),
+	SpecularExponent(_Other.SpecularExponent),
+	EmissionColor(_Other.EmissionColor),
+	Roughness(_Other.Roughness),
+	Metalness(_Other.Metalness),
+	AmbientOcclusion(_Other.AmbientOcclusion),
+	Sheen(_Other.Sheen),
+	SheenColor(_Other.SheenColor),
+	ClearCoat(_Other.ClearCoat),
+	ClearCoatColor(_Other.ClearCoatColor),
+	ClearCoatRoughness(_Other.ClearCoatRoughness),
+	Anisotropy(_Other.Anisotropy),
+	AnisotropyRotation(_Other.AnisotropyRotation),
+	Alpha(_Other.Alpha),
+	IndexOfRefraction(_Other.IndexOfRefraction),
+	Displacement(_Other.Displacement),
+	IlluminationModel(_Other.IlluminationModel),
+	Normal(_Other.Normal),
+	Tangent(_Other.Tangent),
+	ClearCoatNormal(_Other.ClearCoatNormal),
+
+	ColorTexture(_Other.ColorTexture),
+	DiffuseColorTexture(_Other.DiffuseColorTexture),
+	SpecularColorTexture(_Other.SpecularColorTexture),
+	SpecularExponentTexture(_Other.SpecularExponentTexture),
+	EmissionColorTexture(_Other.EmissionColorTexture),
+	RoughnessTexture(_Other.RoughnessTexture),
+	MetalnessTexture(_Other.MetalnessTexture),
+	AmbientOcclusionTexture(_Other.AmbientOcclusionTexture),
+	SheenTexture(_Other.SheenTexture),
+	SheenColorTexture(_Other.SheenColorTexture),
+	ClearCoatTexture(_Other.ClearCoatTexture),
+	ClearCoatColorTexture(_Other.ClearCoatColorTexture),
+	ClearCoatRoughnessTexture(_Other.ClearCoatRoughnessTexture),
+	AnisotropyTexture(_Other.AnisotropyTexture),
+	AnisotropyRotationTexture(_Other.AnisotropyRotationTexture),
+	AlphaTexture(_Other.AlphaTexture),
+	DisplacementTexture(_Other.DisplacementTexture),
+	NormalTexture(_Other.NormalTexture),
+	TangentTexture(_Other.TangentTexture),
+	ClearCoatNormalTexture(_Other.ClearCoatNormalTexture),
+	DecalTexture(_Other.DecalTexture),
+	BumpTexture(_Other.BumpTexture),
+	ReflectionTextures(_Other.ReflectionTextures),
+
+	ColorTextureSettings(_Other.ColorTextureSettings),
+	DiffuseColorTextureSettings(_Other.DiffuseColorTextureSettings),
+	SpecularColorTextureSettings(_Other.SpecularColorTextureSettings),
+	SpecularExponentTextureSettings(_Other.SpecularExponentTextureSettings),
+	EmissionColorTextureSettings(_Other.EmissionColorTextureSettings),
+	RoughnessTextureSettings(_Other.RoughnessTextureSettings),
+	MetalnessTextureSettings(_Other.MetalnessTextureSettings),
+	AmbientOcclusionTextureSettings(_Other.AmbientOcclusionTextureSettings),
+	SheenTextureSettings(_Other.SheenTextureSettings),
+	SheenColorTextureSettings(_Other.SheenColorTextureSettings),
+	ClearCoatTextureSettings(_Other.ClearCoatTextureSettings),
+	ClearCoatColorTextureSettings(_Other.ClearCoatColorTextureSettings),
+	ClearCoatRoughnessTextureSettings(_Other.ClearCoatRoughnessTextureSettings),
+	AnisotropyTextureSettings(_Other.AnisotropyTextureSettings),
+	AnisotropyRotationTextureSettings(_Other.AnisotropyRotationTextureSettings),
+	AlphaTextureSettings(_Other.AlphaTextureSettings),
+	DisplacementTextureSettings(_Other.DisplacementTextureSettings),
+	NormalTextureSettings(_Other.NormalTextureSettings),
+	TangentTextureSettings(_Other.TangentTextureSettings),
+	ClearCoatNormalTextureSettings(_Other.ClearCoatNormalTextureSettings),
+	DecalTextureSettings(_Other.DecalTextureSettings),
+	BumpTextureSettings(_Other.BumpTextureSettings),
+	ReflectionTextureSettings(_Other.ReflectionTextureSettings)
+{
+	_Other = Material();
 }
 
 BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noexcept
@@ -1744,6 +1921,79 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	{
 		return *this;
 	}
+
+	Color = _Other.Color;
+	DiffuseColor = _Other.DiffuseColor;
+	SpecularColor = _Other.SpecularColor;
+	SpecularExponent = _Other.SpecularExponent;
+	EmissionColor = _Other.EmissionColor;
+	Roughness = _Other.Roughness;
+	Metalness = _Other.Metalness;
+	AmbientOcclusion = _Other.AmbientOcclusion;
+	Sheen = _Other.Sheen;
+	SheenColor = _Other.SheenColor;
+	ClearCoat = _Other.ClearCoat;
+	ClearCoatColor = _Other.ClearCoatColor;
+	ClearCoatRoughness = _Other.ClearCoatRoughness;
+	Anisotropy = _Other.Anisotropy;
+	AnisotropyRotation = _Other.AnisotropyRotation;
+	Alpha = _Other.Alpha;
+	IndexOfRefraction = _Other.IndexOfRefraction;
+	Displacement = _Other.Displacement;
+	IlluminationModel = _Other.IlluminationModel;
+	Normal = _Other.Normal;
+	Tangent = _Other.Tangent;
+	ClearCoatNormal = _Other.ClearCoatNormal;
+
+	ColorTexture = _Other.ColorTexture;
+	DiffuseColorTexture = _Other.DiffuseColorTexture;
+	SpecularColorTexture = _Other.SpecularColorTexture;
+	SpecularExponentTexture = _Other.SpecularExponentTexture;
+	EmissionColorTexture = _Other.EmissionColorTexture;
+	RoughnessTexture = _Other.RoughnessTexture;
+	MetalnessTexture = _Other.MetalnessTexture;
+	AmbientOcclusionTexture = _Other.AmbientOcclusionTexture;
+	SheenTexture = _Other.SheenTexture;
+	SheenColorTexture = _Other.SheenColorTexture;
+	ClearCoatTexture = _Other.ClearCoatTexture;
+	ClearCoatColorTexture = _Other.ClearCoatColorTexture;
+	ClearCoatRoughnessTexture = _Other.ClearCoatRoughnessTexture;
+	AnisotropyTexture = _Other.AnisotropyTexture;
+	AnisotropyRotationTexture = _Other.AnisotropyRotationTexture;
+	AlphaTexture = _Other.AlphaTexture;
+	DisplacementTexture = _Other.DisplacementTexture;
+	NormalTexture = _Other.NormalTexture;
+	TangentTexture = _Other.TangentTexture;
+	ClearCoatNormalTexture = _Other.ClearCoatNormalTexture;
+	DecalTexture = _Other.DecalTexture;
+	BumpTexture = _Other.BumpTexture;
+	ReflectionTextures = _Other.ReflectionTextures;
+
+	ColorTextureSettings = _Other.ColorTextureSettings;
+	DiffuseColorTextureSettings = _Other.DiffuseColorTextureSettings;
+	SpecularColorTextureSettings = _Other.SpecularColorTextureSettings;
+	SpecularExponentTextureSettings = _Other.SpecularExponentTextureSettings;
+	EmissionColorTextureSettings = _Other.EmissionColorTextureSettings;
+	RoughnessTextureSettings = _Other.RoughnessTextureSettings;
+	MetalnessTextureSettings = _Other.MetalnessTextureSettings;
+	AmbientOcclusionTextureSettings = _Other.AmbientOcclusionTextureSettings;
+	SheenTextureSettings = _Other.SheenTextureSettings;
+	SheenColorTextureSettings = _Other.SheenColorTextureSettings;
+	ClearCoatTextureSettings = _Other.ClearCoatTextureSettings;
+	ClearCoatColorTextureSettings = _Other.ClearCoatColorTextureSettings;
+	ClearCoatRoughnessTextureSettings = _Other.ClearCoatRoughnessTextureSettings;
+	AnisotropyTextureSettings = _Other.AnisotropyTextureSettings;
+	AnisotropyRotationTextureSettings = _Other.AnisotropyRotationTextureSettings;
+	AlphaTextureSettings = _Other.AlphaTextureSettings;
+	DisplacementTextureSettings = _Other.DisplacementTextureSettings;
+	NormalTextureSettings = _Other.NormalTextureSettings;
+	TangentTextureSettings = _Other.TangentTextureSettings;
+	ClearCoatNormalTextureSettings = _Other.ClearCoatNormalTextureSettings;
+	DecalTextureSettings = _Other.DecalTextureSettings;
+	BumpTextureSettings = _Other.BumpTextureSettings;
+	ReflectionTextureSettings = _Other.ReflectionTextureSettings;
+
+	_Other = Material();
 
 	return *this;
 }
@@ -1778,6 +2028,9 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 	{
 		return false;
 	}
+
+	Vector<BFW_STRING_TYPE> _Names;
+	Vector<Material> _Materials;
 
 	size_t _FileIndex = 0;
 
@@ -1939,10 +2192,30 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			// if no active name in alte case uri atunci error
+			bool _Error = false;
+
+			BFW_STRING_TYPE _Name = BFW_UTF8_TO_MACHINE(_LineTokens[1], &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			for (size_t _Index = 0; _Index < _Names.GetSize(); _Index++)
+			{
+				if (_Names[_Index] == _Name)
+				{
+					return false;
+				}
+			}
+
+			_Names.PushBack(_Name);
+			_Materials.EmplaceBack(Material());
 
 			continue;
 		}
+
+		// if no active name in alte case uri atunci error
 	}
 
 	if (_FileIndex != _FileContent.GetLength() - 1)
@@ -1950,7 +2223,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 		return false;
 	}
 
-
+	for (size_t _Index = 0; _Index < _Materials.GetSize(); _Index++)
+	{
+		MaterialNames.PushBack(_Names[_Index]);
+		Materials.Emplace(_Names[_Index].c_str(), (Material&&)(_Materials[_Index]));
+	}
 
 	return true;
 }

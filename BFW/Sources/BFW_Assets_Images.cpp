@@ -16,7 +16,6 @@ struct BitMapFileHeader
 	BitMapFileHeader();
 	BitMapFileHeader(const BitMapFileHeader& _Other) = default;
 	BitMapFileHeader(BitMapFileHeader&& _Other) noexcept;
-	~BitMapFileHeader();
 	BitMapFileHeader& operator= (const BitMapFileHeader& _Other) = default;
 	BitMapFileHeader& operator= (BitMapFileHeader&& _Other) noexcept;
 
@@ -40,7 +39,6 @@ struct BitMapInfoHeader
 	BitMapInfoHeader();
 	BitMapInfoHeader(const BitMapInfoHeader& _Other) = default;
 	BitMapInfoHeader(BitMapInfoHeader& _Other) noexcept;
-	~BitMapInfoHeader();
 	BitMapInfoHeader& operator= (const BitMapInfoHeader& _Other) = default;
 	BitMapInfoHeader& operator= (BitMapInfoHeader& _Other) noexcept;
 
@@ -54,7 +52,6 @@ struct HdrFileHeader
 	HdrFileHeader();
 	HdrFileHeader(const HdrFileHeader& _Other) = default;
 	HdrFileHeader(HdrFileHeader&& _Other) noexcept;
-	~HdrFileHeader();
 	HdrFileHeader& operator= (const HdrFileHeader& _Other) = default;
 	HdrFileHeader& operator= (HdrFileHeader&& _Other) noexcept;
 
@@ -81,11 +78,6 @@ BitMapFileHeader::BitMapFileHeader(BitMapFileHeader&& _Other) noexcept : Type(),
 	_Other.Reserved1 = 0;
 	_Other.Reserved2 = 0;
 	_Other.Offset = 0;
-}
-
-BitMapFileHeader::~BitMapFileHeader()
-{
-
 }
 
 BitMapFileHeader& BitMapFileHeader::operator= (BitMapFileHeader&& _Other) noexcept
@@ -132,11 +124,6 @@ BitMapInfoHeader::BitMapInfoHeader(BitMapInfoHeader& _Other) noexcept : Size(_Ot
 	_Other.DPIY = 0;
 	_Other.ColorsUsed = 0;
 	_Other.ColorsImportant = 0;
-}
-
-BitMapInfoHeader::~BitMapInfoHeader()
-{
-
 }
 
 BitMapInfoHeader& BitMapInfoHeader::operator= (BitMapInfoHeader& _Other) noexcept
@@ -190,11 +177,6 @@ HdrFileHeader::HdrFileHeader(HdrFileHeader&& _Other) noexcept : MagicNumbers()
 		MagicNumbers[_Index] = _Other.MagicNumbers[_Index];
 		_Other.MagicNumbers[_Index] = 0;
 	}
-}
-
-HdrFileHeader::~HdrFileHeader()
-{
-
 }
 
 HdrFileHeader& HdrFileHeader::operator= (HdrFileHeader&& _Other) noexcept

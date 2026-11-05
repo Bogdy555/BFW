@@ -14,7 +14,6 @@ struct WaveFileHeader
 	WaveFileHeader();
 	WaveFileHeader(const WaveFileHeader& _Other) = default;
 	WaveFileHeader(WaveFileHeader&& _Other) noexcept;
-	~WaveFileHeader();
 	WaveFileHeader& operator= (const WaveFileHeader& _Other) = default;
 	WaveFileHeader& operator= (WaveFileHeader&& _Other) noexcept;
 
@@ -29,7 +28,6 @@ struct WaveChunkHeader
 	WaveChunkHeader();
 	WaveChunkHeader(const WaveChunkHeader& _Other) = default;
 	WaveChunkHeader(WaveChunkHeader& _Other) noexcept;
-	~WaveChunkHeader();
 	WaveChunkHeader& operator= (const WaveChunkHeader& _Other) = default;
 	WaveChunkHeader& operator= (WaveChunkHeader& _Other) noexcept;
 
@@ -71,11 +69,6 @@ WaveFileHeader::WaveFileHeader(WaveFileHeader&& _Other) noexcept : RIFF(), FileS
 	_Other.WAVE[1] = '\0';
 	_Other.WAVE[2] = '\0';
 	_Other.WAVE[3] = '\0';
-}
-
-WaveFileHeader::~WaveFileHeader()
-{
-
 }
 
 WaveFileHeader& WaveFileHeader::operator= (WaveFileHeader&& _Other) noexcept
@@ -132,11 +125,6 @@ WaveChunkHeader::WaveChunkHeader(WaveChunkHeader& _Other) noexcept : ID(), Size(
 	_Other.Size = 0;
 }
 
-WaveChunkHeader::~WaveChunkHeader()
-{
-
-}
-
 WaveChunkHeader& WaveChunkHeader::operator= (WaveChunkHeader& _Other) noexcept
 {
 	if (this == &_Other)
@@ -174,11 +162,6 @@ BFW::Assets::WaveFormat::WaveFormat(WaveFormat&& _Other) noexcept : FormatTag(_O
 	_Other.AvgBytesPerSec = 0;
 	_Other.BlockAlign = 0;
 	_Other.BitsPerSample = 0;
-}
-
-BFW::Assets::WaveFormat::~WaveFormat()
-{
-
 }
 
 BFW::Assets::WaveFormat& BFW::Assets::WaveFormat::operator= (WaveFormat&& _Other) noexcept

@@ -166,7 +166,6 @@ namespace BFW
 			WaveFormat();
 			WaveFormat(const WaveFormat& _Other) = default;
 			WaveFormat(WaveFormat&& _Other) noexcept;
-			~WaveFormat();
 			WaveFormat& operator= (const WaveFormat& _Other) = default;
 			WaveFormat& operator= (WaveFormat&& _Other) noexcept;
 
@@ -230,7 +229,6 @@ namespace BFW
 			TriangleVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color, const Math::Vec3& _Normal, const Math::Vec3& _Tangent, const Math::Vec3& _TextureCoords);
 			TriangleVertexData(const TriangleVertexData& _Other) = default;
 			TriangleVertexData(TriangleVertexData&& _Other) noexcept;
-			~TriangleVertexData();
 			TriangleVertexData& operator= (const TriangleVertexData& _Other) = default;
 			TriangleVertexData& operator= (TriangleVertexData&& _Other) noexcept;
 
@@ -247,7 +245,6 @@ namespace BFW
 			TriangleIndexData(const uint32_t _IndexA, const uint32_t _IndexB, const uint32_t _IndexC);
 			TriangleIndexData(const TriangleIndexData& _Other) = default;
 			TriangleIndexData(TriangleIndexData&& _Other) noexcept;
-			~TriangleIndexData();
 			TriangleIndexData& operator= (const TriangleIndexData& _Other) = default;
 			TriangleIndexData& operator= (TriangleIndexData&& _Other) noexcept;
 
@@ -264,7 +261,6 @@ namespace BFW
 			LineVertexData(const Math::Vec4& _Position, const Math::Vec4& _Color, const Math::Vec3& _TextureCoords);
 			LineVertexData(const LineVertexData& _Other) = default;
 			LineVertexData(LineVertexData&& _Other) noexcept;
-			~LineVertexData();
 			LineVertexData& operator= (const LineVertexData& _Other) = default;
 			LineVertexData& operator= (LineVertexData&& _Other) noexcept;
 
@@ -280,7 +276,6 @@ namespace BFW
 			LineIndexData(const uint32_t _IndexA, const uint32_t _IndexB);
 			LineIndexData(const LineIndexData& _Other) = default;
 			LineIndexData(LineIndexData&& _Other) noexcept;
-			~LineIndexData();
 			LineIndexData& operator= (const LineIndexData& _Other) = default;
 			LineIndexData& operator= (LineIndexData&& _Other) noexcept;
 
@@ -352,13 +347,108 @@ namespace BFW
 
 		};
 
+		struct BFW_API TextureSettings
+		{
+
+			bool BlendU;
+			bool BlendV;
+			bool Clamp;
+			BFW_CHAR_TYPE_A Channel;
+			float Boost;
+			float Brightness;
+			float Contrast;
+			Math::Vec3 Offset;
+			Math::Vec3 Scale;
+			Math::Vec3 Turbulance;
+			size_t Resolution;
+			float BumpMultiplier;
+			BFW_STRING_TYPE ReflectionType;
+
+			TextureSettings();
+			TextureSettings(const TextureSettings& _Other) = default;
+			TextureSettings(TextureSettings&& _Other) noexcept;
+			TextureSettings& operator= (const TextureSettings& _Other) = default;
+			TextureSettings& operator= (TextureSettings&& _Other) noexcept;
+
+		};
+
 		struct BFW_API Material
 		{
+
+			Math::Vec3 Color;
+			Math::Vec3 DiffuseColor;
+			Math::Vec3 SpecularColor;
+			float SpecularExponent;
+			Math::Vec3 EmissionColor;
+			float Roughness;
+			float Metalness;
+			float AmbientOcclusion;
+			float Sheen;
+			Math::Vec3 SheenColor;
+			float ClearCoat;
+			Math::Vec3 ClearCoatColor;
+			float ClearCoatRoughness;
+			float Anisotropy;
+			float AnisotropyRotation;
+			float Alpha;
+			float IndexOfRefraction;
+			float Displacement;
+			uint8_t IlluminationModel;
+			Math::Vec3 Normal;
+			Math::Vec3 Tangent;
+			Math::Vec3 ClearCoatNormal;
+
+			BFW_STRING_TYPE ColorTexture;
+			BFW_STRING_TYPE DiffuseColorTexture;
+			BFW_STRING_TYPE SpecularColorTexture;
+			BFW_STRING_TYPE SpecularExponentTexture;
+			BFW_STRING_TYPE EmissionColorTexture;
+			BFW_STRING_TYPE RoughnessTexture;
+			BFW_STRING_TYPE MetalnessTexture;
+			BFW_STRING_TYPE AmbientOcclusionTexture;
+			BFW_STRING_TYPE SheenTexture;
+			BFW_STRING_TYPE SheenColorTexture;
+			BFW_STRING_TYPE ClearCoatTexture;
+			BFW_STRING_TYPE ClearCoatColorTexture;
+			BFW_STRING_TYPE ClearCoatRoughnessTexture;
+			BFW_STRING_TYPE AnisotropyTexture;
+			BFW_STRING_TYPE AnisotropyRotationTexture;
+			BFW_STRING_TYPE AlphaTexture;
+			BFW_STRING_TYPE DisplacementTexture;
+			BFW_STRING_TYPE NormalTexture;
+			BFW_STRING_TYPE TangentTexture;
+			BFW_STRING_TYPE ClearCoatNormalTexture;
+			BFW_STRING_TYPE DecalTexture;
+			BFW_STRING_TYPE BumpTexture;
+			Vector<BFW_STRING_TYPE> ReflectionTextures;
+
+			TextureSettings ColorTextureSettings;
+			TextureSettings DiffuseColorTextureSettings;
+			TextureSettings SpecularColorTextureSettings;
+			TextureSettings SpecularExponentTextureSettings;
+			TextureSettings EmissionColorTextureSettings;
+			TextureSettings RoughnessTextureSettings;
+			TextureSettings MetalnessTextureSettings;
+			TextureSettings AmbientOcclusionTextureSettings;
+			TextureSettings SheenTextureSettings;
+			TextureSettings SheenColorTextureSettings;
+			TextureSettings ClearCoatTextureSettings;
+			TextureSettings ClearCoatColorTextureSettings;
+			TextureSettings ClearCoatRoughnessTextureSettings;
+			TextureSettings AnisotropyTextureSettings;
+			TextureSettings AnisotropyRotationTextureSettings;
+			TextureSettings AlphaTextureSettings;
+			TextureSettings DisplacementTextureSettings;
+			TextureSettings NormalTextureSettings;
+			TextureSettings TangentTextureSettings;
+			TextureSettings ClearCoatNormalTextureSettings;
+			TextureSettings DecalTextureSettings;
+			TextureSettings BumpTextureSettings;
+			Vector<TextureSettings> ReflectionTextureSettings;
 
 			Material();
 			Material(const Material& _Other) = default;
 			Material(Material&& _Other) noexcept;
-			~Material();
 			Material& operator= (const Material& _Other) = default;
 			Material& operator= (Material&& _Other) noexcept;
 
