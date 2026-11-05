@@ -359,7 +359,7 @@ namespace BFW
 			float Contrast;
 			Math::Vec3 Offset;
 			Math::Vec3 Scale;
-			Math::Vec3 Turbulance;
+			Math::Vec3 Turbulence;
 			size_t Resolution;
 			float BumpMultiplier;
 			BFW_STRING_TYPE ReflectionType;

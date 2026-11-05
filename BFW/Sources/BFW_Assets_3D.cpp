@@ -21,7 +21,7 @@ static const bool MaterialLibStreamMap(BFW_STRING_STREAM_TYPE_A& _Stream, const 
 	_Stream << "-mm " << _TextureSettings.Brightness << ' ' << _TextureSettings.Contrast << ' ';
 	_Stream << "-o " << _TextureSettings.Offset.x << ' ' << _TextureSettings.Offset.y << ' ' << _TextureSettings.Offset.z << ' ';
 	_Stream << "-s " << _TextureSettings.Scale.x << ' ' << _TextureSettings.Scale.y << ' ' << _TextureSettings.Scale.z << ' ';
-	_Stream << "-t " << _TextureSettings.Turbulance.x << ' ' << _TextureSettings.Turbulance.y << ' ' << _TextureSettings.Turbulance.z << ' ';
+	_Stream << "-t " << _TextureSettings.Turbulence.x << ' ' << _TextureSettings.Turbulence.y << ' ' << _TextureSettings.Turbulence.z << ' ';
 	_Stream << "-texres " << _TextureSettings.Resolution << ' ';
 	_Stream << "-bm " << _TextureSettings.BumpMultiplier << ' ';
 	_Stream << "-type " << BFW_MACHINE_TO_UTF8(_TextureSettings.ReflectionType, &_Error) << ' ';
@@ -1746,12 +1746,12 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 
 
 
-BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(0.0f), Brightness(0.0f), Contrast(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulance(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX("sphere"))
+BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(0.0f), Brightness(0.0f), Contrast(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulence(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX("sphere"))
 {
 
 }
 
-BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Brightness(_Other.Brightness), Contrast(_Other.Contrast), Offset(_Other.Offset), Scale(_Other.Scale), Turbulance(_Other.Turbulance), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
+BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Brightness(_Other.Brightness), Contrast(_Other.Contrast), Offset(_Other.Offset), Scale(_Other.Scale), Turbulence(_Other.Turbulence), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
 {
 	_Other.BlendU = true;
 	_Other.BlendV = true;
@@ -1762,7 +1762,7 @@ BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept
 	_Other.Contrast = 1.0f;
 	_Other.Offset = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Scale = Math::Vec3(1.0f, 1.0f, 1.0f);
-	_Other.Turbulance = Math::Vec3(0.0f, 0.0f, 0.0f);
+	_Other.Turbulence = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Resolution = 0;
 	_Other.BumpMultiplier = 1.0f;
 	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
@@ -1784,7 +1784,7 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 	Contrast = _Other.Contrast;
 	Offset = _Other.Offset;
 	Scale = _Other.Scale;
-	Turbulance = _Other.Turbulance;
+	Turbulence = _Other.Turbulence;
 	Resolution = _Other.Resolution;
 	BumpMultiplier = _Other.BumpMultiplier;
 	ReflectionType = _Other.ReflectionType;
@@ -1798,7 +1798,7 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 	_Other.Contrast = 1.0f;
 	_Other.Offset = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Scale = Math::Vec3(1.0f, 1.0f, 1.0f);
-	_Other.Turbulance = Math::Vec3(0.0f, 0.0f, 0.0f);
+	_Other.Turbulence = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Resolution = 0;
 	_Other.BumpMultiplier = 1.0f;
 	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
