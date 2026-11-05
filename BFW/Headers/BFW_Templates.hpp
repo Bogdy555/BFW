@@ -82,6 +82,7 @@ BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::LineIndexData>;
 BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::Assets::Mesh>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::Assets::Mesh>>;
 BFW_EXTERN template class BFW_API BFW::Trie<BFW::Assets::Mesh>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Assets::TextureSettings>;
 BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::Assets::Material>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::Assets::Material>>;
 BFW_EXTERN template class BFW_API BFW::Trie<BFW::Assets::Material>;

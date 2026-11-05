@@ -355,8 +355,8 @@ namespace BFW
 			bool Clamp;
 			BFW_CHAR_TYPE_A Channel;
 			float Boost;
-			float Brightness;
-			float Contrast;
+			float Base;
+			float Gain;
 			Math::Vec3 Offset;
 			Math::Vec3 Scale;
 			Math::Vec3 Turbulence;

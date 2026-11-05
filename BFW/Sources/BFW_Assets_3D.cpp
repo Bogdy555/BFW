@@ -2,6 +2,40 @@
 
 
 
+static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRING_TYPE& _String)
+{
+	bool _Error = false;
+
+	BFW_STRING_TYPE_A _NewString = BFW_MACHINE_TO_UTF8(_String, &_Error);
+
+	if (_Error || !_NewString.size())
+	{
+		return false;
+	}
+
+	_Stream << '\"';
+
+	for (size_t _Index = 0; _Index < _NewString.size(); _Index++)
+	{
+		if (BFW::String::IsControlCharacter(_NewString[_Index]))
+		{
+			return false;
+		}
+
+		if (_NewString[_Index] == '\"')
+		{
+			_Stream << '\\' << '\"';
+			continue;
+		}
+
+		_Stream << _NewString[_Index];
+	}
+
+	_Stream << '\"';
+
+	return true;
+}
+
 static const bool MaterialLibStreamMap(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_CHAR_TYPE_A* _Type, const BFW::Assets::TextureSettings& _TextureSettings, const BFW_STRING_TYPE& _Path)
 {
 	if (_Path.size() == 0)
@@ -9,34 +43,79 @@ static const bool MaterialLibStreamMap(BFW_STRING_STREAM_TYPE_A& _Stream, const 
 		return true;
 	}
 
-	bool _Error = false;
-
 	_Stream << _Type << ' ';
 
-	_Stream << "-blendu " << (uint8_t)(_TextureSettings.BlendU) << ' ';
-	_Stream << "-blendv " << (uint8_t)(_TextureSettings.BlendV) << ' ';
-	_Stream << "-clamp " << (uint8_t)(_TextureSettings.Clamp) << ' ';
-	_Stream << "-imfchan " << _TextureSettings.Channel << ' ';
-	_Stream << "-boost " << _TextureSettings.Boost << ' ';
-	_Stream << "-mm " << _TextureSettings.Brightness << ' ' << _TextureSettings.Contrast << ' ';
-	_Stream << "-o " << _TextureSettings.Offset.x << ' ' << _TextureSettings.Offset.y << ' ' << _TextureSettings.Offset.z << ' ';
-	_Stream << "-s " << _TextureSettings.Scale.x << ' ' << _TextureSettings.Scale.y << ' ' << _TextureSettings.Scale.z << ' ';
-	_Stream << "-t " << _TextureSettings.Turbulence.x << ' ' << _TextureSettings.Turbulence.y << ' ' << _TextureSettings.Turbulence.z << ' ';
-	_Stream << "-texres " << _TextureSettings.Resolution << ' ';
-	_Stream << "-bm " << _TextureSettings.BumpMultiplier << ' ';
-	_Stream << "-type " << BFW_MACHINE_TO_UTF8(_TextureSettings.ReflectionType, &_Error) << ' ';
+	if (BFW_STRING_TYPE_A("refl") == _Type)
+	{
+		_Stream << " -type ";
 
-	if (_Error)
+		if (!WaveFrontSaveString(_Stream, _TextureSettings.ReflectionType))
+		{
+			return false;
+		}
+	}
+
+	if (BFW_STRING_TYPE_A("bump") == _Type)
+	{
+		_Stream << " -bm " << _TextureSettings.BumpMultiplier;
+	}
+
+	if (BFW_STRING_TYPE_A("bump") == _Type || BFW_STRING_TYPE_A("decal") == _Type || BFW_STRING_TYPE_A("map_Ns") == _Type || BFW_STRING_TYPE_A("map_Pr") == _Type || BFW_STRING_TYPE_A("map_Pm") == _Type || BFW_STRING_TYPE_A("map_Pao") == _Type || BFW_STRING_TYPE_A("map_Ps") == _Type || BFW_STRING_TYPE_A("map_Pc") == _Type || BFW_STRING_TYPE_A("map_Pcr") == _Type || BFW_STRING_TYPE_A("map_aniso") == _Type || BFW_STRING_TYPE_A("map_anisor") == _Type || BFW_STRING_TYPE_A("map_d") == _Type || BFW_STRING_TYPE_A("disp") == _Type)
+	{
+		_Stream << " -imfchan " << _TextureSettings.Channel;
+	}
+
+	if (!_TextureSettings.BlendU)
+	{
+		_Stream << " -blendu " << _TextureSettings.BlendU;
+	}
+
+	if (!_TextureSettings.BlendV)
+	{
+		_Stream << " -blendv " << _TextureSettings.BlendV;
+	}
+
+	if (_TextureSettings.Clamp)
+	{
+		_Stream << " -clamp " << _TextureSettings.Clamp;
+	}
+
+	if (_TextureSettings.Boost != 1.0f)
+	{
+		_Stream << " -boost " << _TextureSettings.Boost;
+	}
+
+	if (_TextureSettings.Base != 0.0f || _TextureSettings.Gain != 1.0f)
+	{
+		_Stream << " -mm " << _TextureSettings.Base << ' ' << _TextureSettings.Gain;
+	}
+
+	if (_TextureSettings.Offset != BFW::Math::Vec3(0.0f, 0.0f, 0.0f))
+	{
+		_Stream << " -o " << _TextureSettings.Offset.x << ' ' << _TextureSettings.Offset.y << ' ' << _TextureSettings.Offset.z;
+	}
+
+	if (_TextureSettings.Scale != BFW::Math::Vec3(1.0f, 1.0f, 1.0f))
+	{
+		_Stream << " -s " << _TextureSettings.Scale.x << ' ' << _TextureSettings.Scale.y << ' ' << _TextureSettings.Scale.z;
+	}
+
+	if (_TextureSettings.Turbulence != BFW::Math::Vec3(0.0f, 0.0f, 0.0f))
+	{
+		_Stream << " -t " << _TextureSettings.Turbulence.x << ' ' << _TextureSettings.Turbulence.y << ' ' << _TextureSettings.Turbulence.z;
+	}
+
+	if (_TextureSettings.Resolution)
+	{
+		_Stream << " -texres " << _TextureSettings.Resolution;
+	}
+
+	if (!WaveFrontSaveString(_Stream, _Path))
 	{
 		return false;
 	}
 
-	_Stream << '\"' << BFW_MACHINE_TO_UTF8(_Path, &_Error) << '\"' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-
-	if (_Error)
-	{
-		return false;
-	}
+	_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
 	return true;
 }
@@ -375,6 +454,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 		BFW_LINUX_PLATFORM_CALL(_FileLine.reserve(512));
 
 		bool _KeepLine = true;
+		uint8_t _QuoteCount = 0;
 
 		while (_KeepLine)
 		{
@@ -384,9 +464,14 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 
 			while (_FileContent[_FileIndex] != '\n' && _FileContent[_FileIndex] != '\0')
 			{
-				if (_FileContent[_FileIndex] == '#')
+				if (_FileContent[_FileIndex] == '#' && _QuoteCount == 0)
 				{
 					break;
+				}
+
+				if (_FileContent[_FileIndex] == '\"')
+				{
+					_QuoteCount = (_QuoteCount + 1) % 2;
 				}
 
 				_FileLine += _FileContent[_FileIndex];
@@ -1480,14 +1565,14 @@ BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save(const bool _SaveColors,
 	{
 		for (size_t _Index = 0; _Index < MaterialLibs.GetSize(); _Index++)
 		{
-			bool _Error = false;
+			_Stream << "mtllib ";
 
-			_Stream << "mtllib " << BFW_MACHINE_TO_UTF8(MaterialLibs[_Index], &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-
-			if (_Error)
+			if (!WaveFrontSaveString(_Stream, MaterialLibs[_Index]))
 			{
 				return FileContent();
 			}
+
+			_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		}
 	}
 
@@ -1495,23 +1580,25 @@ BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save(const bool _SaveColors,
 	{
 		const Mesh& _CurrentMesh = *Meshes.GetData(MeshNames[_NameIndex].c_str());
 
-		bool _Error = false;
+		_Stream << "o ";
 
-		_Stream << "o " << BFW_MACHINE_TO_UTF8(MeshNames[_NameIndex], &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-
-		if (_Error)
+		if (!WaveFrontSaveString(_Stream, MeshNames[_NameIndex]))
 		{
 			return FileContent();
 		}
 
+		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
 		if (_CurrentMesh.MaterialName.size() && _SaveMaterials)
 		{
-			_Stream << "usemtl " << BFW_MACHINE_TO_UTF8(_CurrentMesh.MaterialName, &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+			_Stream << "usemtl ";
 
-			if (_Error)
+			if (!WaveFrontSaveString(_Stream, _CurrentMesh.MaterialName))
 			{
 				return FileContent();
 			}
+
+			_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		}
 
 		for (size_t _VBOIndex = 0; _VBOIndex < _CurrentMesh.TriangleVBO.GetSize(); _VBOIndex++)
@@ -1746,20 +1833,20 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 
 
 
-BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(0.0f), Brightness(0.0f), Contrast(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulence(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX("sphere"))
+BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(1.0f), Base(0.0f), Gain(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulence(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX("sphere"))
 {
 
 }
 
-BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Brightness(_Other.Brightness), Contrast(_Other.Contrast), Offset(_Other.Offset), Scale(_Other.Scale), Turbulence(_Other.Turbulence), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
+BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Base(_Other.Base), Gain(_Other.Gain), Offset(_Other.Offset), Scale(_Other.Scale), Turbulence(_Other.Turbulence), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
 {
 	_Other.BlendU = true;
 	_Other.BlendV = true;
 	_Other.Clamp = false;
 	_Other.Channel = 'l';
-	_Other.Boost = 0.0f;
-	_Other.Brightness = 0.0f;
-	_Other.Contrast = 1.0f;
+	_Other.Boost = 1.0f;
+	_Other.Base = 0.0f;
+	_Other.Gain = 1.0f;
 	_Other.Offset = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Scale = Math::Vec3(1.0f, 1.0f, 1.0f);
 	_Other.Turbulence = Math::Vec3(0.0f, 0.0f, 0.0f);
@@ -1780,8 +1867,8 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 	Clamp = _Other.Clamp;
 	Channel = _Other.Channel;
 	Boost = _Other.Boost;
-	Brightness = _Other.Brightness;
-	Contrast = _Other.Contrast;
+	Base = _Other.Base;
+	Gain = _Other.Gain;
 	Offset = _Other.Offset;
 	Scale = _Other.Scale;
 	Turbulence = _Other.Turbulence;
@@ -1793,9 +1880,9 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 	_Other.BlendV = true;
 	_Other.Clamp = false;
 	_Other.Channel = 'l';
-	_Other.Boost = 0.0f;
-	_Other.Brightness = 0.0f;
-	_Other.Contrast = 1.0f;
+	_Other.Boost = 1.0f;
+	_Other.Base = 0.0f;
+	_Other.Gain = 1.0f;
 	_Other.Offset = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Scale = Math::Vec3(1.0f, 1.0f, 1.0f);
 	_Other.Turbulence = Math::Vec3(0.0f, 0.0f, 0.0f);
@@ -2094,6 +2181,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 		BFW_LINUX_PLATFORM_CALL(_FileLine.reserve(512));
 
 		bool _KeepLine = true;
+		uint8_t _QuoteCount = 0;
 
 		while (_KeepLine)
 		{
@@ -2103,9 +2191,14 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 			while (_FileContent[_FileIndex] != '\n' && _FileContent[_FileIndex] != '\0')
 			{
-				if (_FileContent[_FileIndex] == '#')
+				if (_FileContent[_FileIndex] == '#' && _QuoteCount == 0)
 				{
 					break;
+				}
+
+				if (_FileContent[_FileIndex] == '\"')
+				{
+					_QuoteCount = (_QuoteCount + 1) % 2;
 				}
 
 				_FileLine += _FileContent[_FileIndex];
@@ -2267,7 +2360,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			continue;
 		}
 
-		// if no active name in alte case uri atunci error
+		...; // if no active name in alte case uri atunci error
 	}
 
 	if (_FileIndex != _FileContent.GetLength() - 1)
@@ -2376,14 +2469,14 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 	{
 		const Material& _CurrentMaterial = *Materials.GetData(MaterialNames[_NameIndex].c_str());
 
-		bool _Error = false;
+		_Stream << "newmtl ";
 
-		_Stream << "newmtl " << BFW_MACHINE_TO_UTF8(MaterialNames[_NameIndex], &_Error) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-
-		if (_Error)
+		if (!WaveFrontSaveString(_Stream, MaterialNames[_NameIndex]))
 		{
 			return FileContent();
 		}
+
+		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
 		_Stream << "Kd " << _CurrentMaterial.DiffuseColor.x << ' ' << _CurrentMaterial.DiffuseColor.y << ' ' << _CurrentMaterial.DiffuseColor.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Ks " << _CurrentMaterial.SpecularColor.x << ' ' << _CurrentMaterial.SpecularColor.y << ' ' << _CurrentMaterial.SpecularColor.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
@@ -2408,11 +2501,7 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 		_Stream << "Kt " << _CurrentMaterial.Tangent.x << ' ' << _CurrentMaterial.Tangent.y << ' ' << _CurrentMaterial.Tangent.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Pcn " << _CurrentMaterial.ClearCoatNormal.x << ' ' << _CurrentMaterial.ClearCoatNormal.y << ' ' << _CurrentMaterial.ClearCoatNormal.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
-		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-
-		_Stream << "illum " << _CurrentMaterial.IlluminationModel BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-
-		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+		_Stream << "illum " << (uint16_t)(_CurrentMaterial.IlluminationModel) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
 		if (!MaterialLibStreamMap(_Stream, "map_Kd", _CurrentMaterial.DiffuseColorTextureSettings, _CurrentMaterial.DiffuseColorTexture))
 		{
@@ -2534,34 +2623,33 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 			return FileContent();
 		}
 
-		if (_CurrentMaterial.ReflectionTextures.GetSize() == 0)
+		if (_CurrentMaterial.ReflectionTextures.GetSize() != 0)
 		{
-			...;
-		}
-		else if (_CurrentMaterial.ReflectionTextures.GetSize() == 1)
-		{
-			...; // Verifica sa fie sfera
-
-			if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[0], _CurrentMaterial.ReflectionTextures[0]))
+			if (_CurrentMaterial.ReflectionTextures.GetSize() == 1)
 			{
-				return FileContent();
-			}
-		}
-		else if (_CurrentMaterial.ReflectionTextures.GetSize() == 6)
-		{
-			...; // Verifica sa fie 6 diferite de cub
+				...; // Verifica sa fie sfera
 
-			for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
-			{
-				if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
+				if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[0], _CurrentMaterial.ReflectionTextures[0]))
 				{
 					return FileContent();
 				}
 			}
-		}
-		else
-		{
-			return FileContent();
+			else if (_CurrentMaterial.ReflectionTextures.GetSize() == 6)
+			{
+				...; // Verifica sa fie 6 diferite de cub
+
+				for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
+				{
+					if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
+					{
+						return FileContent();
+					}
+				}
+			}
+			else
+			{
+				return FileContent();
+			}
 		}
 
 		if (_NameIndex != MaterialNames.GetSize() - 1)
