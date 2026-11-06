@@ -62,6 +62,19 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_blendu = true;
 
+			if (_LineTokens[_TokenIndex + 1] == "1")
+			{
+				_TextureSettings.BlendU = true;
+			}
+			else if (_LineTokens[_TokenIndex + 1] == "0")
+			{
+				_TextureSettings.BlendU = false;
+			}
+			else
+			{
+				return false;
+			}
+
 			_TokenIndex += 1;
 
 			continue;
@@ -75,6 +88,19 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			_Found_blendv = true;
+
+			if (_LineTokens[_TokenIndex + 1] == "1")
+			{
+				_TextureSettings.BlendV = true;
+			}
+			else if (_LineTokens[_TokenIndex + 1] == "0")
+			{
+				_TextureSettings.BlendV = false;
+			}
+			else
+			{
+				return false;
+			}
 
 			_TokenIndex += 1;
 
@@ -90,6 +116,19 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_clamp = true;
 
+			if (_LineTokens[_TokenIndex + 1] == "1")
+			{
+				_TextureSettings.Clamp = true;
+			}
+			else if (_LineTokens[_TokenIndex + 1] == "0")
+			{
+				_TextureSettings.Clamp = false;
+			}
+			else
+			{
+				return false;
+			}
+
 			_TokenIndex += 1;
 
 			continue;
@@ -103,6 +142,18 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			_Found_imfchan = true;
+
+			if (_LineTokens[_TokenIndex + 1].size() != 1)
+			{
+				return false;
+			}
+
+			_TextureSettings.Channel = _LineTokens[_TokenIndex + 1][0];
+
+			if (_TextureSettings.Channel != 'r' && _TextureSettings.Channel != 'g' && _TextureSettings.Channel != 'b' && _TextureSettings.Channel != 'm' && _TextureSettings.Channel != 'l' && _TextureSettings.Channel != 'z')
+			{
+				return false;
+			}
 
 			_TokenIndex += 1;
 
@@ -118,6 +169,18 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_boost = true;
 
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream >> _TextureSettings.Boost) || !_Stream.eof() || !std::isfinite(_TextureSettings.Boost))
+			{
+				return false;
+			}
+
+			if (_TextureSettings.Boost < 0.0f)
+			{
+				return false;
+			}
+
 			_TokenIndex += 1;
 
 			continue;
@@ -131,6 +194,20 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			_Found_mm = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream1 >> _TextureSettings.Base) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Base))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+
+			if (!(_Stream2 >> _TextureSettings.Gain) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Gain))
+			{
+				return false;
+			}
 
 			_TokenIndex += 2;
 
@@ -146,6 +223,27 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_o = true;
 
+			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream1 >> _TextureSettings.Offset.x) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Offset.x))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+
+			if (!(_Stream2 >> _TextureSettings.Offset.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Offset.y))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
+
+			if (!(_Stream3 >> _TextureSettings.Offset.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Offset.z))
+			{
+				return false;
+			}
+
 			_TokenIndex += 3;
 
 			continue;
@@ -159,6 +257,27 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			_Found_s = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream1 >> _TextureSettings.Scale.x) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Scale.x))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+
+			if (!(_Stream2 >> _TextureSettings.Scale.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Scale.y))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
+
+			if (!(_Stream3 >> _TextureSettings.Scale.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Scale.z))
+			{
+				return false;
+			}
 
 			_TokenIndex += 3;
 
@@ -174,6 +293,27 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_t = true;
 
+			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream1 >> _TextureSettings.Turbulence.x) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Turbulence.x))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+
+			if (!(_Stream2 >> _TextureSettings.Turbulence.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Turbulence.y))
+			{
+				return false;
+			}
+
+			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
+
+			if (!(_Stream3 >> _TextureSettings.Turbulence.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Turbulence.z))
+			{
+				return false;
+			}
+
 			_TokenIndex += 3;
 
 			continue;
@@ -187,6 +327,13 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			_Found_texres = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream >> _TextureSettings.Resolution) || !_Stream.eof())
+			{
+				return false;
+			}
 
 			_TokenIndex += 1;
 
@@ -202,6 +349,13 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_bm = true;
 
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_TokenIndex + 1]);
+
+			if (!(_Stream >> _TextureSettings.BumpMultiplier) || !_Stream.eof() || !std::isfinite(_TextureSettings.BumpMultiplier))
+			{
+				return false;
+			}
+
 			_TokenIndex += 1;
 
 			continue;
@@ -216,6 +370,26 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_Found_type = true;
 
+			bool _Error = false;
+
+			_TextureSettings.ReflectionType = BFW_UTF8_TO_MACHINE(_LineTokens[_TokenIndex + 1], &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			if (_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("sphere")) &&
+				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_top")) &&
+				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_bottom")) &&
+				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_front")) &&
+				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_back")) &&
+				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_left")) &&
+				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_right")))
+			{
+				return false;
+			}
+
 			_TokenIndex += 1;
 
 			continue;
@@ -225,6 +399,11 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 	}
 
 	if (BFW_STRING_TYPE_A("refl") == _Type && !_Found_type)
+	{
+		return false;
+	}
+
+	if (BFW_STRING_TYPE_A("bump") != _Type && _Found_bm)
 	{
 		return false;
 	}
@@ -2407,7 +2586,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	BumpTextureSettings(_Other.BumpTextureSettings),
 	ReflectionTexturesSettings(_Other.ReflectionTexturesSettings)
 {
-	_Other = Material();
+	_Other = (const Material&)(Material());
 }
 
 BFW::Assets::Material::~Material()
@@ -2869,7 +3048,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	BumpTextureSettings = _Other.BumpTextureSettings;
 	ReflectionTexturesSettings = _Other.ReflectionTexturesSettings;
 
-	_Other = Material();
+	_Other = (const Material&)(Material());
 
 	return *this;
 }
@@ -2954,7 +3133,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 	bool _Found_map_Pcn = false;
 	bool _Found_decal = false;
 	bool _Found_bump_map_Bump = false;
-	bool _Found_refl_map_refl = false;
 
 	size_t _FileIndex = 0;
 
@@ -3198,7 +3376,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_map_Pcn = false;
 			_Found_decal = false;
 			_Found_bump_map_Bump = false;
-			_Found_refl_map_refl = false;
 
 			continue;
 		}
@@ -4219,7 +4396,121 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			continue;
 		}
 
-		...; // refl / map_refl
+		if (_LineTokens[0] == "refl")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || !_Found_illum)
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 0)
+			{
+				_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(1);
+				_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(1);
+
+				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[0], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
+				{
+					_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(6);
+					_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(6);
+				}
+			}
+			else if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 1)
+			{
+				return false;
+			}
+			else if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 6)
+			{
+				size_t _NextIndex = 0;
+
+				while (_NextIndex < 6 && _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex].ReflectionType.size())
+				{
+					_NextIndex++;
+				}
+
+				if (_NextIndex == 6)
+				{
+					return false;
+				}
+
+				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[_NextIndex], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex]))
+				{
+					return false;
+				}
+
+				for (size_t _PrevIndex = 0; _PrevIndex < _NextIndex; _PrevIndex++)
+				{
+					if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex].ReflectionType == _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_PrevIndex].ReflectionType)
+					{
+						return false;
+					}
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_refl")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || !_Found_illum)
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 0)
+			{
+				_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(1);
+				_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(1);
+
+				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[0], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
+				{
+					_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(6);
+					_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(6);
+				}
+			}
+			else if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 1)
+			{
+				return false;
+			}
+			else if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 6)
+			{
+				size_t _NextIndex = 0;
+
+				while (_NextIndex < 6 && _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex].ReflectionType.size())
+				{
+					_NextIndex++;
+				}
+
+				if (_NextIndex == 6)
+				{
+					return false;
+				}
+
+				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[_NextIndex], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex]))
+				{
+					return false;
+				}
+
+				for (size_t _PrevIndex = 0; _PrevIndex < _NextIndex; _PrevIndex++)
+				{
+					if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex].ReflectionType == _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_PrevIndex].ReflectionType)
+					{
+						return false;
+					}
+				}
+			}
+
+			continue;
+		}
 	}
 
 	if (_FileIndex != _FileContent.GetLength() - 1)
