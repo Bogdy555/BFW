@@ -383,7 +383,7 @@ namespace BFW
 
 		public:
 
-			Math::Vec3 DiffuseColor;
+			Math::Vec3 Albedo;
 			Math::Vec3 SpecularColor;
 			float SpecularExponent;
 			Math::Vec3 EmissionColor;
@@ -407,32 +407,32 @@ namespace BFW
 			Math::Vec3 Tangent;
 			Math::Vec3 ClearCoatNormal;
 
-			BFW_STRING_TYPE DiffuseColorTexture;		// map_Kd
-			BFW_STRING_TYPE SpecularColorTexture;		// map_Ks
-			BFW_STRING_TYPE SpecularExponentTexture;	// map_Ns
-			BFW_STRING_TYPE EmissionColorTexture;		// map_Ke
-			BFW_STRING_TYPE RoughnessTexture;			// map_Pr
-			BFW_STRING_TYPE MetalnessTexture;			// map_Pm
-			BFW_STRING_TYPE AmbientOcclusionTexture;	// map_Pao
-			BFW_STRING_TYPE AmbientColorTexture;		// map_Ka
-			BFW_STRING_TYPE SheenTexture;				// map_Ps
-			BFW_STRING_TYPE SheenColorTexture;			// map_Psc
-			BFW_STRING_TYPE ClearCoatTexture;			// map_Pc
-			BFW_STRING_TYPE ClearCoatColorTexture;		// map_Pcc
-			BFW_STRING_TYPE ClearCoatRoughnessTexture;	// map_Pcr
-			BFW_STRING_TYPE AnisotropyTexture;			// map_aniso
-			BFW_STRING_TYPE AnisotropyRotationTexture;	// map_anisor
-			BFW_STRING_TYPE AlphaTexture;				// map_d
-			BFW_STRING_TYPE TransmissionFilterTexture;	// map_Tf
-			BFW_STRING_TYPE DisplacementTexture;		// disp
-			BFW_STRING_TYPE NormalTexture;				// norm
-			BFW_STRING_TYPE TangentTexture;				// tang
-			BFW_STRING_TYPE ClearCoatNormalTexture;		// map_Pcn
-			BFW_STRING_TYPE DecalTexture;				// decal
-			BFW_STRING_TYPE BumpTexture;				// bump / map_Bump
-			Vector<BFW_STRING_TYPE> ReflectionTextures;	// refl / map_refl
+			BFW_STRING_TYPE AlbedoTexture;
+			BFW_STRING_TYPE SpecularColorTexture;
+			BFW_STRING_TYPE SpecularExponentTexture;
+			BFW_STRING_TYPE EmissionColorTexture;
+			BFW_STRING_TYPE RoughnessTexture;
+			BFW_STRING_TYPE MetalnessTexture;
+			BFW_STRING_TYPE AmbientOcclusionTexture;
+			BFW_STRING_TYPE AmbientColorTexture;
+			BFW_STRING_TYPE SheenTexture;
+			BFW_STRING_TYPE SheenColorTexture;
+			BFW_STRING_TYPE ClearCoatTexture;
+			BFW_STRING_TYPE ClearCoatColorTexture;
+			BFW_STRING_TYPE ClearCoatRoughnessTexture;
+			BFW_STRING_TYPE AnisotropyTexture;
+			BFW_STRING_TYPE AnisotropyRotationTexture;
+			BFW_STRING_TYPE AlphaTexture;
+			BFW_STRING_TYPE TransmissionFilterTexture;
+			BFW_STRING_TYPE DisplacementTexture;
+			BFW_STRING_TYPE NormalTexture;
+			BFW_STRING_TYPE TangentTexture;
+			BFW_STRING_TYPE ClearCoatNormalTexture;
+			BFW_STRING_TYPE DecalTexture;
+			BFW_STRING_TYPE BumpTexture;
+			Vector<BFW_STRING_TYPE> ReflectionTextures;
 
-			TextureSettings DiffuseColorTextureSettings;
+			TextureSettings AlbedoTextureSettings;
 			TextureSettings SpecularColorTextureSettings;
 			TextureSettings SpecularExponentTextureSettings;
 			TextureSettings EmissionColorTextureSettings;

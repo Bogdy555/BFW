@@ -36,7 +36,212 @@ static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const B
 	return true;
 }
 
-static const bool MaterialLibStreamMap(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_CHAR_TYPE_A* _Type, const BFW::Assets::TextureSettings& _TextureSettings, const BFW_STRING_TYPE& _Path)
+static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _LineTokens, const BFW_CHAR_TYPE_A* _Type, BFW_STRING_TYPE& _Texture, BFW::Assets::TextureSettings& _TextureSettings)
+{
+	bool _Found_blendu = false;
+	bool _Found_blendv = false;
+	bool _Found_clamp = false;
+	bool _Found_imfchan = false;
+	bool _Found_boost = false;
+	bool _Found_mm = false;
+	bool _Found_o = false;
+	bool _Found_s = false;
+	bool _Found_t = false;
+	bool _Found_texres = false;
+	bool _Found_bm = false;
+	bool _Found_type = false;
+
+	for (size_t _TokenIndex = 1; _TokenIndex < _LineTokens.GetSize() - 1; _TokenIndex++)
+	{
+		if (_LineTokens[_TokenIndex] == "-blendu")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_blendu)
+			{
+				return false;
+			}
+
+			_Found_blendu = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-blendv")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_blendv)
+			{
+				return false;
+			}
+
+			_Found_blendv = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-clamp")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_clamp)
+			{
+				return false;
+			}
+
+			_Found_clamp = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-imfchan")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_imfchan)
+			{
+				return false;
+			}
+
+			_Found_imfchan = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-boost")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_boost)
+			{
+				return false;
+			}
+
+			_Found_boost = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-mm")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 2 || _Found_mm)
+			{
+				return false;
+			}
+
+			_Found_mm = true;
+
+			_TokenIndex += 2;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-o")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3 || _Found_o)
+			{
+				return false;
+			}
+
+			_Found_o = true;
+
+			_TokenIndex += 3;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-s")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3 || _Found_s)
+			{
+				return false;
+			}
+
+			_Found_s = true;
+
+			_TokenIndex += 3;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-t")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3 || _Found_t)
+			{
+				return false;
+			}
+
+			_Found_t = true;
+
+			_TokenIndex += 3;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-texres")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_texres)
+			{
+				return false;
+			}
+
+			_Found_texres = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-bm")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_bm)
+			{
+				return false;
+			}
+
+			_Found_bm = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		if (_LineTokens[_TokenIndex] == "-type")
+		{
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_type)
+			{
+				return false;
+			}
+
+			_Found_type = true;
+
+			_TokenIndex += 1;
+
+			continue;
+		}
+
+		return false;
+	}
+
+	if (BFW_STRING_TYPE_A("refl") == _Type && !_Found_type)
+	{
+		return false;
+	}
+
+	bool _Error = false;
+
+	_Texture = BFW_UTF8_TO_MACHINE(_LineTokens[_LineTokens.GetSize() - 1], &_Error);
+
+	if (_Error)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+static const bool MaterialLibSaveMap(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_CHAR_TYPE_A* _Type, const BFW::Assets::TextureSettings& _TextureSettings, const BFW_STRING_TYPE& _Path)
 {
 	if (_Path.size() == 0)
 	{
@@ -1972,7 +2177,7 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 
 
 BFW::Assets::Material::Material() :
-	DiffuseColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
+	Albedo(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	SpecularColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	SpecularExponent(1.0f),
 	EmissionColor(Math::Vec3(0.0f, 0.0f, 0.0f)),
@@ -1996,7 +2201,7 @@ BFW::Assets::Material::Material() :
 	Tangent(Math::Vec3(1.0f, 0.5f, 0.5f)),
 	ClearCoatNormal(Math::Vec3(0.5f, 0.5f, 1.0f)),
 
-	DiffuseColorTexture(BFW_STRING_PREFIX("")),
+	AlbedoTexture(BFW_STRING_PREFIX("")),
 	SpecularColorTexture(BFW_STRING_PREFIX("")),
 	SpecularExponentTexture(BFW_STRING_PREFIX("")),
 	EmissionColorTexture(BFW_STRING_PREFIX("")),
@@ -2021,7 +2226,7 @@ BFW::Assets::Material::Material() :
 	BumpTexture(BFW_STRING_PREFIX("")),
 	ReflectionTextures({ BFW_STRING_PREFIX("") }),
 
-	DiffuseColorTextureSettings(),
+	AlbedoTextureSettings(),
 	SpecularColorTextureSettings(),
 	SpecularExponentTextureSettings(),
 	EmissionColorTextureSettings(),
@@ -2049,8 +2254,8 @@ BFW::Assets::Material::Material() :
 	DecalTextureSettings.Channel = 'm';
 }
 
-BFW::Assets::Material::Material(Material&& _Other) noexcept :
-	DiffuseColor(_Other.DiffuseColor),
+BFW::Assets::Material::Material(const Material& _Other) :
+	Albedo(_Other.Albedo),
 	SpecularColor(_Other.SpecularColor),
 	SpecularExponent(_Other.SpecularExponent),
 	EmissionColor(_Other.EmissionColor),
@@ -2074,7 +2279,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	Tangent(_Other.Tangent),
 	ClearCoatNormal(_Other.ClearCoatNormal),
 
-	DiffuseColorTexture(_Other.DiffuseColorTexture),
+	AlbedoTexture(_Other.AlbedoTexture),
 	SpecularColorTexture(_Other.SpecularColorTexture),
 	SpecularExponentTexture(_Other.SpecularExponentTexture),
 	EmissionColorTexture(_Other.EmissionColorTexture),
@@ -2099,7 +2304,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	BumpTexture(_Other.BumpTexture),
 	ReflectionTextures(_Other.ReflectionTextures),
 
-	DiffuseColorTextureSettings(_Other.DiffuseColorTextureSettings),
+	AlbedoTextureSettings(_Other.AlbedoTextureSettings),
 	SpecularColorTextureSettings(_Other.SpecularColorTextureSettings),
 	SpecularExponentTextureSettings(_Other.SpecularExponentTextureSettings),
 	EmissionColorTextureSettings(_Other.EmissionColorTextureSettings),
@@ -2128,7 +2333,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 }
 
 BFW::Assets::Material::Material(Material&& _Other) noexcept :
-	DiffuseColor(_Other.DiffuseColor),
+	Albedo(_Other.Albedo),
 	SpecularColor(_Other.SpecularColor),
 	SpecularExponent(_Other.SpecularExponent),
 	EmissionColor(_Other.EmissionColor),
@@ -2152,7 +2357,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	Tangent(_Other.Tangent),
 	ClearCoatNormal(_Other.ClearCoatNormal),
 
-	DiffuseColorTexture(_Other.DiffuseColorTexture),
+	AlbedoTexture(_Other.AlbedoTexture),
 	SpecularColorTexture(_Other.SpecularColorTexture),
 	SpecularExponentTexture(_Other.SpecularExponentTexture),
 	EmissionColorTexture(_Other.EmissionColorTexture),
@@ -2177,7 +2382,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	BumpTexture(_Other.BumpTexture),
 	ReflectionTextures(_Other.ReflectionTextures),
 
-	DiffuseColorTextureSettings(_Other.DiffuseColorTextureSettings),
+	AlbedoTextureSettings(_Other.AlbedoTextureSettings),
 	SpecularColorTextureSettings(_Other.SpecularColorTextureSettings),
 	SpecularExponentTextureSettings(_Other.SpecularExponentTextureSettings),
 	EmissionColorTextureSettings(_Other.EmissionColorTextureSettings),
@@ -2212,7 +2417,7 @@ BFW::Assets::Material::~Material()
 
 const bool BFW::Assets::Material::IsValid() const
 {
-	if (DiffuseColor.x < 0.0f || DiffuseColor.x > 1.0f || DiffuseColor.y < 0.0f || DiffuseColor.y > 1.0f || DiffuseColor.z < 0.0f || DiffuseColor.z > 1.0f)
+	if (Albedo.x < 0.0f || Albedo.x > 1.0f || Albedo.y < 0.0f || Albedo.y > 1.0f || Albedo.z < 0.0f || Albedo.z > 1.0f)
 	{
 		return false;
 	}
@@ -2327,7 +2532,7 @@ const bool BFW::Assets::Material::IsValid() const
 		return false;
 	}
 
-	if (!DiffuseColorTextureSettings.IsValid() || DiffuseColorTextureSettings.BumpMultiplier != 1.0f || DiffuseColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	if (!AlbedoTextureSettings.IsValid() || AlbedoTextureSettings.BumpMultiplier != 1.0f || AlbedoTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
 	{
 		return false;
 	}
@@ -2506,7 +2711,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (const Material& _Other)
 		return *this;
 	}
 
-	DiffuseColor = _Other.DiffuseColor;
+	Albedo = _Other.Albedo;
 	SpecularColor = _Other.SpecularColor;
 	SpecularExponent = _Other.SpecularExponent;
 	EmissionColor = _Other.EmissionColor;
@@ -2530,7 +2735,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (const Material& _Other)
 	Tangent = _Other.Tangent;
 	ClearCoatNormal = _Other.ClearCoatNormal;
 
-	DiffuseColorTexture = _Other.DiffuseColorTexture;
+	AlbedoTexture = _Other.AlbedoTexture;
 	SpecularColorTexture = _Other.SpecularColorTexture;
 	SpecularExponentTexture = _Other.SpecularExponentTexture;
 	EmissionColorTexture = _Other.EmissionColorTexture;
@@ -2555,7 +2760,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (const Material& _Other)
 	BumpTexture = _Other.BumpTexture;
 	ReflectionTextures = _Other.ReflectionTextures;
 
-	DiffuseColorTextureSettings = _Other.DiffuseColorTextureSettings;
+	AlbedoTextureSettings = _Other.AlbedoTextureSettings;
 	SpecularColorTextureSettings = _Other.SpecularColorTextureSettings;
 	SpecularExponentTextureSettings = _Other.SpecularExponentTextureSettings;
 	EmissionColorTextureSettings = _Other.EmissionColorTextureSettings;
@@ -2590,7 +2795,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 		return *this;
 	}
 
-	DiffuseColor = _Other.DiffuseColor;
+	Albedo = _Other.Albedo;
 	SpecularColor = _Other.SpecularColor;
 	SpecularExponent = _Other.SpecularExponent;
 	EmissionColor = _Other.EmissionColor;
@@ -2614,7 +2819,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	Tangent = _Other.Tangent;
 	ClearCoatNormal = _Other.ClearCoatNormal;
 
-	DiffuseColorTexture = _Other.DiffuseColorTexture;
+	AlbedoTexture = _Other.AlbedoTexture;
 	SpecularColorTexture = _Other.SpecularColorTexture;
 	SpecularExponentTexture = _Other.SpecularExponentTexture;
 	EmissionColorTexture = _Other.EmissionColorTexture;
@@ -2639,7 +2844,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	BumpTexture = _Other.BumpTexture;
 	ReflectionTextures = _Other.ReflectionTextures;
 
-	DiffuseColorTextureSettings = _Other.DiffuseColorTextureSettings;
+	AlbedoTextureSettings = _Other.AlbedoTextureSettings;
 	SpecularColorTextureSettings = _Other.SpecularColorTextureSettings;
 	SpecularExponentTextureSettings = _Other.SpecularExponentTextureSettings;
 	EmissionColorTextureSettings = _Other.EmissionColorTextureSettings;
@@ -3011,12 +3216,12 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].DiffuseColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].DiffuseColor[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Albedo[_CharIndex]))
 				{
 					return false;
 				}
 
-				if (_Materials[_Materials.GetSize() - 1].DiffuseColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].DiffuseColor[_ChannelIndex] > 1.0f)
+				if (_Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex] > 1.0f)
 				{
 					return false;
 				}
@@ -3606,7 +3811,415 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			continue;
 		}
 
-		...; // found_ilum la texturi
+		if (_LineTokens[0] == "map_Kd")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Kd || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Kd = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Kd", _Materials[_Materials.GetSize() - 1].AlbedoTexture, _Materials[_Materials.GetSize() - 1].AlbedoTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Ks")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Ks || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Ks = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Ks", _Materials[_Materials.GetSize() - 1].SpecularColorTexture, _Materials[_Materials.GetSize() - 1].SpecularColorTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Ns")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Ns || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Ns = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Ns", _Materials[_Materials.GetSize() - 1].SpecularExponentTexture, _Materials[_Materials.GetSize() - 1].SpecularExponentTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Ke")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Ke || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Ke = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Ke", _Materials[_Materials.GetSize() - 1].EmissionColorTexture, _Materials[_Materials.GetSize() - 1].EmissionColorTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pr")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pr || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pr = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pr", _Materials[_Materials.GetSize() - 1].RoughnessTexture, _Materials[_Materials.GetSize() - 1].RoughnessTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pm")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pm || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pm = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pm", _Materials[_Materials.GetSize() - 1].MetalnessTexture, _Materials[_Materials.GetSize() - 1].MetalnessTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pao")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pao || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pao = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pao", _Materials[_Materials.GetSize() - 1].AmbientOcclusionTexture, _Materials[_Materials.GetSize() - 1].AmbientOcclusionTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Ka")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Ka || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Ka = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Ka", _Materials[_Materials.GetSize() - 1].AmbientColorTexture, _Materials[_Materials.GetSize() - 1].AmbientColorTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Ps")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Ps || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Ps = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Ps", _Materials[_Materials.GetSize() - 1].SheenTexture, _Materials[_Materials.GetSize() - 1].SheenTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Psc")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Psc || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Psc = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Psc", _Materials[_Materials.GetSize() - 1].SheenColorTexture, _Materials[_Materials.GetSize() - 1].SheenColorTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pc")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pc || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pc = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pc", _Materials[_Materials.GetSize() - 1].ClearCoatTexture, _Materials[_Materials.GetSize() - 1].ClearCoatTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pcc")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pcc || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pcc = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pcc", _Materials[_Materials.GetSize() - 1].ClearCoatColorTexture, _Materials[_Materials.GetSize() - 1].ClearCoatColorTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pcr")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pcr || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pcr = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pcr", _Materials[_Materials.GetSize() - 1].ClearCoatRoughnessTexture, _Materials[_Materials.GetSize() - 1].ClearCoatRoughnessTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_aniso")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_aniso || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_aniso = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_aniso", _Materials[_Materials.GetSize() - 1].AnisotropyTexture, _Materials[_Materials.GetSize() - 1].AnisotropyTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_anisor")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_anisor || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_anisor = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_anisor", _Materials[_Materials.GetSize() - 1].AnisotropyRotationTexture, _Materials[_Materials.GetSize() - 1].AnisotropyRotationTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_d")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_d || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_d = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_d", _Materials[_Materials.GetSize() - 1].AlphaTexture, _Materials[_Materials.GetSize() - 1].AlphaTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Tf")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Tf || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Tf = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Tf", _Materials[_Materials.GetSize() - 1].TransmissionFilterTexture, _Materials[_Materials.GetSize() - 1].TransmissionFilterTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "disp")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_disp || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_disp = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "disp", _Materials[_Materials.GetSize() - 1].DisplacementTexture, _Materials[_Materials.GetSize() - 1].DisplacementTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "norm")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_norm || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_norm = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "norm", _Materials[_Materials.GetSize() - 1].NormalTexture, _Materials[_Materials.GetSize() - 1].NormalTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "tang")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_tang || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_tang = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "tang", _Materials[_Materials.GetSize() - 1].TangentTexture, _Materials[_Materials.GetSize() - 1].TangentTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Pcn")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_map_Pcn || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_map_Pcn = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "map_Pcn", _Materials[_Materials.GetSize() - 1].ClearCoatNormalTexture, _Materials[_Materials.GetSize() - 1].ClearCoatNormalTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "decal")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_decal || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_decal = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "decal", _Materials[_Materials.GetSize() - 1].DecalTexture, _Materials[_Materials.GetSize() - 1].DecalTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "bump")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_bump_map_Bump || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_bump_map_Bump = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "bump", _Materials[_Materials.GetSize() - 1].BumpTexture, _Materials[_Materials.GetSize() - 1].BumpTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "map_Bump")
+		{
+			if (_LineTokens.GetSize() < 2 || _Names.GetSize() == 0 || _Found_bump_map_Bump || !_Found_illum)
+			{
+				return false;
+			}
+
+			_Found_bump_map_Bump = true;
+
+			if (!MaterialLibLoadMap(_LineTokens, "bump", _Materials[_Materials.GetSize() - 1].BumpTexture, _Materials[_Materials.GetSize() - 1].BumpTextureSettings))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		...; // refl / map_refl
 	}
 
 	if (_FileIndex != _FileContent.GetLength() - 1)
@@ -3737,7 +4350,7 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 
 		_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
-		_Stream << "Kd " << _CurrentMaterial.DiffuseColor.x << ' ' << _CurrentMaterial.DiffuseColor.y << ' ' << _CurrentMaterial.DiffuseColor.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+		_Stream << "Kd " << _CurrentMaterial.Albedo.x << ' ' << _CurrentMaterial.Albedo.y << ' ' << _CurrentMaterial.Albedo.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Ks " << _CurrentMaterial.SpecularColor.x << ' ' << _CurrentMaterial.SpecularColor.y << ' ' << _CurrentMaterial.SpecularColor.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Ns " << _CurrentMaterial.SpecularExponent BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Ke " << _CurrentMaterial.EmissionColor.x << ' ' << _CurrentMaterial.EmissionColor.y << ' ' << _CurrentMaterial.EmissionColor.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
@@ -3762,117 +4375,117 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 
 		_Stream << "illum " << (uint16_t)(_CurrentMaterial.IlluminationModel) BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
-		if (!MaterialLibStreamMap(_Stream, "map_Kd", _CurrentMaterial.DiffuseColorTextureSettings, _CurrentMaterial.DiffuseColorTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Kd", _CurrentMaterial.AlbedoTextureSettings, _CurrentMaterial.AlbedoTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Ks", _CurrentMaterial.SpecularColorTextureSettings, _CurrentMaterial.SpecularColorTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Ks", _CurrentMaterial.SpecularColorTextureSettings, _CurrentMaterial.SpecularColorTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Ns", _CurrentMaterial.SpecularExponentTextureSettings, _CurrentMaterial.SpecularExponentTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Ns", _CurrentMaterial.SpecularExponentTextureSettings, _CurrentMaterial.SpecularExponentTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Ke", _CurrentMaterial.EmissionColorTextureSettings, _CurrentMaterial.EmissionColorTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Ke", _CurrentMaterial.EmissionColorTextureSettings, _CurrentMaterial.EmissionColorTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pr", _CurrentMaterial.RoughnessTextureSettings, _CurrentMaterial.RoughnessTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pr", _CurrentMaterial.RoughnessTextureSettings, _CurrentMaterial.RoughnessTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pm", _CurrentMaterial.MetalnessTextureSettings, _CurrentMaterial.MetalnessTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pm", _CurrentMaterial.MetalnessTextureSettings, _CurrentMaterial.MetalnessTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pao", _CurrentMaterial.AmbientOcclusionTextureSettings, _CurrentMaterial.AmbientOcclusionTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pao", _CurrentMaterial.AmbientOcclusionTextureSettings, _CurrentMaterial.AmbientOcclusionTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Ka", _CurrentMaterial.AmbientColorTextureSettings, _CurrentMaterial.AmbientColorTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Ka", _CurrentMaterial.AmbientColorTextureSettings, _CurrentMaterial.AmbientColorTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Ps", _CurrentMaterial.SheenTextureSettings, _CurrentMaterial.SheenTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Ps", _CurrentMaterial.SheenTextureSettings, _CurrentMaterial.SheenTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Psc", _CurrentMaterial.SheenColorTextureSettings, _CurrentMaterial.SheenColorTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Psc", _CurrentMaterial.SheenColorTextureSettings, _CurrentMaterial.SheenColorTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pc", _CurrentMaterial.ClearCoatTextureSettings, _CurrentMaterial.ClearCoatTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pc", _CurrentMaterial.ClearCoatTextureSettings, _CurrentMaterial.ClearCoatTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pcc", _CurrentMaterial.ClearCoatColorTextureSettings, _CurrentMaterial.ClearCoatColorTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pcc", _CurrentMaterial.ClearCoatColorTextureSettings, _CurrentMaterial.ClearCoatColorTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pcr", _CurrentMaterial.ClearCoatRoughnessTextureSettings, _CurrentMaterial.ClearCoatRoughnessTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pcr", _CurrentMaterial.ClearCoatRoughnessTextureSettings, _CurrentMaterial.ClearCoatRoughnessTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_aniso", _CurrentMaterial.AnisotropyTextureSettings, _CurrentMaterial.AnisotropyTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_aniso", _CurrentMaterial.AnisotropyTextureSettings, _CurrentMaterial.AnisotropyTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_anisor", _CurrentMaterial.AnisotropyRotationTextureSettings, _CurrentMaterial.AnisotropyRotationTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_anisor", _CurrentMaterial.AnisotropyRotationTextureSettings, _CurrentMaterial.AnisotropyRotationTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_d", _CurrentMaterial.AlphaTextureSettings, _CurrentMaterial.AlphaTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_d", _CurrentMaterial.AlphaTextureSettings, _CurrentMaterial.AlphaTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Tf", _CurrentMaterial.TransmissionFilterTextureSettings, _CurrentMaterial.TransmissionFilterTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Tf", _CurrentMaterial.TransmissionFilterTextureSettings, _CurrentMaterial.TransmissionFilterTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "disp", _CurrentMaterial.DisplacementTextureSettings, _CurrentMaterial.DisplacementTexture))
+		if (!MaterialLibSaveMap(_Stream, "disp", _CurrentMaterial.DisplacementTextureSettings, _CurrentMaterial.DisplacementTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "norm", _CurrentMaterial.NormalTextureSettings, _CurrentMaterial.NormalTexture))
+		if (!MaterialLibSaveMap(_Stream, "norm", _CurrentMaterial.NormalTextureSettings, _CurrentMaterial.NormalTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "tang", _CurrentMaterial.TangentTextureSettings, _CurrentMaterial.TangentTexture))
+		if (!MaterialLibSaveMap(_Stream, "tang", _CurrentMaterial.TangentTextureSettings, _CurrentMaterial.TangentTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "map_Pcn", _CurrentMaterial.ClearCoatNormalTextureSettings, _CurrentMaterial.ClearCoatNormalTexture))
+		if (!MaterialLibSaveMap(_Stream, "map_Pcn", _CurrentMaterial.ClearCoatNormalTextureSettings, _CurrentMaterial.ClearCoatNormalTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "decal", _CurrentMaterial.DecalTextureSettings, _CurrentMaterial.DecalTexture))
+		if (!MaterialLibSaveMap(_Stream, "decal", _CurrentMaterial.DecalTextureSettings, _CurrentMaterial.DecalTexture))
 		{
 			return FileContent();
 		}
 
-		if (!MaterialLibStreamMap(_Stream, "bump", _CurrentMaterial.BumpTextureSettings, _CurrentMaterial.BumpTexture))
+		if (!MaterialLibSaveMap(_Stream, "bump", _CurrentMaterial.BumpTextureSettings, _CurrentMaterial.BumpTexture))
 		{
 			return FileContent();
 		}
@@ -3881,7 +4494,7 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 		{
 			if (_CurrentMaterial.ReflectionTextures.GetSize() == 1)
 			{
-				if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[0], _CurrentMaterial.ReflectionTextures[0]))
+				if (!MaterialLibSaveMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[0], _CurrentMaterial.ReflectionTextures[0]))
 				{
 					return FileContent();
 				}
@@ -3890,7 +4503,7 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 			{
 				for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
 				{
-					if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
+					if (!MaterialLibSaveMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
 					{
 						return FileContent();
 					}
