@@ -1848,6 +1848,11 @@ BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Cl
 
 }
 
+BFW::Assets::TextureSettings::TextureSettings(const TextureSettings& _Other) : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Base(_Other.Base), Gain(_Other.Gain), Offset(_Other.Offset), Scale(_Other.Scale), Turbulence(_Other.Turbulence), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
+{
+
+}
+
 BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept : BlendU(_Other.BlendU), BlendV(_Other.BlendV), Clamp(_Other.Clamp), Channel(_Other.Channel), Boost(_Other.Boost), Base(_Other.Base), Gain(_Other.Gain), Offset(_Other.Offset), Scale(_Other.Scale), Turbulence(_Other.Turbulence), Resolution(_Other.Resolution), BumpMultiplier(_Other.BumpMultiplier), ReflectionType(_Other.ReflectionType)
 {
 	_Other.BlendU = true;
@@ -1863,6 +1868,62 @@ BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept
 	_Other.Resolution = 0;
 	_Other.BumpMultiplier = 1.0f;
 	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
+}
+
+BFW::Assets::TextureSettings::~TextureSettings()
+{
+
+}
+
+const bool BFW::Assets::TextureSettings::IsValid() const
+{
+	if (BFW_STRING_TYPE_A("rgbmlz").find(Channel) == BFW_STRING_TYPE_A::npos || Channel == '\0')
+	{
+		return false;
+	}
+
+	if (Boost < 0.0f)
+	{
+		return false;
+	}
+
+	if (ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("sphere")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_top")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_bottom")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_front")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_back")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_left")) &&
+		ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_right")))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (const TextureSettings& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	BlendU = _Other.BlendU;
+	BlendV = _Other.BlendV;
+	Clamp = _Other.Clamp;
+	Channel = _Other.Channel;
+	Boost = _Other.Boost;
+	Base = _Other.Base;
+	Gain = _Other.Gain;
+	Offset = _Other.Offset;
+	Scale = _Other.Scale;
+	Turbulence = _Other.Turbulence;
+	Resolution = _Other.Resolution;
+	BumpMultiplier = _Other.BumpMultiplier;
+	ReflectionType = _Other.ReflectionType;
+
+	return *this;
 }
 
 BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSettings&& _Other) noexcept
@@ -1978,7 +2039,7 @@ BFW::Assets::Material::Material() :
 	ClearCoatNormalTextureSettings(),
 	DecalTextureSettings(),
 	BumpTextureSettings(),
-	ReflectionTextureSettings(1)
+	ReflectionTexturesSettings(1)
 {
 	DecalTextureSettings.Channel = 'm';
 }
@@ -2056,9 +2117,465 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	ClearCoatNormalTextureSettings(_Other.ClearCoatNormalTextureSettings),
 	DecalTextureSettings(_Other.DecalTextureSettings),
 	BumpTextureSettings(_Other.BumpTextureSettings),
-	ReflectionTextureSettings(_Other.ReflectionTextureSettings)
+	ReflectionTexturesSettings(_Other.ReflectionTexturesSettings)
+{
+
+}
+
+BFW::Assets::Material::Material(Material&& _Other) noexcept :
+	DiffuseColor(_Other.DiffuseColor),
+	SpecularColor(_Other.SpecularColor),
+	SpecularExponent(_Other.SpecularExponent),
+	EmissionColor(_Other.EmissionColor),
+	Roughness(_Other.Roughness),
+	Metalness(_Other.Metalness),
+	AmbientOcclusion(_Other.AmbientOcclusion),
+	AmbientColor(_Other.AmbientColor),
+	Sheen(_Other.Sheen),
+	SheenColor(_Other.SheenColor),
+	ClearCoat(_Other.ClearCoat),
+	ClearCoatColor(_Other.ClearCoatColor),
+	ClearCoatRoughness(_Other.ClearCoatRoughness),
+	Anisotropy(_Other.Anisotropy),
+	AnisotropyRotation(_Other.AnisotropyRotation),
+	Alpha(_Other.Alpha),
+	TransmissionFilter(_Other.TransmissionFilter),
+	IndexOfRefraction(_Other.IndexOfRefraction),
+	Displacement(_Other.Displacement),
+	IlluminationModel(_Other.IlluminationModel),
+	Normal(_Other.Normal),
+	Tangent(_Other.Tangent),
+	ClearCoatNormal(_Other.ClearCoatNormal),
+
+	DiffuseColorTexture(_Other.DiffuseColorTexture),
+	SpecularColorTexture(_Other.SpecularColorTexture),
+	SpecularExponentTexture(_Other.SpecularExponentTexture),
+	EmissionColorTexture(_Other.EmissionColorTexture),
+	RoughnessTexture(_Other.RoughnessTexture),
+	MetalnessTexture(_Other.MetalnessTexture),
+	AmbientOcclusionTexture(_Other.AmbientOcclusionTexture),
+	AmbientColorTexture(_Other.AmbientColorTexture),
+	SheenTexture(_Other.SheenTexture),
+	SheenColorTexture(_Other.SheenColorTexture),
+	ClearCoatTexture(_Other.ClearCoatTexture),
+	ClearCoatColorTexture(_Other.ClearCoatColorTexture),
+	ClearCoatRoughnessTexture(_Other.ClearCoatRoughnessTexture),
+	AnisotropyTexture(_Other.AnisotropyTexture),
+	AnisotropyRotationTexture(_Other.AnisotropyRotationTexture),
+	AlphaTexture(_Other.AlphaTexture),
+	TransmissionFilterTexture(_Other.TransmissionFilterTexture),
+	DisplacementTexture(_Other.DisplacementTexture),
+	NormalTexture(_Other.NormalTexture),
+	TangentTexture(_Other.TangentTexture),
+	ClearCoatNormalTexture(_Other.ClearCoatNormalTexture),
+	DecalTexture(_Other.DecalTexture),
+	BumpTexture(_Other.BumpTexture),
+	ReflectionTextures(_Other.ReflectionTextures),
+
+	DiffuseColorTextureSettings(_Other.DiffuseColorTextureSettings),
+	SpecularColorTextureSettings(_Other.SpecularColorTextureSettings),
+	SpecularExponentTextureSettings(_Other.SpecularExponentTextureSettings),
+	EmissionColorTextureSettings(_Other.EmissionColorTextureSettings),
+	RoughnessTextureSettings(_Other.RoughnessTextureSettings),
+	MetalnessTextureSettings(_Other.MetalnessTextureSettings),
+	AmbientOcclusionTextureSettings(_Other.AmbientOcclusionTextureSettings),
+	AmbientColorTextureSettings(_Other.AmbientColorTextureSettings),
+	SheenTextureSettings(_Other.SheenTextureSettings),
+	SheenColorTextureSettings(_Other.SheenColorTextureSettings),
+	ClearCoatTextureSettings(_Other.ClearCoatTextureSettings),
+	ClearCoatColorTextureSettings(_Other.ClearCoatColorTextureSettings),
+	ClearCoatRoughnessTextureSettings(_Other.ClearCoatRoughnessTextureSettings),
+	AnisotropyTextureSettings(_Other.AnisotropyTextureSettings),
+	AnisotropyRotationTextureSettings(_Other.AnisotropyRotationTextureSettings),
+	AlphaTextureSettings(_Other.AlphaTextureSettings),
+	TransmissionFilterTextureSettings(_Other.TransmissionFilterTextureSettings),
+	DisplacementTextureSettings(_Other.DisplacementTextureSettings),
+	NormalTextureSettings(_Other.NormalTextureSettings),
+	TangentTextureSettings(_Other.TangentTextureSettings),
+	ClearCoatNormalTextureSettings(_Other.ClearCoatNormalTextureSettings),
+	DecalTextureSettings(_Other.DecalTextureSettings),
+	BumpTextureSettings(_Other.BumpTextureSettings),
+	ReflectionTexturesSettings(_Other.ReflectionTexturesSettings)
 {
 	_Other = Material();
+}
+
+BFW::Assets::Material::~Material()
+{
+
+}
+
+const bool BFW::Assets::Material::IsValid() const
+{
+	if (DiffuseColor.x < 0.0f || DiffuseColor.x > 1.0f || DiffuseColor.y < 0.0f || DiffuseColor.y > 1.0f || DiffuseColor.z < 0.0f || DiffuseColor.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (SpecularColor.x < 0.0f || SpecularColor.x > 1.0f || SpecularColor.y < 0.0f || SpecularColor.y > 1.0f || SpecularColor.z < 0.0f || SpecularColor.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (SpecularExponent < 0.0f || SpecularExponent > 1000.0f)
+	{
+		return false;
+	}
+
+	if (EmissionColor.x < 0.0f || EmissionColor.y < 0.0f || EmissionColor.z < 0.0f)
+	{
+		return false;
+	}
+
+	if (Roughness < 0.0f || Roughness > 1.0f)
+	{
+		return false;
+	}
+
+	if (Metalness < 0.0f || Metalness > 1.0f)
+	{
+		return false;
+	}
+
+	if (AmbientOcclusion < 0.0f || AmbientOcclusion > 1.0f)
+	{
+		return false;
+	}
+
+	if (AmbientColor.x < 0.0f || AmbientColor.x > 1.0f || AmbientColor.y < 0.0f || AmbientColor.y > 1.0f || AmbientColor.z < 0.0f || AmbientColor.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (Sheen < 0.0f || Sheen > 1.0f)
+	{
+		return false;
+	}
+
+	if (SheenColor.x < 0.0f || SheenColor.x > 1.0f || SheenColor.y < 0.0f || SheenColor.y > 1.0f || SheenColor.z < 0.0f || SheenColor.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (ClearCoat < 0.0f || ClearCoat > 1.0f)
+	{
+		return false;
+	}
+
+	if (ClearCoatColor.x < 0.0f || ClearCoatColor.x > 1.0f || ClearCoatColor.y < 0.0f || ClearCoatColor.y > 1.0f || ClearCoatColor.z < 0.0f || ClearCoatColor.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (ClearCoatRoughness < 0.0f || ClearCoatRoughness > 1.0f)
+	{
+		return false;
+	}
+
+	if (Anisotropy < 0.0f || Anisotropy > 1.0f)
+	{
+		return false;
+	}
+
+	if (AnisotropyRotation < 0.0f || AnisotropyRotation > 1.0f)
+	{
+		return false;
+	}
+
+	if (Alpha < 0.0f || Alpha > 1.0f)
+	{
+		return false;
+	}
+
+	if (TransmissionFilter.x < 0.0f || TransmissionFilter.y < 0.0f || TransmissionFilter.z < 0.0f)
+	{
+		return false;
+	}
+
+	if (IndexOfRefraction < 0.001f || IndexOfRefraction > 10.0f)
+	{
+		return false;
+	}
+
+	if (Displacement < 0.0f)
+	{
+		return false;
+	}
+
+	if (IlluminationModel > 10)
+	{
+		return false;
+	}
+
+	if (Normal.x < 0.0f || Normal.x > 1.0f || Normal.y < 0.0f || Normal.y > 1.0f || Normal.z < 0.0f || Normal.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (Tangent.x < 0.0f || Tangent.x > 1.0f || Tangent.y < 0.0f || Tangent.y > 1.0f || Tangent.z < 0.0f || Tangent.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (ClearCoatNormal.x < 0.0f || ClearCoatNormal.x > 1.0f || ClearCoatNormal.y < 0.0f || ClearCoatNormal.y > 1.0f || ClearCoatNormal.z < 0.0f || ClearCoatNormal.z > 1.0f)
+	{
+		return false;
+	}
+
+	if (!DiffuseColorTextureSettings.IsValid() || DiffuseColorTextureSettings.BumpMultiplier != 1.0f || DiffuseColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!SpecularColorTextureSettings.IsValid() || SpecularColorTextureSettings.BumpMultiplier != 1.0f || SpecularColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!SpecularExponentTextureSettings.IsValid() || SpecularExponentTextureSettings.BumpMultiplier != 1.0f || SpecularExponentTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!EmissionColorTextureSettings.IsValid() || EmissionColorTextureSettings.BumpMultiplier != 1.0f || EmissionColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!RoughnessTextureSettings.IsValid() || RoughnessTextureSettings.BumpMultiplier != 1.0f || RoughnessTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!MetalnessTextureSettings.IsValid() || MetalnessTextureSettings.BumpMultiplier != 1.0f || MetalnessTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!AmbientOcclusionTextureSettings.IsValid() || AmbientOcclusionTextureSettings.BumpMultiplier != 1.0f || AmbientOcclusionTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!AmbientColorTextureSettings.IsValid() || AmbientColorTextureSettings.BumpMultiplier != 1.0f || AmbientColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!SheenTextureSettings.IsValid() || SheenTextureSettings.BumpMultiplier != 1.0f || SheenTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!SheenColorTextureSettings.IsValid() || SheenColorTextureSettings.BumpMultiplier != 1.0f || SheenColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!ClearCoatTextureSettings.IsValid() || ClearCoatTextureSettings.BumpMultiplier != 1.0f || ClearCoatTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!ClearCoatColorTextureSettings.IsValid() || ClearCoatColorTextureSettings.BumpMultiplier != 1.0f || ClearCoatColorTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!ClearCoatRoughnessTextureSettings.IsValid() || ClearCoatRoughnessTextureSettings.BumpMultiplier != 1.0f || ClearCoatRoughnessTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!AnisotropyTextureSettings.IsValid() || AnisotropyTextureSettings.BumpMultiplier != 1.0f || AnisotropyTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!AnisotropyRotationTextureSettings.IsValid() || AnisotropyRotationTextureSettings.BumpMultiplier != 1.0f || AnisotropyRotationTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!AlphaTextureSettings.IsValid() || AlphaTextureSettings.BumpMultiplier != 1.0f || AlphaTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!TransmissionFilterTextureSettings.IsValid() || TransmissionFilterTextureSettings.BumpMultiplier != 1.0f || TransmissionFilterTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!DisplacementTextureSettings.IsValid() || DisplacementTextureSettings.BumpMultiplier != 1.0f || DisplacementTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!NormalTextureSettings.IsValid() || NormalTextureSettings.BumpMultiplier != 1.0f || NormalTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!TangentTextureSettings.IsValid() || TangentTextureSettings.BumpMultiplier != 1.0f || TangentTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!ClearCoatNormalTextureSettings.IsValid() || ClearCoatNormalTextureSettings.BumpMultiplier != 1.0f || ClearCoatNormalTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!DecalTextureSettings.IsValid() || DecalTextureSettings.BumpMultiplier != 1.0f || DecalTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (!BumpTextureSettings.IsValid() || BumpTextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("")))
+	{
+		return false;
+	}
+
+	if (ReflectionTextures.GetSize() != ReflectionTexturesSettings.GetSize())
+	{
+		return false;
+	}
+
+	if (ReflectionTexturesSettings.GetSize() != 0)
+	{
+		if (ReflectionTexturesSettings.GetSize() == 1)
+		{
+			if (!ReflectionTexturesSettings[0].IsValid() || ReflectionTexturesSettings[0].BumpMultiplier != 1.0f || ReflectionTexturesSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
+			{
+				return false;
+			}
+		}
+		else if (ReflectionTexturesSettings.GetSize() == 6)
+		{
+			Vector<BFW_STRING_TYPE> _Types =
+			{
+				BFW_STRING_PREFIX("cube_top"),
+				BFW_STRING_PREFIX("cube_bottom"),
+				BFW_STRING_PREFIX("cube_front"),
+				BFW_STRING_PREFIX("cube_back"),
+				BFW_STRING_PREFIX("cube_left"),
+				BFW_STRING_PREFIX("cube_right")
+			};
+
+			for (size_t _SettingIndex = 0; _SettingIndex < ReflectionTexturesSettings.GetSize(); _SettingIndex++)
+			{
+				if (!ReflectionTexturesSettings[_SettingIndex].IsValid() || ReflectionTexturesSettings[_SettingIndex].BumpMultiplier != 1.0f)
+				{
+					return false;
+				}
+
+				for (size_t _TypeIndex = 0; _TypeIndex < _Types.GetSize(); _TypeIndex++)
+				{
+					if (_Types[_TypeIndex] == ReflectionTexturesSettings[_SettingIndex].ReflectionType)
+					{
+						_Types.Erase(_TypeIndex);
+						break;
+					}
+				}
+			}
+
+			if (_Types.GetSize() != 0)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+BFW::Assets::Material& BFW::Assets::Material::operator= (const Material& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	DiffuseColor = _Other.DiffuseColor;
+	SpecularColor = _Other.SpecularColor;
+	SpecularExponent = _Other.SpecularExponent;
+	EmissionColor = _Other.EmissionColor;
+	Roughness = _Other.Roughness;
+	Metalness = _Other.Metalness;
+	AmbientOcclusion = _Other.AmbientOcclusion;
+	AmbientColor = _Other.AmbientColor;
+	Sheen = _Other.Sheen;
+	SheenColor = _Other.SheenColor;
+	ClearCoat = _Other.ClearCoat;
+	ClearCoatColor = _Other.ClearCoatColor;
+	ClearCoatRoughness = _Other.ClearCoatRoughness;
+	Anisotropy = _Other.Anisotropy;
+	AnisotropyRotation = _Other.AnisotropyRotation;
+	Alpha = _Other.Alpha;
+	TransmissionFilter = _Other.TransmissionFilter;
+	IndexOfRefraction = _Other.IndexOfRefraction;
+	Displacement = _Other.Displacement;
+	IlluminationModel = _Other.IlluminationModel;
+	Normal = _Other.Normal;
+	Tangent = _Other.Tangent;
+	ClearCoatNormal = _Other.ClearCoatNormal;
+
+	DiffuseColorTexture = _Other.DiffuseColorTexture;
+	SpecularColorTexture = _Other.SpecularColorTexture;
+	SpecularExponentTexture = _Other.SpecularExponentTexture;
+	EmissionColorTexture = _Other.EmissionColorTexture;
+	RoughnessTexture = _Other.RoughnessTexture;
+	MetalnessTexture = _Other.MetalnessTexture;
+	AmbientOcclusionTexture = _Other.AmbientOcclusionTexture;
+	AmbientColorTexture = _Other.AmbientColorTexture;
+	SheenTexture = _Other.SheenTexture;
+	SheenColorTexture = _Other.SheenColorTexture;
+	ClearCoatTexture = _Other.ClearCoatTexture;
+	ClearCoatColorTexture = _Other.ClearCoatColorTexture;
+	ClearCoatRoughnessTexture = _Other.ClearCoatRoughnessTexture;
+	AnisotropyTexture = _Other.AnisotropyTexture;
+	AnisotropyRotationTexture = _Other.AnisotropyRotationTexture;
+	AlphaTexture = _Other.AlphaTexture;
+	TransmissionFilterTexture = _Other.TransmissionFilterTexture;
+	DisplacementTexture = _Other.DisplacementTexture;
+	NormalTexture = _Other.NormalTexture;
+	TangentTexture = _Other.TangentTexture;
+	ClearCoatNormalTexture = _Other.ClearCoatNormalTexture;
+	DecalTexture = _Other.DecalTexture;
+	BumpTexture = _Other.BumpTexture;
+	ReflectionTextures = _Other.ReflectionTextures;
+
+	DiffuseColorTextureSettings = _Other.DiffuseColorTextureSettings;
+	SpecularColorTextureSettings = _Other.SpecularColorTextureSettings;
+	SpecularExponentTextureSettings = _Other.SpecularExponentTextureSettings;
+	EmissionColorTextureSettings = _Other.EmissionColorTextureSettings;
+	RoughnessTextureSettings = _Other.RoughnessTextureSettings;
+	MetalnessTextureSettings = _Other.MetalnessTextureSettings;
+	AmbientOcclusionTextureSettings = _Other.AmbientOcclusionTextureSettings;
+	AmbientColorTextureSettings = _Other.AmbientColorTextureSettings;
+	SheenTextureSettings = _Other.SheenTextureSettings;
+	SheenColorTextureSettings = _Other.SheenColorTextureSettings;
+	ClearCoatTextureSettings = _Other.ClearCoatTextureSettings;
+	ClearCoatColorTextureSettings = _Other.ClearCoatColorTextureSettings;
+	ClearCoatRoughnessTextureSettings = _Other.ClearCoatRoughnessTextureSettings;
+	AnisotropyTextureSettings = _Other.AnisotropyTextureSettings;
+	AnisotropyRotationTextureSettings = _Other.AnisotropyRotationTextureSettings;
+	AlphaTextureSettings = _Other.AlphaTextureSettings;
+	TransmissionFilterTextureSettings = _Other.TransmissionFilterTextureSettings;
+	DisplacementTextureSettings = _Other.DisplacementTextureSettings;
+	NormalTextureSettings = _Other.NormalTextureSettings;
+	TangentTextureSettings = _Other.TangentTextureSettings;
+	ClearCoatNormalTextureSettings = _Other.ClearCoatNormalTextureSettings;
+	DecalTextureSettings = _Other.DecalTextureSettings;
+	BumpTextureSettings = _Other.BumpTextureSettings;
+	ReflectionTexturesSettings = _Other.ReflectionTexturesSettings;
+
+	return *this;
 }
 
 BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noexcept
@@ -2140,7 +2657,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	ClearCoatNormalTextureSettings = _Other.ClearCoatNormalTextureSettings;
 	DecalTextureSettings = _Other.DecalTextureSettings;
 	BumpTextureSettings = _Other.BumpTextureSettings;
-	ReflectionTextureSettings = _Other.ReflectionTextureSettings;
+	ReflectionTexturesSettings = _Other.ReflectionTexturesSettings;
 
 	_Other = Material();
 
@@ -2385,6 +2902,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 	for (size_t _Index = 0; _Index < _Materials.GetSize(); _Index++)
 	{
+		if (!_Materials[_Index].IsValid())
+		{
+			return false;
+		}
+
 		MaterialNames.PushBack(_Names[_Index]);
 		Materials.Emplace(_Names[_Index].c_str(), (Material&&)(_Materials[_Index]));
 	}
@@ -2483,6 +3005,11 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 	for (size_t _NameIndex = 0; _NameIndex < MaterialNames.GetSize(); _NameIndex++)
 	{
 		const Material& _CurrentMaterial = *Materials.GetData(MaterialNames[_NameIndex].c_str());
+
+		if (!_CurrentMaterial.IsValid())
+		{
+			return FileContent();
+		}
 
 		_Stream << "newmtl ";
 
@@ -2633,65 +3160,24 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 			return FileContent();
 		}
 
-		if (_CurrentMaterial.ReflectionTextures.GetSize() != _CurrentMaterial.ReflectionTextureSettings.GetSize())
-		{
-			return FileContent();
-		}
-
 		if (_CurrentMaterial.ReflectionTextures.GetSize() != 0)
 		{
 			if (_CurrentMaterial.ReflectionTextures.GetSize() == 1)
 			{
-				if (_CurrentMaterial.ReflectionTextureSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
-				{
-					return FileContent();
-				}
-
-				if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[0], _CurrentMaterial.ReflectionTextures[0]))
+				if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[0], _CurrentMaterial.ReflectionTextures[0]))
 				{
 					return FileContent();
 				}
 			}
 			else if (_CurrentMaterial.ReflectionTextures.GetSize() == 6)
 			{
-				Vector<BFW_STRING_TYPE> _Types =
-				{
-					BFW_STRING_PREFIX("cube_top"),
-					BFW_STRING_PREFIX("cube_bottom"),
-					BFW_STRING_PREFIX("cube_front"),
-					BFW_STRING_PREFIX("cube_back"),
-					BFW_STRING_PREFIX("cube_left"),
-					BFW_STRING_PREFIX("cube_right")
-				};
-
-				for (size_t _SettingIndex = 0; _SettingIndex < _CurrentMaterial.ReflectionTextureSettings.GetSize(); _SettingIndex++)
-				{
-					for (size_t _TypeIndex = 0; _TypeIndex < _Types.GetSize(); _TypeIndex++)
-					{
-						if (_Types[_TypeIndex] == _CurrentMaterial.ReflectionTextureSettings[_SettingIndex].ReflectionType)
-						{
-							_Types.Erase(_TypeIndex);
-							break;
-						}
-					}
-				}
-
-				if (_Types.GetSize() != 0)
-				{
-					return FileContent();
-				}
-
 				for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
 				{
-					if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTextureSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
+					if (!MaterialLibStreamMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
 					{
 						return FileContent();
 					}
 				}
-			}
-			else
-			{
-				return FileContent();
 			}
 		}
 

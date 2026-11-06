@@ -347,8 +347,10 @@ namespace BFW
 
 		};
 
-		struct BFW_API TextureSettings
+		class BFW_API TextureSettings
 		{
+
+		public:
 
 			bool BlendU;
 			bool BlendV;
@@ -365,15 +367,21 @@ namespace BFW
 			BFW_STRING_TYPE ReflectionType;
 
 			TextureSettings();
-			TextureSettings(const TextureSettings& _Other) = default;
+			TextureSettings(const TextureSettings& _Other);
 			TextureSettings(TextureSettings&& _Other) noexcept;
-			TextureSettings& operator= (const TextureSettings& _Other) = default;
+			~TextureSettings();
+
+			const bool IsValid() const;
+
+			TextureSettings& operator= (const TextureSettings& _Other);
 			TextureSettings& operator= (TextureSettings&& _Other) noexcept;
 
 		};
 
-		struct BFW_API Material
+		class BFW_API Material
 		{
+
+		public:
 
 			Math::Vec3 DiffuseColor;		// Kd
 			Math::Vec3 SpecularColor;		// Ks
@@ -447,12 +455,16 @@ namespace BFW
 			TextureSettings ClearCoatNormalTextureSettings;
 			TextureSettings DecalTextureSettings;
 			TextureSettings BumpTextureSettings;
-			Vector<TextureSettings> ReflectionTextureSettings;
+			Vector<TextureSettings> ReflectionTexturesSettings;
 
 			Material();
-			Material(const Material& _Other) = default;
+			Material(const Material& _Other);
 			Material(Material&& _Other) noexcept;
-			Material& operator= (const Material& _Other) = default;
+			~Material();
+
+			const bool IsValid() const;
+
+			Material& operator= (const Material& _Other);
 			Material& operator= (Material&& _Other) noexcept;
 
 		};

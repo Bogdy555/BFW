@@ -293,9 +293,9 @@ namespace BFW
 
 		class BFW_API WaveFrontObj;
 
-		struct BFW_API TextureSettings;
+		class BFW_API TextureSettings;
 
-		struct BFW_API Material;
+		class BFW_API Material;
 
 		class BFW_API MaterialLib;
 
