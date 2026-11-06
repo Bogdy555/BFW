@@ -383,29 +383,29 @@ namespace BFW
 
 		public:
 
-			Math::Vec3 DiffuseColor;		// Kd
-			Math::Vec3 SpecularColor;		// Ks
-			float SpecularExponent;			// Ns
-			Math::Vec3 EmissionColor;		// Ke
-			float Roughness;				// Pr
-			float Metalness;				// Pm
-			float AmbientOcclusion;			// Pao
-			Math::Vec3 AmbientColor;		// Ka
-			float Sheen;					// Ps
-			Math::Vec3 SheenColor;			// Psc
-			float ClearCoat;				// Pc
-			Math::Vec3 ClearCoatColor;		// Pcc
-			float ClearCoatRoughness;		// Pcr
-			float Anisotropy;				// aniso
-			float AnisotropyRotation;		// anisor
-			float Alpha;					// d / Tr
-			Math::Vec3 TransmissionFilter;	// Tf
-			float IndexOfRefraction;		// Ni
-			float Displacement;				// Kdisp
-			uint8_t IlluminationModel;		// illum
-			Math::Vec3 Normal;				// Kn
-			Math::Vec3 Tangent;				// Kt
-			Math::Vec3 ClearCoatNormal;		// Pcn
+			Math::Vec3 DiffuseColor;
+			Math::Vec3 SpecularColor;
+			float SpecularExponent;
+			Math::Vec3 EmissionColor;
+			float Roughness;
+			float Metalness;
+			float AmbientOcclusion;
+			Math::Vec3 AmbientColor;
+			float Sheen;
+			Math::Vec3 SheenColor;
+			float ClearCoat;
+			Math::Vec3 ClearCoatColor;
+			float ClearCoatRoughness;
+			float Anisotropy;
+			float AnisotropyRotation;
+			float Alpha;
+			Math::Vec3 TransmissionFilter;
+			float IndexOfRefraction;
+			float Displacement;
+			uint8_t IlluminationModel;
+			Math::Vec3 Normal;
+			Math::Vec3 Tangent;
+			Math::Vec3 ClearCoatNormal;
 
 			BFW_STRING_TYPE DiffuseColorTexture;		// map_Kd
 			BFW_STRING_TYPE SpecularColorTexture;		// map_Ks

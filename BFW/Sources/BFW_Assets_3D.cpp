@@ -588,6 +588,11 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					_CharIndex++;
 				}
 
+				if (_Token.size() == 0)
+				{
+					return false;
+				}
+
 				continue;
 			}
 
@@ -652,7 +657,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
 						return false;
 					}
@@ -671,7 +676,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
 						return false;
 					}
@@ -690,7 +695,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
 						return false;
 					}
@@ -722,7 +727,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
 						return false;
 					}
@@ -740,7 +745,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
 						return false;
 					}
@@ -758,7 +763,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-					if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
 						return false;
 					}
@@ -790,7 +795,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
 
-				if (!(_Stream >> _Values[_Index]) || !_Stream.eof())
+				if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 				{
 					return false;
 				}
@@ -2698,6 +2703,54 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 	Vector<BFW_STRING_TYPE> _Names;
 	Vector<Material> _Materials;
 
+	bool _Found_Kd = false;
+	bool _Found_Ks = false;
+	bool _Found_Ns = false;
+	bool _Found_Ke = false;
+	bool _Found_Pr = false;
+	bool _Found_Pm = false;
+	bool _Found_Pao = false;
+	bool _Found_Ka = false;
+	bool _Found_Ps = false;
+	bool _Found_Psc = false;
+	bool _Found_Pc = false;
+	bool _Found_Pcc = false;
+	bool _Found_Pcr = false;
+	bool _Found_aniso = false;
+	bool _Found_anisor = false;
+	bool _Found_d_Tr = false;
+	bool _Found_Tf = false;
+	bool _Found_Ni = false;
+	bool _Found_Kdisp = false;
+	bool _Found_illum = false;
+	bool _Found_Kn = false;
+	bool _Found_Kt = false;
+	bool _Found_Pcn = false;
+	bool _Found_map_Kd = false;
+	bool _Found_map_Ks = false;
+	bool _Found_map_Ns = false;
+	bool _Found_map_Ke = false;
+	bool _Found_map_Pr = false;
+	bool _Found_map_Pm = false;
+	bool _Found_map_Pao = false;
+	bool _Found_map_Ka = false;
+	bool _Found_map_Ps = false;
+	bool _Found_map_Psc = false;
+	bool _Found_map_Pc = false;
+	bool _Found_map_Pcc = false;
+	bool _Found_map_Pcr = false;
+	bool _Found_map_aniso = false;
+	bool _Found_map_anisor = false;
+	bool _Found_map_d = false;
+	bool _Found_map_Tf = false;
+	bool _Found_disp = false;
+	bool _Found_norm = false;
+	bool _Found_tang = false;
+	bool _Found_map_Pcn = false;
+	bool _Found_decal = false;
+	bool _Found_bump_map_Bump = false;
+	bool _Found_refl_map_refl = false;
+
 	size_t _FileIndex = 0;
 
 	while (_FileContent[_FileIndex] != '\0')
@@ -2842,6 +2895,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 					_CharIndex++;
 				}
 
+				if (_Token.size() == 0)
+				{
+					return false;
+				}
+
 				continue;
 			}
 
@@ -2889,10 +2947,666 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Names.PushBack(_Name);
 			_Materials.EmplaceBack(Material());
 
+			_Found_Kd = false;
+			_Found_Ks = false;
+			_Found_Ns = false;
+			_Found_Ke = false;
+			_Found_Pr = false;
+			_Found_Pm = false;
+			_Found_Pao = false;
+			_Found_Ka = false;
+			_Found_Ps = false;
+			_Found_Psc = false;
+			_Found_Pc = false;
+			_Found_Pcc = false;
+			_Found_Pcr = false;
+			_Found_aniso = false;
+			_Found_anisor = false;
+			_Found_d_Tr = false;
+			_Found_Tf = false;
+			_Found_Ni = false;
+			_Found_Kdisp = false;
+			_Found_illum = false;
+			_Found_Kn = false;
+			_Found_Kt = false;
+			_Found_Pcn = false;
+			_Found_map_Kd = false;
+			_Found_map_Ks = false;
+			_Found_map_Ns = false;
+			_Found_map_Ke = false;
+			_Found_map_Pr = false;
+			_Found_map_Pm = false;
+			_Found_map_Pao = false;
+			_Found_map_Ka = false;
+			_Found_map_Ps = false;
+			_Found_map_Psc = false;
+			_Found_map_Pc = false;
+			_Found_map_Pcc = false;
+			_Found_map_Pcr = false;
+			_Found_map_aniso = false;
+			_Found_map_anisor = false;
+			_Found_map_d = false;
+			_Found_map_Tf = false;
+			_Found_disp = false;
+			_Found_norm = false;
+			_Found_tang = false;
+			_Found_map_Pcn = false;
+			_Found_decal = false;
+			_Found_bump_map_Bump = false;
+			_Found_refl_map_refl = false;
+
 			continue;
 		}
 
-		...; // if no active name in alte case uri atunci error
+		if (_LineTokens[0] == "Kd")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kd)
+			{
+				return false;
+			}
+
+			_Found_Kd = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].DiffuseColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].DiffuseColor[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].DiffuseColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].DiffuseColor[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Ks")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ks)
+			{
+				return false;
+			}
+
+			_Found_Ks = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularColor[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Ns")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ns)
+			{
+				return false;
+			}
+
+			_Found_Ns = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularExponent) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularExponent))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].SpecularExponent < 0.0f || _Materials[_Materials.GetSize() - 1].SpecularExponent > 1000.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Ke")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ke)
+			{
+				return false;
+			}
+
+			_Found_Ke = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].EmissionColor[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex] < 0.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pr")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pr)
+			{
+				return false;
+			}
+
+			_Found_Pr = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Roughness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Roughness))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Roughness < 0.0f || _Materials[_Materials.GetSize() - 1].Roughness > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pm")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pm)
+			{
+				return false;
+			}
+
+			_Found_Pm = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Metalness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Metalness))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Metalness < 0.0f || _Materials[_Materials.GetSize() - 1].Metalness > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pao")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pao)
+			{
+				return false;
+			}
+
+			_Found_Pao = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientOcclusion) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientOcclusion))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].AmbientOcclusion < 0.0f || _Materials[_Materials.GetSize() - 1].AmbientOcclusion > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Ka")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ka)
+			{
+				return false;
+			}
+
+			_Found_Ka = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientColor[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Ps")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ps)
+			{
+				return false;
+			}
+
+			_Found_Ps = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Sheen) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Sheen))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Sheen < 0.0f || _Materials[_Materials.GetSize() - 1].Sheen > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Psc")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Psc)
+			{
+				return false;
+			}
+
+			_Found_Psc = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SheenColor[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pc")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pc)
+			{
+				return false;
+			}
+
+			_Found_Pc = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoat) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoat))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].ClearCoat < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoat > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pcc")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Pcc)
+			{
+				return false;
+			}
+
+			_Found_Pcc = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatColor[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pcr")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pcr)
+			{
+				return false;
+			}
+
+			_Found_Pcr = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatRoughness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatRoughness))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].ClearCoatRoughness < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoatRoughness > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "aniso")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_aniso)
+			{
+				return false;
+			}
+
+			_Found_aniso = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Anisotropy) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Anisotropy))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Anisotropy < 0.0f || _Materials[_Materials.GetSize() - 1].Anisotropy > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "anisor")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_anisor)
+			{
+				return false;
+			}
+
+			_Found_anisor = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AnisotropyRotation) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AnisotropyRotation))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].AnisotropyRotation < 0.0f || _Materials[_Materials.GetSize() - 1].AnisotropyRotation > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "d")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_d_Tr)
+			{
+				return false;
+			}
+
+			_Found_d_Tr = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Alpha) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Alpha))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Alpha < 0.0f || _Materials[_Materials.GetSize() - 1].Alpha > 1.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Tr")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_d_Tr)
+			{
+				return false;
+			}
+
+			_Found_d_Tr = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Alpha) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Alpha))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Alpha < 0.0f || _Materials[_Materials.GetSize() - 1].Alpha > 1.0f)
+			{
+				return false;
+			}
+
+			_Materials[_Materials.GetSize() - 1].Alpha = 1.0f - _Materials[_Materials.GetSize() - 1].Alpha;
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Tf")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Tf)
+			{
+				return false;
+			}
+
+			_Found_Tf = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].TransmissionFilter[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex] < 0.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Ni")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ni)
+			{
+				return false;
+			}
+
+			_Found_Ni = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].IndexOfRefraction) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].IndexOfRefraction))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].IndexOfRefraction < 0.001f || _Materials[_Materials.GetSize() - 1].IndexOfRefraction > 10.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Kdisp")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Kdisp)
+			{
+				return false;
+			}
+
+			_Found_Kdisp = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Displacement) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Displacement))
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].Displacement < 0.0f)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "illum")
+		{
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_illum)
+			{
+				return false;
+			}
+
+			_Found_illum = true;
+
+			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+
+			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].IlluminationModel) || !_Stream.eof())
+			{
+				return false;
+			}
+
+			if (_Materials[_Materials.GetSize() - 1].IlluminationModel > 10)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Kn")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kn)
+			{
+				return false;
+			}
+
+			_Found_Kn = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Normal[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Kt")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kt)
+			{
+				return false;
+			}
+
+			_Found_Kt = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Tangent[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_LineTokens[0] == "Pcn")
+		{
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Pcn)
+			{
+				return false;
+			}
+
+			_Found_Pcn = true;
+
+			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_CharIndex]))
+				{
+					return false;
+				}
+
+				if (_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex] > 1.0f)
+				{
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		...; // found_ilum la texturi
 	}
 
 	if (_FileIndex != _FileContent.GetLength() - 1)
