@@ -2906,7 +2906,10 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 		{
 			return false;
 		}
+	}
 
+	for (size_t _Index = 0; _Index < _Materials.GetSize(); _Index++)
+	{
 		MaterialNames.PushBack(_Names[_Index]);
 		Materials.Emplace(_Names[_Index].c_str(), (Material&&)(_Materials[_Index]));
 	}
