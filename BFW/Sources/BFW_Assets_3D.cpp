@@ -2,7 +2,7 @@
 
 
 
-static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRING_TYPE& _String)
+static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRING_TYPE& _String, bool _Quotes = false)
 {
 	bool _Error = false;
 
@@ -13,14 +13,15 @@ static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const B
 		return false;
 	}
 
-	bool _Quotes = false;
-
-	for (size_t _Index = 0; _Index < _NewString.size(); _Index++)
+	if (!_Quotes)
 	{
-		if (std::isspace((unsigned BFW_CHAR_TYPE_A)(_NewString[_Index])))
+		for (size_t _Index = 0; _Index < _NewString.size(); _Index++)
 		{
-			_Quotes = true;
-			break;
+			if (std::isspace((unsigned BFW_CHAR_TYPE_A)(_NewString[_Index])))
+			{
+				_Quotes = true;
+				break;
+			}
 		}
 	}
 
@@ -449,7 +450,7 @@ static const bool MaterialLibSaveMap(BFW_STRING_STREAM_TYPE_A& _Stream, const BF
 	{
 		_Stream << " -type ";
 
-		if (!WaveFrontSaveString(_Stream, _TextureSettings.ReflectionType))
+		if (!WaveFrontSaveString(_Stream, _TextureSettings.ReflectionType, true))
 		{
 			return false;
 		}
@@ -509,6 +510,8 @@ static const bool MaterialLibSaveMap(BFW_STRING_STREAM_TYPE_A& _Stream, const BF
 	{
 		_Stream << " -texres " << _TextureSettings.Resolution;
 	}
+
+	_Stream << ' ';
 
 	if (!WaveFrontSaveString(_Stream, _Path))
 	{
@@ -2402,7 +2405,7 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 BFW::Assets::Material::Material() :
 	Albedo(Math::Vec3(1.0f, 1.0f, 1.0f)),
 	SpecularColor(Math::Vec3(1.0f, 1.0f, 1.0f)),
-	SpecularExponent(1.0f),
+	SpecularExponent(100.0f),
 	EmissionColor(Math::Vec3(0.0f, 0.0f, 0.0f)),
 	Roughness(0.0f),
 	Metalness(0.0f),
@@ -3526,7 +3529,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Kd")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kd)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kd || _Found_illum)
 			{
 				return false;
 			}
@@ -3549,7 +3552,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Ks")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ks)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ks || _Found_illum)
 			{
 				return false;
 			}
@@ -3572,7 +3575,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Ns")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ns)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ns || _Found_illum)
 			{
 				return false;
 			}
@@ -3592,7 +3595,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Ke")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ke)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ke || _Found_illum)
 			{
 				return false;
 			}
@@ -3615,7 +3618,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pr")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pr)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pr || _Found_illum)
 			{
 				return false;
 			}
@@ -3635,7 +3638,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pm")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pm)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pm || _Found_illum)
 			{
 				return false;
 			}
@@ -3655,7 +3658,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pao")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pao)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pao || _Found_illum)
 			{
 				return false;
 			}
@@ -3675,7 +3678,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Ka")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ka)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Ka || _Found_illum)
 			{
 				return false;
 			}
@@ -3698,7 +3701,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Ps")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ps)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ps || _Found_illum)
 			{
 				return false;
 			}
@@ -3718,7 +3721,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Psc")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Psc)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Psc || _Found_illum)
 			{
 				return false;
 			}
@@ -3741,7 +3744,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pc")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pc)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pc || _Found_illum)
 			{
 				return false;
 			}
@@ -3761,7 +3764,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pcc")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Pcc)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Pcc || _Found_illum)
 			{
 				return false;
 			}
@@ -3784,7 +3787,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pcr")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pcr)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Pcr || _Found_illum)
 			{
 				return false;
 			}
@@ -3804,7 +3807,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "aniso")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_aniso)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_aniso || _Found_illum)
 			{
 				return false;
 			}
@@ -3824,7 +3827,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "anisor")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_anisor)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_anisor || _Found_illum)
 			{
 				return false;
 			}
@@ -3844,7 +3847,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "d")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_d_Tr)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_d_Tr || _Found_illum)
 			{
 				return false;
 			}
@@ -3864,7 +3867,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Tr")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_d_Tr)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_d_Tr || _Found_illum)
 			{
 				return false;
 			}
@@ -3886,7 +3889,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Tf")
 		{
-			if ((_LineTokens.GetSize() != 2 && _LineTokens.GetSize() != 4) || _Names.GetSize() == 0 || _Found_Tf)
+			if ((_LineTokens.GetSize() != 2 && _LineTokens.GetSize() != 4) || _Names.GetSize() == 0 || _Found_Tf || _Found_illum)
 			{
 				return false;
 			}
@@ -3925,7 +3928,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Ni")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ni)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Ni || _Found_illum)
 			{
 				return false;
 			}
@@ -3945,7 +3948,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Kdisp")
 		{
-			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Kdisp)
+			if (_LineTokens.GetSize() != 2 || _Names.GetSize() == 0 || _Found_Kdisp || _Found_illum)
 			{
 				return false;
 			}
@@ -3988,7 +3991,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Kn")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kn)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kn || _Found_illum)
 			{
 				return false;
 			}
@@ -4011,7 +4014,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Kt")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kt)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Kt || _Found_illum)
 			{
 				return false;
 			}
@@ -4034,7 +4037,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Pcn")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Pcn)
+			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Pcn || _Found_illum)
 			{
 				return false;
 			}
@@ -4375,6 +4378,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
+			if (!_Found_Kn)
+			{
+				_Materials[_Materials.GetSize() - 1].Normal = Math::Vec3(1.0f, 1.0f, 1.0f);
+			}
+
 			continue;
 		}
 
@@ -4392,6 +4400,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
+			if (!_Found_Kt)
+			{
+				_Materials[_Materials.GetSize() - 1].Tangent = Math::Vec3(1.0f, 1.0f, 1.0f);
+			}
+
 			continue;
 		}
 
@@ -4407,6 +4420,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			if (!MaterialLibLoadMap(_LineTokens, "map_Pcn", _Materials[_Materials.GetSize() - 1].ClearCoatNormalTexture, _Materials[_Materials.GetSize() - 1].ClearCoatNormalTextureSettings))
 			{
 				return false;
+			}
+
+			if (!_Found_Pcn)
+			{
+				_Materials[_Materials.GetSize() - 1].ClearCoatNormal = Math::Vec3(1.0f, 1.0f, 1.0f);
 			}
 
 			continue;
