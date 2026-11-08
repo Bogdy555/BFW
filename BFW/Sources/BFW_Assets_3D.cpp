@@ -239,7 +239,8 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			if (!(_Stream2 >> _TextureSettings.Offset.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Offset.y))
 			{
-				return false;
+				_TokenIndex += 1;
+				continue;
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
@@ -247,7 +248,8 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			if (!(_Stream3 >> _TextureSettings.Offset.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Offset.z))
 			{
-				return false;
+				_TokenIndex += 2;
+				continue;
 			}
 
 			_TokenIndex += 3;
@@ -277,7 +279,8 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			if (!(_Stream2 >> _TextureSettings.Scale.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Scale.y))
 			{
-				return false;
+				_TokenIndex += 1;
+				continue;
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
@@ -285,7 +288,8 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			if (!(_Stream3 >> _TextureSettings.Scale.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Scale.z))
 			{
-				return false;
+				_TokenIndex += 2;
+				continue;
 			}
 
 			_TokenIndex += 3;
@@ -315,7 +319,8 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			if (!(_Stream2 >> _TextureSettings.Turbulence.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Turbulence.y))
 			{
-				return false;
+				_TokenIndex += 1;
+				continue;
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
@@ -323,7 +328,8 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			if (!(_Stream3 >> _TextureSettings.Turbulence.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Turbulence.z))
 			{
-				return false;
+				_TokenIndex += 2;
+				continue;
 			}
 
 			_TokenIndex += 3;
@@ -3431,7 +3437,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Albedo[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3459,7 +3465,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularColor[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3512,7 +3518,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].EmissionColor[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3615,7 +3621,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientColor[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3668,7 +3674,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SheenColor[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3721,7 +3727,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatColor[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3876,7 +3882,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].TransmissionFilter[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -3982,7 +3988,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Normal[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -4010,7 +4016,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Tangent[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex]))
 				{
 					return false;
 				}
@@ -4038,7 +4044,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
 				_Stream.imbue(std::locale::classic());
 
-				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_CharIndex]))
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]))
 				{
 					return false;
 				}
