@@ -1386,6 +1386,43 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 		}
 	}
 
+	for (size_t _PositionY = 0; _PositionY < _Height; _PositionY++)
+	{
+		for (size_t _PositionX = 0; _PositionX < _Width; _PositionX++)
+		{
+			if (!std::isfinite(Data[(_PositionX + _PositionY * _Width) * 4 + 0]) ||
+				!std::isfinite(Data[(_PositionX + _PositionY * _Width) * 4 + 1]) ||
+				!std::isfinite(Data[(_PositionX + _PositionY * _Width) * 4 + 2]) ||
+				!std::isfinite(Data[(_PositionX + _PositionY * _Width) * 4 + 3]))
+			{
+				delete[] _ScanLine;
+				delete[] Data;
+				Data = nullptr;
+				return false;
+			}
+
+			if (Data[(_PositionX + _PositionY * _Width) * 4 + 0] < 0.0f)
+			{
+				Data[(_PositionX + _PositionY * _Width) * 4 + 0] = 0.0f;
+			}
+
+			if (Data[(_PositionX + _PositionY * _Width) * 4 + 1] < 0.0f)
+			{
+				Data[(_PositionX + _PositionY * _Width) * 4 + 1] = 0.0f;
+			}
+
+			if (Data[(_PositionX + _PositionY * _Width) * 4 + 2] < 0.0f)
+			{
+				Data[(_PositionX + _PositionY * _Width) * 4 + 2] = 0.0f;
+			}
+
+			if (Data[(_PositionX + _PositionY * _Width) * 4 + 3] < 0.0f)
+			{
+				Data[(_PositionX + _PositionY * _Width) * 4 + 3] = 0.0f;
+			}
+		}
+	}
+
 	delete[] _ScanLine;
 
 	ChannelsCount = 4;

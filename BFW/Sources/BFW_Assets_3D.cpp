@@ -227,7 +227,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 		if (_LineTokens[_TokenIndex] == "-o")
 		{
-			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3 || _Found_o)
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_o)
 			{
 				return false;
 			}
@@ -242,12 +242,24 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 				return false;
 			}
 
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 2)
+			{
+				_TokenIndex += 1;
+				continue;
+			}
+
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
 			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Offset.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Offset.y))
 			{
 				_TokenIndex += 1;
+				continue;
+			}
+
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3)
+			{
+				_TokenIndex += 2;
 				continue;
 			}
 
@@ -267,7 +279,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 		if (_LineTokens[_TokenIndex] == "-s")
 		{
-			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3 || _Found_s)
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_s)
 			{
 				return false;
 			}
@@ -282,12 +294,24 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 				return false;
 			}
 
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 2)
+			{
+				_TokenIndex += 1;
+				continue;
+			}
+
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
 			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Scale.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Scale.y))
 			{
 				_TokenIndex += 1;
+				continue;
+			}
+
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3)
+			{
+				_TokenIndex += 2;
 				continue;
 			}
 
@@ -307,7 +331,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 		if (_LineTokens[_TokenIndex] == "-t")
 		{
-			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3 || _Found_t)
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 1 || _Found_t)
 			{
 				return false;
 			}
@@ -322,12 +346,24 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 				return false;
 			}
 
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 2)
+			{
+				_TokenIndex += 1;
+				continue;
+			}
+
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
 			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Turbulence.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Turbulence.y))
 			{
 				_TokenIndex += 1;
+				continue;
+			}
+
+			if (_LineTokens.GetSize() < _TokenIndex + 2 + 3)
+			{
+				_TokenIndex += 2;
 				continue;
 			}
 
@@ -4739,7 +4775,7 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 		{
 			_Stream << "d " << _CurrentMaterial.Alpha BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		}
-		if (_CurrentMaterial.TransmissionFilter.x != 0.0f && _CurrentMaterial.TransmissionFilter.y != 0.0f && _CurrentMaterial.TransmissionFilter.z != 0.0f)
+		if (_CurrentMaterial.TransmissionFilter.x != 0.0f || _CurrentMaterial.TransmissionFilter.y != 0.0f || _CurrentMaterial.TransmissionFilter.z != 0.0f)
 		{
 			_Stream << "Tf " << _CurrentMaterial.TransmissionFilter.x << ' ' << _CurrentMaterial.TransmissionFilter.y << ' ' << _CurrentMaterial.TransmissionFilter.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		}
