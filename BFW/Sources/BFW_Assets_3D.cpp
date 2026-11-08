@@ -170,6 +170,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_boost = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_TokenIndex + 1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _TextureSettings.Boost) || !_Stream.eof() || !std::isfinite(_TextureSettings.Boost))
 			{
@@ -196,6 +197,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_mm = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+			_Stream1.imbue(std::locale::classic());
 
 			if (!(_Stream1 >> _TextureSettings.Base) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Base))
 			{
@@ -203,6 +205,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Gain) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Gain))
 			{
@@ -224,6 +227,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_o = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+			_Stream1.imbue(std::locale::classic());
 
 			if (!(_Stream1 >> _TextureSettings.Offset.x) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Offset.x))
 			{
@@ -231,6 +235,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Offset.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Offset.y))
 			{
@@ -238,6 +243,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
+			_Stream3.imbue(std::locale::classic());
 
 			if (!(_Stream3 >> _TextureSettings.Offset.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Offset.z))
 			{
@@ -259,6 +265,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_s = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+			_Stream1.imbue(std::locale::classic());
 
 			if (!(_Stream1 >> _TextureSettings.Scale.x) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Scale.x))
 			{
@@ -266,6 +273,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Scale.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Scale.y))
 			{
@@ -273,6 +281,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
+			_Stream3.imbue(std::locale::classic());
 
 			if (!(_Stream3 >> _TextureSettings.Scale.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Scale.z))
 			{
@@ -294,6 +303,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_t = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex + 1]);
+			_Stream1.imbue(std::locale::classic());
 
 			if (!(_Stream1 >> _TextureSettings.Turbulence.x) || !_Stream1.eof() || !std::isfinite(_TextureSettings.Turbulence.x))
 			{
@@ -301,6 +311,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex + 2]);
+			_Stream2.imbue(std::locale::classic());
 
 			if (!(_Stream2 >> _TextureSettings.Turbulence.y) || !_Stream2.eof() || !std::isfinite(_TextureSettings.Turbulence.y))
 			{
@@ -308,6 +319,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			}
 
 			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex + 3]);
+			_Stream3.imbue(std::locale::classic());
 
 			if (!(_Stream3 >> _TextureSettings.Turbulence.z) || !_Stream3.eof() || !std::isfinite(_TextureSettings.Turbulence.z))
 			{
@@ -329,6 +341,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_texres = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_TokenIndex + 1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _TextureSettings.Resolution) || !_Stream.eof())
 			{
@@ -350,6 +363,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Found_bm = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_TokenIndex + 1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _TextureSettings.BumpMultiplier) || !_Stream.eof() || !std::isfinite(_TextureSettings.BumpMultiplier))
 			{
@@ -399,6 +413,11 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 	}
 
 	if (BFW_STRING_TYPE_A("refl") == _Type && !_Found_type)
+	{
+		return false;
+	}
+
+	if (BFW_STRING_TYPE_A("refl") != _Type && _Found_type)
 	{
 		return false;
 	}
@@ -1040,6 +1059,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+					_Stream.imbue(std::locale::classic());
 
 					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
@@ -1059,6 +1079,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+					_Stream.imbue(std::locale::classic());
 
 					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
@@ -1078,6 +1099,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+					_Stream.imbue(std::locale::classic());
 
 					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
@@ -1110,6 +1132,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+					_Stream.imbue(std::locale::classic());
 
 					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
@@ -1128,6 +1151,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+					_Stream.imbue(std::locale::classic());
 
 					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
@@ -1146,6 +1170,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 				for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 				{
 					BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+					_Stream.imbue(std::locale::classic());
 
 					if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 					{
@@ -1178,6 +1203,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 			for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_Index + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Values[_Index]) || !_Stream.eof() || !std::isfinite(_Values[_Index]))
 				{
@@ -1242,6 +1268,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					Vector<size_t>& _CurrentTokenIndices = _TokenIndices.EmplaceBack(Vector<size_t>());
 
 					BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex]);
+					_Stream1.imbue(std::locale::classic());
 
 					if (!(_Stream1 >> _TempValue) || !_Stream1.eof())
 					{
@@ -1279,6 +1306,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					Vector<size_t>& _CurrentTokenIndices = _TokenIndices.EmplaceBack(Vector<size_t>());
 
 					BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex].substr(0, _SlashIndices[_TokenIndex - 1][0]));
+					_Stream1.imbue(std::locale::classic());
 
 					if (!(_Stream1 >> _TempValue) || !_Stream1.eof())
 					{
@@ -1306,6 +1334,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][0] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][0] - 1));
+					_Stream2.imbue(std::locale::classic());
 
 					if (!(_Stream2 >> _TempValue) || !_Stream2.eof())
 					{
@@ -1344,6 +1373,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						Vector<size_t>& _CurrentTokenIndices = _TokenIndices.EmplaceBack(Vector<size_t>());
 
 						BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex].substr(0, _SlashIndices[_TokenIndex - 1][0]));
+						_Stream1.imbue(std::locale::classic());
 
 						if (!(_Stream1 >> _TempValue) || !_Stream1.eof())
 						{
@@ -1373,6 +1403,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						_CurrentTokenIndices.PushBack(std::numeric_limits<size_t>::max());
 
 						BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][1] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][1] - 1));
+						_Stream2.imbue(std::locale::classic());
 
 						if (!(_Stream2 >> _TempValue) || !_Stream2.eof())
 						{
@@ -1407,6 +1438,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						Vector<size_t>& _CurrentTokenIndices = _TokenIndices.EmplaceBack(Vector<size_t>());
 
 						BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex].substr(0, _SlashIndices[_TokenIndex - 1][0]));
+						_Stream1.imbue(std::locale::classic());
 
 						if (!(_Stream1 >> _TempValue) || !_Stream1.eof())
 						{
@@ -1434,6 +1466,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 						BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][0] + 1, _SlashIndices[_TokenIndex - 1][1] - _SlashIndices[_TokenIndex - 1][0] - 1));
+						_Stream2.imbue(std::locale::classic());
 
 						if (!(_Stream2 >> _TempValue) || !_Stream2.eof())
 						{
@@ -1461,6 +1494,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 						_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 						BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][1] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][1] - 1));
+						_Stream3.imbue(std::locale::classic());
 
 						if (!(_Stream3 >> _TempValue) || !_Stream3.eof())
 						{
@@ -1547,6 +1581,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					Vector<size_t>& _CurrentTokenIndices = _TokenIndices.EmplaceBack(Vector<size_t>());
 
 					BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex]);
+					_Stream1.imbue(std::locale::classic());
 
 					if (!(_Stream1 >> _TempValue) || !_Stream1.eof())
 					{
@@ -1583,6 +1618,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					Vector<size_t>& _CurrentTokenIndices = _TokenIndices.EmplaceBack(Vector<size_t>());
 
 					BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[_TokenIndex].substr(0, _SlashIndices[_TokenIndex - 1][0]));
+					_Stream1.imbue(std::locale::classic());
 
 					if (!(_Stream1 >> _TempValue) || !_Stream1.eof())
 					{
@@ -1610,6 +1646,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 					_CurrentTokenIndices.PushBack((size_t)(_TempValue));
 
 					BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[_TokenIndex].substr(_SlashIndices[_TokenIndex - 1][0] + 1, _LineTokens[_TokenIndex].size() - _SlashIndices[_TokenIndex - 1][0] - 1));
+					_Stream2.imbue(std::locale::classic());
 
 					if (!(_Stream2 >> _TempValue) || !_Stream2.eof())
 					{
@@ -2232,7 +2269,7 @@ BFW::Assets::WaveFrontObj& BFW::Assets::WaveFrontObj::operator= (WaveFrontObj&& 
 
 
 
-BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(1.0f), Base(0.0f), Gain(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulence(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX("sphere"))
+BFW::Assets::TextureSettings::TextureSettings() : BlendU(true), BlendV(true), Clamp(false), Channel('l'), Boost(1.0f), Base(0.0f), Gain(1.0f), Offset(Math::Vec3(0.0f, 0.0f, 0.0f)), Scale(Math::Vec3(1.0f, 1.0f, 1.0f)), Turbulence(Math::Vec3(0.0f, 0.0f, 0.0f)), Resolution(0), BumpMultiplier(1.0f), ReflectionType(BFW_STRING_PREFIX(""))
 {
 
 }
@@ -2256,7 +2293,7 @@ BFW::Assets::TextureSettings::TextureSettings(TextureSettings&& _Other) noexcept
 	_Other.Turbulence = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Resolution = 0;
 	_Other.BumpMultiplier = 1.0f;
-	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
+	_Other.ReflectionType = BFW_STRING_PREFIX("");
 }
 
 BFW::Assets::TextureSettings::~TextureSettings()
@@ -2348,7 +2385,7 @@ BFW::Assets::TextureSettings& BFW::Assets::TextureSettings::operator= (TextureSe
 	_Other.Turbulence = Math::Vec3(0.0f, 0.0f, 0.0f);
 	_Other.Resolution = 0;
 	_Other.BumpMultiplier = 1.0f;
-	_Other.ReflectionType = BFW_STRING_PREFIX("sphere");
+	_Other.ReflectionType = BFW_STRING_PREFIX("");
 
 	return *this;
 }
@@ -2403,7 +2440,7 @@ BFW::Assets::Material::Material() :
 	ClearCoatNormalTexture(BFW_STRING_PREFIX("")),
 	DecalTexture(BFW_STRING_PREFIX("")),
 	BumpTexture(BFW_STRING_PREFIX("")),
-	ReflectionTextures({ BFW_STRING_PREFIX("") }),
+	ReflectionTextures(),
 
 	AlbedoTextureSettings(),
 	SpecularColorTextureSettings(),
@@ -2428,7 +2465,7 @@ BFW::Assets::Material::Material() :
 	ClearCoatNormalTextureSettings(),
 	DecalTextureSettings(),
 	BumpTextureSettings(),
-	ReflectionTexturesSettings(1)
+	ReflectionTexturesSettings()
 {
 	DecalTextureSettings.Channel = 'm';
 }
@@ -3392,6 +3429,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Albedo[_CharIndex]))
 				{
@@ -3419,6 +3457,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularColor[_CharIndex]))
 				{
@@ -3444,6 +3483,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Ns = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularExponent) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularExponent))
 			{
@@ -3470,6 +3510,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].EmissionColor[_CharIndex]))
 				{
@@ -3495,6 +3536,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Pr = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Roughness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Roughness))
 			{
@@ -3519,6 +3561,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Pm = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Metalness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Metalness))
 			{
@@ -3543,6 +3586,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Pao = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientOcclusion) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientOcclusion))
 			{
@@ -3569,6 +3613,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientColor[_CharIndex]))
 				{
@@ -3594,6 +3639,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Ps = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Sheen) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Sheen))
 			{
@@ -3620,6 +3666,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SheenColor[_CharIndex]))
 				{
@@ -3645,6 +3692,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Pc = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoat) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoat))
 			{
@@ -3671,6 +3719,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatColor[_CharIndex]))
 				{
@@ -3696,6 +3745,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Pcr = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatRoughness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatRoughness))
 			{
@@ -3720,6 +3770,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_aniso = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Anisotropy) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Anisotropy))
 			{
@@ -3744,6 +3795,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_anisor = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AnisotropyRotation) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AnisotropyRotation))
 			{
@@ -3768,6 +3820,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_d_Tr = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Alpha) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Alpha))
 			{
@@ -3792,6 +3845,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_d_Tr = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Alpha) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Alpha))
 			{
@@ -3820,6 +3874,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].TransmissionFilter[_CharIndex]))
 				{
@@ -3845,6 +3900,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Ni = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].IndexOfRefraction) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].IndexOfRefraction))
 			{
@@ -3869,6 +3925,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Found_Kdisp = true;
 
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Displacement) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Displacement))
 			{
@@ -3892,17 +3949,21 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 			_Found_illum = true;
 
+			uint16_t _Value = 0;
 			BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+			_Stream.imbue(std::locale::classic());
 
-			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].IlluminationModel) || !_Stream.eof())
+			if (!(_Stream >> _Value) || !_Stream.eof())
 			{
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].IlluminationModel > 10)
+			if (_Value > 10)
 			{
 				return false;
 			}
+
+			_Materials[_Materials.GetSize() - 1].IlluminationModel = (uint8_t)(_Value);
 
 			continue;
 		}
@@ -3919,6 +3980,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Normal[_CharIndex]))
 				{
@@ -3946,6 +4008,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Tangent[_CharIndex]))
 				{
@@ -3973,6 +4036,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
 				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[_ChannelIndex + 1]);
+				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_CharIndex]))
 				{
