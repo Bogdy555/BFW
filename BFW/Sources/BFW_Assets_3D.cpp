@@ -13,7 +13,21 @@ static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const B
 		return false;
 	}
 
-	_Stream << '\"';
+	bool _Quotes = false;
+
+	for (size_t _Index = 0; _Index < _NewString.size(); _Index++)
+	{
+		if (std::isspace((unsigned BFW_CHAR_TYPE_A)(_NewString[_Index])))
+		{
+			_Quotes = true;
+			break;
+		}
+	}
+
+	if (_Quotes)
+	{
+		_Stream << '\"';
+	}
 
 	for (size_t _Index = 0; _Index < _NewString.size(); _Index++)
 	{
@@ -31,7 +45,10 @@ static const bool WaveFrontSaveString(BFW_STRING_STREAM_TYPE_A& _Stream, const B
 		_Stream << _NewString[_Index];
 	}
 
-	_Stream << '\"';
+	if (_Quotes)
+	{
+		_Stream << '\"';
+	}
 
 	return true;
 }
@@ -150,11 +167,6 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 
 			_TextureSettings.Channel = _LineTokens[_TokenIndex + 1][0];
 
-			if (_TextureSettings.Channel != 'r' && _TextureSettings.Channel != 'g' && _TextureSettings.Channel != 'b' && _TextureSettings.Channel != 'm' && _TextureSettings.Channel != 'l' && _TextureSettings.Channel != 'z')
-			{
-				return false;
-			}
-
 			_TokenIndex += 1;
 
 			continue;
@@ -173,11 +185,6 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _TextureSettings.Boost) || !_Stream.eof() || !std::isfinite(_TextureSettings.Boost))
-			{
-				return false;
-			}
-
-			if (_TextureSettings.Boost < 0.0f)
 			{
 				return false;
 			}
@@ -399,17 +406,6 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 				return false;
 			}
 
-			if (_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("sphere")) &&
-				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_top")) &&
-				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_bottom")) &&
-				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_front")) &&
-				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_back")) &&
-				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_left")) &&
-				_TextureSettings.ReflectionType != BFW_STRING_TYPE(BFW_STRING_PREFIX("cube_right")))
-			{
-				return false;
-			}
-
 			_TokenIndex += 1;
 
 			continue;
@@ -418,12 +414,7 @@ static const bool MaterialLibLoadMap(const BFW::Vector<BFW_STRING_TYPE_A>& _Line
 		return false;
 	}
 
-	if (BFW_STRING_TYPE_A("refl") == _Type && !_Found_type)
-	{
-		return false;
-	}
-
-	if (BFW_STRING_TYPE_A("refl") != _Type && _Found_type)
+	if (BFW_STRING_TYPE_A("refl") == _Type && !_Found_type || BFW_STRING_TYPE_A("refl") != _Type && _Found_type)
 	{
 		return false;
 	}
@@ -452,7 +443,7 @@ static const bool MaterialLibSaveMap(BFW_STRING_STREAM_TYPE_A& _Stream, const BF
 		return true;
 	}
 
-	_Stream << _Type << ' ';
+	_Stream << _Type;
 
 	if (BFW_STRING_TYPE_A("refl") == _Type)
 	{
@@ -2309,6 +2300,16 @@ BFW::Assets::TextureSettings::~TextureSettings()
 
 const bool BFW::Assets::TextureSettings::IsValid() const
 {
+	Vector<float> _Values = { Boost, Base, Gain, Offset.x, Offset.y, Offset.z, Scale.x, Scale.y, Scale.z, Turbulence.x, Turbulence.y, Turbulence.z, BumpMultiplier };
+
+	for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+	{
+		if (!std::isfinite(_Values[_Index]))
+		{
+			return false;
+		}
+	}
+
 	if (BFW_STRING_TYPE_A("rgbmlz").find(Channel) == BFW_STRING_TYPE_A::npos || Channel == '\0')
 	{
 		return false;
@@ -2415,8 +2416,9 @@ BFW::Assets::Material::Material() :
 	Anisotropy(0.0f),
 	AnisotropyRotation(0.0f),
 	Alpha(1.0f),
-	TransmissionFilter(Math::Vec3(1.0f, 1.0f, 1.0f)),
-	IndexOfRefraction(1.0f),
+	Halo(false),
+	TransmissionFilter(Math::Vec3(0.0f, 0.0f, 0.0f)),
+	IndexOfRefraction(1.5f),
 	Displacement(0.0f),
 	IlluminationModel(9),
 	Normal(Math::Vec3(0.5f, 0.5f, 1.0f)),
@@ -2493,6 +2495,7 @@ BFW::Assets::Material::Material(const Material& _Other) :
 	Anisotropy(_Other.Anisotropy),
 	AnisotropyRotation(_Other.AnisotropyRotation),
 	Alpha(_Other.Alpha),
+	Halo(_Other.Halo),
 	TransmissionFilter(_Other.TransmissionFilter),
 	IndexOfRefraction(_Other.IndexOfRefraction),
 	Displacement(_Other.Displacement),
@@ -2571,6 +2574,7 @@ BFW::Assets::Material::Material(Material&& _Other) noexcept :
 	Anisotropy(_Other.Anisotropy),
 	AnisotropyRotation(_Other.AnisotropyRotation),
 	Alpha(_Other.Alpha),
+	Halo(_Other.Halo),
 	TransmissionFilter(_Other.TransmissionFilter),
 	IndexOfRefraction(_Other.IndexOfRefraction),
 	Displacement(_Other.Displacement),
@@ -2639,6 +2643,40 @@ BFW::Assets::Material::~Material()
 
 const bool BFW::Assets::Material::IsValid() const
 {
+	Vector<float> _Values =
+	{
+		Albedo.x, Albedo.y, Albedo.z,
+		SpecularColor.x, SpecularColor.y, SpecularColor.z,
+		SpecularExponent,
+		EmissionColor.x, EmissionColor.y, EmissionColor.z,
+		Roughness,
+		Metalness,
+		AmbientOcclusion,
+		AmbientColor.x, AmbientColor.y, AmbientColor.z,
+		Sheen,
+		SheenColor.x, SheenColor.y, SheenColor.z,
+		ClearCoat,
+		ClearCoatColor.x, ClearCoatColor.y, ClearCoatColor.z,
+		ClearCoatRoughness,
+		Anisotropy,
+		AnisotropyRotation,
+		Alpha,
+		TransmissionFilter.x, TransmissionFilter.y, TransmissionFilter.z,
+		IndexOfRefraction,
+		Displacement,
+		Normal.x, Normal.y, Normal.z,
+		Tangent.x, Tangent.y, Tangent.z,
+		ClearCoatNormal.x, ClearCoatNormal.y, ClearCoatNormal.z
+	};
+
+	for (size_t _Index = 0; _Index < _Values.GetSize(); _Index++)
+	{
+		if (!std::isfinite(_Values[_Index]))
+		{
+			return false;
+		}
+	}
+
 	if (Albedo.x < 0.0f || Albedo.x > 1.0f || Albedo.y < 0.0f || Albedo.y > 1.0f || Albedo.z < 0.0f || Albedo.z > 1.0f)
 	{
 		return false;
@@ -2949,6 +2987,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (const Material& _Other)
 	Anisotropy = _Other.Anisotropy;
 	AnisotropyRotation = _Other.AnisotropyRotation;
 	Alpha = _Other.Alpha;
+	Halo = _Other.Halo;
 	TransmissionFilter = _Other.TransmissionFilter;
 	IndexOfRefraction = _Other.IndexOfRefraction;
 	Displacement = _Other.Displacement;
@@ -3033,6 +3072,7 @@ BFW::Assets::Material& BFW::Assets::Material::operator= (Material&& _Other) noex
 	Anisotropy = _Other.Anisotropy;
 	AnisotropyRotation = _Other.AnisotropyRotation;
 	Alpha = _Other.Alpha;
+	Halo = _Other.Halo;
 	TransmissionFilter = _Other.TransmissionFilter;
 	IndexOfRefraction = _Other.IndexOfRefraction;
 	Displacement = _Other.Displacement;
@@ -3346,6 +3386,67 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			}
 		}
 
+		if ((_LineTokens.GetSize() == 3 || _LineTokens.GetSize() == 4) && _LineTokens[1] == "spectral")
+		{
+			BFW_DEBUG_BREAK_MSG(BFW_STRING_PREFIX("Spectral reflectance files are not supported!"));
+			return false;
+		}
+
+		if (_LineTokens.GetSize() == 5 && _LineTokens[1] == "xyz")
+		{
+			float _XValue = 0.0f;
+			BFW_STRING_STREAM_TYPE_A _Stream1(_LineTokens[2]);
+			_Stream1.imbue(std::locale::classic());
+
+			if (!(_Stream1 >> _XValue) || !_Stream1.eof() || !std::isfinite(_XValue))
+			{
+				return false;
+			}
+
+			float _YValue = 0.0f;
+			BFW_STRING_STREAM_TYPE_A _Stream2(_LineTokens[3]);
+			_Stream2.imbue(std::locale::classic());
+
+			if (!(_Stream2 >> _YValue) || !_Stream2.eof() || !std::isfinite(_YValue))
+			{
+				return false;
+			}
+
+			float _ZValue = 0.0f;
+			BFW_STRING_STREAM_TYPE_A _Stream3(_LineTokens[4]);
+			_Stream3.imbue(std::locale::classic());
+
+			if (!(_Stream3 >> _ZValue) || !_Stream3.eof() || !std::isfinite(_ZValue))
+			{
+				return false;
+			}
+
+			float _RValue = _XValue * 3.2406f - _YValue * 1.5372f - _ZValue * 0.4986f;
+			float _GValue = -_XValue * 0.9689f + _YValue * 1.8758f + _ZValue * 0.0415f;
+			float _BValue = _XValue * 0.0557f - _YValue * 0.2040f + _ZValue * 1.0570f;
+
+			_LineTokens = { _LineTokens[0], BFW_TO_STRING_A(_RValue), BFW_TO_STRING_A(_GValue), BFW_TO_STRING_A(_BValue) };
+		}
+
+		if ((_LineTokens[0] == "d" || _LineTokens[0] == "Tr") && _LineTokens.GetSize() == 3 && _LineTokens[1] == "-halo" && _Names.GetSize())
+		{
+			_Materials[_Materials.GetSize() - 1].Halo = true;
+			_LineTokens.Erase(1);
+		}
+
+		if (_LineTokens[0] == "map_d" && _Names.GetSize())
+		{
+			for (size_t _TokenIndex = 1; _TokenIndex < _LineTokens.GetSize() - 1; _TokenIndex++)
+			{
+				if (_LineTokens[_TokenIndex] == "-halo")
+				{
+					_Materials[_Materials.GetSize() - 1].Halo = true;
+					_LineTokens.Erase(_TokenIndex);
+					break;
+				}
+			}
+		}
+
 		if (_LineTokens[0] == "newmtl")
 		{
 			if (_LineTokens.GetSize() != 2)
@@ -3441,11 +3542,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				{
 					return false;
 				}
-
-				if (_Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].Albedo[_ChannelIndex] > 1.0f)
-				{
-					return false;
-				}
 			}
 
 			continue;
@@ -3466,11 +3562,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex]))
-				{
-					return false;
-				}
-
-				if (_Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].SpecularColor[_ChannelIndex] > 1.0f)
 				{
 					return false;
 				}
@@ -3496,11 +3587,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].SpecularExponent < 0.0f || _Materials[_Materials.GetSize() - 1].SpecularExponent > 1000.0f)
-			{
-				return false;
-			}
-
 			continue;
 		}
 
@@ -3519,11 +3605,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex]))
-				{
-					return false;
-				}
-
-				if (_Materials[_Materials.GetSize() - 1].EmissionColor[_ChannelIndex] < 0.0f)
 				{
 					return false;
 				}
@@ -3549,11 +3630,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].Roughness < 0.0f || _Materials[_Materials.GetSize() - 1].Roughness > 1.0f)
-			{
-				return false;
-			}
-
 			continue;
 		}
 
@@ -3574,11 +3650,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].Metalness < 0.0f || _Materials[_Materials.GetSize() - 1].Metalness > 1.0f)
-			{
-				return false;
-			}
-
 			continue;
 		}
 
@@ -3595,11 +3666,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AmbientOcclusion) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AmbientOcclusion))
-			{
-				return false;
-			}
-
-			if (_Materials[_Materials.GetSize() - 1].AmbientOcclusion < 0.0f || _Materials[_Materials.GetSize() - 1].AmbientOcclusion > 1.0f)
 			{
 				return false;
 			}
@@ -3625,11 +3691,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				{
 					return false;
 				}
-
-				if (_Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].AmbientColor[_ChannelIndex] > 1.0f)
-				{
-					return false;
-				}
 			}
 
 			continue;
@@ -3648,11 +3709,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Sheen) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Sheen))
-			{
-				return false;
-			}
-
-			if (_Materials[_Materials.GetSize() - 1].Sheen < 0.0f || _Materials[_Materials.GetSize() - 1].Sheen > 1.0f)
 			{
 				return false;
 			}
@@ -3678,11 +3734,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				{
 					return false;
 				}
-
-				if (_Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].SheenColor[_ChannelIndex] > 1.0f)
-				{
-					return false;
-				}
 			}
 
 			continue;
@@ -3701,11 +3752,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoat) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoat))
-			{
-				return false;
-			}
-
-			if (_Materials[_Materials.GetSize() - 1].ClearCoat < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoat > 1.0f)
 			{
 				return false;
 			}
@@ -3731,11 +3777,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				{
 					return false;
 				}
-
-				if (_Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoatColor[_ChannelIndex] > 1.0f)
-				{
-					return false;
-				}
 			}
 
 			continue;
@@ -3754,11 +3795,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatRoughness) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatRoughness))
-			{
-				return false;
-			}
-
-			if (_Materials[_Materials.GetSize() - 1].ClearCoatRoughness < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoatRoughness > 1.0f)
 			{
 				return false;
 			}
@@ -3783,11 +3819,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].Anisotropy < 0.0f || _Materials[_Materials.GetSize() - 1].Anisotropy > 1.0f)
-			{
-				return false;
-			}
-
 			continue;
 		}
 
@@ -3804,11 +3835,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].AnisotropyRotation) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].AnisotropyRotation))
-			{
-				return false;
-			}
-
-			if (_Materials[_Materials.GetSize() - 1].AnisotropyRotation < 0.0f || _Materials[_Materials.GetSize() - 1].AnisotropyRotation > 1.0f)
 			{
 				return false;
 			}
@@ -3833,11 +3859,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].Alpha < 0.0f || _Materials[_Materials.GetSize() - 1].Alpha > 1.0f)
-			{
-				return false;
-			}
-
 			continue;
 		}
 
@@ -3858,11 +3879,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].Alpha < 0.0f || _Materials[_Materials.GetSize() - 1].Alpha > 1.0f)
-			{
-				return false;
-			}
-
 			_Materials[_Materials.GetSize() - 1].Alpha = 1.0f - _Materials[_Materials.GetSize() - 1].Alpha;
 
 			continue;
@@ -3870,12 +3886,28 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 		if (_LineTokens[0] == "Tf")
 		{
-			if (_LineTokens.GetSize() != 4 || _Names.GetSize() == 0 || _Found_Tf)
+			if ((_LineTokens.GetSize() != 2 && _LineTokens.GetSize() != 4) || _Names.GetSize() == 0 || _Found_Tf)
 			{
 				return false;
 			}
 
 			_Found_Tf = true;
+
+			if (_LineTokens.GetSize() == 2)
+			{
+				BFW_STRING_STREAM_TYPE_A _Stream(_LineTokens[1]);
+				_Stream.imbue(std::locale::classic());
+
+				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].TransmissionFilter[0]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].TransmissionFilter[0]))
+				{
+					return false;
+				}
+
+				_Materials[_Materials.GetSize() - 1].TransmissionFilter[1] = _Materials[_Materials.GetSize() - 1].TransmissionFilter[0];
+				_Materials[_Materials.GetSize() - 1].TransmissionFilter[2] = _Materials[_Materials.GetSize() - 1].TransmissionFilter[0];
+
+				continue;
+			}
 
 			for (size_t _ChannelIndex = 0; _ChannelIndex < 3; _ChannelIndex++)
 			{
@@ -3883,11 +3915,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex]))
-				{
-					return false;
-				}
-
-				if (_Materials[_Materials.GetSize() - 1].TransmissionFilter[_ChannelIndex] < 0.0f)
 				{
 					return false;
 				}
@@ -3913,11 +3940,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				return false;
 			}
 
-			if (_Materials[_Materials.GetSize() - 1].IndexOfRefraction < 0.001f || _Materials[_Materials.GetSize() - 1].IndexOfRefraction > 10.0f)
-			{
-				return false;
-			}
-
 			continue;
 		}
 
@@ -3934,11 +3956,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Materials[_Materials.GetSize() - 1].Displacement) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].Displacement))
-			{
-				return false;
-			}
-
-			if (_Materials[_Materials.GetSize() - 1].Displacement < 0.0f)
 			{
 				return false;
 			}
@@ -3960,11 +3977,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 			_Stream.imbue(std::locale::classic());
 
 			if (!(_Stream >> _Value) || !_Stream.eof())
-			{
-				return false;
-			}
-
-			if (_Value > 10)
 			{
 				return false;
 			}
@@ -3992,11 +4004,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				{
 					return false;
 				}
-
-				if (_Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].Normal[_ChannelIndex] > 1.0f)
-				{
-					return false;
-				}
 			}
 
 			continue;
@@ -4020,11 +4027,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				{
 					return false;
 				}
-
-				if (_Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].Tangent[_ChannelIndex] > 1.0f)
-				{
-					return false;
-				}
 			}
 
 			continue;
@@ -4045,11 +4047,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				_Stream.imbue(std::locale::classic());
 
 				if (!(_Stream >> _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]) || !_Stream.eof() || !std::isfinite(_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex]))
-				{
-					return false;
-				}
-
-				if (_Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex] < 0.0f || _Materials[_Materials.GetSize() - 1].ClearCoatNormal[_ChannelIndex] > 1.0f)
 				{
 					return false;
 				}
@@ -4475,8 +4472,8 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 			if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 0)
 			{
-				_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(1);
-				_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(1);
+				_Materials[_Materials.GetSize() - 1].ReflectionTextures.PushBack(BFW_STRING_PREFIX(""));
+				_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.PushBack(TextureSettings());
 
 				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[0], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0]))
 				{
@@ -4485,8 +4482,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 				if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
 				{
-					_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(6);
-					_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(6);
+					for (size_t _Index = 0; _Index < 5; _Index++)
+					{
+						_Materials[_Materials.GetSize() - 1].ReflectionTextures.PushBack(BFW_STRING_PREFIX(""));
+						_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.PushBack(TextureSettings());
+					}
 				}
 			}
 			else if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 1)
@@ -4510,14 +4510,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[_NextIndex], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex]))
 				{
 					return false;
-				}
-
-				for (size_t _PrevIndex = 0; _PrevIndex < _NextIndex; _PrevIndex++)
-				{
-					if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex].ReflectionType == _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_PrevIndex].ReflectionType)
-					{
-						return false;
-					}
 				}
 			}
 
@@ -4533,8 +4525,8 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 			if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 0)
 			{
-				_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(1);
-				_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(1);
+				_Materials[_Materials.GetSize() - 1].ReflectionTextures.PushBack(BFW_STRING_PREFIX(""));
+				_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.PushBack(TextureSettings());
 
 				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[0], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0]))
 				{
@@ -4543,8 +4535,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 
 				if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[0].ReflectionType != BFW_STRING_PREFIX("sphere"))
 				{
-					_Materials[_Materials.GetSize() - 1].ReflectionTextures.Reserve(6);
-					_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.Reserve(6);
+					for (size_t _Index = 0; _Index < 5; _Index++)
+					{
+						_Materials[_Materials.GetSize() - 1].ReflectionTextures.PushBack(BFW_STRING_PREFIX(""));
+						_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings.PushBack(TextureSettings());
+					}
 				}
 			}
 			else if (_Materials[_Materials.GetSize() - 1].ReflectionTextures.GetSize() == 1)
@@ -4568,14 +4563,6 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent)
 				if (!MaterialLibLoadMap(_LineTokens, "refl", _Materials[_Materials.GetSize() - 1].ReflectionTextures[_NextIndex], _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex]))
 				{
 					return false;
-				}
-
-				for (size_t _PrevIndex = 0; _PrevIndex < _NextIndex; _PrevIndex++)
-				{
-					if (_Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_NextIndex].ReflectionType == _Materials[_Materials.GetSize() - 1].ReflectionTexturesSettings[_PrevIndex].ReflectionType)
-					{
-						return false;
-					}
 				}
 			}
 
@@ -4726,8 +4713,18 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 		_Stream << "Pcr " << _CurrentMaterial.ClearCoatRoughness BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "aniso " << _CurrentMaterial.Anisotropy BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "anisor " << _CurrentMaterial.AnisotropyRotation BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-		_Stream << "d " << _CurrentMaterial.Alpha BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
-		_Stream << "Tf " << _CurrentMaterial.TransmissionFilter.x << ' ' << _CurrentMaterial.TransmissionFilter.y << ' ' << _CurrentMaterial.TransmissionFilter.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+		if (_CurrentMaterial.Halo)
+		{
+			_Stream << "d -halo " << _CurrentMaterial.Alpha BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+		}
+		else
+		{
+			_Stream << "d " << _CurrentMaterial.Alpha BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+		}
+		if (_CurrentMaterial.TransmissionFilter.x != 0.0f && _CurrentMaterial.TransmissionFilter.y != 0.0f && _CurrentMaterial.TransmissionFilter.z != 0.0f)
+		{
+			_Stream << "Tf " << _CurrentMaterial.TransmissionFilter.x << ' ' << _CurrentMaterial.TransmissionFilter.y << ' ' << _CurrentMaterial.TransmissionFilter.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+		}
 		_Stream << "Ni " << _CurrentMaterial.IndexOfRefraction BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Kdisp " << _CurrentMaterial.Displacement BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 		_Stream << "Kn " << _CurrentMaterial.Normal.x << ' ' << _CurrentMaterial.Normal.y << ' ' << _CurrentMaterial.Normal.z BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
@@ -4851,24 +4848,11 @@ BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 			return FileContent();
 		}
 
-		if (_CurrentMaterial.ReflectionTextures.GetSize() != 0)
+		for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
 		{
-			if (_CurrentMaterial.ReflectionTextures.GetSize() == 1)
+			if (!MaterialLibSaveMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
 			{
-				if (!MaterialLibSaveMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[0], _CurrentMaterial.ReflectionTextures[0]))
-				{
-					return FileContent();
-				}
-			}
-			else if (_CurrentMaterial.ReflectionTextures.GetSize() == 6)
-			{
-				for (size_t _Index = 0; _Index < _CurrentMaterial.ReflectionTextures.GetSize(); _Index++)
-				{
-					if (!MaterialLibSaveMap(_Stream, "refl", _CurrentMaterial.ReflectionTexturesSettings[_Index], _CurrentMaterial.ReflectionTextures[_Index]))
-					{
-						return FileContent();
-					}
-				}
+				return FileContent();
 			}
 		}
 

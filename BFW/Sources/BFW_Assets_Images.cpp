@@ -197,26 +197,6 @@ HdrFileHeader& HdrFileHeader::operator= (HdrFileHeader&& _Other) noexcept
 
 
 
-static const float HdrConvertComponent(const uint8_t _Component, const uint8_t _Exponent)
-{
-	return ldexpf(_Component + 0.5f, _Exponent - (128 + 8));
-}
-
-static const float HdrGetRFromXYZ(const float _XValue, const float _YValue, const float _ZValue)
-{
-	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_XValue, _YValue, _ZValue), BFW::Math::Vec3(3.2406f, -1.5372f, -0.4986f));
-}
-
-static const float HdrGetGFromXYZ(const float _XValue, const float _YValue, const float _ZValue)
-{
-	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_XValue, _YValue, _ZValue), BFW::Math::Vec3(-0.9689f, 1.8758f, 0.0415f));
-}
-
-static const float HdrGetBFromXYZ(const float _XValue, const float _YValue, const float _ZValue)
-{
-	return BFW::Math::Vec3::Dot(BFW::Math::Vec3(_XValue, _YValue, _ZValue), BFW::Math::Vec3(0.0557f, -0.2040f, 1.0570f));
-}
-
 static const bool HdrSimpleDecodeScanLine(const BFW::Assets::FileContent& _FileContent, size_t& _FileIndex, uint8_t* _ScanLine, const size_t _Width)
 {
 	size_t _Length = 0;
@@ -392,9 +372,9 @@ static void HdrPlaceScanLine(float* _Data, const uint8_t* _ScanLine, const size_
 {
 	for (size_t _PositionX = 0; _PositionX < _Width; _PositionX++)
 	{
-		_Data[(_PositionX + _PositionY * _Width) * 4 + 0] = HdrConvertComponent(_ScanLine[_PositionX * 4 + 0], _ScanLine[_PositionX * 4 + 3]);
-		_Data[(_PositionX + _PositionY * _Width) * 4 + 1] = HdrConvertComponent(_ScanLine[_PositionX * 4 + 1], _ScanLine[_PositionX * 4 + 3]);
-		_Data[(_PositionX + _PositionY * _Width) * 4 + 2] = HdrConvertComponent(_ScanLine[_PositionX * 4 + 2], _ScanLine[_PositionX * 4 + 3]);
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 0] = ldexpf((float)(_ScanLine[_PositionX * 4 + 0]) + 0.5f, (uint16_t)(_ScanLine[_PositionX * 4 + 3]) - (128 + 8));
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 1] = ldexpf((float)(_ScanLine[_PositionX * 4 + 1]) + 0.5f, (uint16_t)(_ScanLine[_PositionX * 4 + 3]) - (128 + 8));
+		_Data[(_PositionX + _PositionY * _Width) * 4 + 2] = ldexpf((float)(_ScanLine[_PositionX * 4 + 2]) + 0.5f, (uint16_t)(_ScanLine[_PositionX * 4 + 3]) - (128 + 8));
 		_Data[(_PositionX + _PositionY * _Width) * 4 + 3] = 1.0f;
 	}
 }
@@ -1319,9 +1299,9 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 			float _YValue = Data[_Index * 4 + 1];
 			float _ZValue = Data[_Index * 4 + 2];
 
-			Data[_Index * 4 + 0] = HdrGetRFromXYZ(_XValue, _YValue, _ZValue);
-			Data[_Index * 4 + 1] = HdrGetGFromXYZ(_XValue, _YValue, _ZValue);
-			Data[_Index * 4 + 2] = HdrGetBFromXYZ(_XValue, _YValue, _ZValue);
+			Data[_Index * 4 + 0] = _XValue * 3.2406f - _YValue * 1.5372f - _ZValue * 0.4986f;
+			Data[_Index * 4 + 1] = -_XValue * 0.9689f + _YValue * 1.8758f + _ZValue * 0.0415f;
+			Data[_Index * 4 + 2] = _XValue * 0.0557f - _YValue * 0.2040f + _ZValue * 1.0570f;
 		}
 	}
 

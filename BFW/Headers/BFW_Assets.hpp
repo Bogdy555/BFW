@@ -399,6 +399,7 @@ namespace BFW
 			float Anisotropy;
 			float AnisotropyRotation;
 			float Alpha;
+			bool Halo;
 			Math::Vec3 TransmissionFilter;
 			float IndexOfRefraction;
 			float Displacement;
