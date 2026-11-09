@@ -179,7 +179,7 @@
     <ClCompile Include="Sources\BFW_Assets_Sounds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\BFW_Assets_3D.cpp">
+    <ClCompile Include="Sources\BFW_Assets_WaveFront.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_Assets_Web.cpp">

@@ -173,9 +173,6 @@
     <ClCompile Include="Sources\BFW_Math_Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\BFW_Assets_3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\BFW_Assets_Images.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -183,6 +180,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\BFW_Assets_Web.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\BFW_Assets_WaveFront.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

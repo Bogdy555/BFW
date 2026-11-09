@@ -229,9 +229,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\BFW_Assets.cpp" />
-    <ClCompile Include="Sources\BFW_Assets_3D.cpp" />
     <ClCompile Include="Sources\BFW_Assets_Images.cpp" />
     <ClCompile Include="Sources\BFW_Assets_Sounds.cpp" />
+    <ClCompile Include="Sources\BFW_Assets_WaveFront.cpp" />
     <ClCompile Include="Sources\BFW_Assets_Web.cpp" />
     <ClCompile Include="Sources\BFW_Cryptography.cpp" />
     <ClCompile Include="Sources\BFW_Debug.cpp" />
