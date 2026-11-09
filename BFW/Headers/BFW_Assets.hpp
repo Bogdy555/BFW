@@ -480,7 +480,7 @@ namespace BFW
 			MaterialLib(MaterialLib&& _Other) noexcept;
 			~MaterialLib();
 
-			const bool Load(const FileContent& _FileContent);
+			const bool Load(const FileContent& _FileContent, const BFW_CHAR_TYPE* _Path = nullptr, const BFW_CHAR_TYPE* _CurrentPath = nullptr);
 
 			Material& Push(const BFW_CHAR_TYPE* _Name, const Material& _Data);
 			Material& Emplace(const BFW_CHAR_TYPE* _Name, Material&& _Data);
