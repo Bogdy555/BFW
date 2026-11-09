@@ -59,8 +59,12 @@
   </Folder>
   <Folder Name="/Solution Items/Cmd Batches/">
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildAll.bat" />
-    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildCore.bat" />
-    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildCore.ps1" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildArduinoCore.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildArduinoCore.ps1" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildFS.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildFS.ps1" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildSD_MMC.bat" />
+    <File Path="Solution Items/Cmd Batches/BFW_ESP32_BuildSD_MMC.ps1" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_CreateFolders.bat" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_Path.bat" />
     <File Path="Solution Items/Cmd Batches/BFW_ESP32_Setup.bat" />
@@ -140,6 +144,17 @@
   <Folder Name="/Solution Items/Dependencies/ArduinoCore/Lib/libb64/">
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/libb64/cdecode.o" />
     <File Path="Solution Items/Dependencies/ArduinoCore/Lib/libb64/cencode.o" />
+  </Folder>
+  <Folder Name="/Solution Items/Dependencies/FS/" />
+  <Folder Name="/Solution Items/Dependencies/FS/Lib/">
+    <File Path="Solution Items/Dependencies/FS/Lib/FS.a" />
+    <File Path="Solution Items/Dependencies/FS/Lib/FS.o" />
+    <File Path="Solution Items/Dependencies/FS/Lib/vfs_api.o" />
+  </Folder>
+  <Folder Name="/Solution Items/Dependencies/SD_MMC/" />
+  <Folder Name="/Solution Items/Dependencies/SD_MMC/Lib/">
+    <File Path="Solution Items/Dependencies/SD_MMC/Lib/SD_MMC.a" />
+    <File Path="Solution Items/Dependencies/SD_MMC/Lib/SD_MMC.o" />
   </Folder>
   <Folder Name="/Solution Items/Digital Certificates/" />
   <Folder Name="/Solution Items/Digital Certificates/BSW/">
