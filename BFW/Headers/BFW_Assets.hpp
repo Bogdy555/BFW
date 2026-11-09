@@ -315,7 +315,7 @@ namespace BFW
 			WaveFrontObj(WaveFrontObj&& _Other) noexcept;
 			~WaveFrontObj();
 
-			const bool Load(const FileContent& _FileContent);
+			const bool Load(const FileContent& _FileContent, const BFW_CHAR_TYPE* _Path = nullptr, const BFW_CHAR_TYPE* _CurrentPath = nullptr);
 
 			Mesh& Push(const BFW_CHAR_TYPE* _Name, const Mesh& _Data);
 			Mesh& Emplace(const BFW_CHAR_TYPE* _Name, Mesh&& _Data);

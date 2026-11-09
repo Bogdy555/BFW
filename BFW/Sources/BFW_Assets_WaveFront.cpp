@@ -856,11 +856,16 @@ BFW::Assets::WaveFrontObj::~WaveFrontObj()
 
 }
 
-const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
+const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath)
 {
 	Clear();
 
 	if (!_FileContent.GetData())
+	{
+		return false;
+	}
+
+	if (_Path != nullptr && _CurrentPath != nullptr && (!std::filesystem::is_regular_file(_Path) || !std::filesystem::is_directory(_CurrentPath)))
 	{
 		return false;
 	}
@@ -1729,11 +1734,101 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent)
 
 			bool _Error = false;
 
-			_MaterialLibs.PushBack(BFW_UTF8_TO_MACHINE(_LineTokens[1], &_Error));
+			BFW_STRING_TYPE& _MaterialLib = _MaterialLibs.PushBack(BFW_UTF8_TO_MACHINE(_LineTokens[1], &_Error));
 
 			if (_Error)
 			{
 				return false;
+			}
+
+			BFW_WINDOWS_PLATFORM_CALL
+			(
+				size_t _Id = 0;
+				BFW_STRING_STREAM_TYPE _Stream(_MaterialLib);
+				_Stream.imbue(std::locale::classic());
+
+				if ((_Stream >> _Id) && _Stream.eof())
+				{
+					continue;
+				}
+			);
+
+			bool _IsAbsolute = std::filesystem::path(_MaterialLib).is_absolute();
+
+			if (_Path != nullptr && _CurrentPath != nullptr && !_IsAbsolute)
+			{
+				try
+				{
+					_MaterialLib =
+						std::filesystem::relative
+						(
+							std::filesystem::weakly_canonical((std::filesystem::absolute(_Path).parent_path() / _MaterialLib).lexically_normal()),
+							std::filesystem::weakly_canonical(std::filesystem::absolute(_CurrentPath).lexically_normal())
+						);
+				}
+				catch (...)
+				{
+					return false;
+				}
+			}
+
+			for (size_t _Index = 0; _Index < _MaterialLib.size(); _Index++)
+			{
+				if (_MaterialLib[_Index] == BFW_STRING_PREFIX('\\'))
+				{
+					_MaterialLib[_Index] = BFW_STRING_PREFIX('/');
+				}
+			}
+
+			if (!_IsAbsolute && !_MaterialLib.starts_with(BFW_STRING_PREFIX("./")) && !_MaterialLib.starts_with(BFW_STRING_PREFIX("../")))
+			{
+				if (_MaterialLib == BFW_STRING_PREFIX("."))
+				{
+					_MaterialLib = BFW_STRING_PREFIX("./");
+				}
+				else if (_MaterialLib == BFW_STRING_PREFIX(".."))
+				{
+					_MaterialLib = BFW_STRING_PREFIX("../");
+				}
+				else if (_MaterialLib.starts_with(BFW_STRING_PREFIX("/")))
+				{
+					_MaterialLib = BFW_STRING_PREFIX('.') + _MaterialLib;
+				}
+				else
+				{
+					_MaterialLib = BFW_STRING_PREFIX("./") + _MaterialLib;
+				}
+			}
+
+			if (_Path != nullptr && _CurrentPath != nullptr && !_IsAbsolute)
+			{
+				try
+				{
+					BFW_STRING_TYPE _TruePath = std::filesystem::weakly_canonical((std::filesystem::absolute(_CurrentPath) / _MaterialLib).lexically_normal());
+
+					if (std::filesystem::exists(_TruePath) && !std::filesystem::is_regular_file(_TruePath))
+					{
+						return false;
+					}
+				}
+				catch (...)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				try
+				{
+					if (std::filesystem::exists(_MaterialLib) && !std::filesystem::is_regular_file(_MaterialLib))
+					{
+						return false;
+					}
+				}
+				catch (...)
+				{
+					return false;
+				}
 			}
 
 			continue;
