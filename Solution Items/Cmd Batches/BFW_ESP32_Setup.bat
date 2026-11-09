@@ -12,7 +12,11 @@ echo on
 
 call ".\Solution Items\Cmd Batches\BFW_ESP32_CreateFolders.bat"
 
-call ".\Solution Items\Cmd Batches\BFW_ESP32_BuildCore.bat"
+call ".\Solution Items\Cmd Batches\BFW_ESP32_BuildArduinoCore.bat"
+
+call ".\Solution Items\Cmd Batches\BFW_ESP32_BuildFS.bat"
+
+call ".\Solution Items\Cmd Batches\BFW_ESP32_BuildSD_MMC.bat"
 
 @echo off
 

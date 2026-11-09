@@ -9,6 +9,16 @@ void setup()
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 
+	if (!SD_MMC.setPins(12, 11, 13))
+	{
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
+	}
+
+	if (!SD_MMC.begin("/sdcard/", true))
+	{
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
+	}
+
 	BFW_DEBUG_CALL
 	(
 		if (!BFW::Log::Init())

@@ -4,3 +4,5 @@ Objects/
 Solution Items/Digital Certificates/
 .gdb_history
 Solution Items/Dependencies/ArduinoCore/
+Solution Items/Dependencies/FS/
+Solution Items/Dependencies/SD_MMC/

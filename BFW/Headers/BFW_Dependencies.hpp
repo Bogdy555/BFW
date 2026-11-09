@@ -37,6 +37,7 @@
 #ifdef BFW_ESP32_PLATFORM
 
 #include <Arduino.h>
+#include <SD_MMC.h>
 
 #endif
 
