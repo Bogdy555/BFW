@@ -330,8 +330,9 @@ namespace BFW
 			Mesh* GetData(const BFW_CHAR_TYPE* _Name);
 			const Mesh* GetData(const BFW_CHAR_TYPE* _Name) const;
 
-			Vector<BFW_STRING_TYPE>& GetMaterialLibs();
-			const Vector<BFW_STRING_TYPE>& GetMaterialLibs() const;
+			const Vector<BFW_STRING_TYPE> GetMaterialLibs() const;
+			Vector<BFW_STRING_TYPE>& GetMaterialLibsRef();
+			const Vector<BFW_STRING_TYPE>& GetMaterialLibsRef() const;
 
 			Mesh& operator[] (const BFW_CHAR_TYPE* _Name);
 			const Mesh& operator[] (const BFW_CHAR_TYPE* _Name) const;
@@ -494,6 +495,9 @@ namespace BFW
 
 			Material* GetData(const BFW_CHAR_TYPE* _Name);
 			const Material* GetData(const BFW_CHAR_TYPE* _Name) const;
+
+			const Vector<BFW_STRING_TYPE> GetBitMaps() const;
+			const Vector<BFW_STRING_TYPE> GetHdrs() const;
 
 			Material& operator[] (const BFW_CHAR_TYPE* _Name);
 			const Material& operator[] (const BFW_CHAR_TYPE* _Name) const;

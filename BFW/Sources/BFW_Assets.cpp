@@ -161,6 +161,8 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 	}
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 template <typename T> static void ManagerFlushAllocateResource(BFW::Vector<size_t>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
 	for (size_t _Index = 0; _Index < _Queued.GetSize(); _Index++)
@@ -210,7 +212,7 @@ template <typename T> static void ManagerFlushAllocateResource(BFW::Vector<size_
 	}
 }
 
-template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thread>& _Threads, bool& _Fail, BFW::Vector<size_t>& _Queued, const size_t _ResourceId, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
+template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thread>& _Threads, bool& _Fail, BFW::Vector<size_t>& _Queued, const size_t _ResourceType, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	for (size_t _Index = 0; _Index < _Queued.GetSize(); _Index++)
 	{
@@ -218,11 +220,11 @@ template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thr
 		(
 			std::thread
 			(
-				[](bool& _Fail, const size_t _Id, const size_t _ResourceId, BFW::SharedPointer<T> _Asset, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
+				[](bool& _Fail, const size_t _Id, const size_t _ResourceType, BFW::SharedPointer<T> _Asset, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 				{
 					BFW::Assets::FileContent _FileContent;
 
-					if (!_FileContent.Load(_ResourceId, _Id))
+					if (!_FileContent.Load(_ResourceType, _Id))
 					{
 						_Fail = true;
 						return;
@@ -236,13 +238,224 @@ template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thr
 				},
 				std::ref(_Fail),
 				_Queued[_Index],
-				_ResourceId,
+				_ResourceType,
 				*_Loaded.GetData(BFW_TO_STRING_PTR(_Queued[_Index])),
 				_Loader
 			)
 		);
 	}
 }
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vector<BFW_STRING_TYPE>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::SharedPointer<NextT>>& _LoadedNext, BFW::Trie<BFW::SharedPointer<NextT>>& _LoadedResourceNext, BFW::Trie<BFW::WeakPointer<NextT>>& _CachedNext, BFW::Trie<BFW::WeakPointer<NextT>>& _CachedResourceNext, BFW::Vector<BFW_STRING_TYPE>& _NewQueued, BFW::Trie<bool>& _TrieNewQueued, BFW::Vector<size_t>& _NewQueuedResource, BFW::Trie<bool>& _TrieNewQueuedResource, const BFW::Vector<BFW_STRING_TYPE> (T::*_Method)() const)
+{
+	for (size_t _CurrentIndex = 0; _CurrentIndex < _Queued.GetSize(); _CurrentIndex++)
+	{
+		const T& _Current = *_Loaded[_Queued[_CurrentIndex].c_str()];
+		const BFW::Vector<BFW_STRING_TYPE>& _Resources = (_Current.*_Method)();
+
+		for (size_t _ResourceIndex = 0; _ResourceIndex < _Resources.GetSize(); _ResourceIndex++)
+		{
+			if (_LoadedNext.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				continue;
+			}
+
+			if (_LoadedResourceNext.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				continue;
+			}
+
+			BFW::WeakPointer<NextT>* _CachedWeak = _CachedNext.GetData(_Resources[_ResourceIndex].c_str());
+
+			bool _IsResource = false;
+
+			if (!_CachedWeak)
+			{
+				_IsResource = true;
+				_CachedWeak = _CachedResourceNext.GetData(_Resources[_ResourceIndex].c_str());
+			}
+
+			if (_CachedWeak)
+			{
+				BFW::SharedPointer<NextT> _CachedShared = _CachedWeak->Lock();
+
+				if ((NextT*)(_CachedShared))
+				{
+					if (_IsResource)
+					{
+						_LoadedResourceNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+					}
+					else
+					{
+						_LoadedNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+					}
+
+					continue;
+				}
+			}
+
+			size_t _Id = 0;
+			BFW_STRING_STREAM_TYPE _Stream(_Resources[_ResourceIndex]);
+
+			if ((_Stream >> _Id) && _Stream.eof())
+			{
+				size_t _NullIndex = 0;
+
+				while (_Resources[_ResourceIndex][_NullIndex] == BFW_STRING_PREFIX('0'))
+				{
+					_NullIndex++;
+				}
+
+				if (_NullIndex == _Resources[_ResourceIndex].size())
+				{
+					_NullIndex--;
+				}
+
+				if (!_TrieNewQueuedResource.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex))
+				{
+					_TrieNewQueuedResource.Push(_Resources[_ResourceIndex].c_str() + _NullIndex, true);
+					_NewQueuedResource.PushBack(_Id);
+				}
+				continue;
+			}
+
+			if (!_TrieNewQueued.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				_TrieNewQueued.Push(_Resources[_ResourceIndex].c_str(), true);
+				_NewQueued.PushBack(_Resources[_ResourceIndex]);
+			}
+		}
+	}
+}
+
+template <typename T, typename NextT> static void ManagerFlushResourceQueueNext(BFW::Vector<size_t>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::SharedPointer<NextT>>& _LoadedNext, BFW::Trie<BFW::SharedPointer<NextT>>& _LoadedResourceNext, BFW::Trie<BFW::WeakPointer<NextT>>& _CachedNext, BFW::Trie<BFW::WeakPointer<NextT>>& _CachedResourceNext, BFW::Vector<BFW_STRING_TYPE>& _NewQueued, BFW::Trie<bool>& _TrieNewQueued, BFW::Vector<size_t>& _NewQueuedResource, BFW::Trie<bool>& _TrieNewQueuedResource, const BFW::Vector<BFW_STRING_TYPE> (T::*_Method)() const)
+{
+	for (size_t _CurrentIndex = 0; _CurrentIndex < _Queued.GetSize(); _CurrentIndex++)
+	{
+		const T& _Current = *_Loaded[BFW_TO_STRING_PTR(_Queued[_CurrentIndex])];
+		const BFW::Vector<BFW_STRING_TYPE>& _Resources = (_Current.*_Method)();
+
+		for (size_t _ResourceIndex = 0; _ResourceIndex < _Resources.GetSize(); _ResourceIndex++)
+		{
+			if (_LoadedNext.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				continue;
+			}
+
+			if (_LoadedResourceNext.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				continue;
+			}
+
+			BFW::WeakPointer<NextT>* _CachedWeak = _CachedNext.GetData(_Resources[_ResourceIndex].c_str());
+
+			bool _IsResource = false;
+
+			if (!_CachedWeak)
+			{
+				_IsResource = true;
+				_CachedWeak = _CachedResourceNext.GetData(_Resources[_ResourceIndex].c_str());
+			}
+
+			if (_CachedWeak)
+			{
+				BFW::SharedPointer<NextT> _CachedShared = _CachedWeak->Lock();
+
+				if ((NextT*)(_CachedShared))
+				{
+					if (_IsResource)
+					{
+						_LoadedResourceNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+					}
+					else
+					{
+						_LoadedNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+					}
+
+					continue;
+				}
+			}
+
+			size_t _Id = 0;
+			BFW_STRING_STREAM_TYPE _Stream(_Resources[_ResourceIndex]);
+
+			if ((_Stream >> _Id) && _Stream.eof())
+			{
+				size_t _NullIndex = 0;
+
+				while (_Resources[_ResourceIndex][_NullIndex] == BFW_STRING_PREFIX('0'))
+				{
+					_NullIndex++;
+				}
+
+				if (_NullIndex == _Resources[_ResourceIndex].size())
+				{
+					_NullIndex--;
+				}
+
+				if (!_TrieNewQueuedResource.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex))
+				{
+					_TrieNewQueuedResource.Push(_Resources[_ResourceIndex].c_str() + _NullIndex, true);
+					_NewQueuedResource.PushBack(_Id);
+				}
+				continue;
+			}
+
+			if (!_TrieNewQueued.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				_TrieNewQueued.Push(_Resources[_ResourceIndex].c_str(), true);
+				_NewQueued.PushBack(_Resources[_ResourceIndex]);
+			}
+		}
+	}
+}
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vector<BFW_STRING_TYPE>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::SharedPointer<NextT>>& _LoadedNext, BFW::Trie<BFW::WeakPointer<NextT>>& _CachedNext, BFW::Vector<BFW_STRING_TYPE>& _NewQueued, BFW::Trie<bool>& _TrieNewQueued, const BFW::Vector<BFW_STRING_TYPE> (T::*_Method)() const)
+{
+	for (size_t _CurrentIndex = 0; _CurrentIndex < _Queued.GetSize(); _CurrentIndex++)
+	{
+		const T& _Current = *_Loaded[_Queued[_CurrentIndex].c_str()];
+		const BFW::Vector<BFW_STRING_TYPE>& _Resources = (_Current.*_Method)();
+
+		for (size_t _ResourceIndex = 0; _ResourceIndex < _Resources.GetSize(); _ResourceIndex++)
+		{
+			if (_LoadedNext.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				continue;
+			}
+
+			BFW::WeakPointer<NextT>* _CachedWeak = _CachedNext.GetData(_Resources[_ResourceIndex].c_str());
+
+			if (_CachedWeak)
+			{
+				BFW::SharedPointer<NextT> _CachedShared = _CachedWeak->Lock();
+
+				if ((NextT*)(_CachedShared))
+				{
+					_LoadedNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+
+					continue;
+				}
+			}
+
+			if (!_TrieNewQueued.GetData(_Resources[_ResourceIndex].c_str()))
+			{
+				_TrieNewQueued.Push(_Resources[_ResourceIndex].c_str(), true);
+				_NewQueued.PushBack(_Resources[_ResourceIndex]);
+			}
+		}
+	}
+}
+
+#endif
 
 template <typename T> static void ManagerAddDynamic(const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T>& _Asset, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
@@ -436,6 +649,8 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 	return _Shared;
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size_t _Id, const size_t _ResourceType, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	BFW::WeakPointer<T>* _CachedWeak = _Cached.GetData(BFW_TO_STRING_PTR(_Id));
@@ -478,6 +693,8 @@ template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size
 
 	return _Shared;
 }
+
+#endif
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -718,6 +935,8 @@ template <typename T> static void ManagerRefreshCache(BFW::Trie<BFW::WeakPointer
 	}
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 template <typename T> static void ManagerRefreshResourceCache(BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
 	for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
@@ -742,6 +961,8 @@ template <typename T> static void ManagerRefreshResourceCache(BFW::Trie<BFW::Wea
 		}
 	}
 }
+
+#endif
 
 
 
@@ -1508,23 +1729,111 @@ void BFW::Assets::Manager::Flush()
 		throw nullptr;
 	}
 
-	QueuedBitMaps.Clear();
-	QueuedHdrs.Clear();
-	QueuedWaves.Clear();
-	QueuedWaveFrontObjs.Clear();
-	QueuedMaterialLibs.Clear();
-	QueuedGLSLs.Clear();
-	QueuedJsons.Clear();
+	Vector<BFW_STRING_TYPE> _NewQueuedBitMaps;
+	Vector<BFW_STRING_TYPE> _NewQueuedHdrs;
+	Vector<BFW_STRING_TYPE> _NewQueuedWaves;
+	Vector<BFW_STRING_TYPE> _NewQueuedWaveFrontObjs;
+	Vector<BFW_STRING_TYPE> _NewQueuedMaterialLibs;
+	Vector<BFW_STRING_TYPE> _NewQueuedGLSLs;
+	Vector<BFW_STRING_TYPE> _NewQueuedJsons;
+
+	Trie<bool> _TrieNewQueuedBitMaps;
+	Trie<bool> _TrieNewQueuedHdrs;
+	Trie<bool> _TrieNewQueuedWaves;
+	Trie<bool> _TrieNewQueuedWaveFrontObjs;
+	Trie<bool> _TrieNewQueuedMaterialLibs;
+	Trie<bool> _TrieNewQueuedGLSLs;
+	Trie<bool> _TrieNewQueuedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-	QueuedResourceBitMaps.Clear();
-	QueuedResourceHdrs.Clear();
-	QueuedResourceWaves.Clear();
-	QueuedResourceWaveFrontObjs.Clear();
-	QueuedResourceMaterialLibs.Clear();
-	QueuedResourceGLSLs.Clear();
-	QueuedResourceJsons.Clear();
+	Vector<size_t> _NewQueuedResourceBitMaps;
+	Vector<size_t> _NewQueuedResourceHdrs;
+	Vector<size_t> _NewQueuedResourceWaves;
+	Vector<size_t> _NewQueuedResourceWaveFrontObjs;
+	Vector<size_t> _NewQueuedResourceMaterialLibs;
+	Vector<size_t> _NewQueuedResourceGLSLs;
+	Vector<size_t> _NewQueuedResourceJsons;
+
+	Trie<bool> _TrieNewQueuedResourceBitMaps;
+	Trie<bool> _TrieNewQueuedResourceHdrs;
+	Trie<bool> _TrieNewQueuedResourceWaves;
+	Trie<bool> _TrieNewQueuedResourceWaveFrontObjs;
+	Trie<bool> _TrieNewQueuedResourceMaterialLibs;
+	Trie<bool> _TrieNewQueuedResourceGLSLs;
+	Trie<bool> _TrieNewQueuedResourceJsons;
+
+#endif
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	ManagerFlushQueueNext<WaveFrontObj, MaterialLib>(QueuedWaveFrontObjs, LoadedWaveFrontObjs, LoadedMaterialLibs, LoadedResourceMaterialLibs, CachedMaterialLibs, CachedResourceMaterialLibs, _NewQueuedMaterialLibs, _TrieNewQueuedMaterialLibs, _NewQueuedResourceMaterialLibs, _TrieNewQueuedResourceMaterialLibs, &WaveFrontObj::GetMaterialLibs);
+	ManagerFlushQueueNext<MaterialLib, BitMap>(QueuedMaterialLibs, LoadedMaterialLibs, LoadedBitMaps, LoadedResourceBitMaps, CachedBitMaps, CachedResourceBitMaps, _NewQueuedBitMaps, _TrieNewQueuedBitMaps, _NewQueuedResourceBitMaps, _TrieNewQueuedResourceBitMaps, &MaterialLib::GetBitMaps);
+	ManagerFlushQueueNext<MaterialLib, Hdr>(QueuedMaterialLibs, LoadedMaterialLibs, LoadedHdrs, LoadedResourceHdrs, CachedHdrs, CachedResourceHdrs, _NewQueuedHdrs, _TrieNewQueuedHdrs, _NewQueuedResourceHdrs, _TrieNewQueuedResourceHdrs, &MaterialLib::GetHdrs);
+
+	ManagerFlushResourceQueueNext<WaveFrontObj, MaterialLib>(QueuedResourceWaveFrontObjs, LoadedWaveFrontObjs, LoadedMaterialLibs, LoadedResourceMaterialLibs, CachedMaterialLibs, CachedResourceMaterialLibs, _NewQueuedMaterialLibs, _TrieNewQueuedMaterialLibs, _NewQueuedResourceMaterialLibs, _TrieNewQueuedResourceMaterialLibs, &WaveFrontObj::GetMaterialLibs);
+	ManagerFlushResourceQueueNext<MaterialLib, BitMap>(QueuedResourceMaterialLibs, LoadedMaterialLibs, LoadedBitMaps, LoadedResourceBitMaps, CachedBitMaps, CachedResourceBitMaps, _NewQueuedBitMaps, _TrieNewQueuedBitMaps, _NewQueuedResourceBitMaps, _TrieNewQueuedResourceBitMaps, &MaterialLib::GetBitMaps);
+	ManagerFlushResourceQueueNext<MaterialLib, Hdr>(QueuedResourceMaterialLibs, LoadedMaterialLibs, LoadedHdrs, LoadedResourceHdrs, CachedHdrs, CachedResourceHdrs, _NewQueuedHdrs, _TrieNewQueuedHdrs, _NewQueuedResourceHdrs, _TrieNewQueuedResourceHdrs, &MaterialLib::GetHdrs);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	ManagerFlushQueueNext<WaveFrontObj, MaterialLib>(QueuedWaveFrontObjs, LoadedWaveFrontObjs, LoadedMaterialLibs, CachedMaterialLibs, _NewQueuedMaterialLibs, _TrieNewQueuedMaterialLibs, &WaveFrontObj::GetMaterialLibs);
+	ManagerFlushQueueNext<MaterialLib, BitMap>(QueuedMaterialLibs, LoadedMaterialLibs, LoadedBitMaps, CachedBitMaps, _NewQueuedBitMaps, _TrieNewQueuedBitMaps, &MaterialLib::GetBitMaps);
+	ManagerFlushQueueNext<MaterialLib, Hdr>(QueuedMaterialLibs, LoadedMaterialLibs, LoadedHdrs, CachedHdrs, _NewQueuedHdrs, _TrieNewQueuedHdrs, &MaterialLib::GetHdrs);
+
+#endif
+
+	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedBitMaps);
+	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedHdrs);
+	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedWaves);
+	QueuedWaveFrontObjs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedWaveFrontObjs);
+	QueuedMaterialLibs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedMaterialLibs);
+	QueuedGLSLs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedGLSLs);
+	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedJsons);
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	QueuedResourceBitMaps = (Vector<size_t>&&)(_NewQueuedResourceBitMaps);
+	QueuedResourceHdrs = (Vector<size_t>&&)(_NewQueuedResourceHdrs);
+	QueuedResourceWaves = (Vector<size_t>&&)(_NewQueuedResourceWaves);
+	QueuedResourceWaveFrontObjs = (Vector<size_t>&&)(_NewQueuedResourceWaveFrontObjs);
+	QueuedResourceMaterialLibs = (Vector<size_t>&&)(_NewQueuedResourceMaterialLibs);
+	QueuedResourceGLSLs = (Vector<size_t>&&)(_NewQueuedResourceGLSLs);
+	QueuedResourceJsons = (Vector<size_t>&&)(_NewQueuedResourceJsons);
+
+#endif
+
+	if
+	(
+		QueuedBitMaps.GetSize() ||
+		QueuedHdrs.GetSize() ||
+		QueuedWaves.GetSize() ||
+		QueuedWaveFrontObjs.GetSize() ||
+		QueuedMaterialLibs.GetSize() ||
+		QueuedGLSLs.GetSize() ||
+		QueuedJsons.GetSize()
+	)
+	{
+		Flush();
+	}
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	else if
+	(
+		QueuedResourceBitMaps.GetSize() ||
+		QueuedResourceHdrs.GetSize() ||
+		QueuedResourceWaves.GetSize() ||
+		QueuedResourceWaveFrontObjs.GetSize() ||
+		QueuedResourceMaterialLibs.GetSize() ||
+		QueuedResourceGLSLs.GetSize() ||
+		QueuedResourceJsons.GetSize()
+	)
+	{
+		Flush();
+	}
 
 #endif
 }

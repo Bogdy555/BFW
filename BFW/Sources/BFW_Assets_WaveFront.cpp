@@ -1846,6 +1846,15 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent, cons
 				return false;
 			}
 
+			for (size_t _Index = 0; _Index < _MaterialLibs.GetSize() - 1; _Index++)
+			{
+				if (_MaterialLib == _MaterialLibs[_Index])
+				{
+					_MaterialLibs.Erase(_Index);
+					break;
+				}
+			}
+
 			continue;
 		}
 
@@ -2355,12 +2364,17 @@ const BFW::Assets::Mesh* BFW::Assets::WaveFrontObj::GetData(const BFW_CHAR_TYPE*
 	return Meshes.GetData(_Name);
 }
 
-BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMaterialLibs()
+const BFW::Vector<BFW_STRING_TYPE> BFW::Assets::WaveFrontObj::GetMaterialLibs() const
 {
 	return MaterialLibs;
 }
 
-const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMaterialLibs() const
+BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMaterialLibsRef()
+{
+	return MaterialLibs;
+}
+
+const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::WaveFrontObj::GetMaterialLibsRef() const
 {
 	return MaterialLibs;
 }
@@ -5078,6 +5092,201 @@ const BFW::Assets::Material* BFW::Assets::MaterialLib::GetData(const BFW_CHAR_TY
 	}
 
 	return Materials.GetData(_Name);
+}
+
+const BFW::Vector<BFW_STRING_TYPE> BFW::Assets::MaterialLib::GetBitMaps() const
+{
+	Vector<BFW_STRING_TYPE> _Result;
+	Trie<bool> _Found;
+
+	for (size_t _NameIndex = 0; _NameIndex < MaterialNames.GetSize(); _NameIndex++)
+	{
+		const Material* _Material = Materials.GetData(MaterialNames[_NameIndex].c_str());
+
+		if (!_Material)
+		{
+			continue;
+		}
+
+		if (_Material->AlbedoTexture.size() && !_Found.GetData(_Material->AlbedoTexture.c_str()))
+		{
+			_Found.Push(_Material->AlbedoTexture.c_str(), true);
+			_Result.PushBack(_Material->AlbedoTexture);
+		}
+
+		if (_Material->SpecularColorTexture.size() && !_Found.GetData(_Material->SpecularColorTexture.c_str()))
+		{
+			_Found.Push(_Material->SpecularColorTexture.c_str(), true);
+			_Result.PushBack(_Material->SpecularColorTexture);
+		}
+
+		if (_Material->RoughnessTexture.size() && !_Found.GetData(_Material->RoughnessTexture.c_str()))
+		{
+			_Found.Push(_Material->RoughnessTexture.c_str(), true);
+			_Result.PushBack(_Material->RoughnessTexture);
+		}
+
+		if (_Material->MetalnessTexture.size() && !_Found.GetData(_Material->MetalnessTexture.c_str()))
+		{
+			_Found.Push(_Material->MetalnessTexture.c_str(), true);
+			_Result.PushBack(_Material->MetalnessTexture);
+		}
+
+		if (_Material->AmbientOcclusionTexture.size() && !_Found.GetData(_Material->AmbientOcclusionTexture.c_str()))
+		{
+			_Found.Push(_Material->AmbientOcclusionTexture.c_str(), true);
+			_Result.PushBack(_Material->AmbientOcclusionTexture);
+		}
+
+		if (_Material->AmbientColorTexture.size() && !_Found.GetData(_Material->AmbientColorTexture.c_str()))
+		{
+			_Found.Push(_Material->AmbientColorTexture.c_str(), true);
+			_Result.PushBack(_Material->AmbientColorTexture);
+		}
+
+		if (_Material->SheenTexture.size() && !_Found.GetData(_Material->SheenTexture.c_str()))
+		{
+			_Found.Push(_Material->SheenTexture.c_str(), true);
+			_Result.PushBack(_Material->SheenTexture);
+		}
+
+		if (_Material->SheenColorTexture.size() && !_Found.GetData(_Material->SheenColorTexture.c_str()))
+		{
+			_Found.Push(_Material->SheenColorTexture.c_str(), true);
+			_Result.PushBack(_Material->SheenColorTexture);
+		}
+
+		if (_Material->ClearCoatTexture.size() && !_Found.GetData(_Material->ClearCoatTexture.c_str()))
+		{
+			_Found.Push(_Material->ClearCoatTexture.c_str(), true);
+			_Result.PushBack(_Material->ClearCoatTexture);
+		}
+
+		if (_Material->ClearCoatColorTexture.size() && !_Found.GetData(_Material->ClearCoatColorTexture.c_str()))
+		{
+			_Found.Push(_Material->ClearCoatColorTexture.c_str(), true);
+			_Result.PushBack(_Material->ClearCoatColorTexture);
+		}
+
+		if (_Material->ClearCoatRoughnessTexture.size() && !_Found.GetData(_Material->ClearCoatRoughnessTexture.c_str()))
+		{
+			_Found.Push(_Material->ClearCoatRoughnessTexture.c_str(), true);
+			_Result.PushBack(_Material->ClearCoatRoughnessTexture);
+		}
+
+		if (_Material->AnisotropyTexture.size() && !_Found.GetData(_Material->AnisotropyTexture.c_str()))
+		{
+			_Found.Push(_Material->AnisotropyTexture.c_str(), true);
+			_Result.PushBack(_Material->AnisotropyTexture);
+		}
+
+		if (_Material->AnisotropyRotationTexture.size() && !_Found.GetData(_Material->AnisotropyRotationTexture.c_str()))
+		{
+			_Found.Push(_Material->AnisotropyRotationTexture.c_str(), true);
+			_Result.PushBack(_Material->AnisotropyRotationTexture);
+		}
+
+		if (_Material->AlphaTexture.size() && !_Found.GetData(_Material->AlphaTexture.c_str()))
+		{
+			_Found.Push(_Material->AlphaTexture.c_str(), true);
+			_Result.PushBack(_Material->AlphaTexture);
+		}
+
+		if (_Material->NormalTexture.size() && !_Found.GetData(_Material->NormalTexture.c_str()))
+		{
+			_Found.Push(_Material->NormalTexture.c_str(), true);
+			_Result.PushBack(_Material->NormalTexture);
+		}
+
+		if (_Material->TangentTexture.size() && !_Found.GetData(_Material->TangentTexture.c_str()))
+		{
+			_Found.Push(_Material->TangentTexture.c_str(), true);
+			_Result.PushBack(_Material->TangentTexture);
+		}
+
+		if (_Material->ClearCoatNormalTexture.size() && !_Found.GetData(_Material->ClearCoatNormalTexture.c_str()))
+		{
+			_Found.Push(_Material->ClearCoatNormalTexture.c_str(), true);
+			_Result.PushBack(_Material->ClearCoatNormalTexture);
+		}
+
+		if (_Material->DecalTexture.size() && !_Found.GetData(_Material->DecalTexture.c_str()))
+		{
+			_Found.Push(_Material->DecalTexture.c_str(), true);
+			_Result.PushBack(_Material->DecalTexture);
+		}
+
+		if (_Material->BumpTexture.size() && !_Found.GetData(_Material->BumpTexture.c_str()))
+		{
+			_Found.Push(_Material->BumpTexture.c_str(), true);
+			_Result.PushBack(_Material->BumpTexture);
+		}
+
+		if (_Material->ReflectionTextures.GetSize() == 6)
+		{
+			for (size_t _ReflectionIndex = 0; _ReflectionIndex < 6; _ReflectionIndex++)
+			{
+				if (_Material->ReflectionTextures[_ReflectionIndex].size() && !_Found.GetData(_Material->ReflectionTextures[_ReflectionIndex].c_str()))
+				{
+					_Found.Push(_Material->ReflectionTextures[_ReflectionIndex].c_str(), true);
+					_Result.PushBack(_Material->ReflectionTextures[_ReflectionIndex]);
+				}
+			}
+		}
+	}
+
+	return _Result;
+}
+
+const BFW::Vector<BFW_STRING_TYPE> BFW::Assets::MaterialLib::GetHdrs() const
+{
+	Vector<BFW_STRING_TYPE> _Result;
+	Trie<bool> _Found;
+
+	for (size_t _NameIndex = 0; _NameIndex < MaterialNames.GetSize(); _NameIndex++)
+	{
+		const Material* _Material = Materials.GetData(MaterialNames[_NameIndex].c_str());
+
+		if (!_Material)
+		{
+			continue;
+		}
+
+		if (_Material->SpecularExponentTexture.size() && !_Found.GetData(_Material->SpecularExponentTexture.c_str()))
+		{
+			_Found.Push(_Material->SpecularExponentTexture.c_str(), true);
+			_Result.PushBack(_Material->SpecularExponentTexture);
+		}
+
+		if (_Material->EmissionColorTexture.size() && !_Found.GetData(_Material->EmissionColorTexture.c_str()))
+		{
+			_Found.Push(_Material->EmissionColorTexture.c_str(), true);
+			_Result.PushBack(_Material->EmissionColorTexture);
+		}
+
+		if (_Material->TransmissionFilterTexture.size() && !_Found.GetData(_Material->TransmissionFilterTexture.c_str()))
+		{
+			_Found.Push(_Material->TransmissionFilterTexture.c_str(), true);
+			_Result.PushBack(_Material->TransmissionFilterTexture);
+		}
+
+		if (_Material->DisplacementTexture.size() && !_Found.GetData(_Material->DisplacementTexture.c_str()))
+		{
+			_Found.Push(_Material->DisplacementTexture.c_str(), true);
+			_Result.PushBack(_Material->DisplacementTexture);
+		}
+
+		if (_Material->ReflectionTextures.GetSize() == 1)
+		{
+			if (_Material->ReflectionTextures[0].size() && !_Found.GetData(_Material->ReflectionTextures[0].c_str()))
+			{
+				_Found.Push(_Material->ReflectionTextures[0].c_str(), true);
+				_Result.PushBack(_Material->ReflectionTextures[0]);
+			}
+		}
+	}
+
+	return _Result;
 }
 
 BFW::Assets::Material& BFW::Assets::MaterialLib::operator[] (const BFW_CHAR_TYPE* _Name)
