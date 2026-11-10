@@ -688,6 +688,14 @@ namespace BFW
 
 #endif
 
+			Mesh* ResolveMesh(const BFW_CHAR_TYPE* _MeshName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>());
+			const Mesh* ResolveMesh(const BFW_CHAR_TYPE* _MeshName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>()) const;
+			const BFW_STRING_TYPE ResolveMeshFile(const BFW_CHAR_TYPE* _MeshName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>()) const;
+
+			Material* ResolveMaterial(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>());
+			const Material* ResolveMaterial(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>()) const;
+			const BFW_STRING_TYPE ResolveMaterialFile(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>()) const;
+
 			Manager& operator= (const Manager& _Other) = delete;
 			Manager& operator= (Manager&& _Other) noexcept;
 

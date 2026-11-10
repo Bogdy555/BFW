@@ -2,24 +2,29 @@
 
 
 
-template <typename T> static const bool ManagerDefaultLoader(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset)
+template <typename T> static const bool ManagerDefaultLoader(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath)
 {
 	return _Asset->Load(_FileContent);
 }
 
-template <typename T> static const bool ManagerMoveLoader(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset)
+static const bool ManagerMoveLoader(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::FileContent>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath)
 {
 	*_Asset = (BFW::Assets::FileContent&&)(_FileContent);
 	return true;
 }
 
-static const bool (*ManagerBitMapLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::BitMap>& _Asset) = ManagerDefaultLoader<BFW::Assets::BitMap>;
-static const bool (*ManagerHdrLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Hdr>& _Asset) = ManagerDefaultLoader<BFW::Assets::Hdr>;
-static const bool (*ManagerWaveLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Wave>& _Asset) = ManagerDefaultLoader<BFW::Assets::Wave>;
-static const bool (*ManagerWaveFrontObjLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::WaveFrontObj>& _Asset) = ManagerDefaultLoader<BFW::Assets::WaveFrontObj>;
-static const bool (*ManagerMaterialLibLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::MaterialLib>& _Asset) = ManagerDefaultLoader<BFW::Assets::MaterialLib>;
-static const bool (*ManagerGLSLLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::FileContent>& _Asset) = ManagerMoveLoader<BFW::Assets::FileContent>;
-static const bool (*ManagerJsonLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Json>& _Asset) = ManagerDefaultLoader<BFW::Assets::Json>;
+template <typename T> static const bool ManagerLoaderWithPath(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath)
+{
+	return _Asset->Load(_FileContent, _Path, _CurrentPath);
+}
+
+static const bool (*ManagerBitMapLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::BitMap>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::BitMap>;
+static const bool (*ManagerHdrLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Hdr>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::Hdr>;
+static const bool (*ManagerWaveLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Wave>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::Wave>;
+static const bool (*ManagerWaveFrontObjLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::WaveFrontObj>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerLoaderWithPath<BFW::Assets::WaveFrontObj>;
+static const bool (*ManagerMaterialLibLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::MaterialLib>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerLoaderWithPath<BFW::Assets::MaterialLib>;
+static const bool (*ManagerGLSLLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::FileContent>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerMoveLoader;
+static const bool (*ManagerJsonLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Json>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::Json>;
 
 static void ManagerQueue(const BFW_CHAR_TYPE* _Name, BFW::Vector<BFW_STRING_TYPE>& _Queued)
 {
@@ -102,7 +107,7 @@ template <typename T> static void ManagerFlushAllocate(BFW::Vector<BFW_STRING_TY
 	}
 }
 
-template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _Threads, bool& _Fail, BFW::Vector<BFW_STRING_TYPE>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<uint64_t>& _LastWrite, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _Threads, bool& _Fail, BFW::Vector<BFW_STRING_TYPE>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<uint64_t>& _LastWrite, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	for (size_t _Index = 0; _Index < _Queued.GetSize(); _Index++)
 	{
@@ -110,7 +115,7 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 		(
 			std::thread
 			(
-				[](bool& _Fail, const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T> _Asset, uint64_t& _LastWrite, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+				[](bool& _Fail, const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T> _Asset, uint64_t& _LastWrite, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 				{
 					std::ifstream _InStream;
 
@@ -140,7 +145,7 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 						return;
 					}
 
-					if (!_Loader(_FileContent, _Asset))
+					if (!_Loader(_FileContent, _Asset, _Name, BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 					{
 						_Fail = true;
 						return;
@@ -205,7 +210,7 @@ template <typename T> static void ManagerFlushAllocateResource(BFW::Vector<size_
 	}
 }
 
-template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thread>& _Threads, bool& _Fail, BFW::Vector<size_t>& _Queued, const size_t _ResourceId, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thread>& _Threads, bool& _Fail, BFW::Vector<size_t>& _Queued, const size_t _ResourceId, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	for (size_t _Index = 0; _Index < _Queued.GetSize(); _Index++)
 	{
@@ -213,7 +218,7 @@ template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thr
 		(
 			std::thread
 			(
-				[](bool& _Fail, const size_t _Id, const size_t _ResourceId, BFW::SharedPointer<T> _Asset, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+				[](bool& _Fail, const size_t _Id, const size_t _ResourceId, BFW::SharedPointer<T> _Asset, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 				{
 					BFW::Assets::FileContent _FileContent;
 
@@ -223,7 +228,7 @@ template <typename T> static void ManagerFlushSpawnResource(BFW::Vector<std::thr
 						return;
 					}
 
-					if (!_Loader(_FileContent, _Asset))
+					if (!_Loader(_FileContent, _Asset, (BFW_STRING_TYPE(BFW_STRING_PREFIX("./")) + BFW_TO_STRING(_Id)).c_str(), BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 					{
 						_Fail = true;
 						return;
@@ -280,7 +285,7 @@ template <typename T> static void ManagerAddDynamicRef(const BFW_CHAR_TYPE* _Nam
 	_CachedNames.PushBack(_Name);
 }
 
-template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threads, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threads, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
 	{
@@ -318,7 +323,7 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 		(
 			std::thread
 			(
-				[](const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T> _CachedShared, uint64_t& _OldLastWrite, const uint64_t _LastWriteValue, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+				[](const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T> _CachedShared, uint64_t& _OldLastWrite, const uint64_t _LastWriteValue, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 				{
 					std::ifstream _InStream;
 
@@ -336,10 +341,14 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 						return;
 					}
 
-					if (!_Loader(_FileContent, _CachedShared))
+					BFW::SharedPointer<T> _Asset = BFW::SharedPointer<T>::MakeShared(T());
+
+					if (!_Loader(_FileContent, _Asset, _Name, BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 					{
 						return;
 					}
+
+					*_CachedShared = (T&&)(*_Asset);
 
 					_OldLastWrite = _LastWriteValue;
 				},
@@ -353,38 +362,17 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 	}
 }
 
-template <typename T> static void ManagerRelease(const BFW_CHAR_TYPE* _Name, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
+template <typename T> static void ManagerRelease(const BFW_CHAR_TYPE* _Name, BFW::Trie<BFW::SharedPointer<T>>& _Loaded)
 {
 	_Loaded.Erase(_Name);
-	_Cached.Erase(_Name);
-	_LastWrite.Erase(_Name);
-
-	for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
-	{
-		if (_CachedNames[_Index] == _Name)
-		{
-			_CachedNames.Erase(_Index);
-			break;
-		}
-	}
 }
 
-template <typename T> static void ManagerReleaseResource(const size_t _Id, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
+template <typename T> static void ManagerReleaseResource(const size_t _Id, BFW::Trie<BFW::SharedPointer<T>>& _Loaded)
 {
 	_Loaded.Erase(BFW_TO_STRING_PTR(_Id));
-	_Cached.Erase(BFW_TO_STRING_PTR(_Id));
-
-	for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
-	{
-		if (_CachedNames[_Index] == BFW_TO_STRING_PTR(_Id))
-		{
-			_CachedNames.Erase(_Index);
-			break;
-		}
-	}
 }
 
-template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYPE* _Name, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYPE* _Name, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	BFW::WeakPointer<T>* _CachedWeak = _Cached.GetData(_Name);
 
@@ -416,7 +404,7 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 
 	BFW::SharedPointer<T> _Shared = BFW::SharedPointer<T>::MakeShared(T());
 
-	if (!_Loader(_FileContent, _Shared))
+	if (!_Loader(_FileContent, _Shared, _Name, BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 	{
 		throw nullptr;
 	}
@@ -448,7 +436,7 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 	return _Shared;
 }
 
-template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size_t _Id, const size_t _ResourceType, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset))
+template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size_t _Id, const size_t _ResourceType, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
 	BFW::WeakPointer<T>* _CachedWeak = _Cached.GetData(BFW_TO_STRING_PTR(_Id));
 
@@ -471,7 +459,7 @@ template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size
 
 	BFW::SharedPointer<T> _Shared = BFW::SharedPointer<T>::MakeShared(T());
 
-	if (!_Loader(_FileContent, _Shared))
+	if (!_Loader(_FileContent, _Shared, (BFW_STRING_TYPE(BFW_STRING_PREFIX("./")) + BFW_TO_STRING(_Id)).c_str(), BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 	{
 		throw nullptr;
 	}
@@ -490,6 +478,218 @@ template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size
 
 	return _Shared;
 }
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+template <typename T, typename LibT> static T* ManagerResolveLib(const BFW_CHAR_TYPE* _TName, const BFW::Vector<BFW_STRING_TYPE>& _Files, BFW::Trie<BFW::WeakPointer<LibT>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, BFW::Trie<BFW::WeakPointer<LibT>>& _CachedResource, BFW::Vector<BFW_STRING_TYPE>& _CachedResourceNames)
+{
+	if (!_TName || _TName[0] == '\0')
+	{
+		return nullptr;
+	}
+
+	BFW::Vector<BFW_STRING_TYPE> _TrueFiles = _Files;
+
+	if (_Files.GetSize() == 0)
+	{
+		for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
+		{
+			_TrueFiles.PushBack(_CachedNames[_Index]);
+		}
+
+		for (size_t _Index = 0; _Index < _CachedResourceNames.GetSize(); _Index++)
+		{
+			_TrueFiles.PushBack(_CachedResourceNames[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _TrueFiles.GetSize(); _Index++)
+	{
+		BFW::WeakPointer<LibT>* _CachedWeak = _Cached.GetData(_TrueFiles[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			_CachedWeak = _CachedResource.GetData(_TrueFiles[_Index].c_str());
+		}
+
+		if (!_CachedWeak)
+		{
+			continue;
+		}
+
+		BFW::SharedPointer<LibT> _CachedShared = _CachedWeak->Lock();
+
+		if (!(LibT*)(_CachedShared))
+		{
+			continue;
+		}
+
+		T* _T = _CachedShared->GetData(_TName);
+
+		if (!_T)
+		{
+			continue;
+		}
+
+		return _T;
+	}
+
+	return nullptr;
+}
+
+template <typename T, typename LibT> static const BFW_STRING_TYPE ManagerResolveLibFile(const BFW_CHAR_TYPE* _TName, const BFW::Vector<BFW_STRING_TYPE>& _Files, BFW::Trie<BFW::WeakPointer<LibT>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, BFW::Trie<BFW::WeakPointer<LibT>>& _CachedResource, BFW::Vector<BFW_STRING_TYPE>& _CachedResourceNames)
+{
+	if (!_TName || _TName[0] == '\0')
+	{
+		return BFW_STRING_PREFIX("");
+	}
+
+	BFW::Vector<BFW_STRING_TYPE> _TrueFiles = _Files;
+
+	if (_Files.GetSize() == 0)
+	{
+		for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
+		{
+			_TrueFiles.PushBack(_CachedNames[_Index]);
+		}
+
+		for (size_t _Index = 0; _Index < _CachedResourceNames.GetSize(); _Index++)
+		{
+			_TrueFiles.PushBack(_CachedResourceNames[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _TrueFiles.GetSize(); _Index++)
+	{
+		BFW::WeakPointer<LibT>* _CachedWeak = _Cached.GetData(_TrueFiles[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			_CachedWeak = _CachedResource.GetData(_TrueFiles[_Index].c_str());
+		}
+
+		if (!_CachedWeak)
+		{
+			continue;
+		}
+
+		BFW::SharedPointer<LibT> _CachedShared = _CachedWeak->Lock();
+
+		if (!(LibT*)(_CachedShared))
+		{
+			continue;
+		}
+
+		T* _T = _CachedShared->GetData(_TName);
+
+		if (!_T)
+		{
+			continue;
+		}
+
+		return _TrueFiles[_Index];
+	}
+
+	return BFW_STRING_PREFIX("");
+}
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+template <typename T, typename LibT> static T* ManagerResolveLib(const BFW_CHAR_TYPE* _TName, const BFW::Vector<BFW_STRING_TYPE>& _Files, BFW::Trie<BFW::WeakPointer<LibT>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
+{
+	if (!_TName || _TName[0] == '\0')
+	{
+		return nullptr;
+	}
+
+	BFW::Vector<BFW_STRING_TYPE> _TrueFiles = _Files;
+
+	if (_Files.GetSize() == 0)
+	{
+		for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
+		{
+			_TrueFiles.PushBack(_CachedNames[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _TrueFiles.GetSize(); _Index++)
+	{
+		BFW::WeakPointer<LibT>* _CachedWeak = _Cached.GetData(_TrueFiles[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			continue;
+		}
+
+		BFW::SharedPointer<LibT> _CachedShared = _CachedWeak->Lock();
+
+		if (!(LibT*)(_CachedShared))
+		{
+			continue;
+		}
+
+		T* _T = _CachedShared->GetData(_TName);
+
+		if (!_T)
+		{
+			continue;
+		}
+
+		return _T;
+	}
+
+	return nullptr;
+}
+
+template <typename T, typename LibT> static const BFW_STRING_TYPE ManagerResolveLibFile(const BFW_CHAR_TYPE* _TName, const BFW::Vector<BFW_STRING_TYPE>& _Files, BFW::Trie<BFW::WeakPointer<LibT>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
+{
+	if (!_TName || _TName[0] == '\0')
+	{
+		return BFW_STRING_PREFIX("");
+	}
+
+	BFW::Vector<BFW_STRING_TYPE> _TrueFiles = _Files;
+
+	if (_Files.GetSize() == 0)
+	{
+		for (size_t _Index = 0; _Index < _CachedNames.GetSize(); _Index++)
+		{
+			_TrueFiles.PushBack(_CachedNames[_Index]);
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _TrueFiles.GetSize(); _Index++)
+	{
+		BFW::WeakPointer<LibT>* _CachedWeak = _Cached.GetData(_TrueFiles[_Index].c_str());
+
+		if (!_CachedWeak)
+		{
+			continue;
+		}
+
+		BFW::SharedPointer<LibT> _CachedShared = _CachedWeak->Lock();
+
+		if (!(LibT*)(_CachedShared))
+		{
+			continue;
+		}
+
+		T* _T = _CachedShared->GetData(_TName);
+
+		if (!_T)
+		{
+			continue;
+		}
+
+		return _TrueFiles[_Index];
+	}
+
+	return BFW_STRING_PREFIX("");
+}
+
+#endif
 
 template <typename T> static void ManagerRefreshCache(BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
@@ -1421,74 +1621,74 @@ void BFW::Assets::Manager::Update()
 
 void BFW::Assets::Manager::ReleaseBitMap(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<BitMap>(_Name, LoadedBitMaps, CachedBitMaps, LastWriteBitMaps, CachedBitMapNames);
+	ManagerRelease<BitMap>(_Name, LoadedBitMaps);
 }
 
 void BFW::Assets::Manager::ReleaseHdr(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<Hdr>(_Name, LoadedHdrs, CachedHdrs, LastWriteHdrs, CachedHdrNames);
+	ManagerRelease<Hdr>(_Name, LoadedHdrs);
 }
 
 void BFW::Assets::Manager::ReleaseWave(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<Wave>(_Name, LoadedWaves, CachedWaves, LastWriteWaves, CachedWaveNames);
+	ManagerRelease<Wave>(_Name, LoadedWaves);
 }
 
 void BFW::Assets::Manager::ReleaseWaveFrontObj(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<WaveFrontObj>(_Name, LoadedWaveFrontObjs, CachedWaveFrontObjs, LastWriteWaveFrontObjs, CachedWaveFrontObjNames);
+	ManagerRelease<WaveFrontObj>(_Name, LoadedWaveFrontObjs);
 }
 
 void BFW::Assets::Manager::ReleaseMaterialLib(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<MaterialLib>(_Name, LoadedMaterialLibs, CachedMaterialLibs, LastWriteMaterialLibs, CachedMaterialLibNames);
+	ManagerRelease<MaterialLib>(_Name, LoadedMaterialLibs);
 }
 
 void BFW::Assets::Manager::ReleaseGLSL(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<FileContent>(_Name, LoadedGLSLs, CachedGLSLs, LastWriteGLSLs, CachedGLSLNames);
+	ManagerRelease<FileContent>(_Name, LoadedGLSLs);
 }
 
 void BFW::Assets::Manager::ReleaseJson(const BFW_CHAR_TYPE* _Name)
 {
-	ManagerRelease<Json>(_Name, LoadedJsons, CachedJsons, LastWriteJsons, CachedJsonNames);
+	ManagerRelease<Json>(_Name, LoadedJsons);
 }
 
 #ifdef BFW_WINDOWS_PLATFORM
 
 void BFW::Assets::Manager::ReleaseResourceBitMap(const size_t _Id)
 {
-	ManagerReleaseResource<BitMap>(_Id, LoadedResourceBitMaps, CachedResourceBitMaps, CachedResourceBitMapNames);
+	ManagerReleaseResource<BitMap>(_Id, LoadedResourceBitMaps);
 }
 
 void BFW::Assets::Manager::ReleaseResourceHdr(const size_t _Id)
 {
-	ManagerReleaseResource<Hdr>(_Id, LoadedResourceHdrs, CachedResourceHdrs, CachedResourceHdrNames);
+	ManagerReleaseResource<Hdr>(_Id, LoadedResourceHdrs);
 }
 
 void BFW::Assets::Manager::ReleaseResourceWave(const size_t _Id)
 {
-	ManagerReleaseResource<Wave>(_Id, LoadedResourceWaves, CachedResourceWaves, CachedResourceWaveNames);
+	ManagerReleaseResource<Wave>(_Id, LoadedResourceWaves);
 }
 
 void BFW::Assets::Manager::ReleaseResourceWaveFrontObj(const size_t _Id)
 {
-	ManagerReleaseResource<WaveFrontObj>(_Id, LoadedResourceWaveFrontObjs, CachedResourceWaveFrontObjs, CachedResourceWaveFrontObjNames);
+	ManagerReleaseResource<WaveFrontObj>(_Id, LoadedResourceWaveFrontObjs);
 }
 
 void BFW::Assets::Manager::ReleaseResourceMaterialLib(const size_t _Id)
 {
-	ManagerReleaseResource<MaterialLib>(_Id, LoadedResourceMaterialLibs, CachedResourceMaterialLibs, CachedResourceMaterialLibNames);
+	ManagerReleaseResource<MaterialLib>(_Id, LoadedResourceMaterialLibs);
 }
 
 void BFW::Assets::Manager::ReleaseResourceGLSL(const size_t _Id)
 {
-	ManagerReleaseResource<FileContent>(_Id, LoadedResourceGLSLs, CachedResourceGLSLs, CachedResourceGLSLNames);
+	ManagerReleaseResource<FileContent>(_Id, LoadedResourceGLSLs);
 }
 
 void BFW::Assets::Manager::ReleaseResourceJson(const size_t _Id)
 {
-	ManagerReleaseResource<Json>(_Id, LoadedResourceJsons, CachedResourceJsons, CachedResourceJsonNames);
+	ManagerReleaseResource<Json>(_Id, LoadedResourceJsons);
 }
 
 #endif
@@ -1636,6 +1836,96 @@ const BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetResourceJso
 }
 
 #endif
+
+BFW::Assets::Mesh* BFW::Assets::Manager::ResolveMesh(const BFW_CHAR_TYPE* _MeshName, const Vector<BFW_STRING_TYPE>& _Files)
+{
+#ifdef BFW_WINDOWS_PLATFORM
+
+	return ManagerResolveLib<Mesh, WaveFrontObj>(_MeshName, _Files, CachedWaveFrontObjs, CachedWaveFrontObjNames, CachedResourceWaveFrontObjs, CachedResourceWaveFrontObjNames);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	return ManagerResolveLib<Mesh, WaveFrontObj>(_MeshName, _Files, CachedWaveFrontObjs, CachedWaveFrontObjNames);
+
+#endif
+}
+
+const BFW::Assets::Mesh* BFW::Assets::Manager::ResolveMesh(const BFW_CHAR_TYPE* _MeshName, const Vector<BFW_STRING_TYPE>& _Files) const
+{
+#ifdef BFW_WINDOWS_PLATFORM
+
+	return ManagerResolveLib<Mesh, WaveFrontObj>(_MeshName, _Files, CachedWaveFrontObjs, CachedWaveFrontObjNames, CachedResourceWaveFrontObjs, CachedResourceWaveFrontObjNames);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	return ManagerResolveLib<Mesh, WaveFrontObj>(_MeshName, _Files, CachedWaveFrontObjs, CachedWaveFrontObjNames);
+
+#endif
+}
+
+const BFW_STRING_TYPE BFW::Assets::Manager::ResolveMeshFile(const BFW_CHAR_TYPE* _MeshName, const Vector<BFW_STRING_TYPE>& _Files) const
+{
+#ifdef BFW_WINDOWS_PLATFORM
+
+	return ManagerResolveLibFile<Mesh, WaveFrontObj>(_MeshName, _Files, CachedWaveFrontObjs, CachedWaveFrontObjNames, CachedResourceWaveFrontObjs, CachedResourceWaveFrontObjNames);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	return ManagerResolveLibFile<Mesh, WaveFrontObj>(_MeshName, _Files, CachedWaveFrontObjs, CachedWaveFrontObjNames);
+
+#endif
+}
+
+BFW::Assets::Material* BFW::Assets::Manager::ResolveMaterial(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files)
+{
+#ifdef BFW_WINDOWS_PLATFORM
+
+	return ManagerResolveLib<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames, CachedResourceMaterialLibs, CachedResourceMaterialLibNames);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	return ManagerResolveLib<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames);
+
+#endif
+}
+
+const BFW::Assets::Material* BFW::Assets::Manager::ResolveMaterial(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files) const
+{
+#ifdef BFW_WINDOWS_PLATFORM
+
+	return ManagerResolveLib<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames, CachedResourceMaterialLibs, CachedResourceMaterialLibNames);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	return ManagerResolveLib<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames);
+
+#endif
+}
+
+const BFW_STRING_TYPE BFW::Assets::Manager::ResolveMaterialFile(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files) const
+{
+#ifdef BFW_WINDOWS_PLATFORM
+
+	return ManagerResolveLibFile<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames, CachedResourceMaterialLibs, CachedResourceMaterialLibNames);
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+	return ManagerResolveLibFile<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames);
+
+#endif
+}
 
 #ifdef BFW_WINDOWS_PLATFORM
 

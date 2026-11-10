@@ -965,7 +965,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent, cons
 		return false;
 	}
 
-	if (_Path != nullptr && _CurrentPath != nullptr && (!std::filesystem::is_regular_file(_Path) || !std::filesystem::is_directory(_CurrentPath)))
+	if (_Path != nullptr && _CurrentPath != nullptr && ((std::filesystem::exists(_Path) && !std::filesystem::is_regular_file(_Path)) || !std::filesystem::is_directory(_CurrentPath)))
 	{
 		return false;
 	}
@@ -3312,6 +3312,11 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent, const
 	Clear();
 
 	if (!_FileContent.GetData())
+	{
+		return false;
+	}
+
+	if (_Path != nullptr && _CurrentPath != nullptr && ((std::filesystem::exists(_Path) && !std::filesystem::is_regular_file(_Path)) || !std::filesystem::is_directory(_CurrentPath)))
 	{
 		return false;
 	}
