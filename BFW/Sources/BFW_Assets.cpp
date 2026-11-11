@@ -259,12 +259,24 @@ template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vec
 
 		for (size_t _ResourceIndex = 0; _ResourceIndex < _Resources.GetSize(); _ResourceIndex++)
 		{
+			size_t _NullIndex = 0;
+
+			while (_Resources[_ResourceIndex][_NullIndex] == BFW_STRING_PREFIX('0'))
+			{
+				_NullIndex++;
+			}
+
+			if (_NullIndex == _Resources[_ResourceIndex].size())
+			{
+				_NullIndex--;
+			}
+
 			if (_LoadedNext.GetData(_Resources[_ResourceIndex].c_str()))
 			{
 				continue;
 			}
 
-			if (_LoadedResourceNext.GetData(_Resources[_ResourceIndex].c_str()))
+			if (_LoadedResourceNext.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex))
 			{
 				continue;
 			}
@@ -276,7 +288,7 @@ template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vec
 			if (!_CachedWeak)
 			{
 				_IsResource = true;
-				_CachedWeak = _CachedResourceNext.GetData(_Resources[_ResourceIndex].c_str());
+				_CachedWeak = _CachedResourceNext.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex);
 			}
 
 			if (_CachedWeak)
@@ -287,7 +299,7 @@ template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vec
 				{
 					if (_IsResource)
 					{
-						_LoadedResourceNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+						_LoadedResourceNext.Emplace(_Resources[_ResourceIndex].c_str() + _NullIndex, (BFW::SharedPointer<NextT>&&)(_CachedShared));
 					}
 					else
 					{
@@ -303,18 +315,6 @@ template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vec
 
 			if ((_Stream >> _Id) && _Stream.eof())
 			{
-				size_t _NullIndex = 0;
-
-				while (_Resources[_ResourceIndex][_NullIndex] == BFW_STRING_PREFIX('0'))
-				{
-					_NullIndex++;
-				}
-
-				if (_NullIndex == _Resources[_ResourceIndex].size())
-				{
-					_NullIndex--;
-				}
-
 				if (!_TrieNewQueuedResource.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex))
 				{
 					_TrieNewQueuedResource.Push(_Resources[_ResourceIndex].c_str() + _NullIndex, true);
@@ -341,12 +341,24 @@ template <typename T, typename NextT> static void ManagerFlushResourceQueueNext(
 
 		for (size_t _ResourceIndex = 0; _ResourceIndex < _Resources.GetSize(); _ResourceIndex++)
 		{
+			size_t _NullIndex = 0;
+
+			while (_Resources[_ResourceIndex][_NullIndex] == BFW_STRING_PREFIX('0'))
+			{
+				_NullIndex++;
+			}
+
+			if (_NullIndex == _Resources[_ResourceIndex].size())
+			{
+				_NullIndex--;
+			}
+
 			if (_LoadedNext.GetData(_Resources[_ResourceIndex].c_str()))
 			{
 				continue;
 			}
 
-			if (_LoadedResourceNext.GetData(_Resources[_ResourceIndex].c_str()))
+			if (_LoadedResourceNext.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex))
 			{
 				continue;
 			}
@@ -358,7 +370,7 @@ template <typename T, typename NextT> static void ManagerFlushResourceQueueNext(
 			if (!_CachedWeak)
 			{
 				_IsResource = true;
-				_CachedWeak = _CachedResourceNext.GetData(_Resources[_ResourceIndex].c_str());
+				_CachedWeak = _CachedResourceNext.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex);
 			}
 
 			if (_CachedWeak)
@@ -369,7 +381,7 @@ template <typename T, typename NextT> static void ManagerFlushResourceQueueNext(
 				{
 					if (_IsResource)
 					{
-						_LoadedResourceNext.Emplace(_Resources[_ResourceIndex].c_str(), (BFW::SharedPointer<NextT>&&)(_CachedShared));
+						_LoadedResourceNext.Emplace(_Resources[_ResourceIndex].c_str() + _NullIndex, (BFW::SharedPointer<NextT>&&)(_CachedShared));
 					}
 					else
 					{
@@ -385,18 +397,6 @@ template <typename T, typename NextT> static void ManagerFlushResourceQueueNext(
 
 			if ((_Stream >> _Id) && _Stream.eof())
 			{
-				size_t _NullIndex = 0;
-
-				while (_Resources[_ResourceIndex][_NullIndex] == BFW_STRING_PREFIX('0'))
-				{
-					_NullIndex++;
-				}
-
-				if (_NullIndex == _Resources[_ResourceIndex].size())
-				{
-					_NullIndex--;
-				}
-
 				if (!_TrieNewQueuedResource.GetData(_Resources[_ResourceIndex].c_str() + _NullIndex))
 				{
 					_TrieNewQueuedResource.Push(_Resources[_ResourceIndex].c_str() + _NullIndex, true);
@@ -605,21 +605,21 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 
 	if (!_InStream.is_open())
 	{
-		throw nullptr;
+		return BFW::SharedPointer<T>();
 	}
 
 	BFW::Assets::FileContent _FileContent;
 
 	if (!_FileContent.Load(_InStream))
 	{
-		throw nullptr;
+		return BFW::SharedPointer<T>();
 	}
 
 	BFW::SharedPointer<T> _Shared = BFW::SharedPointer<T>::MakeShared(T());
 
 	if (!_Loader(_FileContent, _Shared, _Name, BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 	{
-		throw nullptr;
+		return BFW::SharedPointer<T>();
 	}
 
 	uint64_t _LastWriteValue = 0;
@@ -630,7 +630,7 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 	}
 	catch (...)
 	{
-		throw nullptr;
+		return BFW::SharedPointer<T>();
 	}
 
 	_Cached.Emplace(_Name, _Shared);
@@ -669,14 +669,14 @@ template <typename T> static BFW::SharedPointer<T> ManagerGetResource(const size
 
 	if (!_FileContent.Load(_ResourceType, _Id))
 	{
-		throw nullptr;
+		return BFW::SharedPointer<T>();
 	}
 
 	BFW::SharedPointer<T> _Shared = BFW::SharedPointer<T>::MakeShared(T());
 
 	if (!_Loader(_FileContent, _Shared, (BFW_STRING_TYPE(BFW_STRING_PREFIX("./")) + BFW_TO_STRING(_Id)).c_str(), BFW_WINDOWS_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_LINUX_PLATFORM_CALL(BFW_STRING_PREFIX("./")) BFW_ESP32_PLATFORM_CALL(BFW_STRING_PREFIX("/sdcard/"))))
 	{
-		throw nullptr;
+		return BFW::SharedPointer<T>();
 	}
 
 	_Cached.Emplace(BFW_TO_STRING_PTR(_Id), _Shared);
@@ -726,7 +726,19 @@ template <typename T, typename LibT> static T* ManagerResolveLib(const BFW_CHAR_
 
 		if (!_CachedWeak)
 		{
-			_CachedWeak = _CachedResource.GetData(_TrueFiles[_Index].c_str());
+			size_t _NullIndex = 0;
+
+			while (_TrueFiles[_Index][_NullIndex] == BFW_STRING_PREFIX('0'))
+			{
+				_NullIndex++;
+			}
+
+			if (_NullIndex == _TrueFiles[_Index].size())
+			{
+				_NullIndex--;
+			}
+
+			_CachedWeak = _CachedResource.GetData(_TrueFiles[_Index].c_str() + _NullIndex);
 		}
 
 		if (!_CachedWeak)
@@ -782,7 +794,19 @@ template <typename T, typename LibT> static const BFW_STRING_TYPE ManagerResolve
 
 		if (!_CachedWeak)
 		{
-			_CachedWeak = _CachedResource.GetData(_TrueFiles[_Index].c_str());
+			size_t _NullIndex = 0;
+
+			while (_TrueFiles[_Index][_NullIndex] == BFW_STRING_PREFIX('0'))
+			{
+				_NullIndex++;
+			}
+
+			if (_NullIndex == _TrueFiles[_Index].size())
+			{
+				_NullIndex--;
+			}
+
+			_CachedWeak = _CachedResource.GetData(_TrueFiles[_Index].c_str() + _NullIndex);
 		}
 
 		if (!_CachedWeak)
@@ -1676,7 +1700,7 @@ void BFW::Assets::Manager::QueueResourceJson(const size_t _Id)
 
 #endif
 
-void BFW::Assets::Manager::Flush()
+const bool BFW::Assets::Manager::Flush()
 {
 	RefreshCache();
 
@@ -1726,7 +1750,27 @@ void BFW::Assets::Manager::Flush()
 
 	if (_Fail)
 	{
-		throw nullptr;
+		QueuedBitMaps.Clear();
+		QueuedHdrs.Clear();
+		QueuedWaves.Clear();
+		QueuedWaveFrontObjs.Clear();
+		QueuedMaterialLibs.Clear();
+		QueuedGLSLs.Clear();
+		QueuedJsons.Clear();
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+		QueuedResourceBitMaps.Clear();
+		QueuedResourceHdrs.Clear();
+		QueuedResourceWaves.Clear();
+		QueuedResourceWaveFrontObjs.Clear();
+		QueuedResourceMaterialLibs.Clear();
+		QueuedResourceGLSLs.Clear();
+		QueuedResourceJsons.Clear();
+
+#endif
+
+		return false;
 	}
 
 	Vector<BFW_STRING_TYPE> _NewQueuedBitMaps;
@@ -1816,7 +1860,7 @@ void BFW::Assets::Manager::Flush()
 		QueuedJsons.GetSize()
 	)
 	{
-		Flush();
+		return Flush();
 	}
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -1832,10 +1876,12 @@ void BFW::Assets::Manager::Flush()
 		QueuedResourceJsons.GetSize()
 	)
 	{
-		Flush();
+		return Flush();
 	}
 
 #endif
+
+	return true;
 }
 
 void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
@@ -2234,6 +2280,445 @@ const BFW_STRING_TYPE BFW::Assets::Manager::ResolveMaterialFile(const BFW_CHAR_T
 	return ManagerResolveLibFile<Material, MaterialLib>(_MaterialName, _Files, CachedMaterialLibs, CachedMaterialLibNames);
 
 #endif
+}
+
+const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const
+{
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0'))
+	{
+		return false;
+	}
+
+	_Paths.Clear();
+	_FileContents.Clear();
+
+	Vector<BFW_STRING_TYPE> _FinalPaths;
+	Vector<FileContent> _FinalFileContents;
+
+	Trie<BFW_STRING_TYPE> _FoundMaterialLib;
+	size_t _MaterialLibRefCount = 0;
+
+	Trie<BFW_STRING_TYPE> _BitMapTextureNames;
+	_BitMapTextureNames.Push(BFW_STRING_PREFIX(""), BFW_STRING_PREFIX(""));
+	size_t _BitMapTextureIndex = 0;
+
+	Trie<BFW_STRING_TYPE> _HdrTextureNames;
+	_HdrTextureNames.Push(BFW_STRING_PREFIX(""), BFW_STRING_PREFIX(""));
+	size_t _HdrTextureIndex = 0;
+
+	BFW_STRING_TYPE _FileName = std::filesystem::path(_Name).stem();
+
+	SharedPointer<WaveFrontObj> _WaveFrontObj = GetWaveFrontObj(_Name);
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	if (!(WaveFrontObj*)(_WaveFrontObj))
+	{
+		size_t _Id = 0;
+		BFW_STRING_STREAM_TYPE _Stream(_Name);
+
+		if ((_Stream >> _Id) && _Stream.eof())
+		{
+			_WaveFrontObj = GetResourceWaveFrontObj(_Id);
+		}
+	}
+
+#endif
+
+	if (!(WaveFrontObj*)(_WaveFrontObj))
+	{
+		return false;
+	}
+
+	WaveFrontObj _NewWaveFrontObj = *_WaveFrontObj;
+
+	Vector<BFW_STRING_TYPE> _MaterialLibs = _WaveFrontObj->GetMaterialLibs();
+
+	for (size_t _MaterialLibIndex = 0; _MaterialLibIndex < _MaterialLibs.GetSize(); _MaterialLibIndex++)
+	{
+		BFW_STRING_TYPE& _MaterialLibName = _MaterialLibs[_MaterialLibIndex];
+
+		BFW_STRING_TYPE* _TrieString = _FoundMaterialLib.GetData(_MaterialLibName.c_str());
+
+		if (_TrieString)
+		{
+			_NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex] = *_TrieString;
+			continue;
+		}
+
+		_NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex] = _FileName + BFW_TO_STRING(_MaterialLibRefCount + 1) + BFW_STRING_PREFIX(".mtl");
+		_MaterialLibRefCount++;
+		_FoundMaterialLib.Push(_MaterialLibName.c_str(), _NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex]);
+
+		SharedPointer<MaterialLib> _MaterialLib = GetMaterialLib(_MaterialLibName.c_str());
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+		if (!(MaterialLib*)(_MaterialLib))
+		{
+			size_t _Id = 0;
+			BFW_STRING_STREAM_TYPE _Stream(_MaterialLibName);
+
+			if ((_Stream >> _Id) && _Stream.eof())
+			{
+				_MaterialLib = GetResourceMaterialLib(_Id);
+			}
+		}
+
+#endif
+
+		if (!(MaterialLib*)(_MaterialLib))
+		{
+			return false;
+		}
+
+		MaterialLib _NewMaterialLib = *_MaterialLib;
+
+		Vector<BFW_STRING_TYPE> _BitMaps = _MaterialLib->GetBitMaps();
+
+		for (size_t _BitMapIndex = 0; _BitMapIndex < _BitMaps.GetSize(); _BitMapIndex++)
+		{
+			BFW_STRING_TYPE& _BitMapName = _BitMaps[_BitMapIndex];
+
+			if (_BitMapTextureNames.GetData(_BitMapName.c_str()))
+			{
+				continue;
+			}
+
+			BFW_STRING_TYPE _BitMapTextureName = _FileName + BFW_TO_STRING(_BitMapTextureIndex + 1) + BFW_STRING_PREFIX(".bmp");
+			_BitMapTextureNames.Push(_BitMapName.c_str(), _BitMapTextureName.c_str());
+			_BitMapTextureIndex++;
+
+			SharedPointer<BitMap> _BitMap = GetBitMap(_BitMapName.c_str());
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+			if (!(BitMap*)(_BitMap))
+			{
+				size_t _Id = 0;
+				BFW_STRING_STREAM_TYPE _Stream(_BitMapName);
+
+				if ((_Stream >> _Id) && _Stream.eof())
+				{
+					_BitMap = GetResourceBitMap(_Id);
+				}
+			}
+
+#endif
+
+			if (!(BitMap*)(_BitMap))
+			{
+				return false;
+			}
+
+			_FinalPaths.PushBack(_BitMapTextureName);
+			_FinalFileContents.PushBack(_BitMap->Save());
+			if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+			{
+				return false;
+			}
+		}
+
+		Vector<BFW_STRING_TYPE> _Hdrs = _MaterialLib->GetHdrs();
+
+		for (size_t _HdrIndex = 0; _HdrIndex < _Hdrs.GetSize(); _HdrIndex++)
+		{
+			BFW_STRING_TYPE& _HdrName = _Hdrs[_HdrIndex];
+
+			if (_HdrTextureNames.GetData(_HdrName.c_str()))
+			{
+				continue;
+			}
+
+			BFW_STRING_TYPE _HdrTextureName = _FileName + BFW_TO_STRING(_HdrTextureIndex + 1) + BFW_STRING_PREFIX(".hdr");
+			_HdrTextureNames.Push(_HdrName.c_str(), _HdrTextureName.c_str());
+			_HdrTextureIndex++;
+
+			SharedPointer<Hdr> _Hdr = GetHdr(_HdrName.c_str());
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+			if (!(Hdr*)(_Hdr))
+			{
+				size_t _Id = 0;
+				BFW_STRING_STREAM_TYPE _Stream(_HdrName);
+
+				if ((_Stream >> _Id) && _Stream.eof())
+				{
+					_Hdr = GetResourceHdr(_Id);
+				}
+			}
+
+#endif
+
+			if (!(Hdr*)(_Hdr))
+			{
+				return false;
+			}
+
+			_FinalPaths.PushBack(_HdrTextureName);
+			_FinalFileContents.PushBack(_Hdr->Save());
+			if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+			{
+				return false;
+			}
+		}
+
+		Vector<BFW_STRING_TYPE> _Materials = _MaterialLib->GetMaterialNames();
+
+		for (size_t _MaterialIndex = 0; _MaterialIndex < _Materials.GetSize(); _MaterialIndex++)
+		{
+			Material& _Material = _NewMaterialLib[_Materials[_MaterialIndex].c_str()];
+
+			_Material.AlbedoTexture = _BitMapTextureNames[_Material.AlbedoTexture.c_str()];
+			_Material.SpecularColorTexture = _BitMapTextureNames[_Material.SpecularColorTexture.c_str()];
+			_Material.SpecularExponentTexture = _HdrTextureNames[_Material.SpecularExponentTexture.c_str()];
+			_Material.EmissionColorTexture = _HdrTextureNames[_Material.EmissionColorTexture.c_str()];
+			_Material.RoughnessTexture = _BitMapTextureNames[_Material.RoughnessTexture.c_str()];
+			_Material.MetalnessTexture = _BitMapTextureNames[_Material.MetalnessTexture.c_str()];
+			_Material.AmbientOcclusionTexture = _BitMapTextureNames[_Material.AmbientOcclusionTexture.c_str()];
+			_Material.AmbientColorTexture = _BitMapTextureNames[_Material.AmbientColorTexture.c_str()];
+			_Material.SheenTexture = _BitMapTextureNames[_Material.SheenTexture.c_str()];
+			_Material.SheenColorTexture = _BitMapTextureNames[_Material.SheenColorTexture.c_str()];
+			_Material.ClearCoatTexture = _BitMapTextureNames[_Material.ClearCoatTexture.c_str()];
+			_Material.ClearCoatColorTexture = _BitMapTextureNames[_Material.ClearCoatColorTexture.c_str()];
+			_Material.ClearCoatRoughnessTexture = _BitMapTextureNames[_Material.ClearCoatRoughnessTexture.c_str()];
+			_Material.AnisotropyTexture = _BitMapTextureNames[_Material.AnisotropyTexture.c_str()];
+			_Material.AnisotropyRotationTexture = _BitMapTextureNames[_Material.AnisotropyRotationTexture.c_str()];
+			_Material.AlphaTexture = _BitMapTextureNames[_Material.AlphaTexture.c_str()];
+			_Material.TransmissionFilterTexture = _HdrTextureNames[_Material.TransmissionFilterTexture.c_str()];
+			_Material.DisplacementTexture = _HdrTextureNames[_Material.DisplacementTexture.c_str()];
+			_Material.NormalTexture = _BitMapTextureNames[_Material.NormalTexture.c_str()];
+			_Material.TangentTexture = _BitMapTextureNames[_Material.TangentTexture.c_str()];
+			_Material.ClearCoatNormalTexture = _BitMapTextureNames[_Material.ClearCoatNormalTexture.c_str()];
+			_Material.DecalTexture = _BitMapTextureNames[_Material.DecalTexture.c_str()];
+			_Material.BumpTexture = _BitMapTextureNames[_Material.BumpTexture.c_str()];
+
+			if (_Material.ReflectionTextures.GetSize() == 1)
+			{
+				_Material.ReflectionTextures[0] = _HdrTextureNames[_Material.ReflectionTextures[0].c_str()];
+			}
+			else if (_Material.ReflectionTextures.GetSize() == 6)
+			{
+				for (size_t _ReflectionIndex = 0; _ReflectionIndex < 6; _ReflectionIndex++)
+				{
+					_Material.ReflectionTextures[_ReflectionIndex] = _BitMapTextureNames[_Material.ReflectionTextures[_ReflectionIndex].c_str()];
+				}
+			}
+		}
+
+		_FinalPaths.PushBack(_NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex]);
+		_FinalFileContents.PushBack(_NewMaterialLib.Save());
+		if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+		{
+			return false;
+		}
+	}
+
+	_FinalPaths.PushBack(_FileName + BFW_STRING_PREFIX(".obj"));
+	_FinalFileContents.PushBack(_NewWaveFrontObj.Save());
+	if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+	{
+		return false;
+	}
+
+	_Paths = (Vector<BFW_STRING_TYPE>&&)(_FinalPaths);
+	_FileContents = (Vector<FileContent>&&)(_FinalFileContents);
+
+	return true;
+}
+
+const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const
+{
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0'))
+	{
+		return false;
+	}
+
+	_Paths.Clear();
+	_FileContents.Clear();
+
+	Vector<BFW_STRING_TYPE> _FinalPaths;
+	Vector<FileContent> _FinalFileContents;
+
+	Trie<BFW_STRING_TYPE> _BitMapTextureNames;
+	_BitMapTextureNames.Push(BFW_STRING_PREFIX(""), BFW_STRING_PREFIX(""));
+	size_t _BitMapTextureIndex = 0;
+
+	Trie<BFW_STRING_TYPE> _HdrTextureNames;
+	_HdrTextureNames.Push(BFW_STRING_PREFIX(""), BFW_STRING_PREFIX(""));
+	size_t _HdrTextureIndex = 0;
+
+	BFW_STRING_TYPE _FileName = std::filesystem::path(_Name).stem();
+
+	SharedPointer<MaterialLib> _MaterialLib = GetMaterialLib(_Name);
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	if (!(MaterialLib*)(_MaterialLib))
+	{
+		size_t _Id = 0;
+		BFW_STRING_STREAM_TYPE _Stream(_Name);
+
+		if ((_Stream >> _Id) && _Stream.eof())
+		{
+			_MaterialLib = GetResourceMaterialLib(_Id);
+		}
+	}
+
+#endif
+
+	if (!(MaterialLib*)(_MaterialLib))
+	{
+		return false;
+	}
+
+	MaterialLib _NewMaterialLib = *_MaterialLib;
+
+	Vector<BFW_STRING_TYPE> _BitMaps = _MaterialLib->GetBitMaps();
+
+	for (size_t _BitMapIndex = 0; _BitMapIndex < _BitMaps.GetSize(); _BitMapIndex++)
+	{
+		BFW_STRING_TYPE& _BitMapName = _BitMaps[_BitMapIndex];
+
+		if (_BitMapTextureNames.GetData(_BitMapName.c_str()))
+		{
+			continue;
+		}
+
+		BFW_STRING_TYPE _BitMapTextureName = _FileName + BFW_TO_STRING(_BitMapTextureIndex + 1) + BFW_STRING_PREFIX(".bmp");
+		_BitMapTextureNames.Push(_BitMapName.c_str(), _BitMapTextureName.c_str());
+		_BitMapTextureIndex++;
+
+		SharedPointer<BitMap> _BitMap = GetBitMap(_BitMapName.c_str());
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+		if (!(BitMap*)(_BitMap))
+		{
+			size_t _Id = 0;
+			BFW_STRING_STREAM_TYPE _Stream(_BitMapName);
+
+			if ((_Stream >> _Id) && _Stream.eof())
+			{
+				_BitMap = GetResourceBitMap(_Id);
+			}
+		}
+
+#endif
+
+		if (!(BitMap*)(_BitMap))
+		{
+			return false;
+		}
+
+		_FinalPaths.PushBack(_BitMapTextureName);
+		_FinalFileContents.PushBack(_BitMap->Save());
+		if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+		{
+			return false;
+		}
+	}
+
+	Vector<BFW_STRING_TYPE> _Hdrs = _MaterialLib->GetHdrs();
+
+	for (size_t _HdrIndex = 0; _HdrIndex < _Hdrs.GetSize(); _HdrIndex++)
+	{
+		BFW_STRING_TYPE& _HdrName = _Hdrs[_HdrIndex];
+
+		if (_HdrTextureNames.GetData(_HdrName.c_str()))
+		{
+			continue;
+		}
+
+		BFW_STRING_TYPE _HdrTextureName = _FileName + BFW_TO_STRING(_HdrTextureIndex + 1) + BFW_STRING_PREFIX(".hdr");
+		_HdrTextureNames.Push(_HdrName.c_str(), _HdrTextureName.c_str());
+		_HdrTextureIndex++;
+
+		SharedPointer<Hdr> _Hdr = GetHdr(_HdrName.c_str());
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+		if (!(Hdr*)(_Hdr))
+		{
+			size_t _Id = 0;
+			BFW_STRING_STREAM_TYPE _Stream(_HdrName);
+
+			if ((_Stream >> _Id) && _Stream.eof())
+			{
+				_Hdr = GetResourceHdr(_Id);
+			}
+		}
+
+#endif
+
+		if (!(Hdr*)(_Hdr))
+		{
+			return false;
+		}
+
+		_FinalPaths.PushBack(_HdrTextureName);
+		_FinalFileContents.PushBack(_Hdr->Save());
+		if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+		{
+			return false;
+		}
+	}
+
+	Vector<BFW_STRING_TYPE> _Materials = _MaterialLib->GetMaterialNames();
+
+	for (size_t _MaterialIndex = 0; _MaterialIndex < _Materials.GetSize(); _MaterialIndex++)
+	{
+		Material& _Material = _NewMaterialLib[_Materials[_MaterialIndex].c_str()];
+
+		_Material.AlbedoTexture = _BitMapTextureNames[_Material.AlbedoTexture.c_str()];
+		_Material.SpecularColorTexture = _BitMapTextureNames[_Material.SpecularColorTexture.c_str()];
+		_Material.SpecularExponentTexture = _HdrTextureNames[_Material.SpecularExponentTexture.c_str()];
+		_Material.EmissionColorTexture = _HdrTextureNames[_Material.EmissionColorTexture.c_str()];
+		_Material.RoughnessTexture = _BitMapTextureNames[_Material.RoughnessTexture.c_str()];
+		_Material.MetalnessTexture = _BitMapTextureNames[_Material.MetalnessTexture.c_str()];
+		_Material.AmbientOcclusionTexture = _BitMapTextureNames[_Material.AmbientOcclusionTexture.c_str()];
+		_Material.AmbientColorTexture = _BitMapTextureNames[_Material.AmbientColorTexture.c_str()];
+		_Material.SheenTexture = _BitMapTextureNames[_Material.SheenTexture.c_str()];
+		_Material.SheenColorTexture = _BitMapTextureNames[_Material.SheenColorTexture.c_str()];
+		_Material.ClearCoatTexture = _BitMapTextureNames[_Material.ClearCoatTexture.c_str()];
+		_Material.ClearCoatColorTexture = _BitMapTextureNames[_Material.ClearCoatColorTexture.c_str()];
+		_Material.ClearCoatRoughnessTexture = _BitMapTextureNames[_Material.ClearCoatRoughnessTexture.c_str()];
+		_Material.AnisotropyTexture = _BitMapTextureNames[_Material.AnisotropyTexture.c_str()];
+		_Material.AnisotropyRotationTexture = _BitMapTextureNames[_Material.AnisotropyRotationTexture.c_str()];
+		_Material.AlphaTexture = _BitMapTextureNames[_Material.AlphaTexture.c_str()];
+		_Material.TransmissionFilterTexture = _HdrTextureNames[_Material.TransmissionFilterTexture.c_str()];
+		_Material.DisplacementTexture = _HdrTextureNames[_Material.DisplacementTexture.c_str()];
+		_Material.NormalTexture = _BitMapTextureNames[_Material.NormalTexture.c_str()];
+		_Material.TangentTexture = _BitMapTextureNames[_Material.TangentTexture.c_str()];
+		_Material.ClearCoatNormalTexture = _BitMapTextureNames[_Material.ClearCoatNormalTexture.c_str()];
+		_Material.DecalTexture = _BitMapTextureNames[_Material.DecalTexture.c_str()];
+		_Material.BumpTexture = _BitMapTextureNames[_Material.BumpTexture.c_str()];
+
+		if (_Material.ReflectionTextures.GetSize() == 1)
+		{
+			_Material.ReflectionTextures[0] = _HdrTextureNames[_Material.ReflectionTextures[0].c_str()];
+		}
+		else if (_Material.ReflectionTextures.GetSize() == 6)
+		{
+			for (size_t _ReflectionIndex = 0; _ReflectionIndex < 6; _ReflectionIndex++)
+			{
+				_Material.ReflectionTextures[_ReflectionIndex] = _BitMapTextureNames[_Material.ReflectionTextures[_ReflectionIndex].c_str()];
+			}
+		}
+	}
+
+	_FinalPaths.PushBack(_FileName + BFW_STRING_PREFIX(".mtl"));
+	_FinalFileContents.PushBack(_NewMaterialLib.Save());
+	if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
+	{
+		return false;
+	}
+
+	_Paths = (Vector<BFW_STRING_TYPE>&&)(_FinalPaths);
+	_FileContents = (Vector<FileContent>&&)(_FinalFileContents);
+
+	return true;
 }
 
 #ifdef BFW_WINDOWS_PLATFORM

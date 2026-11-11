@@ -1021,7 +1021,7 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 {
 	Destroy();
 
-	if (!_FileContent.GetData() || _FileContent.GetLength() < sizeof(HdrFileHeader) + BFW_STRING_TYPE_A("FORMAT=32-bit_rle_rgbe\x0A\x0A").length() + BFW_STRING_TYPE_A("-Y  +X \x0A").length() + 1)
+	if (!_FileContent.GetData() || _FileContent.GetLength() < sizeof(HdrFileHeader) + BFW_STRING_TYPE_A("FORMAT=32-bit_rle_rgbe\x0A\x0A").size() + BFW_STRING_TYPE_A("-Y  +X \x0A").size() + 1)
 	{
 		return false;
 	}
@@ -1463,7 +1463,7 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 
 	FileContent _FileContent;
 
-	if (!_FileContent.Create(_StreamStr.length() + Width * Height * 4 + 1))
+	if (!_FileContent.Create(_StreamStr.size() + Width * Height * 4 + 1))
 	{
 		return FileContent();
 	}
@@ -1488,10 +1488,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
 						0.0f,
 						0.0f,
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1508,10 +1508,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1],
 						0.0f,
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1528,10 +1528,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1],
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 2],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1548,10 +1548,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 0],
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 1],
 						Data[(_PositionX + (Height - 1 - _PositionY) * Width) * ChannelsCount + 2],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1570,10 +1570,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
 						0.0f,
 						0.0f,
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1590,10 +1590,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1],
 						0.0f,
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1610,10 +1610,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1],
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
@@ -1630,10 +1630,10 @@ BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 0],
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 1],
 						Data[(_PositionX + _PositionY * Width) * ChannelsCount + 2],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.length()],
-						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.length()]
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 0 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 1 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 2 + _StreamStr.size()],
+						_FileContent[(_PositionX + _PositionY * Width) * 4 + 3 + _StreamStr.size()]
 					);
 				}
 			}
