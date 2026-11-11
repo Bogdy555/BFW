@@ -2,7 +2,11 @@
 
 
 
-static std::mutex HeapTrackerMutex;
+static std::mutex& GetHeapTrackerMutex()
+{
+	static std::mutex _HeapTrackerMutex;
+	return _HeapTrackerMutex;
+}
 
 
 
@@ -60,24 +64,24 @@ BFW::Debug::HeapTracker::HeapTracker() : HeapSize(0), HeapVector()
 
 BFW::Debug::HeapTracker::HeapTracker(const HeapTracker& _Other) : HeapSize(0), HeapVector()
 {
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	HeapSize = _Other.HeapSize;
 	HeapVector = _Other.HeapVector;
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 }
 
 BFW::Debug::HeapTracker::HeapTracker(HeapTracker&& _Other) noexcept : HeapSize(0), HeapVector()
 {
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	HeapSize = _Other.HeapSize;
 	HeapVector = (Vector<HeapPointer>&&)(_Other.HeapVector);
 
 	_Other.HeapSize = 0;
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 }
 
 BFW::Debug::HeapTracker::~HeapTracker()
@@ -92,12 +96,12 @@ void BFW::Debug::HeapTracker::Push(const size_t _Size, const void* _Pointer, con
 		return;
 	}
 
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	HeapSize += _Size;
 	HeapVector.PushBack(HeapPointer(_Size, _Pointer, _File, _Line, _Function));
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 }
 
 void BFW::Debug::HeapTracker::Pop(const void* _Pointer)
@@ -107,7 +111,7 @@ void BFW::Debug::HeapTracker::Pop(const void* _Pointer)
 		return;
 	}
 
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	for (size_t _Index = 0; _Index < HeapVector.GetSize(); _Index++)
 	{
@@ -116,33 +120,33 @@ void BFW::Debug::HeapTracker::Pop(const void* _Pointer)
 			HeapSize -= HeapVector[_Index].Size;
 			HeapVector.Erase(_Index);
 
-			HeapTrackerMutex.unlock();
+			GetHeapTrackerMutex().unlock();
 
 			return;
 		}
 	}
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 }
 
 const size_t BFW::Debug::HeapTracker::GetHeapSize() const
 {
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	size_t _HeapSize = HeapSize;
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 
 	return _HeapSize;
 }
 
 const BFW::Vector<BFW::Debug::HeapPointer> BFW::Debug::HeapTracker::GetHeapVector() const
 {
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	Vector<HeapPointer> _HeapVector = HeapVector;
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 
 	return HeapVector;
 }
@@ -154,12 +158,12 @@ BFW::Debug::HeapTracker& BFW::Debug::HeapTracker::operator= (const HeapTracker& 
 		return *this;
 	}
 
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	HeapSize = _Other.HeapSize;
 	HeapVector = _Other.HeapVector;
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 
 	return *this;
 }
@@ -171,14 +175,14 @@ BFW::Debug::HeapTracker& BFW::Debug::HeapTracker::operator= (HeapTracker&& _Othe
 		return *this;
 	}
 
-	HeapTrackerMutex.lock();
+	GetHeapTrackerMutex().lock();
 
 	HeapSize = _Other.HeapSize;
 	HeapVector = (Vector<HeapPointer>&&)(_Other.HeapVector);
 
 	_Other.HeapSize = 0;
 
-	HeapTrackerMutex.unlock();
+	GetHeapTrackerMutex().unlock();
 
 	return *this;
 }

@@ -28,11 +28,25 @@ const bool BFW_API BFW::String::Init()
 
 	DefaultLocale = _Ptr;
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
 	{
 		DefaultLocale = "";
 		return false;
 	}
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+	if (!std::setlocale(LC_ALL, "C"))
+	{
+		DefaultLocale = "";
+		return false;
+	}
+
+#endif
 
 	return true;
 }

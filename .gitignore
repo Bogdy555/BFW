@@ -3,6 +3,6 @@ Objects/
 .vs/
 Solution Items/Digital Certificates/
 .gdb_history
-Solution Items/Dependencies/ArduinoCore/
-Solution Items/Dependencies/FS/
-Solution Items/Dependencies/SD_MMC/
+Solution Items/Dependencies/ArduinoCore/Lib/
+Solution Items/Dependencies/FS/Lib/
+Solution Items/Dependencies/SD_MMC/Lib/
