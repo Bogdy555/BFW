@@ -351,9 +351,9 @@
 #define BFW_TO_STRING(X) BFW_TO_STRING_W(X)
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_W(X)
 #define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_W(X)
-#define BFW_UNICODE_TO_MACHINE(X, Error) [](const BFW_STRING_VIEW_TYPE_W& _XVal, bool* _Error) -> BFW_STRING_TYPE { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE)(_XVal); }(X, Error)
+#define BFW_UNICODE_TO_MACHINE(X, Error) [](const BFW_STRING_VIEW_TYPE_W& _XVal, bool* _Error) -> BFW_STRING_TYPE { *_Error = BFW::String::IsValidUnicodeString(_XVal); return (BFW_STRING_TYPE)(_XVal); }(X, Error)
 #define BFW_UTF8_TO_MACHINE(X, Error) BFW::String::FromUTF8ToUnicode(X, Error)
-#define BFW_MACHINE_TO_UNICODE(X, Error) [](const BFW_STRING_VIEW_TYPE_W& _XVal, bool* _Error) -> BFW_STRING_TYPE_W { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE_W)(_XVal); }(X, Error)
+#define BFW_MACHINE_TO_UNICODE(X, Error) [](const BFW_STRING_VIEW_TYPE_W& _XVal, bool* _Error) -> BFW_STRING_TYPE_W { *_Error = BFW::String::IsValidUnicodeString(_XVal); return (BFW_STRING_TYPE_W)(_XVal); }(X, Error)
 #define BFW_MACHINE_TO_UTF8(X, Error) BFW::String::FromUnicodeToUTF8(X, Error)
 
 #endif
@@ -369,9 +369,9 @@
 #define BFW_TO_STRING_PTR(X) BFW_TO_STRING_PTR_A(X)
 #define BFW_STRING_PREFIX(X) BFW_STRING_PREFIX_A(X)
 #define BFW_UNICODE_TO_MACHINE(X, Error) BFW::String::FromUnicodeToUTF8(X, Error)
-#define BFW_UTF8_TO_MACHINE(X, Error) [](const BFW_STRING_VIEW_TYPE_A& _XVal, bool* _Error) -> BFW_STRING_TYPE { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE)(_XVal); }(X, Error)
+#define BFW_UTF8_TO_MACHINE(X, Error) [](const BFW_STRING_VIEW_TYPE_A& _XVal, bool* _Error) -> BFW_STRING_TYPE { *_Error = BFW::String::IsValidUTF8String(_XVal); return (BFW_STRING_TYPE)(_XVal); }(X, Error)
 #define BFW_MACHINE_TO_UNICODE(X, Error) BFW::String::FromUTF8ToUnicode(X, Error)
-#define BFW_MACHINE_TO_UTF8(X, Error) [](const BFW_STRING_VIEW_TYPE_A& _XVal, bool* _Error) -> BFW_STRING_TYPE_A { if (_Error) { *_Error = false; } return (BFW_STRING_TYPE_A)(_XVal); }(X, Error)
+#define BFW_MACHINE_TO_UTF8(X, Error) [](const BFW_STRING_VIEW_TYPE_A& _XVal, bool* _Error) -> BFW_STRING_TYPE_A { *_Error = BFW::String::IsValidUTF8String(_XVal); return (BFW_STRING_TYPE_A)(_XVal); }(X, Error)
 
 #endif
 
