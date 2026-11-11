@@ -119,7 +119,40 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 				{
 					std::ifstream _InStream;
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 					_InStream.open(_Name, std::ios::binary);
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+					if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("../")))
+					{
+						throw nullptr;
+					}
+					else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX("."))
+					{
+						throw nullptr;
+					}
+					else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX(".."))
+					{
+						throw nullptr;
+					}
+					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
+					{
+						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 2), std::ios::binary);
+					}
+					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
+					{
+						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 1), std::ios::binary);
+					}
+					else
+					{
+						_InStream.open(BFW_STRING_TYPE("/sdcard/") + _Name, std::ios::binary);
+					}
+
+#endif
 
 					if (!_InStream.is_open())
 					{
@@ -540,7 +573,40 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 				{
 					std::ifstream _InStream;
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 					_InStream.open(_Name, std::ios::binary);
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+					if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("../")))
+					{
+						throw nullptr;
+					}
+					else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX("."))
+					{
+						throw nullptr;
+					}
+					else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX(".."))
+					{
+						throw nullptr;
+					}
+					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
+					{
+						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 2), std::ios::binary);
+					}
+					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
+					{
+						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 1), std::ios::binary);
+					}
+					else
+					{
+						_InStream.open(BFW_STRING_TYPE("/sdcard/") + _Name, std::ios::binary);
+					}
+
+#endif
 
 					if (!_InStream.is_open())
 					{
@@ -601,7 +667,40 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 
 	std::ifstream _InStream;
 
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 	_InStream.open(_Name, std::ios::binary);
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+	if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("../")))
+	{
+		throw nullptr;
+	}
+	else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX("."))
+	{
+		throw nullptr;
+	}
+	else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX(".."))
+	{
+		throw nullptr;
+	}
+	else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
+	{
+		_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 2), std::ios::binary);
+	}
+	else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
+	{
+		_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 1), std::ios::binary);
+	}
+	else
+	{
+		_InStream.open(BFW_STRING_TYPE("/sdcard/") + _Name, std::ios::binary);
+	}
+
+#endif
 
 	if (!_InStream.is_open())
 	{

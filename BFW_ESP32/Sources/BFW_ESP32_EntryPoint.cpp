@@ -27,6 +27,15 @@ void setup()
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 
+	esp_pthread_cfg_t cfg = esp_pthread_get_default_config();
+
+	cfg.stack_size = 32768;
+
+	if (esp_pthread_set_cfg(&cfg) != ESP_OK)
+	{
+		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
+	}
+
 	if (!BFW::String::Init())
 	{
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
