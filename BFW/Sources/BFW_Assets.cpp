@@ -1240,6 +1240,13 @@ const bool BFW::Assets::FileContent::Save(std::ofstream& _File) const
 		return false;
 	}
 
+	_File.seekp(0, std::ios::beg);
+
+	if (!_File)
+	{
+		return false;
+	}
+
 	_File.write((const BFW_CHAR_TYPE_A*)(Data), Length - 1);
 
 	if (!_File)
@@ -1253,6 +1260,13 @@ const bool BFW::Assets::FileContent::Save(std::ofstream& _File) const
 const bool BFW::Assets::FileContent::Save(std::fstream& _File) const
 {
 	if (!Data || Length <= 1 || !_File.is_open())
+	{
+		return false;
+	}
+
+	_File.seekp(0, std::ios::beg);
+
+	if (!_File)
 	{
 		return false;
 	}

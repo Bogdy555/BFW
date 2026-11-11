@@ -74,6 +74,8 @@ namespace BFW
 
 #endif
 
+		BFW_DEBUG_CALL(const bool BFW_API FlushProfilingJsonToFile());
+
 		BFW_API std::mutex& GetMutex();
 		BFW_DEBUG_CALL(BFW_API std::mutex& GetLoggingFileMutex());
 		BFW_DEBUG_CALL(BFW_API std::mutex& GetProfilingFileMutex());

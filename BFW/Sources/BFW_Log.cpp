@@ -173,6 +173,15 @@ void BFW_API BFW::Log::Stop()
 
 #endif
 
+#ifdef BFW_DEBUG
+
+const bool BFW_API BFW::Log::FlushProfilingJsonToFile()
+{
+	return ProfilingJson->Save().Save(ProfilingFile);
+}
+
+#endif
+
 BFW_API std::mutex& BFW::Log::GetMutex()
 {
 	static std::mutex _Mutex;

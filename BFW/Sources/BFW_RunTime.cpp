@@ -425,6 +425,8 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 
 		GetFrameTime(_CurrentState).Stop();
 
+		BFW_DEBUG_CALL(BFW::Log::FlushProfilingJsonToFile());
+
 		GetFrameTime(_PreviousState) = GetFrameTime(_CurrentState);
 
 		if (On && ApplicationObj->CheckOn() && QueuedMenu != _NullMenu)
