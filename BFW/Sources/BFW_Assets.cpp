@@ -2282,9 +2282,9 @@ const BFW_STRING_TYPE BFW::Assets::Manager::ResolveMaterialFile(const BFW_CHAR_T
 #endif
 }
 
-const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const
+const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, const BFW_STRING_VIEW_TYPE& _FileName, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const
 {
-	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0'))
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0') || !_FileName.data())
 	{
 		return false;
 	}
@@ -2305,8 +2305,6 @@ const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Ve
 	Trie<BFW_STRING_TYPE> _HdrTextureNames;
 	_HdrTextureNames.Push(BFW_STRING_PREFIX(""), BFW_STRING_PREFIX(""));
 	size_t _HdrTextureIndex = 0;
-
-	BFW_STRING_TYPE _FileName = std::filesystem::path(_Name).stem();
 
 	SharedPointer<WaveFrontObj> _WaveFrontObj = GetWaveFrontObj(_Name);
 
@@ -2346,7 +2344,14 @@ const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Ve
 			continue;
 		}
 
-		_NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex] = _FileName + BFW_TO_STRING(_MaterialLibRefCount + 1) + BFW_STRING_PREFIX(".mtl");
+		if (_MaterialLibRefCount == 0)
+		{
+			_NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex] = BFW_STRING_TYPE(_FileName) + BFW_STRING_PREFIX(".mtl");
+		}
+		else
+		{
+			_NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex] = BFW_STRING_TYPE(_FileName) + BFW_TO_STRING(_MaterialLibRefCount + 1) + BFW_STRING_PREFIX(".mtl");
+		}
 		_MaterialLibRefCount++;
 		_FoundMaterialLib.Push(_MaterialLibName.c_str(), _NewWaveFrontObj.GetMaterialLibsRef()[_MaterialLibIndex]);
 
@@ -2385,7 +2390,7 @@ const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Ve
 				continue;
 			}
 
-			BFW_STRING_TYPE _BitMapTextureName = _FileName + BFW_TO_STRING(_BitMapTextureIndex + 1) + BFW_STRING_PREFIX(".bmp");
+			BFW_STRING_TYPE _BitMapTextureName = BFW_STRING_TYPE(_FileName) + BFW_TO_STRING(_BitMapTextureIndex + 1) + BFW_STRING_PREFIX(".bmp");
 			_BitMapTextureNames.Push(_BitMapName.c_str(), _BitMapTextureName.c_str());
 			_BitMapTextureIndex++;
 
@@ -2430,7 +2435,7 @@ const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Ve
 				continue;
 			}
 
-			BFW_STRING_TYPE _HdrTextureName = _FileName + BFW_TO_STRING(_HdrTextureIndex + 1) + BFW_STRING_PREFIX(".hdr");
+			BFW_STRING_TYPE _HdrTextureName = BFW_STRING_TYPE(_FileName) + BFW_TO_STRING(_HdrTextureIndex + 1) + BFW_STRING_PREFIX(".hdr");
 			_HdrTextureNames.Push(_HdrName.c_str(), _HdrTextureName.c_str());
 			_HdrTextureIndex++;
 
@@ -2515,7 +2520,7 @@ const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Ve
 		}
 	}
 
-	_FinalPaths.PushBack(_FileName + BFW_STRING_PREFIX(".obj"));
+	_FinalPaths.PushBack(BFW_STRING_TYPE(_FileName) + BFW_STRING_PREFIX(".obj"));
 	_FinalFileContents.PushBack(_NewWaveFrontObj.Save());
 	if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
 	{
@@ -2528,9 +2533,9 @@ const bool BFW::Assets::Manager::SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Ve
 	return true;
 }
 
-const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const
+const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, const BFW_STRING_VIEW_TYPE& _FileName, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const
 {
-	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0'))
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0') || !_FileName.data())
 	{
 		return false;
 	}
@@ -2548,8 +2553,6 @@ const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vec
 	Trie<BFW_STRING_TYPE> _HdrTextureNames;
 	_HdrTextureNames.Push(BFW_STRING_PREFIX(""), BFW_STRING_PREFIX(""));
 	size_t _HdrTextureIndex = 0;
-
-	BFW_STRING_TYPE _FileName = std::filesystem::path(_Name).stem();
 
 	SharedPointer<MaterialLib> _MaterialLib = GetMaterialLib(_Name);
 
@@ -2586,7 +2589,7 @@ const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vec
 			continue;
 		}
 
-		BFW_STRING_TYPE _BitMapTextureName = _FileName + BFW_TO_STRING(_BitMapTextureIndex + 1) + BFW_STRING_PREFIX(".bmp");
+		BFW_STRING_TYPE _BitMapTextureName = BFW_STRING_TYPE(_FileName) + BFW_TO_STRING(_BitMapTextureIndex + 1) + BFW_STRING_PREFIX(".bmp");
 		_BitMapTextureNames.Push(_BitMapName.c_str(), _BitMapTextureName.c_str());
 		_BitMapTextureIndex++;
 
@@ -2631,7 +2634,7 @@ const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vec
 			continue;
 		}
 
-		BFW_STRING_TYPE _HdrTextureName = _FileName + BFW_TO_STRING(_HdrTextureIndex + 1) + BFW_STRING_PREFIX(".hdr");
+		BFW_STRING_TYPE _HdrTextureName = BFW_STRING_TYPE(_FileName) + BFW_TO_STRING(_HdrTextureIndex + 1) + BFW_STRING_PREFIX(".hdr");
 		_HdrTextureNames.Push(_HdrName.c_str(), _HdrTextureName.c_str());
 		_HdrTextureIndex++;
 
@@ -2708,7 +2711,7 @@ const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vec
 		}
 	}
 
-	_FinalPaths.PushBack(_FileName + BFW_STRING_PREFIX(".mtl"));
+	_FinalPaths.PushBack(BFW_STRING_TYPE(_FileName) + BFW_STRING_PREFIX(".mtl"));
 	_FinalFileContents.PushBack(_NewMaterialLib.Save());
 	if (_FinalFileContents[_FinalFileContents.GetSize() - 1].GetLength() < 1)
 	{

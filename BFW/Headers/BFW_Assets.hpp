@@ -700,8 +700,8 @@ namespace BFW
 			const Material* ResolveMaterial(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>()) const;
 			const BFW_STRING_TYPE ResolveMaterialFile(const BFW_CHAR_TYPE* _MaterialName, const Vector<BFW_STRING_TYPE>& _Files = Vector<BFW_STRING_TYPE>()) const;
 
-			const bool SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const;
-			const bool SaveMaterialLib(const BFW_CHAR_TYPE* _Name, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const;
+			const bool SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, const BFW_STRING_VIEW_TYPE& _FileName, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const;
+			const bool SaveMaterialLib(const BFW_CHAR_TYPE* _Name, const BFW_STRING_VIEW_TYPE& _FileName, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const;
 
 			Manager& operator= (const Manager& _Other) = delete;
 			Manager& operator= (Manager&& _Other) noexcept;
