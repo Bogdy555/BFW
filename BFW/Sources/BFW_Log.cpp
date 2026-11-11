@@ -177,7 +177,19 @@ void BFW_API BFW::Log::Stop()
 
 const bool BFW_API BFW::Log::FlushProfilingJsonToFile()
 {
-	return ProfilingJson->Save().Save(ProfilingFile);
+	if (!ProfilingJson->Save().Save(ProfilingFile))
+	{
+		return false;
+	}
+
+	BFW_ESP32_PLATFORM_CALL(BFW_DEBUG_CALL(ProfilingJson->GetObjectData().Object[1].GetArray().Clear()));
+
+	if (!ProfilingFile.flush())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 #endif

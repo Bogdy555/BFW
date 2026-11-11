@@ -37,6 +37,8 @@
 #ifdef BFW_ESP32_PLATFORM
 
 #include <Arduino.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <SD_MMC.h>
 
 #endif
