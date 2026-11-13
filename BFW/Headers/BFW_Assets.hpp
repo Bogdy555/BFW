@@ -658,6 +658,14 @@ namespace BFW
 
 #endif
 
+			const bool WasBitMapUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasHdrUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasWaveUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasWaveFrontObjUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasMaterialLibUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasGLSLUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasJsonUpdated(const BFW_CHAR_TYPE* _Name);
+
 			SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Hdr> GetHdr(const BFW_CHAR_TYPE* _Name);
@@ -773,6 +781,14 @@ namespace BFW
 			mutable Trie<uint64_t> LastWriteMaterialLibs;
 			mutable Trie<uint64_t> LastWriteGLSLs;
 			mutable Trie<uint64_t> LastWriteJsons;
+
+			mutable Trie<uint64_t> OldLastWriteBitMaps;
+			mutable Trie<uint64_t> OldLastWriteHdrs;
+			mutable Trie<uint64_t> OldLastWriteWaves;
+			mutable Trie<uint64_t> OldLastWriteWaveFrontObjs;
+			mutable Trie<uint64_t> OldLastWriteMaterialLibs;
+			mutable Trie<uint64_t> OldLastWriteGLSLs;
+			mutable Trie<uint64_t> OldLastWriteJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
 

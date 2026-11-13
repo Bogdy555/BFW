@@ -28,7 +28,7 @@ static const bool (*ManagerJsonLoader)(BFW::Assets::FileContent& _FileContent, B
 
 static void ManagerQueue(const BFW_CHAR_TYPE* _Name, BFW::Vector<BFW_STRING_TYPE>& _Queued)
 {
-	if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")))
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0') || BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")))
 	{
 		throw nullptr;
 	}
@@ -496,7 +496,7 @@ template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vec
 
 template <typename T> static void ManagerAddDynamic(const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T>& _Asset, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
-	if (!BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")) || !(T*)(_Asset))
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0') || !BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")) || !(T*)(_Asset))
 	{
 		throw nullptr;
 	}
@@ -517,7 +517,7 @@ template <typename T> static void ManagerAddDynamic(const BFW_CHAR_TYPE* _Name, 
 
 template <typename T> static void ManagerAddDynamicRef(const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T>& _Asset, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
-	if (!BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")) || !(T*)(_Asset))
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0') || !BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")) || !(T*)(_Asset))
 	{
 		throw nullptr;
 	}
@@ -659,8 +659,36 @@ template <typename T> static void ManagerReleaseResource(const size_t _Id, BFW::
 
 #endif
 
+static const bool ManagerWasUpdated(const BFW_CHAR_TYPE* _Name, const BFW::Trie<uint64_t>& _LastWrite, const BFW::Trie<uint64_t>& _OldLastWrite)
+{
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0'))
+	{
+		return false;
+	}
+
+	const uint64_t* _LastWritePtr = _LastWrite.GetData(_Name);
+	const uint64_t* _OldLastWritePtr = _OldLastWrite.GetData(_Name);
+
+	if (!_LastWritePtr)
+	{
+		return false;
+	}
+
+	if (!_OldLastWritePtr)
+	{
+		return true;
+	}
+
+	return *_LastWritePtr != *_OldLastWritePtr;
+}
+
 template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYPE* _Name, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
+	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0'))
+	{
+		return BFW::SharedPointer<T>();
+	}
+
 	BFW::WeakPointer<T>* _CachedWeak = _Cached.GetData(_Name);
 
 	if (_CachedWeak)
@@ -1553,6 +1581,14 @@ BFW::Assets::Manager::Manager() :
 	LastWriteGLSLs(),
 	LastWriteJsons(),
 
+	OldLastWriteBitMaps(),
+	OldLastWriteHdrs(),
+	OldLastWriteWaves(),
+	OldLastWriteWaveFrontObjs(),
+	OldLastWriteMaterialLibs(),
+	OldLastWriteGLSLs(),
+	OldLastWriteJsons(),
+
 	CachedResourceBitMapNames(),
 	CachedResourceHdrNames(),
 	CachedResourceWaveNames(),
@@ -1629,6 +1665,14 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LastWriteGLSLs((Trie<uint64_t>&&)(_Other.LastWriteGLSLs)),
 	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)),
 
+	OldLastWriteBitMaps((Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps)),
+	OldLastWriteHdrs((Trie<uint64_t>&&)(_Other.OldLastWriteHdrs)),
+	OldLastWriteWaves((Trie<uint64_t>&&)(_Other.OldLastWriteWaves)),
+	OldLastWriteWaveFrontObjs((Trie<uint64_t>&&)(_Other.OldLastWriteWaveFrontObjs)),
+	OldLastWriteMaterialLibs((Trie<uint64_t>&&)(_Other.OldLastWriteMaterialLibs)),
+	OldLastWriteGLSLs((Trie<uint64_t>&&)(_Other.OldLastWriteGLSLs)),
+	OldLastWriteJsons((Trie<uint64_t>&&)(_Other.OldLastWriteJsons)),
+
 	CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)),
 	CachedResourceHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames)),
 	CachedResourceWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames)),
@@ -1691,7 +1735,15 @@ BFW::Assets::Manager::Manager() :
 	LastWriteWaveFrontObjs(),
 	LastWriteMaterialLibs(),
 	LastWriteGLSLs(),
-	LastWriteJsons()
+	LastWriteJsons(),
+
+	OldLastWriteBitMaps(),
+	OldLastWriteHdrs(),
+	OldLastWriteWaves(),
+	OldLastWriteWaveFrontObjs(),
+	OldLastWriteMaterialLibs(),
+	OldLastWriteGLSLs(),
+	OldLastWriteJsons()
 {
 
 }
@@ -1735,7 +1787,15 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LastWriteWaveFrontObjs((Trie<uint64_t>&&)(_Other.LastWriteWaveFrontObjs)),
 	LastWriteMaterialLibs((Trie<uint64_t>&&)(_Other.LastWriteMaterialLibs)),
 	LastWriteGLSLs((Trie<uint64_t>&&)(_Other.LastWriteGLSLs)),
-	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons))
+	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)),
+
+	OldLastWriteBitMaps((Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps)),
+	OldLastWriteHdrs((Trie<uint64_t>&&)(_Other.OldLastWriteHdrs)),
+	OldLastWriteWaves((Trie<uint64_t>&&)(_Other.OldLastWriteWaves)),
+	OldLastWriteWaveFrontObjs((Trie<uint64_t>&&)(_Other.OldLastWriteWaveFrontObjs)),
+	OldLastWriteMaterialLibs((Trie<uint64_t>&&)(_Other.OldLastWriteMaterialLibs)),
+	OldLastWriteGLSLs((Trie<uint64_t>&&)(_Other.OldLastWriteGLSLs)),
+	OldLastWriteJsons((Trie<uint64_t>&&)(_Other.OldLastWriteJsons))
 {
 
 }
@@ -2079,6 +2139,14 @@ void BFW::Assets::Manager::Update()
 {
 	RefreshCache();
 
+	OldLastWriteBitMaps = LastWriteBitMaps;
+	OldLastWriteHdrs = LastWriteHdrs;
+	OldLastWriteWaves = LastWriteWaves;
+	OldLastWriteWaveFrontObjs = LastWriteWaveFrontObjs;
+	OldLastWriteMaterialLibs = LastWriteMaterialLibs;
+	OldLastWriteGLSLs = LastWriteGLSLs;
+	OldLastWriteJsons = LastWriteJsons;
+
 	Vector<std::thread> _Threads;
 
 	ManagerUpdate<BitMap>(_Threads, CachedBitMaps, LastWriteBitMaps, CachedBitMapNames, ManagerBitMapLoader);
@@ -2168,6 +2236,41 @@ void BFW::Assets::Manager::ReleaseResourceJson(const size_t _Id)
 }
 
 #endif
+
+const bool BFW::Assets::Manager::WasBitMapUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteBitMaps, OldLastWriteBitMaps);
+}
+
+const bool BFW::Assets::Manager::WasHdrUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteHdrs, OldLastWriteHdrs);
+}
+
+const bool BFW::Assets::Manager::WasWaveUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteWaves, OldLastWriteWaves);
+}
+
+const bool BFW::Assets::Manager::WasWaveFrontObjUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteWaveFrontObjs, OldLastWriteWaveFrontObjs);
+}
+
+const bool BFW::Assets::Manager::WasMaterialLibUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteMaterialLibs, OldLastWriteMaterialLibs);
+}
+
+const bool BFW::Assets::Manager::WasGLSLUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteGLSLs, OldLastWriteGLSLs);
+}
+
+const bool BFW::Assets::Manager::WasJsonUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteJsons, OldLastWriteJsons);
+}
 
 BFW::SharedPointer<BFW::Assets::BitMap> BFW::Assets::Manager::GetBitMap(const BFW_CHAR_TYPE* _Name)
 {
@@ -2910,6 +3013,14 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LastWriteGLSLs = (Trie<uint64_t>&&)(_Other.LastWriteGLSLs);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 
+	OldLastWriteBitMaps = (Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps);
+	OldLastWriteHdrs = (Trie<uint64_t>&&)(_Other.OldLastWriteHdrs);
+	OldLastWriteWaves = (Trie<uint64_t>&&)(_Other.OldLastWriteWaves);
+	OldLastWriteWaveFrontObjs = (Trie<uint64_t>&&)(_Other.OldLastWriteWaveFrontObjs);
+	OldLastWriteMaterialLibs = (Trie<uint64_t>&&)(_Other.OldLastWriteMaterialLibs);
+	OldLastWriteGLSLs = (Trie<uint64_t>&&)(_Other.OldLastWriteGLSLs);
+	OldLastWriteJsons = (Trie<uint64_t>&&)(_Other.OldLastWriteJsons);
+
 	CachedResourceBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames);
 	CachedResourceHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames);
 	CachedResourceWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames);
@@ -2979,6 +3090,14 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LastWriteMaterialLibs = (Trie<uint64_t>&&)(_Other.LastWriteMaterialLibs);
 	LastWriteGLSLs = (Trie<uint64_t>&&)(_Other.LastWriteGLSLs);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
+
+	OldLastWriteBitMaps = (Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps);
+	OldLastWriteHdrs = (Trie<uint64_t>&&)(_Other.OldLastWriteHdrs);
+	OldLastWriteWaves = (Trie<uint64_t>&&)(_Other.OldLastWriteWaves);
+	OldLastWriteWaveFrontObjs = (Trie<uint64_t>&&)(_Other.OldLastWriteWaveFrontObjs);
+	OldLastWriteMaterialLibs = (Trie<uint64_t>&&)(_Other.OldLastWriteMaterialLibs);
+	OldLastWriteGLSLs = (Trie<uint64_t>&&)(_Other.OldLastWriteGLSLs);
+	OldLastWriteJsons = (Trie<uint64_t>&&)(_Other.OldLastWriteJsons);
 
 	return *this;
 }
