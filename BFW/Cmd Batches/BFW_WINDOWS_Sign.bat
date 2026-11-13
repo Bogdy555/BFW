@@ -17,6 +17,11 @@ if exist ".\Binaries\BFW_DYNAMIC\Windows\Release\x86\BFW_DYNAMIC.dll" %SignToolT
 if exist ".\Binaries\BFW_DYNAMIC\Windows\Debug\x64\BFW_DYNAMIC.dll" %SignToolTemp% ".\Binaries\BFW_DYNAMIC\Windows\Debug\x64\BFW_DYNAMIC.dll"
 if exist ".\Binaries\BFW_DYNAMIC\Windows\Debug\x86\BFW_DYNAMIC.dll" %SignToolTemp% ".\Binaries\BFW_DYNAMIC\Windows\Debug\x86\BFW_DYNAMIC.dll"
 
+if exist ".\Binaries\BFW_WINDOWS_DYNAMIC\Release\x64\" copy ".\Binaries\BFW_DYNAMIC\Windows\Release\x64\BFW_DYNAMIC.dll" ".\Binaries\BFW_WINDOWS_DYNAMIC\Release\x64\"
+if exist ".\Binaries\BFW_WINDOWS_DYNAMIC\Release\x86\" copy ".\Binaries\BFW_DYNAMIC\Windows\Release\x86\BFW_DYNAMIC.dll" ".\Binaries\BFW_WINDOWS_DYNAMIC\Release\x86\"
+if exist ".\Binaries\BFW_WINDOWS_DYNAMIC\Debug\x64\" copy ".\Binaries\BFW_DYNAMIC\Windows\Debug\x64\BFW_DYNAMIC.dll" ".\Binaries\BFW_WINDOWS_DYNAMIC\Debug\x64\"
+if exist ".\Binaries\BFW_WINDOWS_DYNAMIC\Debug\x86\" copy ".\Binaries\BFW_DYNAMIC\Windows\Debug\x86\BFW_DYNAMIC.dll" ".\Binaries\BFW_WINDOWS_DYNAMIC\Debug\x86\"
+
 @echo off
 
 set SignToolTemp=
