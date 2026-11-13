@@ -8,99 +8,316 @@
 
 
 
-static BFW_STRING_TYPE_A DefaultLocale = "";
-
-
-
-const bool BFW_API BFW::String::Init()
-{
-	if (DefaultLocale.size())
-	{
-		return true;
-	}
-
-	const BFW_CHAR_TYPE_A* _Ptr = std::setlocale(LC_ALL, nullptr);
-
-	if (!_Ptr)
-	{
-		return false;
-	}
-
-	DefaultLocale = _Ptr;
-
-#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
-
-	if (!std::setlocale(LC_ALL, "en_US.UTF-8"))
-	{
-		DefaultLocale = "";
-		return false;
-	}
-
-#endif
-
-#ifdef BFW_ESP32_PLATFORM
-
-	if (!std::setlocale(LC_ALL, "C"))
-	{
-		DefaultLocale = "";
-		return false;
-	}
-
-#endif
-
-	return true;
-}
-
-void BFW_API BFW::String::Stop()
-{
-	if (!DefaultLocale.size())
-	{
-		return;
-	}
-
-	std::setlocale(LC_ALL, DefaultLocale.c_str());
-
-	DefaultLocale = "";
-}
-
-BFW_API const BFW_CHAR_TYPE_A* BFW::String::GetDefaultLocale()
-{
-	return DefaultLocale.c_str();
-}
-
 const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_VIEW_TYPE_A& _String, bool* _Error)
 {
-	if (!IsValidUTF8String(_String))
-	{
-		if (_Error)
-		{
-			*_Error = true;
-		}
-
-		return L"";
-	}
-
-	BFW_STRING_TYPE_A _TempString = BFW_STRING_TYPE_A(_String.data(), _String.size());
-
-	size_t _Size = std::mbstowcs(nullptr, _TempString.data(), 0);
-
-	if (_Size == std::numeric_limits<size_t>::max())
-	{
-		if (_Error)
-		{
-			*_Error = true;
-		}
-
-		return L"";
-	}
-
 	BFW_STRING_TYPE_W _Result;
+	_Result.reserve(_String.size());
 
-	_Result.resize(_Size);
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		if (IsUTF8MultiByte2(_String[_Index]))
+		{
+			if (!IsValidUTF8MultiByte2(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
 
-	std::mbstowcs(_Result.data(), _TempString.data(), _Result.size());
+				return L"";
+			}
 
-	_Result[_Result.size()] = '\0';
+			_Index++;
+
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			if (!IsUTF8MultiByteContinuation(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index - 1], _String[_Index]);
+
+			if (!IsValidUnicodePoint2A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
+
+			Vector<BFW_CHAR_TYPE_W> _Chars = DeconstructUnicodePointW(_CodePoint);
+
+			for (size_t _CharIndex = 0; _CharIndex < _Chars.GetSize(); _CharIndex++)
+			{
+				_Result += _Chars[_CharIndex];
+			}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			_Result += _CodePoint;
+
+#endif
+
+			continue;
+		}
+
+		if (IsUTF8MultiByte3(_String[_Index]))
+		{
+			if (!IsValidUTF8MultiByte3(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			_Index++;
+
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			if (!IsUTF8MultiByteContinuation(_String[_Index]) || !IsValidUTF8MultiByte3FirstContinuation(_String[_Index - 1], _String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			_Index++;
+
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			if (!IsUTF8MultiByteContinuation(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index - 2], _String[_Index - 1], _String[_Index]);
+
+			if (!IsValidUnicodePoint3A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
+
+			Vector<BFW_CHAR_TYPE_W> _Chars = DeconstructUnicodePointW(_CodePoint);
+
+			for (size_t _CharIndex = 0; _CharIndex < _Chars.GetSize(); _CharIndex++)
+			{
+				_Result += _Chars[_CharIndex];
+			}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			_Result += _CodePoint;
+
+#endif
+
+			continue;
+		}
+
+		if (IsUTF8MultiByte4(_String[_Index]))
+		{
+			if (!IsValidUTF8MultiByte4(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			_Index++;
+
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			if (!IsUTF8MultiByteContinuation(_String[_Index]) || !IsValidUTF8MultiByte4FirstContinuation(_String[_Index - 1], _String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			_Index++;
+
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			if (!IsUTF8MultiByteContinuation(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			_Index++;
+
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			if (!IsUTF8MultiByteContinuation(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+			uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index - 3], _String[_Index - 2], _String[_Index - 1], _String[_Index]);
+
+			if (!IsValidUnicodePoint4A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return L"";
+			}
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
+
+			Vector<BFW_CHAR_TYPE_W> _Chars = DeconstructUnicodePointW(_CodePoint);
+
+			for (size_t _CharIndex = 0; _CharIndex < _Chars.GetSize(); _CharIndex++)
+			{
+				_Result += _Chars[_CharIndex];
+			}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			_Result += _CodePoint;
+
+#endif
+
+			continue;
+		}
+
+		if (IsUTF8MultiByteContinuation(_String[_Index]))
+		{
+			if (_Error)
+			{
+				*_Error = true;
+			}
+
+			return L"";
+		}
+
+		uint32_t _CodePoint = ConstructUnicodePointA(_String[_Index]);
+
+		if (!IsValidUnicodePoint1A(_CodePoint) || IsUnicodeSurrogated(_CodePoint) || IsUnicodeSurrogatedContinuation(_CodePoint))
+		{
+			if (_Error)
+			{
+				*_Error = true;
+			}
+
+			return L"";
+		}
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
+
+		Vector<BFW_CHAR_TYPE_W> _Chars = DeconstructUnicodePointW(_CodePoint);
+
+		for (size_t _CharIndex = 0; _CharIndex < _Chars.GetSize(); _CharIndex++)
+		{
+			_Result += _Chars[_CharIndex];
+		}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+		_Result += _CodePoint;
+
+#endif
+	}
 
 	if (!IsValidUnicodeString(_Result))
 	{
@@ -122,37 +339,102 @@ const BFW_STRING_TYPE_W BFW_API BFW::String::FromUTF8ToUnicode(const BFW_STRING_
 
 const BFW_STRING_TYPE_A BFW_API BFW::String::FromUnicodeToUTF8(const BFW_STRING_VIEW_TYPE_W& _String, bool* _Error)
 {
-	if (!IsValidUnicodeString(_String))
-	{
-		if (_Error)
-		{
-			*_Error = true;
-		}
-
-		return "";
-	}
-
-	BFW_STRING_TYPE_W _TempString = BFW_STRING_TYPE_W(_String.data(), _String.size());
-
-	size_t _Size = std::wcstombs(nullptr, _TempString.data(), 0);
-
-	if (_Size == std::numeric_limits<size_t>::max())
-	{
-		if (_Error)
-		{
-			*_Error = true;
-		}
-
-		return "";
-	}
-
 	BFW_STRING_TYPE_A _Result;
+	_Result.reserve(_String.size() * 4);
 
-	_Result.resize(_Size);
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
 
-	std::wcstombs(_Result.data(), _TempString.data(), _Result.size());
+		if (IsUnicodeSurrogated(_String[_Index]))
+		{
+			_Index++;
 
-	_Result[_Result.size()] = '\0';
+			if (_Index >= _String.size())
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return "";
+			}
+
+			if (!IsUnicodeSurrogatedContinuation(_String[_Index]))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return "";
+			}
+
+			uint32_t _CodePoint = CompositUnicodeSurrogates(_String[_Index - 1], _String[_Index]);
+
+			if (!IsValidUnicodePointW(_CodePoint))
+			{
+				if (_Error)
+				{
+					*_Error = true;
+				}
+
+				return "";
+			}
+
+			Vector<BFW_CHAR_TYPE_A> _Chars = DeconstructUnicodePointA(_CodePoint);
+
+			for (size_t _CharIndex = 0; _CharIndex < _Chars.GetSize(); _CharIndex++)
+			{
+				_Result += _Chars[_CharIndex];
+			}
+
+			continue;
+		}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+		if (IsUnicodeSurrogated(_String[_Index]))
+		{
+			if (_Error)
+			{
+				*_Error = true;
+			}
+
+			return "";
+		}
+
+#endif
+
+		if (IsUnicodeSurrogatedContinuation(_String[_Index]))
+		{
+			if (_Error)
+			{
+				*_Error = true;
+			}
+
+			return "";
+		}
+
+		if (!IsValidUnicodePointW(_String[_Index]))
+		{
+			if (_Error)
+			{
+				*_Error = true;
+			}
+
+			return "";
+		}
+
+		Vector<BFW_CHAR_TYPE_A> _Chars = DeconstructUnicodePointA(_String[_Index]);
+
+		for (size_t _CharIndex = 0; _CharIndex < _Chars.GetSize(); _CharIndex++)
+		{
+			_Result += _Chars[_CharIndex];
+		}
+	}
 
 	if (!IsValidUTF8String(_Result))
 	{
@@ -304,6 +586,11 @@ const bool BFW_API BFW::String::IsValidUnicodePointW(const uint32_t _Char)
 	return _Char <= 0x10FFFF && (_Char & 0xFFFE) != 0xFFFE && (_Char < 0xFDD0 || _Char > 0xFDEF);
 }
 
+const uint32_t BFW_API BFW::String::CompositUnicodeSurrogates(const uint32_t _Char1, const uint32_t _Char2)
+{
+	return 0x10000 + ((uint32_t)(_Char1 - 0xD800) << 10) + (uint32_t)(_Char2 - 0xDC00);
+}
+
 const uint32_t BFW_API BFW::String::ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char)
 {
 	return _Char;
@@ -324,11 +611,71 @@ const uint32_t BFW_API BFW::String::ConstructUnicodePointA(const BFW_CHAR_TYPE_A
 	return ((uint32_t)(_Char1 & 0x07) << 18) | ((uint32_t)(_Char2 & 0x3F) << 12) | ((uint32_t)(_Char3 & 0x3F) << 6) | (uint32_t)(_Char4 & 0x3F);
 }
 
-#ifdef BFW_WINDOWS_PLATFORM
-
-const uint32_t BFW_API BFW::String::ConstructUnicodePointW(const BFW_CHAR_TYPE_W _Char1, const BFW_CHAR_TYPE_W _Char2)
+BFW::Vector<BFW_CHAR_TYPE_A> BFW_API BFW::String::DeconstructUnicodePointA(const uint32_t _Char)
 {
-	return 0x10000 + ((uint32_t)(_Char1 - 0xD800) << 10) + (uint32_t)(_Char2 - 0xDC00);
+	Vector<BFW_CHAR_TYPE_A> _Chars;
+	_Chars.Reserve(4);
+
+	if (_Char <= 0x7F)
+	{
+		_Chars.PushBack((BFW_CHAR_TYPE_A)(_Char));
+		return _Chars;
+	}
+
+	if (_Char <= 0x7FF)
+	{
+		_Chars.PushBack((BFW_CHAR_TYPE_A)(0xC0 | (_Char >> 6)));
+		_Chars.PushBack((BFW_CHAR_TYPE_A)(0x80 | (_Char & 0x3F)));
+		return _Chars;
+	}
+
+	if (_Char <= 0xFFFF)
+	{
+		_Chars.PushBack((BFW_CHAR_TYPE_A)(0xE0 | (_Char >> 12)));
+		_Chars.PushBack((BFW_CHAR_TYPE_A)(0x80 | ((_Char >> 6) & 0x3F)));
+		_Chars.PushBack((BFW_CHAR_TYPE_A)(0x80 | (_Char & 0x3F)));
+		return _Chars;
+	}
+
+	_Chars.PushBack((BFW_CHAR_TYPE_A)(0xF0 | (_Char >> 18)));
+	_Chars.PushBack((BFW_CHAR_TYPE_A)(0x80 | ((_Char >> 12) & 0x3F)));
+	_Chars.PushBack((BFW_CHAR_TYPE_A)(0x80 | ((_Char >> 6) & 0x3F)));
+	_Chars.PushBack((BFW_CHAR_TYPE_A)(0x80 | (_Char & 0x3F)));
+
+	return _Chars;
+}
+
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
+
+BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const uint32_t _Char)
+{
+	Vector<BFW_CHAR_TYPE_W> _Chars;
+	_Chars.Reserve(2);
+
+	if (_Char <= 0xFFFF)
+	{
+		_Chars.PushBack((BFW_CHAR_TYPE_W)(_Char));
+		return _Chars;
+	}
+
+	_Chars.PushBack((BFW_CHAR_TYPE_W)(0xD800 + ((_Char - 0x10000) >> 10)));
+	_Chars.PushBack((BFW_CHAR_TYPE_W)(0xDC00 + ((_Char - 0x10000) & 0x3FF)));
+
+	return _Chars;
+}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const uint32_t _Char)
+{
+	Vector<BFW_CHAR_TYPE_W> _Chars;
+	_Chars.Reserve(2);
+
+	_Chars.PushBack((BFW_CHAR_TYPE_W)(_Char));
+
+	return _Chars;
 }
 
 #endif
@@ -480,7 +827,7 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 {
 	for (size_t _Index = 0; _Index < _String.size(); _Index++)
 	{
-#ifdef BFW_WINDOWS_PLATFORM
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
 
 		if (IsUnicodeSurrogated(_String[_Index]))
 		{
@@ -496,7 +843,7 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 				return false;
 			}
 
-			if (!IsValidUnicodePointW(ConstructUnicodePointW(_String[_Index - 1], _String[_Index])))
+			if (!IsValidUnicodePointW(CompositUnicodeSurrogates(_String[_Index - 1], _String[_Index])))
 			{
 				return false;
 			}
@@ -506,7 +853,7 @@ const bool BFW_API BFW::String::IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_
 
 #endif
 
-#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+#ifdef BFW_LINUX_PLATFORM
 
 		if (IsUnicodeSurrogated(_String[_Index]))
 		{

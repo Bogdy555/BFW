@@ -350,9 +350,15 @@ static const bool LoadJsonString(const BFW::Assets::FileContent& _FileContent, s
 						return false;
 					}
 
+					uint32_t _CodePoint = BFW::String::CompositUnicodeSurrogates(_WChar, _WChar2);
+					BFW::Vector<BFW_CHAR_TYPE_W> _Chars = BFW::String::DeconstructUnicodePointW(_CodePoint);
+
 					BFW_STRING_TYPE_W _WString = L"";
-					_WString += _WChar;
-					_WString += _WChar2;
+
+					for (size_t _Index = 0; _Index < _Chars.GetSize(); _Index++)
+					{
+						_WString += _Chars[_Index];
+					}
 
 					if (!BFW::String::IsValidUnicodeString(_WString))
 					{

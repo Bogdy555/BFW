@@ -4,18 +4,11 @@
 
 int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 {
-	if (!BFW::String::Init())
-	{
-		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
-		return BFW::MultiProcessing::_UnknownErrorReturnValue;
-	}
-
 	BFW_DEBUG_CALL
 	(
 		if (!BFW::Log::Init())
 		{
 			BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
-			BFW::String::Stop();
 			return BFW::MultiProcessing::_UnknownErrorReturnValue;
 		}
 	);
@@ -24,7 +17,6 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 	{
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 		BFW_DEBUG_CALL(BFW::Log::Stop());
-		BFW::String::Stop();
 		return BFW::MultiProcessing::_UnknownErrorReturnValue;
 	}
 
@@ -39,7 +31,6 @@ int main(const int32_t _ArgC, const BFW_CHAR_TYPE** _ArgV)
 
 	BFW::Time::Stop();
 	BFW_DEBUG_CALL(BFW::Log::Stop());
-	BFW::String::Stop();
 
 	return _ReturnValue;
 }

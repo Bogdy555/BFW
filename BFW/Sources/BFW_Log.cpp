@@ -135,40 +135,41 @@ void BFW_API BFW::Log::Stop()
 
 #ifdef BFW_ESP32_PLATFORM
 
-const bool BFW_API BFW::Log::Init(const size_t _BaudRate, const BFW_STRING_VIEW_TYPE _SDCardPath)
+const bool BFW_API BFW::Log::Init(const BFW_STRING_VIEW_TYPE _SDCardPath)
 {
-	Serial.begin(_BaudRate);
+#ifdef BFW_DEBUG
 
-	BFW_DEBUG_CALL(uint64_t _TimeStamp = Time::GetTimeStamp());
+	uint64_t _TimeStamp = Time::GetTimeStamp();
 
-	BFW_DEBUG_CALL(LoggingFile.open(BFW_STRING_TYPE(_SDCardPath) + BFW_STRING_PREFIX("BFW_Log_LoggingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary));
+	LoggingFile.open(BFW_STRING_TYPE(_SDCardPath) + BFW_STRING_PREFIX("BFW_Log_LoggingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".txt"), std::ios::binary);
+	ProfilingFile.open(BFW_STRING_TYPE(_SDCardPath) + BFW_STRING_PREFIX("BFW_Log_ProfilingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary);
 
-	BFW_DEBUG_CALL(ProfilingFile.open(BFW_STRING_TYPE(_SDCardPath) + BFW_STRING_PREFIX("BFW_Log_ProfilingFile ") + BFW_TO_STRING(_TimeStamp) + BFW_STRING_PREFIX(".json"), std::ios::binary));
-	BFW_DEBUG_CALL
-	(
-		ProfilingJson->SetObject();
-		ProfilingJson->GetObjectData().Tags.EmplaceBack("displayTimeUnit");
-		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetString("ms");
-		ProfilingJson->GetObjectData().Tags.EmplaceBack("traceEvents");
-		ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetArray();
-	);
-	BFW_DEBUG_CALL(::ProfilingStart = _TimeStamp);
+	ProfilingJson->SetObject();
+	ProfilingJson->GetObjectData().Tags.EmplaceBack("displayTimeUnit");
+	ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetString("ms");
+	ProfilingJson->GetObjectData().Tags.EmplaceBack("traceEvents");
+	ProfilingJson->GetObjectData().Object.EmplaceBack(Assets::Json()).SetArray();
+
+	::ProfilingStart = _TimeStamp;
+
+#endif
 
 	return true;
 }
 
 void BFW_API BFW::Log::Stop()
 {
-	Serial.end();
+#ifdef BFW_DEBUG
 
-	BFW_DEBUG_CALL
-	(
-		ProfilingJson->Save().Save(ProfilingFile);
-		*ProfilingJson = Assets::Json();
-		::ProfilingStart = 0;
-	);
-	BFW_DEBUG_CALL(LoggingFile.close());
-	BFW_DEBUG_CALL(ProfilingFile.close());
+	ProfilingJson->Save().Save(ProfilingFile);
+
+	*ProfilingJson = Assets::Json();
+	::ProfilingStart = 0;
+
+	LoggingFile.close();
+	ProfilingFile.close();
+
+#endif
 }
 
 #endif

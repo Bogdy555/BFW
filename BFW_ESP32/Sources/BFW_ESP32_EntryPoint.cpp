@@ -10,13 +10,6 @@ void setup()
 	pinMode(38, OUTPUT);
 	digitalWrite(38, HIGH);
 
-	Serial.begin(115200);
-
-	while (!Serial)
-	{
-
-	}
-
 	if (!SD_MMC.setPins(12, 11, 13))
 	{
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
@@ -32,11 +25,6 @@ void setup()
 	cfg.stack_size = 32768;
 
 	if (esp_pthread_set_cfg(&cfg) != ESP_OK)
-	{
-		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
-	}
-
-	if (!BFW::String::Init())
 	{
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}

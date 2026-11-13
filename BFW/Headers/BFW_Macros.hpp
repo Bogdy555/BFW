@@ -835,33 +835,33 @@
 
 
 
-#define BFW_PRINT(X) Serial.print(X)
-#define BFW_PRINT_LINE(X) Serial.println(X)
+#define BFW_PRINT(X) std::wcout << X
+#define BFW_PRINT_LINE(X) std::wcout << X << L'\n'
 
-#define BFW_PRINT_ERROR(X) Serial.print(X)
-#define BFW_PRINT_ERROR_LINE(X) Serial.println(X)
+#define BFW_PRINT_ERROR(X) std::wcout << X
+#define BFW_PRINT_ERROR_LINE(X) std::wcout << X << L'\n'
 
-#define BFW_PRINT_WARNING(X) Serial.print(X)
-#define BFW_PRINT_WARNING_LINE(X) Serial.println(X)
+#define BFW_PRINT_WARNING(X) std::wcout << X
+#define BFW_PRINT_WARNING_LINE(X) std::wcout << X << L'\n'
 
-#define BFW_PRINT_INFO(X) Serial.print(X)
-#define BFW_PRINT_INFO_LINE(X) Serial.println(X)
+#define BFW_PRINT_INFO(X) std::wcout << X
+#define BFW_PRINT_INFO_LINE(X) std::wcout << X << L'\n'
 
 
 
 #ifdef BFW_DEBUG
 
-#define BFW_LOG(X) Serial.print(X)
-#define BFW_LOG_LINE(X) Serial.println(X)
+#define BFW_LOG(X) std::wcout << X
+#define BFW_LOG_LINE(X) std::wcout << X << L'\n'
 
-#define BFW_LOG_ERROR(X) Serial.print(X)
-#define BFW_LOG_ERROR_LINE(X) Serial.println(X)
+#define BFW_LOG_ERROR(X) std::wcout << X
+#define BFW_LOG_ERROR_LINE(X) std::wcout << X << L'\n'
 
-#define BFW_LOG_WARNING(X) Serial.print(X)
-#define BFW_LOG_WARNING_LINE(X) Serial.println(X)
+#define BFW_LOG_WARNING(X) std::wcout << X
+#define BFW_LOG_WARNING_LINE(X) std::wcout << X << L'\n'
 
-#define BFW_LOG_INFO(X) Serial.print(X)
-#define BFW_LOG_INFO_LINE(X) Serial.println(X)
+#define BFW_LOG_INFO(X) std::wcout << X
+#define BFW_LOG_INFO_LINE(X) std::wcout << X << L'\n'
 
 #endif
 
@@ -883,10 +883,10 @@
 
 
 
-#define BFW_PRINT_OUTPUT_DEBUG_STR_A(X) Serial.print(X)
-#define BFW_PRINT_OUTPUT_DEBUG_STR_W(X) Serial.print(X)
-#define BFW_PRINT_OUTPUT_DEBUG_STR_LINE_A(X) Serial.println(X)
-#define BFW_PRINT_OUTPUT_DEBUG_STR_LINE_W(X) Serial.println(X)
+#define BFW_PRINT_OUTPUT_DEBUG_STR_A(X) std::wcout << X
+#define BFW_PRINT_OUTPUT_DEBUG_STR_W(X) std::wcout << X
+#define BFW_PRINT_OUTPUT_DEBUG_STR_LINE_A(X) std::wcout << X << L'\n'
+#define BFW_PRINT_OUTPUT_DEBUG_STR_LINE_W(X) std::wcout << X << L'\n'
 
 #ifdef _UNICODE
 
@@ -906,10 +906,10 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_LOG_OUTPUT_DEBUG_STR_A(X) Serial.print(X)
-#define BFW_LOG_OUTPUT_DEBUG_STR_W(X) Serial.print(X)
-#define BFW_LOG_OUTPUT_DEBUG_STR_LINE_A(X) Serial.println(X)
-#define BFW_LOG_OUTPUT_DEBUG_STR_LINE_W(X) Serial.println(X)
+#define BFW_LOG_OUTPUT_DEBUG_STR_A(X) std::wcout << X
+#define BFW_LOG_OUTPUT_DEBUG_STR_W(X) std::wcout << X
+#define BFW_LOG_OUTPUT_DEBUG_STR_LINE_A(X) std::wcout << X << L'\n'
+#define BFW_LOG_OUTPUT_DEBUG_STR_LINE_W(X) std::wcout << X << L'\n'
 
 #ifdef _UNICODE
 
