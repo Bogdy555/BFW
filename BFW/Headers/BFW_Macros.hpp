@@ -971,9 +971,9 @@
 
 #ifdef BFW_DEBUG
 
-#define BFW_DEBUG_BREAK() BFW::Log::Mutex->lock(); BFW_PRINT("[ERROR] "); BFW_PRINT(Title); BFW_PRINT(" \""); BFW_PRINT(__FILE__); BFW_PRINT("\" "); BFW_PRINT("("); BFW_PRINT(__LINE__); BFW_PRINT(") "); BFW_PRINT(__FUNCTION__); BFW::Log::Mutex->unlock()
-#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW_MESSAGE_BOX_ERROR_A(NULL, "Debug break!", Msg)
-#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW_MESSAGE_BOX_ERROR_W(NULL, L"Debug break!", Msg)
+#define BFW_DEBUG_BREAK() __builtin_trap()
+#define BFW_DEBUG_BREAK_MSG_A(Msg) BFW_MESSAGE_BOX_ERROR_A(NULL, "Debug break!", Msg); __builtin_trap()
+#define BFW_DEBUG_BREAK_MSG_W(Msg) BFW_MESSAGE_BOX_ERROR_W(NULL, L"Debug break!", Msg); __builtin_trap()
 
 #ifdef _UNICODE
 
