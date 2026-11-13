@@ -44,6 +44,8 @@ static void ManagerQueue(const BFW_CHAR_TYPE* _Name, BFW::Vector<BFW_STRING_TYPE
 	_Queued.EmplaceBack(_Name);
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 static void ManagerQueueResource(const size_t _Id, BFW::Vector<size_t>& _Queued)
 {
 	for (size_t _Index = 0; _Index < _Queued.GetSize(); _Index++)
@@ -56,6 +58,8 @@ static void ManagerQueueResource(const size_t _Id, BFW::Vector<size_t>& _Queued)
 
 	_Queued.PushBack(_Id);
 }
+
+#endif
 
 template <typename T> static void ManagerFlushAllocate(BFW::Vector<BFW_STRING_TYPE>& _Queued, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
@@ -646,10 +650,14 @@ template <typename T> static void ManagerRelease(const BFW_CHAR_TYPE* _Name, BFW
 	_Loaded.Erase(_Name);
 }
 
+#ifdef BFW_WINDOWS_PLATFORM
+
 template <typename T> static void ManagerReleaseResource(const size_t _Id, BFW::Trie<BFW::SharedPointer<T>>& _Loaded)
 {
 	_Loaded.Erase(BFW_TO_STRING_PTR(_Id));
 }
+
+#endif
 
 template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYPE* _Name, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Trie<uint64_t>& _LastWrite, BFW::Vector<BFW_STRING_TYPE>& _CachedNames, const bool (*_Loader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<T>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath))
 {
@@ -1164,7 +1172,7 @@ const bool BFW::Assets::FileContent::Load(std::ifstream& _File)
 
 	size_t _CurrentPos = (size_t)(_File.tellg());
 
-	if (_CurrentPos == -1)
+	if (_CurrentPos == std::numeric_limits<size_t>::max())
 	{
 		return false;
 	}
@@ -1219,7 +1227,7 @@ const bool BFW::Assets::FileContent::Load(std::fstream& _File)
 
 	size_t _CurrentPos = (size_t)(_File.tellg());
 
-	if (_CurrentPos == -1)
+	if (_CurrentPos == std::numeric_limits<size_t>::max())
 	{
 		return false;
 	}

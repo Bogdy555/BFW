@@ -546,7 +546,7 @@ static const bool MaterialLibLoadMap(const BFW_CHAR_TYPE* _Path, const BFW_CHAR_
 		return false;
 	}
 
-	if (BFW_STRING_TYPE_A("refl") == _Type && !_Found_type || BFW_STRING_TYPE_A("refl") != _Type && _Found_type)
+	if ((BFW_STRING_TYPE_A("refl") == _Type && !_Found_type) || (BFW_STRING_TYPE_A("refl") != _Type && _Found_type))
 	{
 		return false;
 	}
