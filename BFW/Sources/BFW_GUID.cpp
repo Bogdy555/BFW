@@ -2,22 +2,15 @@
 
 
 
+static std::mutex GUIDMutex;
 static BFW::Math::RandomUInt64 RandomGenerator;
 static BFW::Trie<bool> ExistentGUIDs;
 
 
 
-static std::mutex& GetGUIDMutex()
-{
-	static std::mutex _GUIDMutex;
-	return _GUIDMutex;
-}
-
-
-
 const uint64_t BFW_API BFW::GUID::Get()
 {
-	GetGUIDMutex().lock();
+	GUIDMutex.lock();
 
 	uint64_t _Result = RandomGenerator();
 
@@ -28,18 +21,18 @@ const uint64_t BFW_API BFW::GUID::Get()
 
 	ExistentGUIDs.Push(BFW_TO_STRING(_Result).c_str(), true);
 
-	GetGUIDMutex().unlock();
+	GUIDMutex.unlock();
 
 	return _Result;
 }
 
 void BFW_API BFW::GUID::Release(const uint64_t _GUID)
 {
-	GetGUIDMutex().lock();
+	GUIDMutex.lock();
 
 	ExistentGUIDs.Erase(BFW_TO_STRING(_GUID).c_str());
 
-	GetGUIDMutex().unlock();
+	GUIDMutex.unlock();
 }
 
 const BFW_STRING_TYPE_A BFW_API BFW::GUID::GetStringA()
@@ -60,20 +53,20 @@ const BFW_STRING_TYPE BFW_API BFW::GUID::GetString()
 
 void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_VIEW_TYPE_A _GUID)
 {
-	GetGUIDMutex().lock();
+	GUIDMutex.lock();
 
 	ExistentGUIDs.Erase(BFW_UTF8_TO_MACHINE(_GUID, nullptr).c_str());
 
-	GetGUIDMutex().unlock();
+	GUIDMutex.unlock();
 }
 
 void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_VIEW_TYPE_W _GUID)
 {
-	GetGUIDMutex().lock();
+	GUIDMutex.lock();
 
 	ExistentGUIDs.Erase(BFW_UNICODE_TO_MACHINE(_GUID, nullptr).c_str());
 
-	GetGUIDMutex().unlock();
+	GUIDMutex.unlock();
 }
 
 void BFW_API BFW::GUID::ReleaseString(const BFW_STRING_VIEW_TYPE _GUID)

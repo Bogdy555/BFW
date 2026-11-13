@@ -2,6 +2,11 @@
 
 
 
+static std::mutex Mutex;
+
+BFW_DEBUG_CALL(static std::mutex LoggingFileMutex);
+
+BFW_DEBUG_CALL(static std::mutex ProfilingFileMutex);
 BFW_DEBUG_CALL(static BFW::Assets::Json ProfilingJson);
 BFW_DEBUG_CALL(static uint64_t ProfilingStart = 0);
 
@@ -14,9 +19,13 @@ static uint16_t DefaultAttribute = BFW::Log::_TxtWhiteAttribute | BFW::Log::_Bkg
 
 
 
+BFW_API std::mutex* BFW::Log::Mutex = &::Mutex;
+
 BFW_DEBUG_CALL(std::ofstream BFW_API BFW::Log::LoggingFile);
+BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::LoggingFileMutex = &::LoggingFileMutex);
 
 BFW_DEBUG_CALL(std::ofstream BFW_API BFW::Log::ProfilingFile);
+BFW_DEBUG_CALL(BFW_API std::mutex* BFW::Log::ProfilingFileMutex = &::ProfilingFileMutex);
 BFW_DEBUG_CALL(BFW_API BFW::Assets::Json* BFW::Log::ProfilingJson = &::ProfilingJson);
 BFW_DEBUG_CALL(BFW_API const uint64_t& BFW::Log::ProfilingStart = ::ProfilingStart);
 
@@ -191,28 +200,6 @@ const bool BFW_API BFW::Log::FlushProfilingJsonToFile()
 	}
 
 	return true;
-}
-
-#endif
-
-BFW_API std::mutex& BFW::Log::GetMutex()
-{
-	static std::mutex _Mutex;
-	return _Mutex;
-}
-
-#ifdef BFW_DEBUG
-
-BFW_API std::mutex& BFW::Log::GetLoggingFileMutex()
-{
-	static std::mutex _LoggingFileMutex;
-	return _LoggingFileMutex;
-}
-
-BFW_API std::mutex& BFW::Log::GetProfilingFileMutex()
-{
-	static std::mutex _ProfilingFileMutex;
-	return _ProfilingFileMutex;
 }
 
 #endif
