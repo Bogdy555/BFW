@@ -12,6 +12,7 @@
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Debugging_Debug.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Debugging_Release.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Debugging_Server.bat" />
+    <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Serial_Monitor.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload_Debug.bat" />
     <File Path="BFW_ESP32/Cmd Batches/BFW_ESP32_Upload_Release.bat" />
