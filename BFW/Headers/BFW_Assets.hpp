@@ -604,6 +604,7 @@ namespace BFW
 			void QueueWaveFrontObj(const BFW_CHAR_TYPE* _Name);
 			void QueueMaterialLib(const BFW_CHAR_TYPE* _Name);
 			void QueueGLSL(const BFW_CHAR_TYPE* _Name);
+			void QueueJavaScript(const BFW_CHAR_TYPE* _Name);
 			void QueueJson(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -614,6 +615,7 @@ namespace BFW
 			void QueueResourceWaveFrontObj(const size_t _Id);
 			void QueueResourceMaterialLib(const size_t _Id);
 			void QueueResourceGLSL(const size_t _Id);
+			void QueueResourceJavaScript(const size_t _Id);
 			void QueueResourceJson(const size_t _Id);
 
 #endif
@@ -626,6 +628,7 @@ namespace BFW
 			void AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
 			void AddDynamicMaterialLib(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib>& _Asset);
 			void AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
+			void AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
 			void AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
@@ -634,6 +637,7 @@ namespace BFW
 			void AddDynamicWaveFrontObjRef(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
 			void AddDynamicMaterialLibRef(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib>& _Asset);
 			void AddDynamicGLSLRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
+			void AddDynamicJavaScriptRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
 			void Update();
@@ -644,6 +648,7 @@ namespace BFW
 			void ReleaseWaveFrontObj(const BFW_CHAR_TYPE* _Name);
 			void ReleaseMaterialLib(const BFW_CHAR_TYPE* _Name);
 			void ReleaseGLSL(const BFW_CHAR_TYPE* _Name);
+			void ReleaseJavaScript(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJson(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -654,6 +659,7 @@ namespace BFW
 			void ReleaseResourceWaveFrontObj(const size_t _Id);
 			void ReleaseResourceMaterialLib(const size_t _Id);
 			void ReleaseResourceGLSL(const size_t _Id);
+			void ReleaseResourceJavaScript(const size_t _Id);
 			void ReleaseResourceJson(const size_t _Id);
 
 #endif
@@ -664,6 +670,7 @@ namespace BFW
 			const bool WasWaveFrontObjUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasMaterialLibUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasGLSLUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasJavaScriptUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasJsonUpdated(const BFW_CHAR_TYPE* _Name);
 
 			SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name);
@@ -678,6 +685,8 @@ namespace BFW
 			const SharedPointer<MaterialLib> GetMaterialLib(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<FileContent> GetGLSL(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<FileContent> GetGLSL(const BFW_CHAR_TYPE* _Name) const;
+			SharedPointer<FileContent> GetJavaScript(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<FileContent> GetJavaScript(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name) const;
 
@@ -695,6 +704,8 @@ namespace BFW
 			const SharedPointer<MaterialLib> GetResourceMaterialLib(const size_t _Id) const;
 			SharedPointer<FileContent> GetResourceGLSL(const size_t _Id);
 			const SharedPointer<FileContent> GetResourceGLSL(const size_t _Id) const;
+			SharedPointer<FileContent> GetResourceJavaScript(const size_t _Id);
+			const SharedPointer<FileContent> GetResourceJavaScript(const size_t _Id) const;
 			SharedPointer<Json> GetResourceJson(const size_t _Id);
 			const SharedPointer<Json> GetResourceJson(const size_t _Id) const;
 
@@ -724,6 +735,7 @@ namespace BFW
 			Vector<BFW_STRING_TYPE> QueuedWaveFrontObjs;
 			Vector<BFW_STRING_TYPE> QueuedMaterialLibs;
 			Vector<BFW_STRING_TYPE> QueuedGLSLs;
+			Vector<BFW_STRING_TYPE> QueuedJavaScripts;
 			Vector<BFW_STRING_TYPE> QueuedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -734,6 +746,7 @@ namespace BFW
 			Vector<size_t> QueuedResourceWaveFrontObjs;
 			Vector<size_t> QueuedResourceMaterialLibs;
 			Vector<size_t> QueuedResourceGLSLs;
+			Vector<size_t> QueuedResourceJavaScripts;
 			Vector<size_t> QueuedResourceJsons;
 
 #endif
@@ -744,6 +757,7 @@ namespace BFW
 			Trie<SharedPointer<WaveFrontObj>> LoadedWaveFrontObjs;
 			Trie<SharedPointer<MaterialLib>> LoadedMaterialLibs;
 			Trie<SharedPointer<FileContent>> LoadedGLSLs;
+			Trie<SharedPointer<FileContent>> LoadedJavaScripts;
 			Trie<SharedPointer<Json>> LoadedJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -754,6 +768,7 @@ namespace BFW
 			Trie<SharedPointer<WaveFrontObj>> LoadedResourceWaveFrontObjs;
 			Trie<SharedPointer<MaterialLib>> LoadedResourceMaterialLibs;
 			Trie<SharedPointer<FileContent>> LoadedResourceGLSLs;
+			Trie<SharedPointer<FileContent>> LoadedResourceJavaScripts;
 			Trie<SharedPointer<Json>> LoadedResourceJsons;
 
 #endif
@@ -764,6 +779,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedWaveFrontObjNames;
 			mutable Vector<BFW_STRING_TYPE> CachedMaterialLibNames;
 			mutable Vector<BFW_STRING_TYPE> CachedGLSLNames;
+			mutable Vector<BFW_STRING_TYPE> CachedJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJsonNames;
 
 			mutable Trie<WeakPointer<BitMap>> CachedBitMaps;
@@ -772,6 +788,7 @@ namespace BFW
 			mutable Trie<WeakPointer<WaveFrontObj>> CachedWaveFrontObjs;
 			mutable Trie<WeakPointer<MaterialLib>> CachedMaterialLibs;
 			mutable Trie<WeakPointer<FileContent>> CachedGLSLs;
+			mutable Trie<WeakPointer<FileContent>> CachedJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedJsons;
 
 			mutable Trie<uint64_t> LastWriteBitMaps;
@@ -780,6 +797,7 @@ namespace BFW
 			mutable Trie<uint64_t> LastWriteWaveFrontObjs;
 			mutable Trie<uint64_t> LastWriteMaterialLibs;
 			mutable Trie<uint64_t> LastWriteGLSLs;
+			mutable Trie<uint64_t> LastWriteJavaScripts;
 			mutable Trie<uint64_t> LastWriteJsons;
 
 			mutable Trie<uint64_t> OldLastWriteBitMaps;
@@ -788,6 +806,7 @@ namespace BFW
 			mutable Trie<uint64_t> OldLastWriteWaveFrontObjs;
 			mutable Trie<uint64_t> OldLastWriteMaterialLibs;
 			mutable Trie<uint64_t> OldLastWriteGLSLs;
+			mutable Trie<uint64_t> OldLastWriteJavaScripts;
 			mutable Trie<uint64_t> OldLastWriteJsons;
 
 #ifdef BFW_WINDOWS_PLATFORM
@@ -798,6 +817,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedResourceWaveFrontObjNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceMaterialLibNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceGLSLNames;
+			mutable Vector<BFW_STRING_TYPE> CachedResourceJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJsonNames;
 
 			mutable Trie<WeakPointer<BitMap>> CachedResourceBitMaps;
@@ -806,6 +826,7 @@ namespace BFW
 			mutable Trie<WeakPointer<WaveFrontObj>> CachedResourceWaveFrontObjs;
 			mutable Trie<WeakPointer<MaterialLib>> CachedResourceMaterialLibs;
 			mutable Trie<WeakPointer<FileContent>> CachedResourceGLSLs;
+			mutable Trie<WeakPointer<FileContent>> CachedResourceJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedResourceJsons;
 
 #endif
