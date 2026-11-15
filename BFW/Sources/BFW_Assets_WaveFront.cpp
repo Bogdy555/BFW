@@ -960,7 +960,7 @@ const bool BFW::Assets::WaveFrontObj::Load(const FileContent& _FileContent, cons
 {
 	Clear();
 
-	if (!_FileContent.GetData())
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0')
 	{
 		return false;
 	}
@@ -3325,7 +3325,7 @@ const bool BFW::Assets::MaterialLib::Load(const FileContent& _FileContent, const
 {
 	Clear();
 
-	if (!_FileContent.GetData())
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0')
 	{
 		return false;
 	}

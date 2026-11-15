@@ -290,7 +290,7 @@ const bool BFW::Assets::Wave::Load(const FileContent& _FileContent)
 {
 	Destroy();
 
-	if (!_FileContent.GetData() || _FileContent.GetLength() < sizeof(WaveFileHeader) + sizeof(WaveChunkHeader) * 2 + 1)
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0' || _FileContent.GetLength() < sizeof(WaveFileHeader) + sizeof(WaveChunkHeader) * 2 + 1)
 	{
 		return false;
 	}

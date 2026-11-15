@@ -2,6 +2,1308 @@
 
 
 
+static const bool IsValidXMLFile(const BFW::Assets::FileContent& _FileContent)
+{
+	for (size_t _Index = 0; _Index < _FileContent.GetLength() - 1; _Index++)
+	{
+		if (BFW::String::IsUTF8MultiByte2(_FileContent[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte2(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_FileContent[_Index - 1], _FileContent[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint2A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			if (_CodePoint != 0x9 && _CodePoint != 0xA && _CodePoint != 0xD && !(_CodePoint >= 0x20 && _CodePoint <= 0xD7FF) && !(_CodePoint >= 0xE000 && _CodePoint <= 0xFFFD) && !(_CodePoint >= 0x10000 && _CodePoint <= 0x10FFFF))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByte3(_FileContent[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte3(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]) || !BFW::String::IsValidUTF8MultiByte3FirstContinuation(_FileContent[_Index - 1], _FileContent[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_FileContent[_Index - 2], _FileContent[_Index - 1], _FileContent[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint3A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			if (_CodePoint != 0x9 && _CodePoint != 0xA && _CodePoint != 0xD && !(_CodePoint >= 0x20 && _CodePoint <= 0xD7FF) && !(_CodePoint >= 0xE000 && _CodePoint <= 0xFFFD) && !(_CodePoint >= 0x10000 && _CodePoint <= 0x10FFFF))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByte4(_FileContent[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte4(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]) || !BFW::String::IsValidUTF8MultiByte4FirstContinuation(_FileContent[_Index - 1], _FileContent[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_FileContent[_Index - 3], _FileContent[_Index - 2], _FileContent[_Index - 1], _FileContent[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint4A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			if (_CodePoint != 0x9 && _CodePoint != 0xA && _CodePoint != 0xD && !(_CodePoint >= 0x20 && _CodePoint <= 0xD7FF) && !(_CodePoint >= 0xE000 && _CodePoint <= 0xFFFD) && !(_CodePoint >= 0x10000 && _CodePoint <= 0x10FFFF))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByteContinuation(_FileContent[_Index]))
+		{
+			return false;
+		}
+
+		uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_FileContent[_Index]);
+
+		if (!BFW::String::IsValidUnicodePoint1A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+		{
+			return false;
+		}
+
+		if (_CodePoint != 0x9 && _CodePoint != 0xA && _CodePoint != 0xD && !(_CodePoint >= 0x20 && _CodePoint <= 0xD7FF) && !(_CodePoint >= 0xE000 && _CodePoint <= 0xFFFD) && !(_CodePoint >= 0x10000 && _CodePoint <= 0x10FFFF))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+static const bool IsValidXMLToken(const BFW_STRING_TYPE_A& _Token)
+{
+	if (!_Token.size() || BFW_STRING_TYPE_A("-.:0123456789").find(_Token[0]) != BFW_STRING_TYPE_A::npos)
+	{
+		return false;
+	}
+
+	BFW::Vector<uint32_t> _CodePoints;
+
+	for (size_t _Index = 0; _Index < _Token.size(); _Index++)
+	{
+		if (BFW::String::IsUTF8MultiByte2(_Token[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte2(_Token[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Token.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Token[_Index - 1], _Token[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint2A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			_CodePoints.PushBack(_CodePoint);
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByte3(_Token[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte3(_Token[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Token.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]) || !BFW::String::IsValidUTF8MultiByte3FirstContinuation(_Token[_Index - 1], _Token[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Token.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Token[_Index - 2], _Token[_Index - 1], _Token[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint3A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			_CodePoints.PushBack(_CodePoint);
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByte4(_Token[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte4(_Token[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Token.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]) || !BFW::String::IsValidUTF8MultiByte4FirstContinuation(_Token[_Index - 1], _Token[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Token.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Token.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Token[_Index - 3], _Token[_Index - 2], _Token[_Index - 1], _Token[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint4A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			_CodePoints.PushBack(_CodePoint);
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByteContinuation(_Token[_Index]))
+		{
+			return false;
+		}
+
+		uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Token[_Index]);
+
+		if (!BFW::String::IsValidUnicodePoint1A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+		{
+			return false;
+		}
+
+		_CodePoints.PushBack(_CodePoint);
+	}
+
+	if (_CodePoints[0] != '_' &&
+		_CodePoints[0] != ':' &&
+		!(_CodePoints[0] >= 'A' && _CodePoints[0] <= 'Z') &&
+		!(_CodePoints[0] >= 'a' && _CodePoints[0] <= 'z') &&
+		!(_CodePoints[0] >= 0xC0 && _CodePoints[0] <= 0xD6) &&
+		!(_CodePoints[0] >= 0xD8 && _CodePoints[0] <= 0xF6) &&
+		!(_CodePoints[0] >= 0xF8 && _CodePoints[0] <= 0x2FF) &&
+		!(_CodePoints[0] >= 0x370 && _CodePoints[0] <= 0x37D) &&
+		!(_CodePoints[0] >= 0x37F && _CodePoints[0] <= 0x1FFF) &&
+		!(_CodePoints[0] >= 0x200C && _CodePoints[0] <= 0x200D) &&
+		!(_CodePoints[0] >= 0x2070 && _CodePoints[0] <= 0x218F) &&
+		!(_CodePoints[0] >= 0x2C00 && _CodePoints[0] <= 0x2FEF) &&
+		!(_CodePoints[0] >= 0x3001 && _CodePoints[0] <= 0xD7FF) &&
+		!(_CodePoints[0] >= 0xF900 && _CodePoints[0] <= 0xFDCF) &&
+		!(_CodePoints[0] >= 0xFDF0 && _CodePoints[0] <= 0xFFFD) &&
+		!(_CodePoints[0] >= 0x10000 && _CodePoints[0] <= 0xEFFFF))
+	{
+		return false;
+	}
+
+	size_t _Count = _CodePoints[0] == ':';
+
+	for (size_t _Index = 1; _Index < _CodePoints.GetSize(); _Index++)
+	{
+		if (_CodePoints[_Index] != '-' &&
+			_CodePoints[_Index] != '_' &&
+			_CodePoints[_Index] != '.' &&
+			_CodePoints[_Index] != ':' &&
+			_CodePoints[_Index] != 0xB7 &&
+			!(_CodePoints[_Index] >= 'A' && _CodePoints[_Index] <= 'Z') &&
+			!(_CodePoints[_Index] >= 'a' && _CodePoints[_Index] <= 'z') &&
+			!(_CodePoints[_Index] >= '0' && _CodePoints[_Index] <= '9') &&
+			!(_CodePoints[_Index] >= 0xC0 && _CodePoints[_Index] <= 0xD6) &&
+			!(_CodePoints[_Index] >= 0xD8 && _CodePoints[_Index] <= 0xF6) &&
+			!(_CodePoints[_Index] >= 0xF8 && _CodePoints[_Index] <= 0x2FF) &&
+			!(_CodePoints[_Index] >= 0x370 && _CodePoints[_Index] <= 0x37D) &&
+			!(_CodePoints[_Index] >= 0x37F && _CodePoints[_Index] <= 0x1FFF) &&
+			!(_CodePoints[_Index] >= 0x200C && _CodePoints[_Index] <= 0x200D) &&
+			!(_CodePoints[_Index] >= 0x2070 && _CodePoints[_Index] <= 0x218F) &&
+			!(_CodePoints[_Index] >= 0x2C00 && _CodePoints[_Index] <= 0x2FEF) &&
+			!(_CodePoints[_Index] >= 0x3001 && _CodePoints[_Index] <= 0xD7FF) &&
+			!(_CodePoints[_Index] >= 0xF900 && _CodePoints[_Index] <= 0xFDCF) &&
+			!(_CodePoints[_Index] >= 0xFDF0 && _CodePoints[_Index] <= 0xFFFD) &&
+			!(_CodePoints[_Index] >= 0x10000 && _CodePoints[_Index] <= 0xEFFFF) &&
+			!(_CodePoints[_Index] >= 0x0300 && _CodePoints[_Index] <= 0x036F) &&
+			!(_CodePoints[_Index] >= 0x203F && _CodePoints[_Index] <= 0x2040))
+		{
+			return false;
+		}
+
+		_Count += _CodePoints[_Index] == ':';
+	}
+
+	if (_Count > 1)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLComment(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos)
+{
+	if (_FileContent[_CurrentPos] != '<' || _FileContent[_CurrentPos + 1] != '!' || _FileContent[_CurrentPos + 2] != '-' || _FileContent[_CurrentPos + 3] != '-')
+	{
+		return false;
+	}
+
+	_CurrentPos += 4;
+
+	while (_CurrentPos + 2 < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != '-' || _FileContent[_CurrentPos + 1] != '-' || _FileContent[_CurrentPos + 2] != '>'))
+	{
+		if (_FileContent[_CurrentPos] == '-' && _FileContent[_CurrentPos + 1] == '-')
+		{
+			return false;
+		}
+
+		_CurrentPos++;
+	}
+
+	if (_CurrentPos + 2 == _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	_CurrentPos += 3;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	return true;
+}
+
+const bool LoadXMLString(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW_STRING_TYPE_A& _String)
+{
+	if (_FileContent[_CurrentPos] != '\"' && _FileContent[_CurrentPos] != '\'')
+	{
+		return false;
+	}
+
+	BFW_CHAR_TYPE_A _Quotes = _FileContent[_CurrentPos];
+
+	_CurrentPos++;
+
+	while (_CurrentPos < _FileContent.GetLength() - 1 && _FileContent[_CurrentPos] != _Quotes)
+	{
+		if (_FileContent[_CurrentPos] <= 0x08 || (_FileContent[_CurrentPos] >= 0x0B && _FileContent[_CurrentPos] <= 0x1F))
+		{
+			return false;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == '#' && _FileContent[_CurrentPos + 2] >= '0' && _FileContent[_CurrentPos + 2] <= '9')
+		{
+			_CurrentPos += 2;
+
+			size_t _Count = 0;
+			uint32_t _CodePoint = 0;
+
+			while (_CurrentPos < _FileContent.GetLength() - 1 && _FileContent[_CurrentPos] >= '0' && _FileContent[_CurrentPos] <= '9' && _FileContent[_CurrentPos] != ';')
+			{
+				_CodePoint = _CodePoint * 10 + _FileContent[_CurrentPos] - '0';
+				_Count++;
+				_CurrentPos++;
+			}
+
+			if (_CurrentPos == _FileContent.GetLength() - 1 || _FileContent[_CurrentPos] != ';' || _Count > 7)
+			{
+				return false;
+			}
+
+			_CurrentPos++;
+
+			if (_CodePoint == 0x0 || _CodePoint == 0xFFFE || _CodePoint == 0xFFFF || _CodePoint > 0x10FFFF || (_CodePoint >= 0xD800 && _CodePoint <= 0xDFFF))
+			{
+				return false;
+			}
+
+			BFW::Vector<BFW_CHAR_TYPE_W> _Chars = BFW::String::DeconstructUnicodePointW(_CodePoint);
+
+			BFW_STRING_TYPE_W _WString = L"";
+
+			for (size_t _Index = 0; _Index < _Chars.GetSize(); _Index++)
+			{
+				_WString += _Chars[_Index];
+			}
+
+			if (!BFW::String::IsValidUnicodeString(_WString))
+			{
+				return false;
+			}
+
+			bool _Error = false;
+			_String += BFW::String::FromUnicodeToUTF8(_WString, &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == '#' && _FileContent[_CurrentPos + 2] == 'x' && BFW::String::IsHexA(_FileContent[_CurrentPos + 3]))
+		{
+			_CurrentPos += 3;
+
+			size_t _Count = 0;
+			uint32_t _CodePoint = 0;
+
+			while (_CurrentPos < _FileContent.GetLength() - 1 && BFW::String::IsHexA(_FileContent[_CurrentPos]) && _FileContent[_CurrentPos] != ';')
+			{
+				_CodePoint = (_CodePoint << 4) + BFW::String::HexCharToNibbleA(_FileContent[_CurrentPos]);
+				_Count++;
+				_CurrentPos++;
+			}
+
+			if (_CurrentPos == _FileContent.GetLength() - 1 || _FileContent[_CurrentPos] != ';' || _Count > 6)
+			{
+				return false;
+			}
+
+			_CurrentPos++;
+
+			if (_CodePoint == 0x0 || _CodePoint == 0xFFFE || _CodePoint == 0xFFFF || _CodePoint > 0x10FFFF || (_CodePoint >= 0xD800 && _CodePoint <= 0xDFFF))
+			{
+				return false;
+			}
+
+			BFW::Vector<BFW_CHAR_TYPE_W> _Chars = BFW::String::DeconstructUnicodePointW(_CodePoint);
+
+			BFW_STRING_TYPE_W _WString = L"";
+
+			for (size_t _Index = 0; _Index < _Chars.GetSize(); _Index++)
+			{
+				_WString += _Chars[_Index];
+			}
+
+			if (!BFW::String::IsValidUnicodeString(_WString))
+			{
+				return false;
+			}
+
+			bool _Error = false;
+			_String += BFW::String::FromUnicodeToUTF8(_WString, &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'a' && _FileContent[_CurrentPos + 2] == 'm' && _FileContent[_CurrentPos + 3] == 'p' && _FileContent[_CurrentPos + 4] == ';')
+		{
+			_String += '&';
+			_CurrentPos += 5;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'l' && _FileContent[_CurrentPos + 2] == 't' && _FileContent[_CurrentPos + 3] == ';')
+		{
+			_String += '<';
+			_CurrentPos += 4;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'g' && _FileContent[_CurrentPos + 2] == 't' && _FileContent[_CurrentPos + 3] == ';')
+		{
+			_String += '>';
+			_CurrentPos += 4;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'q' && _FileContent[_CurrentPos + 2] == 'u' && _FileContent[_CurrentPos + 3] == 'o' && _FileContent[_CurrentPos + 4] == 't' && _FileContent[_CurrentPos + 5] == ';')
+		{
+			_String += '\"';
+			_CurrentPos += 6;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'a' && _FileContent[_CurrentPos + 2] == 'p' && _FileContent[_CurrentPos + 3] == 'o' && _FileContent[_CurrentPos + 4] == 's' && _FileContent[_CurrentPos + 5] == ';')
+		{
+			_String += '\'';
+			_CurrentPos += 6;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&')
+		{
+			return false;
+		}
+
+		_String += _FileContent[_CurrentPos];
+		_CurrentPos++;
+	}
+
+	if (_CurrentPos == _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::XMLNode& _Entry)
+{
+	BFW_STRING_TYPE_A _String;
+
+	while (_CurrentPos < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != '<' || (_FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')))
+	{
+		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')
+		{
+			if (!LoadXMLComment(_FileContent, _CurrentPos))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] <= 0x08 || (_FileContent[_CurrentPos] >= 0x0B && _FileContent[_CurrentPos] <= 0x1F))
+		{
+			return false;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == '#' && _FileContent[_CurrentPos + 2] >= '0' && _FileContent[_CurrentPos + 2] <= '9')
+		{
+			_CurrentPos += 2;
+
+			size_t _Count = 0;
+			uint32_t _CodePoint = 0;
+
+			while (_CurrentPos < _FileContent.GetLength() - 1 && _FileContent[_CurrentPos] >= '0' && _FileContent[_CurrentPos] <= '9' && _FileContent[_CurrentPos] != ';')
+			{
+				_CodePoint = _CodePoint * 10 + _FileContent[_CurrentPos] - '0';
+				_Count++;
+				_CurrentPos++;
+			}
+
+			if (_CurrentPos == _FileContent.GetLength() - 1 || _FileContent[_CurrentPos] != ';' || _Count > 7)
+			{
+				return false;
+			}
+
+			_CurrentPos++;
+
+			if (_CodePoint == 0x0 || _CodePoint == 0xFFFE || _CodePoint == 0xFFFF || _CodePoint > 0x10FFFF || (_CodePoint >= 0xD800 && _CodePoint <= 0xDFFF))
+			{
+				return false;
+			}
+
+			BFW::Vector<BFW_CHAR_TYPE_W> _Chars = BFW::String::DeconstructUnicodePointW(_CodePoint);
+
+			BFW_STRING_TYPE_W _WString = L"";
+
+			for (size_t _Index = 0; _Index < _Chars.GetSize(); _Index++)
+			{
+				_WString += _Chars[_Index];
+			}
+
+			if (!BFW::String::IsValidUnicodeString(_WString))
+			{
+				return false;
+			}
+
+			bool _Error = false;
+			_String += BFW::String::FromUnicodeToUTF8(_WString, &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == '#' && _FileContent[_CurrentPos + 2] == 'x' && BFW::String::IsHexA(_FileContent[_CurrentPos + 3]))
+		{
+			_CurrentPos += 3;
+
+			size_t _Count = 0;
+			uint32_t _CodePoint = 0;
+
+			while (_CurrentPos < _FileContent.GetLength() - 1 && BFW::String::IsHexA(_FileContent[_CurrentPos]) && _FileContent[_CurrentPos] != ';')
+			{
+				_CodePoint = (_CodePoint << 4) + BFW::String::HexCharToNibbleA(_FileContent[_CurrentPos]);
+				_Count++;
+				_CurrentPos++;
+			}
+
+			if (_CurrentPos == _FileContent.GetLength() - 1 || _FileContent[_CurrentPos] != ';' || _Count > 6)
+			{
+				return false;
+			}
+
+			_CurrentPos++;
+
+			if (_CodePoint == 0x0 || _CodePoint == 0xFFFE || _CodePoint == 0xFFFF || _CodePoint > 0x10FFFF || (_CodePoint >= 0xD800 && _CodePoint <= 0xDFFF))
+			{
+				return false;
+			}
+
+			BFW::Vector<BFW_CHAR_TYPE_W> _Chars = BFW::String::DeconstructUnicodePointW(_CodePoint);
+
+			BFW_STRING_TYPE_W _WString = L"";
+
+			for (size_t _Index = 0; _Index < _Chars.GetSize(); _Index++)
+			{
+				_WString += _Chars[_Index];
+			}
+
+			if (!BFW::String::IsValidUnicodeString(_WString))
+			{
+				return false;
+			}
+
+			bool _Error = false;
+			_String += BFW::String::FromUnicodeToUTF8(_WString, &_Error);
+
+			if (_Error)
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'a' && _FileContent[_CurrentPos + 2] == 'm' && _FileContent[_CurrentPos + 3] == 'p' && _FileContent[_CurrentPos + 4] == ';')
+		{
+			_String += '&';
+			_CurrentPos += 5;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'l' && _FileContent[_CurrentPos + 2] == 't' && _FileContent[_CurrentPos + 3] == ';')
+		{
+			_String += '<';
+			_CurrentPos += 4;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'g' && _FileContent[_CurrentPos + 2] == 't' && _FileContent[_CurrentPos + 3] == ';')
+		{
+			_String += '>';
+			_CurrentPos += 4;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'q' && _FileContent[_CurrentPos + 2] == 'u' && _FileContent[_CurrentPos + 3] == 'o' && _FileContent[_CurrentPos + 4] == 't' && _FileContent[_CurrentPos + 5] == ';')
+		{
+			_String += '\"';
+			_CurrentPos += 6;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&' && _FileContent[_CurrentPos + 1] == 'a' && _FileContent[_CurrentPos + 2] == 'p' && _FileContent[_CurrentPos + 3] == 'o' && _FileContent[_CurrentPos + 4] == 's' && _FileContent[_CurrentPos + 5] == ';')
+		{
+			_String += '\'';
+			_CurrentPos += 6;
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '&')
+		{
+			return false;
+		}
+
+		_String += _FileContent[_CurrentPos];
+		_CurrentPos++;
+	}
+
+	if (_CurrentPos == _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		if (_String[_Index] == '\r')
+		{
+			_String.erase(_String.begin() + _Index);
+			_Index--;
+			continue;
+		}
+	}
+
+	size_t _Index = 0;
+
+	while (_Index < _String.size() && std::isspace((const unsigned BFW_CHAR_TYPE_A)(_String[_String.size() - 1 - _Index])))
+	{
+		_Index++;
+	}
+
+	_String = _String.substr(0, _String.size() - _Index);
+
+	if (!_String.size())
+	{
+		return false;
+	}
+
+	_Entry.SetText(_String);
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLEntry(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::XMLNode& _Entry, bool& _LeftClosed, bool& _RightClosed)
+{
+	_LeftClosed = false;
+	_RightClosed = false;
+
+	if (_FileContent[_CurrentPos] != '<')
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	if (_FileContent[_CurrentPos] == '/')
+	{
+		_LeftClosed = true;
+		_CurrentPos++;
+	}
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	BFW_STRING_TYPE_A _Tag;
+
+	while (_CurrentPos < _FileContent.GetLength() - 1 && !std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) && _FileContent[_CurrentPos] != '>' && (_FileContent[_CurrentPos] != '/' || _FileContent[_CurrentPos + 1] != '>'))
+	{
+		_Tag += _FileContent[_CurrentPos];
+		_CurrentPos++;
+	}
+
+	if (_CurrentPos == _FileContent.GetLength() - 1 || !IsValidXMLToken(_Tag))
+	{
+		return false;
+	}
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	_Entry.SetTag(_Tag);
+
+	BFW::Vector<BFW_STRING_TYPE_A>& _Attributes = _Entry.GetAttributes();
+	BFW::Vector<BFW_STRING_TYPE_A>& _AttributeValues = _Entry.GetAttributeValues();
+
+	while (_CurrentPos < _FileContent.GetLength() - 1 && _FileContent[_CurrentPos] != '>' && (_FileContent[_CurrentPos] != '/' || _FileContent[_CurrentPos + 1] != '>'))
+	{
+		BFW_STRING_TYPE_A _Attribute;
+
+		while (_CurrentPos < _FileContent.GetLength() - 1 && !std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) && _FileContent[_CurrentPos] != '>' && (_FileContent[_CurrentPos] != '/' || _FileContent[_CurrentPos + 1] != '>') && _FileContent[_CurrentPos] != '=')
+		{
+			_Attribute += _FileContent[_CurrentPos];
+			_CurrentPos++;
+		}
+
+		if (_CurrentPos == _FileContent.GetLength() - 1 || !IsValidXMLToken(_Attribute))
+		{
+			return false;
+		}
+
+		while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		_Attributes.PushBack(_Attribute);
+
+		if (_FileContent[_CurrentPos] != '=')
+		{
+			_AttributeValues.EmplaceBack("");
+			continue;
+		}
+
+		_CurrentPos++;
+
+		while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		BFW_STRING_TYPE_A _AttributeValue;
+
+		if (!LoadXMLString(_FileContent, _CurrentPos, _AttributeValue))
+		{
+			return false;
+		}
+
+		_AttributeValues.PushBack(_AttributeValue);
+	}
+
+	if (_CurrentPos == _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	if (_FileContent[_CurrentPos] == '/')
+	{
+		_RightClosed = true;
+		_CurrentPos++;
+	}
+
+	_CurrentPos++;
+
+	if ((_LeftClosed && _RightClosed) || (_LeftClosed && _Attributes.GetSize()))
+	{
+		return false;
+	}
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLExclamation(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Vector<BFW::Assets::XMLNode>& _ExclamationMarks)
+{
+	if (_FileContent[_CurrentPos] != '<' || _FileContent[_CurrentPos + 1] != '!')
+	{
+		return false;
+	}
+
+	_CurrentPos += 2;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	BFW_STRING_TYPE_A _Tag;
+
+	while (_CurrentPos < _FileContent.GetLength() - 1 && !std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) && _FileContent[_CurrentPos] != '>')
+	{
+		_Tag += _FileContent[_CurrentPos];
+		_CurrentPos++;
+	}
+
+	if (_CurrentPos == _FileContent.GetLength() - 1 || _Tag != "DOCTYPE")
+	{
+		return false;
+	}
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	BFW::Assets::XMLNode& _Exclamation = _ExclamationMarks.EmplaceBack(BFW::Assets::XMLNode());
+
+	_Exclamation.SetTag(_Tag);
+
+	BFW::Vector<BFW_STRING_TYPE_A>& _Attributes = _Exclamation.GetAttributes();
+	BFW::Vector<BFW_STRING_TYPE_A>& _AttributeValues = _Exclamation.GetAttributeValues();
+
+	while (_CurrentPos < _FileContent.GetLength() - 1 && _FileContent[_CurrentPos] != '>')
+	{
+		BFW_STRING_TYPE_A _Attribute;
+
+		if (_FileContent[_CurrentPos] == '\"')
+		{
+			if (!LoadXMLString(_FileContent, _CurrentPos, _Attribute))
+			{
+				return false;
+			}
+
+			while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+			{
+				_CurrentPos++;
+			}
+
+			_Attributes.PushBack(_Attribute);
+			_AttributeValues.EmplaceBack("");
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '[')
+		{
+			_CurrentPos++;
+
+			BFW_CHAR_TYPE_A _Quotes = '\0';
+
+			while (_CurrentPos < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != ']' || _Quotes != '\0'))
+			{
+				if (_Quotes == '\0')
+				{
+					if (_FileContent[_CurrentPos] == '\"' || _FileContent[_CurrentPos] == '\'')
+					{
+						_Quotes = _FileContent[_CurrentPos];
+					}
+				}
+				else
+				{
+					if (_FileContent[_CurrentPos] == _Quotes)
+					{
+						_Quotes = '\0';
+					}
+				}
+
+				_Attribute += _FileContent[_CurrentPos];
+				_CurrentPos++;
+			}
+
+			if (_CurrentPos == _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			_CurrentPos++;
+
+			while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+			{
+				_CurrentPos++;
+			}
+
+			_Attributes.PushBack(_Attribute);
+			_AttributeValues.EmplaceBack("");
+
+			continue;
+		}
+
+		while (_CurrentPos < _FileContent.GetLength() - 1 && !std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) && _FileContent[_CurrentPos] != '>' && _FileContent[_CurrentPos] != '=')
+		{
+			_Attribute += _FileContent[_CurrentPos];
+			_CurrentPos++;
+		}
+
+		if (_CurrentPos == _FileContent.GetLength() - 1 || !IsValidXMLToken(_Attribute))
+		{
+			return false;
+		}
+
+		while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		_Attributes.PushBack(_Attribute);
+
+		if (_FileContent[_CurrentPos] != '=')
+		{
+			_AttributeValues.EmplaceBack("");
+			continue;
+		}
+
+		_CurrentPos++;
+
+		while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		BFW_STRING_TYPE_A _AttributeValue;
+
+		if (!LoadXMLString(_FileContent, _CurrentPos, _AttributeValue))
+		{
+			return false;
+		}
+
+		_AttributeValues.PushBack(_AttributeValue);
+	}
+
+	if (_CurrentPos == _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	_CurrentPos++;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLQuestion(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Vector<BFW::Assets::XMLNode>& _QuestionMarks)
+{
+	if (_FileContent[_CurrentPos] != '<' || _FileContent[_CurrentPos + 1] != '?')
+	{
+		return false;
+	}
+
+	_CurrentPos += 2;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	BFW_STRING_TYPE_A _Tag;
+
+	while (_CurrentPos + 1 < _FileContent.GetLength() - 1 && !std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) && (_FileContent[_CurrentPos] != '?' || _FileContent[_CurrentPos + 1] != '>'))
+	{
+		_Tag += _FileContent[_CurrentPos];
+		_CurrentPos++;
+	}
+
+	if (_CurrentPos + 1 == _FileContent.GetLength() - 1 || _Tag != "xml")
+	{
+		return false;
+	}
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	BFW::Assets::XMLNode& _Question = _QuestionMarks.EmplaceBack(BFW::Assets::XMLNode());
+
+	_Question.SetTag(_Tag);
+
+	BFW::Vector<BFW_STRING_TYPE_A>& _Attributes = _Question.GetAttributes();
+	BFW::Vector<BFW_STRING_TYPE_A>& _AttributeValues = _Question.GetAttributeValues();
+
+	while (_CurrentPos + 1 < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != '?' || _FileContent[_CurrentPos + 1] != '>'))
+	{
+		BFW_STRING_TYPE_A _Attribute;
+
+		while (_CurrentPos + 1 < _FileContent.GetLength() - 1 && !std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])) && (_FileContent[_CurrentPos] != '?' || _FileContent[_CurrentPos + 1] != '>') && _FileContent[_CurrentPos] != '=')
+		{
+			_Attribute += _FileContent[_CurrentPos];
+			_CurrentPos++;
+		}
+
+		if (_CurrentPos + 1 == _FileContent.GetLength() - 1 || !IsValidXMLToken(_Attribute))
+		{
+			return false;
+		}
+
+		while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		_Attributes.PushBack(_Attribute);
+
+		if (_FileContent[_CurrentPos] != '=')
+		{
+			_AttributeValues.EmplaceBack("");
+			continue;
+		}
+
+		_CurrentPos++;
+
+		while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+		{
+			_CurrentPos++;
+		}
+
+		BFW_STRING_TYPE_A _AttributeValue;
+
+		if (!LoadXMLString(_FileContent, _CurrentPos, _AttributeValue))
+		{
+			return false;
+		}
+
+		_AttributeValues.PushBack(_AttributeValue);
+	}
+
+	if (_CurrentPos + 1 == _FileContent.GetLength() - 1)
+	{
+		return false;
+	}
+
+	_CurrentPos += 2;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLHeader(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Vector<BFW::Assets::XMLNode>& _ExclamationMarks, BFW::Vector<BFW::Assets::XMLNode>& _QuestionMarks)
+{
+	bool _FoundXMLExclamation = false;
+	bool _FoundXMLQuestion = false;
+
+	while (_FileContent[_CurrentPos] == '<' && (_FileContent[_CurrentPos + 1] == '!' || _FileContent[_CurrentPos + 1] == '?'))
+	{
+		if (_FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')
+		{
+			if (!LoadXMLComment(_FileContent, _CurrentPos))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos + 1] == '!')
+		{
+			if (!LoadXMLExclamation(_FileContent, _CurrentPos, _ExclamationMarks))
+			{
+				return false;
+			}
+
+			_FoundXMLExclamation = true;
+
+			continue;
+		}
+
+		if (_FoundXMLExclamation || _FoundXMLQuestion || !LoadXMLQuestion(_FileContent, _CurrentPos, _QuestionMarks))
+		{
+			return false;
+		}
+
+		_FoundXMLQuestion = true;
+	}
+
+	return true;
+}
+
+static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::XMLNode& _Node)
+{
+	while (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')
+	{
+		if (!LoadXMLComment(_FileContent, _CurrentPos))
+		{
+			return false;
+		}
+	}
+
+	bool _LeftClosed = false;
+	bool _RightClosed = false;
+
+	if (!LoadXMLEntry(_FileContent, _CurrentPos, _Node, _LeftClosed, _RightClosed))
+	{
+		return false;
+	}
+
+	if (_LeftClosed)
+	{
+		return false;
+	}
+
+	if (_RightClosed)
+	{
+		return true;
+	}
+
+	BFW::Assets::XMLNode _CurrentEntry;
+
+	while (_CurrentPos < _FileContent.GetLength() - 1)
+	{
+		if (_CurrentEntry.GetType() == BFW::Assets::_NodeXMLNodeType)
+		{
+			_CurrentEntry.GetAttributes().Clear();
+			_CurrentEntry.GetAttributeValues().Clear();
+		}
+
+		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '/')
+		{
+			if (!LoadXMLEntry(_FileContent, _CurrentPos, _CurrentEntry, _LeftClosed, _RightClosed))
+			{
+				return false;
+			}
+
+			if (_RightClosed || !_LeftClosed || _CurrentEntry.GetTag() != _Node.GetTag())
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')
+		{
+			if (!LoadXMLComment(_FileContent, _CurrentPos))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] != '<')
+		{
+			if (!LoadXMLText(_FileContent, _CurrentPos, _CurrentEntry))
+			{
+				return false;
+			}
+
+			_Node.GetChilds().PushBack(_CurrentEntry);
+
+			continue;
+		}
+
+		if (!LoadXMLNode(_FileContent, _CurrentPos, _CurrentEntry))
+		{
+			return false;
+		}
+
+		_Node.GetChilds().PushBack(_CurrentEntry);
+	}
+
+	return false;
+}
+
 static const bool LoadJsonNull(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
 {
 	if ((const BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos]) != 'n')
@@ -445,7 +1747,7 @@ static const bool LoadJsonObject(const BFW::Assets::FileContent& _FileContent, s
 	{
 		BFW::Assets::Json _Tag;
 
-		if (!LoadJsonString(_FileContent, _CurrentPos, _Tag))
+		if (!LoadJsonString(_FileContent, _CurrentPos, _Tag) || _Tag.GetString().size() == 0)
 		{
 			return false;
 		}
@@ -1009,7 +2311,7 @@ static const bool SaveJsonObject(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _S
 			_Stream << '\t';
 		}
 
-		if (!SaveJsonString(_TabLevel, _Stream, _Tag))
+		if (!SaveJsonString(_TabLevel, _Stream, _Tag) || _Tag.GetString().size() == 0)
 		{
 			return false;
 		}
@@ -1265,6 +2567,295 @@ BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectD
 
 
 
+BFW::Assets::XMLNode::XMLNode() : Type(_TextXMLNodeType), Tag(""), Attributes(), AttributeValues(), Childs(), Text("Hello!")
+{
+
+}
+
+BFW::Assets::XMLNode::XMLNode(const XMLNode& _Other) : Type(_Other.Type), Tag(_Other.Tag), Attributes(_Other.Attributes), AttributeValues(_Other.AttributeValues), Childs(_Other.Childs), Text(_Other.Text)
+{
+
+}
+
+BFW::Assets::XMLNode::XMLNode(XMLNode&& _Other) noexcept : Type(_Other.Type), Tag(_Other.Tag), Attributes((Vector<BFW_STRING_TYPE_A>&&)(_Other.Attributes)), AttributeValues((Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues)), Childs((Vector<XMLNode>&&)(_Other.Childs)), Text(_Other.Text)
+{
+	_Other.Type = _TextXMLNodeType;
+	_Other.Tag = "";
+	_Other.Text = "Hello!";
+}
+
+BFW::Assets::XMLNode::~XMLNode()
+{
+
+}
+
+void BFW::Assets::XMLNode::SetTag(const BFW_STRING_VIEW_TYPE_A& _Tag)
+{
+	Type = _NodeXMLNodeType;
+	Tag = _Tag;
+	Text = "Hello!";
+}
+
+void BFW::Assets::XMLNode::SetText(const BFW_STRING_VIEW_TYPE_A& _Text)
+{
+	Type = _TextXMLNodeType;
+	Tag = "";
+	Attributes = Vector<BFW_STRING_TYPE_A>();
+	AttributeValues = Vector<BFW_STRING_TYPE_A>();
+	Childs = Vector<XMLNode>();
+	Text = _Text;
+}
+
+const uint8_t BFW::Assets::XMLNode::GetType() const
+{
+	return Type;
+}
+
+const BFW_STRING_TYPE_A BFW::Assets::XMLNode::GetTag() const
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return Tag;
+}
+
+BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::XMLNode::GetAttributes()
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return Attributes;
+}
+
+const BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::XMLNode::GetAttributes() const
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return Attributes;
+}
+
+BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::XMLNode::GetAttributeValues()
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeValues;
+}
+
+const BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::XMLNode::GetAttributeValues() const
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return AttributeValues;
+}
+
+BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XMLNode::GetChilds()
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return Childs;
+}
+
+const BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XMLNode::GetChilds() const
+{
+	if (Type != _NodeXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return Childs;
+}
+
+const BFW_STRING_TYPE_A& BFW::Assets::XMLNode::GetText() const
+{
+	if (Type != _TextXMLNodeType)
+	{
+		throw nullptr;
+	}
+
+	return Text;
+}
+
+BFW::Assets::XMLNode& BFW::Assets::XMLNode::operator= (const XMLNode& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Type = _Other.Type;
+	Tag = _Other.Tag;
+	Attributes = _Other.Attributes;
+	AttributeValues = _Other.AttributeValues;
+	Childs = _Other.Childs;
+	Text = _Other.Text;
+
+	return *this;
+}
+
+BFW::Assets::XMLNode& BFW::Assets::XMLNode::operator= (XMLNode&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Type = _Other.Type;
+	Tag = _Other.Tag;
+	Attributes = (Vector<BFW_STRING_TYPE_A>&&)(_Other.Attributes);
+	AttributeValues = (Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues);
+	Childs = (Vector<XMLNode>&&)(_Other.Childs);
+	Text = _Other.Text;
+
+	_Other.Type = _TextXMLNodeType;
+	_Other.Tag = "";
+	_Other.Text = "Hello!";
+
+	return *this;
+}
+
+
+
+BFW::Assets::XML::XML() : ExclamationMarks(), QuestionMarks(), Root()
+{
+
+}
+
+BFW::Assets::XML::XML(const XML& _Other) : ExclamationMarks(_Other.ExclamationMarks), QuestionMarks(_Other.QuestionMarks), Root(_Other.Root)
+{
+
+}
+
+BFW::Assets::XML::XML(XML&& _Other) noexcept : ExclamationMarks((Vector<XMLNode>&&)(_Other.ExclamationMarks)), QuestionMarks((Vector<XMLNode>&&)(_Other.QuestionMarks)), Root((XMLNode&&)(_Other.Root))
+{
+
+}
+
+BFW::Assets::XML::~XML()
+{
+
+}
+
+const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
+{
+	*this = XML();
+
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0' || !IsValidXMLFile(_FileContent))
+	{
+		return false;
+	}
+
+	size_t _CurrentPos = 0;
+
+	while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
+	{
+		_CurrentPos++;
+	}
+
+	if (!LoadXMLHeader(_FileContent, _CurrentPos, ExclamationMarks, QuestionMarks))
+	{
+		*this = XML();
+		return false;
+	}
+
+	if (!LoadXMLNode(_FileContent, _CurrentPos, Root))
+	{
+		*this = XML();
+		return false;
+	}
+
+	//...; // validate namespaces + getters ptr namespaces
+
+	if (_CurrentPos != _FileContent.GetLength() - 1)
+	{
+		*this = XML();
+		return false;
+	}
+
+	return true;
+}
+
+BFW::Assets::FileContent BFW::Assets::XML::Save() const
+{
+	//...;
+	return FileContent();
+}
+
+BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetExclamationMarks()
+{
+	return ExclamationMarks;
+}
+
+const BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetExclamationMarks() const
+{
+	return ExclamationMarks;
+}
+
+BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetQuestionMarks()
+{
+	return QuestionMarks;
+}
+
+const BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetQuestionMarks() const
+{
+	return QuestionMarks;
+}
+
+BFW::Assets::XMLNode& BFW::Assets::XML::GetRoot()
+{
+	return Root;
+}
+
+const BFW::Assets::XMLNode& BFW::Assets::XML::GetRoot() const
+{
+	return Root;
+}
+
+BFW::Assets::XML& BFW::Assets::XML::operator= (const XML& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	ExclamationMarks = _Other.ExclamationMarks;
+	QuestionMarks = _Other.QuestionMarks;
+	Root = _Other.Root;
+
+	return *this;
+}
+
+BFW::Assets::XML& BFW::Assets::XML::operator= (XML&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	ExclamationMarks = (Vector<XMLNode>&&)(_Other.ExclamationMarks);
+	QuestionMarks = (Vector<XMLNode>&&)(_Other.QuestionMarks);
+	Root = (XMLNode&&)(_Other.Root);
+
+	return *this;
+}
+
+
+
 BFW::Assets::Json::Json() : Type(_NullJsonType), BoolValue(false), NumberValue(0.0f), StringValue(""), ArrayValue(), ObjectDataValue()
 {
 
@@ -1292,7 +2883,7 @@ const bool BFW::Assets::Json::Load(const FileContent& _FileContent)
 {
 	*this = Json();
 
-	if (!_FileContent.GetData() || (const BFW_CHAR_TYPE_A)(_FileContent[_FileContent.GetLength() - 1]) != '\0')
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0')
 	{
 		return false;
 	}

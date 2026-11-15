@@ -512,6 +512,82 @@ namespace BFW
 
 		};
 
+		enum BFW_API XMLNodeTypes : const uint8_t
+		{
+			_NodeXMLNodeType = 0,
+			_TextXMLNodeType = 1
+		};
+
+		class BFW_API XMLNode
+		{
+
+		public:
+
+			XMLNode();
+			XMLNode(const XMLNode& _Other);
+			XMLNode(XMLNode&& _Other) noexcept;
+			~XMLNode();
+
+			void SetTag(const BFW_STRING_VIEW_TYPE_A& _Tag);
+			void SetText(const BFW_STRING_VIEW_TYPE_A& _Text);
+
+			const uint8_t GetType() const;
+			const BFW_STRING_TYPE_A GetTag() const;
+			Vector<BFW_STRING_TYPE_A>& GetAttributes();
+			const Vector<BFW_STRING_TYPE_A>& GetAttributes() const;
+			Vector<BFW_STRING_TYPE_A>& GetAttributeValues();
+			const Vector<BFW_STRING_TYPE_A>& GetAttributeValues() const;
+			Vector<XMLNode>& GetChilds();
+			const Vector<XMLNode>& GetChilds() const;
+			const BFW_STRING_TYPE_A& GetText() const;
+
+			XMLNode& operator= (const XMLNode& _Other);
+			XMLNode& operator= (XMLNode&& _Other) noexcept;
+
+		private:
+
+			uint8_t Type;
+
+			BFW_STRING_TYPE_A Tag;
+			Vector<BFW_STRING_TYPE_A> Attributes;
+			Vector<BFW_STRING_TYPE_A> AttributeValues;
+			Vector<XMLNode> Childs;
+			BFW_STRING_TYPE_A Text;
+
+		};
+
+		class BFW_API XML
+		{
+
+		public:
+
+			XML();
+			XML(const XML& _Other);
+			XML(XML&& _Other) noexcept;
+			~XML();
+
+			const bool Load(const FileContent& _FileContent);
+
+			FileContent Save() const;
+
+			Vector<XMLNode>& GetExclamationMarks();
+			const Vector<XMLNode>& GetExclamationMarks() const;
+			Vector<XMLNode>& GetQuestionMarks();
+			const Vector<XMLNode>& GetQuestionMarks() const;
+			XMLNode& GetRoot();
+			const XMLNode& GetRoot() const;
+
+			XML& operator= (const XML& _Other);
+			XML& operator= (XML&& _Other) noexcept;
+
+		private:
+
+			Vector<XMLNode> ExclamationMarks;
+			Vector<XMLNode> QuestionMarks;
+			XMLNode Root;
+
+		};
+
 		enum BFW_API JsonTypes : const uint8_t
 		{
 			_NullJsonType = 0,
@@ -604,6 +680,7 @@ namespace BFW
 			void QueueWaveFrontObj(const BFW_CHAR_TYPE* _Name);
 			void QueueMaterialLib(const BFW_CHAR_TYPE* _Name);
 			void QueueGLSL(const BFW_CHAR_TYPE* _Name);
+			void QueueXML(const BFW_CHAR_TYPE* _Name);
 			void QueueJavaScript(const BFW_CHAR_TYPE* _Name);
 			void QueueJson(const BFW_CHAR_TYPE* _Name);
 
@@ -615,6 +692,7 @@ namespace BFW
 			void QueueResourceWaveFrontObj(const size_t _Id);
 			void QueueResourceMaterialLib(const size_t _Id);
 			void QueueResourceGLSL(const size_t _Id);
+			void QueueResourceXML(const size_t _Id);
 			void QueueResourceJavaScript(const size_t _Id);
 			void QueueResourceJson(const size_t _Id);
 
@@ -628,6 +706,7 @@ namespace BFW
 			void AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
 			void AddDynamicMaterialLib(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib>& _Asset);
 			void AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
+			void AddDynamicXML(const BFW_CHAR_TYPE* _Name, SharedPointer<XML>& _Asset);
 			void AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
@@ -637,6 +716,7 @@ namespace BFW
 			void AddDynamicWaveFrontObjRef(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
 			void AddDynamicMaterialLibRef(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib>& _Asset);
 			void AddDynamicGLSLRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
+			void AddDynamicXMLRef(const BFW_CHAR_TYPE* _Name, SharedPointer<XML>& _Asset);
 			void AddDynamicJavaScriptRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
@@ -648,6 +728,7 @@ namespace BFW
 			void ReleaseWaveFrontObj(const BFW_CHAR_TYPE* _Name);
 			void ReleaseMaterialLib(const BFW_CHAR_TYPE* _Name);
 			void ReleaseGLSL(const BFW_CHAR_TYPE* _Name);
+			void ReleaseXML(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJavaScript(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJson(const BFW_CHAR_TYPE* _Name);
 
@@ -659,6 +740,7 @@ namespace BFW
 			void ReleaseResourceWaveFrontObj(const size_t _Id);
 			void ReleaseResourceMaterialLib(const size_t _Id);
 			void ReleaseResourceGLSL(const size_t _Id);
+			void ReleaseResourceXML(const size_t _Id);
 			void ReleaseResourceJavaScript(const size_t _Id);
 			void ReleaseResourceJson(const size_t _Id);
 
@@ -670,6 +752,7 @@ namespace BFW
 			const bool WasWaveFrontObjUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasMaterialLibUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasGLSLUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasXMLUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasJavaScriptUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasJsonUpdated(const BFW_CHAR_TYPE* _Name);
 
@@ -685,6 +768,8 @@ namespace BFW
 			const SharedPointer<MaterialLib> GetMaterialLib(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<FileContent> GetGLSL(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<FileContent> GetGLSL(const BFW_CHAR_TYPE* _Name) const;
+			SharedPointer<XML> GetXML(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<XML> GetXML(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<FileContent> GetJavaScript(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<FileContent> GetJavaScript(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name);
@@ -704,6 +789,8 @@ namespace BFW
 			const SharedPointer<MaterialLib> GetResourceMaterialLib(const size_t _Id) const;
 			SharedPointer<FileContent> GetResourceGLSL(const size_t _Id);
 			const SharedPointer<FileContent> GetResourceGLSL(const size_t _Id) const;
+			SharedPointer<XML> GetResourceXML(const size_t _Id);
+			const SharedPointer<XML> GetResourceXML(const size_t _Id) const;
 			SharedPointer<FileContent> GetResourceJavaScript(const size_t _Id);
 			const SharedPointer<FileContent> GetResourceJavaScript(const size_t _Id) const;
 			SharedPointer<Json> GetResourceJson(const size_t _Id);
@@ -735,6 +822,7 @@ namespace BFW
 			Vector<BFW_STRING_TYPE> QueuedWaveFrontObjs;
 			Vector<BFW_STRING_TYPE> QueuedMaterialLibs;
 			Vector<BFW_STRING_TYPE> QueuedGLSLs;
+			Vector<BFW_STRING_TYPE> QueuedXMLs;
 			Vector<BFW_STRING_TYPE> QueuedJavaScripts;
 			Vector<BFW_STRING_TYPE> QueuedJsons;
 
@@ -746,6 +834,7 @@ namespace BFW
 			Vector<size_t> QueuedResourceWaveFrontObjs;
 			Vector<size_t> QueuedResourceMaterialLibs;
 			Vector<size_t> QueuedResourceGLSLs;
+			Vector<size_t> QueuedResourceXMLs;
 			Vector<size_t> QueuedResourceJavaScripts;
 			Vector<size_t> QueuedResourceJsons;
 
@@ -757,6 +846,7 @@ namespace BFW
 			Trie<SharedPointer<WaveFrontObj>> LoadedWaveFrontObjs;
 			Trie<SharedPointer<MaterialLib>> LoadedMaterialLibs;
 			Trie<SharedPointer<FileContent>> LoadedGLSLs;
+			Trie<SharedPointer<XML>> LoadedXMLs;
 			Trie<SharedPointer<FileContent>> LoadedJavaScripts;
 			Trie<SharedPointer<Json>> LoadedJsons;
 
@@ -768,6 +858,7 @@ namespace BFW
 			Trie<SharedPointer<WaveFrontObj>> LoadedResourceWaveFrontObjs;
 			Trie<SharedPointer<MaterialLib>> LoadedResourceMaterialLibs;
 			Trie<SharedPointer<FileContent>> LoadedResourceGLSLs;
+			Trie<SharedPointer<XML>> LoadedResourceXMLs;
 			Trie<SharedPointer<FileContent>> LoadedResourceJavaScripts;
 			Trie<SharedPointer<Json>> LoadedResourceJsons;
 
@@ -779,6 +870,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedWaveFrontObjNames;
 			mutable Vector<BFW_STRING_TYPE> CachedMaterialLibNames;
 			mutable Vector<BFW_STRING_TYPE> CachedGLSLNames;
+			mutable Vector<BFW_STRING_TYPE> CachedXMLNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJsonNames;
 
@@ -788,6 +880,7 @@ namespace BFW
 			mutable Trie<WeakPointer<WaveFrontObj>> CachedWaveFrontObjs;
 			mutable Trie<WeakPointer<MaterialLib>> CachedMaterialLibs;
 			mutable Trie<WeakPointer<FileContent>> CachedGLSLs;
+			mutable Trie<WeakPointer<XML>> CachedXMLs;
 			mutable Trie<WeakPointer<FileContent>> CachedJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedJsons;
 
@@ -797,6 +890,7 @@ namespace BFW
 			mutable Trie<uint64_t> LastWriteWaveFrontObjs;
 			mutable Trie<uint64_t> LastWriteMaterialLibs;
 			mutable Trie<uint64_t> LastWriteGLSLs;
+			mutable Trie<uint64_t> LastWriteXMLs;
 			mutable Trie<uint64_t> LastWriteJavaScripts;
 			mutable Trie<uint64_t> LastWriteJsons;
 
@@ -806,6 +900,7 @@ namespace BFW
 			mutable Trie<uint64_t> OldLastWriteWaveFrontObjs;
 			mutable Trie<uint64_t> OldLastWriteMaterialLibs;
 			mutable Trie<uint64_t> OldLastWriteGLSLs;
+			mutable Trie<uint64_t> OldLastWriteXMLs;
 			mutable Trie<uint64_t> OldLastWriteJavaScripts;
 			mutable Trie<uint64_t> OldLastWriteJsons;
 
@@ -817,6 +912,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedResourceWaveFrontObjNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceMaterialLibNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceGLSLNames;
+			mutable Vector<BFW_STRING_TYPE> CachedResourceXMLNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJsonNames;
 
@@ -826,6 +922,7 @@ namespace BFW
 			mutable Trie<WeakPointer<WaveFrontObj>> CachedResourceWaveFrontObjs;
 			mutable Trie<WeakPointer<MaterialLib>> CachedResourceMaterialLibs;
 			mutable Trie<WeakPointer<FileContent>> CachedResourceGLSLs;
+			mutable Trie<WeakPointer<XML>> CachedResourceXMLs;
 			mutable Trie<WeakPointer<FileContent>> CachedResourceJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedResourceJsons;
 

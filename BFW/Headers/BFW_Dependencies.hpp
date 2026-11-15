@@ -304,6 +304,12 @@ namespace BFW
 
 		class BFW_API MaterialLib;
 
+		enum BFW_API XMLNodeTypes : const uint8_t;
+
+		class BFW_API XMLNode;
+
+		class BFW_API XML;
+
 		enum BFW_API JsonTypes : const uint8_t;
 
 		class BFW_API JsonObjectData;

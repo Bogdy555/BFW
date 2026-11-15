@@ -490,7 +490,7 @@ const bool BFW::Assets::BitMap::Load(const FileContent& _FileContent, const bool
 {
 	Destroy();
 
-	if (!_FileContent.GetData() || _FileContent.GetLength() < sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader) + 1)
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0' || _FileContent.GetLength() < sizeof(BitMapFileHeader) + sizeof(BitMapInfoHeader) + 1)
 	{
 		return false;
 	}
@@ -1021,7 +1021,7 @@ const bool BFW::Assets::Hdr::Load(const FileContent& _FileContent, const bool _F
 {
 	Destroy();
 
-	if (!_FileContent.GetData() || _FileContent.GetLength() < sizeof(HdrFileHeader) + BFW_STRING_TYPE_A("FORMAT=32-bit_rle_rgbe\x0A\x0A").size() + BFW_STRING_TYPE_A("-Y  +X \x0A").size() + 1)
+	if (!_FileContent.GetData() || _FileContent[_FileContent.GetLength() - 1] != '\0' || _FileContent.GetLength() < sizeof(HdrFileHeader) + BFW_STRING_TYPE_A("FORMAT=32-bit_rle_rgbe\x0A\x0A").size() + BFW_STRING_TYPE_A("-Y  +X \x0A").size() + 1)
 	{
 		return false;
 	}
