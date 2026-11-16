@@ -165,6 +165,172 @@ static const bool IsValidXMLFile(const BFW::Assets::FileContent& _FileContent)
 	return true;
 }
 
+static const bool IsValidXMLCDATA(const BFW_STRING_VIEW_TYPE_A& _Text)
+{
+	BFW::Vector<uint32_t> _CodePoints;
+
+	for (size_t _Index = 0; _Index < _Text.size(); _Index++)
+	{
+		if (BFW::String::IsUTF8MultiByte2(_Text[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte2(_Text[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Text.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Text[_Index - 1], _Text[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint2A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			_CodePoints.PushBack(_CodePoint);
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByte3(_Text[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte3(_Text[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Text.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]) || !BFW::String::IsValidUTF8MultiByte3FirstContinuation(_Text[_Index - 1], _Text[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Text.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Text[_Index - 2], _Text[_Index - 1], _Text[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint3A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			_CodePoints.PushBack(_CodePoint);
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByte4(_Text[_Index]))
+		{
+			if (!BFW::String::IsValidUTF8MultiByte4(_Text[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Text.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]) || !BFW::String::IsValidUTF8MultiByte4FirstContinuation(_Text[_Index - 1], _Text[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Text.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]))
+			{
+				return false;
+			}
+
+			_Index++;
+
+			if (_Index >= _Text.size())
+			{
+				return false;
+			}
+
+			if (!BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]))
+			{
+				return false;
+			}
+
+			uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Text[_Index - 3], _Text[_Index - 2], _Text[_Index - 1], _Text[_Index]);
+
+			if (!BFW::String::IsValidUnicodePoint4A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+			{
+				return false;
+			}
+
+			_CodePoints.PushBack(_CodePoint);
+
+			continue;
+		}
+
+		if (BFW::String::IsUTF8MultiByteContinuation(_Text[_Index]))
+		{
+			return false;
+		}
+
+		uint32_t _CodePoint = BFW::String::ConstructUnicodePointA(_Text[_Index]);
+
+		if (!BFW::String::IsValidUnicodePoint1A(_CodePoint) || BFW::String::IsUnicodeSurrogated(_CodePoint) || BFW::String::IsUnicodeSurrogatedContinuation(_CodePoint))
+		{
+			return false;
+		}
+
+		_CodePoints.PushBack(_CodePoint);
+	}
+
+	for (size_t _Index = 0; _Index < _CodePoints.GetSize(); _Index++)
+	{
+		if (_CodePoints[_Index] != 0x9 &&
+			_CodePoints[_Index] != 0xA &&
+			_CodePoints[_Index] != 0xD &&
+			!(_CodePoints[_Index] >= 0x20 && _CodePoints[_Index] <= 0xD7FF) &&
+			!(_CodePoints[_Index] >= 0xE000 && _CodePoints[_Index] <= 0xFFFD) &&
+			!(_CodePoints[_Index] >= 0x10000 && _CodePoints[_Index] <= 0x10FFFF))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 {
 	if (!_Token.size() || BFW_STRING_TYPE_A("-.:0123456789").find(_Token[0]) != BFW_STRING_TYPE_A::npos)
@@ -597,10 +763,13 @@ static const bool LoadXMLString(const BFW::Assets::FileContent& _FileContent, si
 static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::XMLNode& _Entry)
 {
 	BFW_STRING_TYPE_A _String;
+	bool _EndCDATA = false;
 
-	while (_CurrentPos < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != '<' || (_FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')))
+	while (_CurrentPos < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != '<' || (_FileContent[_CurrentPos + 1] == '!' && ((_FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-') || (_FileContent[_CurrentPos + 2] == '[' && _FileContent[_CurrentPos + 3] == 'C' && _FileContent[_CurrentPos + 4] == 'D' && _FileContent[_CurrentPos + 5] == 'A' && _FileContent[_CurrentPos + 6] == 'T' && _FileContent[_CurrentPos + 7] == 'A' && _FileContent[_CurrentPos + 8] == '[')))))
 	{
-		if (_FileContent[_CurrentPos] == '\r')
+		_EndCDATA = false;
+
+		if (_FileContent[_CurrentPos] == '\r' && _FileContent[_CurrentPos + 1] == '\n')
 		{
 			_CurrentPos++;
 			continue;
@@ -609,6 +778,46 @@ static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size
 		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')
 		{
 			if (!LoadXMLComment(_FileContent, _CurrentPos))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '[' && _FileContent[_CurrentPos + 3] == 'C' && _FileContent[_CurrentPos + 4] == 'D' && _FileContent[_CurrentPos + 5] == 'A' && _FileContent[_CurrentPos + 6] == 'T' && _FileContent[_CurrentPos + 7] == 'A' && _FileContent[_CurrentPos + 8] == '[')
+		{
+			_EndCDATA = true;
+
+			_CurrentPos += 9;
+
+			size_t _StringIndex = _String.size();
+
+			while (_CurrentPos + 2 < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != ']' || _FileContent[_CurrentPos + 1] != ']' || _FileContent[_CurrentPos + 2] != '>'))
+			{
+				if (_FileContent[_CurrentPos] == '\r' && _FileContent[_CurrentPos + 1] == '\n')
+				{
+					_CurrentPos++;
+					continue;
+				}
+
+				if (_FileContent[_CurrentPos] <= 0x08 || (_FileContent[_CurrentPos] >= 0x0B && _FileContent[_CurrentPos] <= 0x1F))
+				{
+					return false;
+				}
+
+				_String += _FileContent[_CurrentPos];
+				_CurrentPos++;
+			}
+
+			if (_CurrentPos + 2 == _FileContent.GetLength() - 1)
+			{
+				return false;
+			}
+
+			_CurrentPos += 3;
+
+			if (_String.size() && !IsValidXMLCDATA(_String.data() + _StringIndex))
 			{
 				return false;
 			}
@@ -772,14 +981,17 @@ static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size
 		return false;
 	}
 
-	size_t _Index = 0;
-
-	while (_Index < _String.size() && std::isspace((const unsigned BFW_CHAR_TYPE_A)(_String[_String.size() - 1 - _Index])))
+	if (!_EndCDATA)
 	{
-		_Index++;
-	}
+		size_t _Index = 0;
 
-	_String = _String.substr(0, _String.size() - _Index);
+		while (_Index < _String.size() && std::isspace((const unsigned BFW_CHAR_TYPE_A)(_String[_String.size() - 1 - _Index])))
+		{
+			_Index++;
+		}
+
+		_String = _String.substr(0, _String.size() - _Index);
+	}
 
 	if (!_String.size())
 	{
@@ -1345,7 +1557,14 @@ static const bool SaveXMLText(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRIN
 		return false;
 	}
 
-	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	size_t _End = 0;
+
+	while (_End < _String.size() && std::isspace((const unsigned BFW_CHAR_TYPE_A)(_String[_String.size() - 1 - _End])))
+	{
+		_End++;
+	}
+
+	for (size_t _Index = 0; _Index < _String.size() - _End; _Index++)
 	{
 		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
 		{
@@ -1372,6 +1591,30 @@ static const bool SaveXMLText(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRIN
 
 		_Stream << _String[_Index];
 	}
+
+	if (_End == 0)
+	{
+		return true;
+	}
+
+	if (!IsValidXMLCDATA(_String.substr(_String.size() - _End, _End)))
+	{
+		return false;
+	}
+
+	_Stream << "<![CDATA[";
+
+	for (size_t _Index = _String.size() - _End; _Index < _String.size(); _Index++)
+	{
+		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
+		{
+			return false;
+		}
+
+		_Stream << _String[_Index];
+	}
+
+	_Stream << "]]>";
 
 	return true;
 }
