@@ -165,7 +165,7 @@ static const bool IsValidXMLFile(const BFW::Assets::FileContent& _FileContent)
 	return true;
 }
 
-static const bool IsValidXMLToken(const BFW_STRING_TYPE_A& _Token)
+static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 {
 	if (!_Token.size() || BFW_STRING_TYPE_A("-.:0123456789").find(_Token[0]) != BFW_STRING_TYPE_A::npos)
 	{
@@ -415,7 +415,7 @@ static const bool LoadXMLComment(const BFW::Assets::FileContent& _FileContent, s
 	return true;
 }
 
-const bool LoadXMLString(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW_STRING_TYPE_A& _String)
+static const bool LoadXMLString(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW_STRING_TYPE_A& _String)
 {
 	if (_FileContent[_CurrentPos] != '\"' && _FileContent[_CurrentPos] != '\'')
 	{
@@ -600,6 +600,12 @@ static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size
 
 	while (_CurrentPos < _FileContent.GetLength() - 1 && (_FileContent[_CurrentPos] != '<' || (_FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')))
 	{
+		if (_FileContent[_CurrentPos] == '\r')
+		{
+			_CurrentPos++;
+			continue;
+		}
+
 		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '!' && _FileContent[_CurrentPos + 2] == '-' && _FileContent[_CurrentPos + 3] == '-')
 		{
 			if (!LoadXMLComment(_FileContent, _CurrentPos))
@@ -764,16 +770,6 @@ static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size
 	if (_CurrentPos == _FileContent.GetLength() - 1)
 	{
 		return false;
-	}
-
-	for (size_t _Index = 0; _Index < _String.size(); _Index++)
-	{
-		if (_String[_Index] == '\r')
-		{
-			_String.erase(_String.begin() + _Index);
-			_Index--;
-			continue;
-		}
 	}
 
 	size_t _Index = 0;
@@ -967,13 +963,8 @@ static const bool LoadXMLExclamation(const BFW::Assets::FileContent& _FileConten
 				return false;
 			}
 
-			while (std::isspace((const unsigned BFW_CHAR_TYPE_A)(_FileContent[_CurrentPos])))
-			{
-				_CurrentPos++;
-			}
-
 			_Attributes.PushBack(_Attribute);
-			_AttributeValues.EmplaceBack("");
+			_AttributeValues.EmplaceBack("\"");
 
 			continue;
 		}
@@ -1018,7 +1009,7 @@ static const bool LoadXMLExclamation(const BFW::Assets::FileContent& _FileConten
 			}
 
 			_Attributes.PushBack(_Attribute);
-			_AttributeValues.EmplaceBack("");
+			_AttributeValues.EmplaceBack("[");
 
 			continue;
 		}
@@ -1246,15 +1237,9 @@ static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size
 		return true;
 	}
 
-	BFW::Assets::XMLNode _CurrentEntry;
-
 	while (_CurrentPos < _FileContent.GetLength() - 1)
 	{
-		if (_CurrentEntry.GetType() == BFW::Assets::_NodeXMLNodeType)
-		{
-			_CurrentEntry.GetAttributes().Clear();
-			_CurrentEntry.GetAttributeValues().Clear();
-		}
+		BFW::Assets::XMLNode _CurrentEntry;
 
 		if (_FileContent[_CurrentPos] == '<' && _FileContent[_CurrentPos + 1] == '/')
 		{
@@ -1288,7 +1273,7 @@ static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size
 				return false;
 			}
 
-			_Node.GetChilds().PushBack(_CurrentEntry);
+			_Node.GetChildren().PushBack(_CurrentEntry);
 
 			continue;
 		}
@@ -1298,10 +1283,333 @@ static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size
 			return false;
 		}
 
-		_Node.GetChilds().PushBack(_CurrentEntry);
+		_Node.GetChildren().PushBack(_CurrentEntry);
 	}
 
 	return false;
+}
+
+static const bool SaveXMLString(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRING_VIEW_TYPE_A& _String)
+{
+	_Stream << '\"';
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
+		{
+			return false;
+		}
+
+		if (_String[_Index] == '&')
+		{
+			_Stream << "&amp;";
+			continue;
+		}
+
+		if (_String[_Index] == '<')
+		{
+			_Stream << "&lt;";
+			continue;
+		}
+
+		if (_String[_Index] == '>')
+		{
+			_Stream << "&gt;";
+			continue;
+		}
+
+		if (_String[_Index] == '\"')
+		{
+			_Stream << "&quot;";
+			continue;
+		}
+
+		if (_String[_Index] == '\'')
+		{
+			_Stream << "&amp;";
+			continue;
+		}
+
+		_Stream << _String[_Index];
+	}
+
+	_Stream << '\"';
+
+	return true;
+}
+
+static const bool SaveXMLText(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRING_VIEW_TYPE_A& _String)
+{
+	if (_String.size() == 0)
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
+		{
+			return false;
+		}
+
+		if (_String[_Index] == '&')
+		{
+			_Stream << "&amp;";
+			continue;
+		}
+
+		if (_String[_Index] == '<')
+		{
+			_Stream << "&lt;";
+			continue;
+		}
+
+		if (_String[_Index] == '>')
+		{
+			_Stream << "&gt;";
+			continue;
+		}
+
+		_Stream << _String[_Index];
+	}
+
+	return true;
+}
+
+static const bool SaveXMLHeader(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Vector<BFW::Assets::XMLNode>& _ExclamationMarks, const BFW::Vector<BFW::Assets::XMLNode>& _QuestionMarks)
+{
+	if (_QuestionMarks.GetSize() > 1 || (_QuestionMarks.GetSize() == 1 && (_QuestionMarks[0].GetType() != BFW::Assets::_NodeXMLNodeType || _QuestionMarks[0].GetChildren().GetSize() != 0 || _QuestionMarks[0].GetTag() != "xml" || _QuestionMarks[0].GetAttributes().GetSize() != _QuestionMarks[0].GetAttributeValues().GetSize())))
+	{
+		return false;
+	}
+
+	if (_QuestionMarks.GetSize())
+	{
+		_Stream << "<?" << _QuestionMarks[0].GetTag();
+
+		for (size_t _Index = 0; _Index < _QuestionMarks[0].GetAttributes().GetSize(); _Index++)
+		{
+			if (!IsValidXMLToken(_QuestionMarks[0].GetAttributes()[_Index]))
+			{
+				return false;
+			}
+
+			_Stream << ' ' << _QuestionMarks[0].GetAttributes()[_Index] << "=";
+
+			if (!SaveXMLString(_Stream, _QuestionMarks[0].GetAttributeValues()[_Index]))
+			{
+				return false;
+			}
+		}
+
+		_Stream << "?>" BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+	}
+
+	for (size_t _ExclamationIndex = 0; _ExclamationIndex < _ExclamationMarks.GetSize(); _ExclamationIndex++)
+	{
+		const BFW::Assets::XMLNode& _Exclamation = _ExclamationMarks[_ExclamationIndex];
+
+		if (_Exclamation.GetType() != BFW::Assets::_NodeXMLNodeType || _Exclamation.GetChildren().GetSize() != 0 || _Exclamation.GetTag() != "DOCTYPE" || _Exclamation.GetAttributes().GetSize() != _Exclamation.GetAttributeValues().GetSize())
+		{
+			return false;
+		}
+
+		_Stream << "<!" << _Exclamation.GetTag();
+
+		for (size_t _Index = 0; _Index < _Exclamation.GetAttributes().GetSize(); _Index++)
+		{
+			if (_Exclamation.GetAttributeValues()[_Index] == "")
+			{
+				if (!IsValidXMLToken(_Exclamation.GetAttributes()[_Index]))
+				{
+					return false;
+				}
+
+				_Stream << ' ' << _Exclamation.GetAttributes()[_Index];
+
+				continue;
+			}
+
+			if (_Exclamation.GetAttributeValues()[_Index] == "\"")
+			{
+				_Stream << ' ';
+
+				if (!SaveXMLString(_Stream, _Exclamation.GetAttributes()[_Index]))
+				{
+					return false;
+				}
+
+				continue;
+			}
+
+			if (_Exclamation.GetAttributeValues()[_Index] == "[")
+			{
+				BFW_CHAR_TYPE_A _Quotes = '\0';
+				size_t _Open = 0;
+
+				for (size_t _CharIndex = 0; _CharIndex < _Exclamation.GetAttributes()[_Index].size(); _CharIndex++)
+				{
+					const BFW_CHAR_TYPE_A& _Char = _Exclamation.GetAttributes()[_Index][_CharIndex];
+
+					if (_Quotes == '\0')
+					{
+						if (_Char == '\'' || _Char == '\"')
+						{
+							_Quotes = _Char;
+						}
+
+						if (_Char == '[')
+						{
+							_Open++;
+						}
+
+						if (_Char == ']')
+						{
+							if (_Open)
+							{
+								_Open--;
+							}
+							else
+							{
+								return false;
+							}
+						}
+					}
+					else
+					{
+						if (_Quotes == _Char)
+						{
+							_Quotes = '\0';
+						}
+					}
+				}
+
+				if (_Quotes != '\0' || _Open)
+				{
+					return false;
+				}
+
+				_Stream << " [" << _Exclamation.GetAttributes()[_Index] << ']';
+
+				continue;
+			}
+
+			if (!IsValidXMLToken(_Exclamation.GetAttributes()[_Index]))
+			{
+				return false;
+			}
+
+			_Stream << ' ' << _Exclamation.GetAttributes()[_Index] << "=";
+
+			if (!SaveXMLString(_Stream, _Exclamation.GetAttributeValues()[_Index]))
+			{
+				return false;
+			}
+		}
+
+		_Stream << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+	}
+
+	return true;
+}
+
+static const bool SaveXMLNode(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stream, const BFW::Assets::XMLNode& _Node)
+{
+	if (_Node.GetAttributes().GetSize() != _Node.GetAttributeValues().GetSize() || !IsValidXMLToken(_Node.GetTag()))
+	{
+		return false;
+	}
+
+	if (_Node.GetChildren().GetSize() == 0)
+	{
+		for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+		{
+			_Stream << '\t';
+		}
+
+		_Stream << '<' << _Node.GetTag();
+
+		for (size_t _Index = 0; _Index < _Node.GetAttributes().GetSize(); _Index++)
+		{
+			if (!IsValidXMLToken(_Node.GetAttributes()[_Index]))
+			{
+				return false;
+			}
+
+			_Stream << ' ' << _Node.GetAttributes()[_Index] << "=";
+
+			if (!SaveXMLString(_Stream, _Node.GetAttributeValues()[_Index]))
+			{
+				return false;
+			}
+		}
+
+		_Stream << "/>" BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+		return true;
+	}
+
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << '<' << _Node.GetTag();
+
+	for (size_t _Index = 0; _Index < _Node.GetAttributes().GetSize(); _Index++)
+	{
+		if (!IsValidXMLToken(_Node.GetAttributes()[_Index]))
+		{
+			return false;
+		}
+
+		_Stream << ' ' << _Node.GetAttributes()[_Index] << "=";
+
+		if (!SaveXMLString(_Stream, _Node.GetAttributeValues()[_Index]))
+		{
+			return false;
+		}
+	}
+
+	_Stream << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	_TabLevel++;
+
+	for (size_t _ChildIndex = 0; _ChildIndex < _Node.GetChildren().GetSize(); _ChildIndex++)
+	{
+		if (_Node.GetChildren()[_ChildIndex].GetType() == BFW::Assets::_TextXMLNodeType)
+		{
+			for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+			{
+				_Stream << '\t';
+			}
+
+			if (!SaveXMLText(_Stream, _Node.GetChildren()[_ChildIndex].GetText()))
+			{
+				return false;
+			}
+
+			_Stream BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+			continue;
+		}
+
+		if (!SaveXMLNode(_TabLevel, _Stream, _Node.GetChildren()[_ChildIndex]))
+		{
+			return false;
+		}
+	}
+
+	_TabLevel--;
+
+	for (size_t _Index = 0; _Index < _TabLevel; _Index++)
+	{
+		_Stream << '\t';
+	}
+
+	_Stream << "</" << _Node.GetTag() << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
+
+	return  true;
 }
 
 static const bool LoadJsonNull(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
@@ -2567,17 +2875,17 @@ BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectD
 
 
 
-BFW::Assets::XMLNode::XMLNode() : Type(_TextXMLNodeType), Tag(""), Attributes(), AttributeValues(), Childs(), Text("Hello!")
+BFW::Assets::XMLNode::XMLNode() : Type(_TextXMLNodeType), Tag(""), Attributes(), AttributeValues(), Children(), Text("Hello!")
 {
 
 }
 
-BFW::Assets::XMLNode::XMLNode(const XMLNode& _Other) : Type(_Other.Type), Tag(_Other.Tag), Attributes(_Other.Attributes), AttributeValues(_Other.AttributeValues), Childs(_Other.Childs), Text(_Other.Text)
+BFW::Assets::XMLNode::XMLNode(const XMLNode& _Other) : Type(_Other.Type), Tag(_Other.Tag), Attributes(_Other.Attributes), AttributeValues(_Other.AttributeValues), Children(_Other.Children), Text(_Other.Text)
 {
 
 }
 
-BFW::Assets::XMLNode::XMLNode(XMLNode&& _Other) noexcept : Type(_Other.Type), Tag(_Other.Tag), Attributes((Vector<BFW_STRING_TYPE_A>&&)(_Other.Attributes)), AttributeValues((Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues)), Childs((Vector<XMLNode>&&)(_Other.Childs)), Text(_Other.Text)
+BFW::Assets::XMLNode::XMLNode(XMLNode&& _Other) noexcept : Type(_Other.Type), Tag(_Other.Tag), Attributes((Vector<BFW_STRING_TYPE_A>&&)(_Other.Attributes)), AttributeValues((Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues)), Children((Vector<XMLNode>&&)(_Other.Children)), Text(_Other.Text)
 {
 	_Other.Type = _TextXMLNodeType;
 	_Other.Tag = "";
@@ -2602,7 +2910,7 @@ void BFW::Assets::XMLNode::SetText(const BFW_STRING_VIEW_TYPE_A& _Text)
 	Tag = "";
 	Attributes = Vector<BFW_STRING_TYPE_A>();
 	AttributeValues = Vector<BFW_STRING_TYPE_A>();
-	Childs = Vector<XMLNode>();
+	Children = Vector<XMLNode>();
 	Text = _Text;
 }
 
@@ -2661,24 +2969,24 @@ const BFW::Vector<BFW_STRING_TYPE_A>& BFW::Assets::XMLNode::GetAttributeValues()
 	return AttributeValues;
 }
 
-BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XMLNode::GetChilds()
+BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XMLNode::GetChildren()
 {
 	if (Type != _NodeXMLNodeType)
 	{
 		throw nullptr;
 	}
 
-	return Childs;
+	return Children;
 }
 
-const BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XMLNode::GetChilds() const
+const BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XMLNode::GetChildren() const
 {
 	if (Type != _NodeXMLNodeType)
 	{
 		throw nullptr;
 	}
 
-	return Childs;
+	return Children;
 }
 
 const BFW_STRING_TYPE_A& BFW::Assets::XMLNode::GetText() const
@@ -2702,7 +3010,7 @@ BFW::Assets::XMLNode& BFW::Assets::XMLNode::operator= (const XMLNode& _Other)
 	Tag = _Other.Tag;
 	Attributes = _Other.Attributes;
 	AttributeValues = _Other.AttributeValues;
-	Childs = _Other.Childs;
+	Children = _Other.Children;
 	Text = _Other.Text;
 
 	return *this;
@@ -2719,7 +3027,7 @@ BFW::Assets::XMLNode& BFW::Assets::XMLNode::operator= (XMLNode&& _Other) noexcep
 	Tag = _Other.Tag;
 	Attributes = (Vector<BFW_STRING_TYPE_A>&&)(_Other.Attributes);
 	AttributeValues = (Vector<BFW_STRING_TYPE_A>&&)(_Other.AttributeValues);
-	Childs = (Vector<XMLNode>&&)(_Other.Childs);
+	Children = (Vector<XMLNode>&&)(_Other.Children);
 	Text = _Other.Text;
 
 	_Other.Type = _TextXMLNodeType;
@@ -2779,8 +3087,6 @@ const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
 		return false;
 	}
 
-	//...; // validate namespaces + getters ptr namespaces
-
 	if (_CurrentPos != _FileContent.GetLength() - 1)
 	{
 		*this = XML();
@@ -2792,8 +3098,48 @@ const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
 
 BFW::Assets::FileContent BFW::Assets::XML::Save() const
 {
-	//...;
-	return FileContent();
+	if (Root.GetType() != _NodeXMLNodeType)
+	{
+		return FileContent();
+	}
+
+	size_t _TabLevel = 0;
+	BFW_STRING_STREAM_TYPE_A _Stream;
+
+	_Stream.imbue(std::locale::classic());
+
+	if (!SaveXMLHeader(_Stream, ExclamationMarks, QuestionMarks))
+	{
+		return FileContent();
+	}
+
+	if (!SaveXMLNode(_TabLevel, _Stream, Root))
+	{
+		return FileContent();
+	}
+
+	if (!_Stream)
+	{
+		return FileContent();
+	}
+
+	BFW_STRING_TYPE_A _String = _Stream.str();
+
+	FileContent _FileContent;
+
+	if (!_FileContent.Create(_String.size() + 1))
+	{
+		return FileContent();
+	}
+
+	_FileContent[_FileContent.GetLength() - 1] = '\0';
+
+	for (size_t _Index = 0; _Index < _String.size(); _Index++)
+	{
+		_FileContent[_Index] = _String[_Index];
+	}
+
+	return _FileContent;
 }
 
 BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetExclamationMarks()

@@ -537,8 +537,8 @@ namespace BFW
 			const Vector<BFW_STRING_TYPE_A>& GetAttributes() const;
 			Vector<BFW_STRING_TYPE_A>& GetAttributeValues();
 			const Vector<BFW_STRING_TYPE_A>& GetAttributeValues() const;
-			Vector<XMLNode>& GetChilds();
-			const Vector<XMLNode>& GetChilds() const;
+			Vector<XMLNode>& GetChildren();
+			const Vector<XMLNode>& GetChildren() const;
 			const BFW_STRING_TYPE_A& GetText() const;
 
 			XMLNode& operator= (const XMLNode& _Other);
@@ -551,7 +551,7 @@ namespace BFW
 			BFW_STRING_TYPE_A Tag;
 			Vector<BFW_STRING_TYPE_A> Attributes;
 			Vector<BFW_STRING_TYPE_A> AttributeValues;
-			Vector<XMLNode> Childs;
+			Vector<XMLNode> Children;
 			BFW_STRING_TYPE_A Text;
 
 		};

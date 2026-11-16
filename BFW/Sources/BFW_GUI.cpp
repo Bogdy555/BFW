@@ -2269,7 +2269,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 			}
 		}
 
-		_Parent.ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
+		_Parent.ResizeChildren(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
 
 		return;
 	}
@@ -2536,7 +2536,7 @@ void BFW::GUI::PopUp::ResizeWithMouse(const uint64_t _ResizePopUpId, PopUp& _Par
 				}
 				}
 
-				_Parent.PopUps[_Layer][_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
+				_Parent.PopUps[_Layer][_Index].ResizeChildren(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
 			}
 
 			return;
@@ -2926,7 +2926,7 @@ void BFW::GUI::PopUp::GenerateScrollBars(const bool _HasHScroll, const bool _Has
 	}
 }
 
-void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
+void BFW::GUI::PopUp::ResizeChildren(const ResizePopUpLayerFnc _ResizePopUpLayer, const GetMinFnc _GetMinX, const GetMinFnc _GetMinY, const size_t _ResizeSize, const ForceScrollFnc _ForceHScroll, const ForceScrollFnc _ForceVScroll, const size_t _ScrollSize, const size_t _ScrollTopPadding, const size_t _ScrollPadding, const GetRenderingDescriptorFnc _GetRenderingDescriptor, const GetHitBoxFnc _GetHitBox, const GenerateUserDataFnc _GenerateUserData, const ReleaseUserDataFnc _ReleaseUserData, void* _Global)
 {
 	for (size_t _Index = 0; _Index < Panels.GetSize(); _Index++)
 	{
@@ -2969,7 +2969,7 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		}
 		}
 
-		Panels[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
+		Panels[_Index].ResizeChildren(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
 	}
 
 	for (size_t _Index = 0; _Index < Nodes.GetSize(); _Index++)
@@ -3053,7 +3053,7 @@ void BFW::GUI::PopUp::ResizeChilds(const ResizePopUpLayerFnc _ResizePopUpLayer, 
 		}
 		}
 
-		Nodes[_Index].ResizeChilds(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
+		Nodes[_Index].ResizeChildren(_ResizePopUpLayer, _GetMinX, _GetMinY, _ResizeSize, _ForceHScroll, _ForceVScroll, _ScrollSize, _ScrollTopPadding, _ScrollPadding, _GetRenderingDescriptor, _GetHitBox, _GenerateUserData, _ReleaseUserData, _Global);
 	}
 
 	bool _HasHScroll = false, _HasVScroll = false;

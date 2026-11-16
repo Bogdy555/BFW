@@ -167,7 +167,7 @@ void BFW_WINDOWS::RunTime::MainMenu::InitGUI()
 
 	_MainWindowData.LayoutMutex->lock();
 
-	GUI::ReleaseAllChilds(_MainWindowData.Layout);
+	GUI::ReleaseAllChildren(_MainWindowData.Layout);
 
 	GUI::PopUpData* _MainWindowOldPopUpData = (GUI::PopUpData*)(_MainWindowData.Layout.GetUserData());
 
@@ -359,7 +359,7 @@ void BFW_WINDOWS::RunTime::MainMenu::CleanUpGUI()
 
 	_MainWindowData.LayoutMutex->lock();
 
-	GUI::ReleaseAllChilds(_MainWindowData.Layout);
+	GUI::ReleaseAllChildren(_MainWindowData.Layout);
 
 	GUI::PopUpData* _MainWindowOldPopUpData = (GUI::PopUpData*)(_MainWindowData.Layout.GetUserData());
 
@@ -426,7 +426,7 @@ const bool BFW_WINDOWS::RunTime::MainMenu::SpawnButtonCallBack()
 
 	_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->LayoutMutex->lock();
 
-	GUI::ReleaseAllChilds(_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout);
+	GUI::ReleaseAllChildren(_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout);
 
 	GUI::PopUpData* _ChildWindowOldPopUpData = (GUI::PopUpData*)(_ChildWindowsData[_ChildWindowsData.GetSize() - 1]->Layout.GetUserData());
 

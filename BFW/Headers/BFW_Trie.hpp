@@ -21,17 +21,17 @@ namespace BFW
 
 	public:
 
-		Trie() : Id((CharT)('\0')), Data(), Childs()
+		Trie() : Id((CharT)('\0')), Data(), Children()
 		{
 
 		}
 
-		Trie(const Trie& _Other) : Id(_Other.Id), Data(_Other.Data), Childs(_Other.Childs)
+		Trie(const Trie& _Other) : Id(_Other.Id), Data(_Other.Data), Children(_Other.Children)
 		{
 
 		}
 
-		Trie(Trie&& _Other) noexcept : Id(_Other.Id), Data((UniquePointer<Type>&&)(_Other.Data)), Childs((Vector<Trie>&&)(_Other.Childs))
+		Trie(Trie&& _Other) noexcept : Id(_Other.Id), Data((UniquePointer<Type>&&)(_Other.Data)), Children((Vector<Trie>&&)(_Other.Children))
 		{
 			_Other.Id = (CharT)('\0');
 		}
@@ -56,19 +56,19 @@ namespace BFW
 
 			Trie* _Child = nullptr;
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					_Child = &Childs[_Index];
+					_Child = &Children[_Index];
 					break;
 				}
 			}
 
 			if (_Child == nullptr)
 			{
-				Childs.PushBack(Trie());
-				_Child = &Childs[Childs.GetSize() - 1];
+				Children.PushBack(Trie());
+				_Child = &Children[Children.GetSize() - 1];
 				_Child->Id = _Name[0];
 			}
 
@@ -90,19 +90,19 @@ namespace BFW
 
 			Trie* _Child = nullptr;
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					_Child = &Childs[_Index];
+					_Child = &Children[_Index];
 					break;
 				}
 			}
 
 			if (_Child == nullptr)
 			{
-				Childs.PushBack(Trie());
-				_Child = &Childs[Childs.GetSize() - 1];
+				Children.PushBack(Trie());
+				_Child = &Children[Children.GetSize() - 1];
 				_Child->Id = _Name[0];
 			}
 
@@ -124,19 +124,19 @@ namespace BFW
 
 			Trie* _Child = nullptr;
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					_Child = &Childs[_Index];
+					_Child = &Children[_Index];
 					break;
 				}
 			}
 
 			if (_Child == nullptr)
 			{
-				Childs.PushBack(Trie());
-				_Child = &Childs[Childs.GetSize() - 1];
+				Children.PushBack(Trie());
+				_Child = &Children[Children.GetSize() - 1];
 				_Child->Id = _Name[0];
 			}
 
@@ -158,19 +158,19 @@ namespace BFW
 
 			Trie* _Child = nullptr;
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					_Child = &Childs[_Index];
+					_Child = &Children[_Index];
 					break;
 				}
 			}
 
 			if (_Child == nullptr)
 			{
-				Childs.PushBack(Trie());
-				_Child = &Childs[Childs.GetSize() - 1];
+				Children.PushBack(Trie());
+				_Child = &Children[Children.GetSize() - 1];
 				_Child->Id = _Name[0];
 			}
 
@@ -190,15 +190,15 @@ namespace BFW
 				return;
 			}
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					Childs[_Index].Erase(_Name + 1);
+					Children[_Index].Erase(_Name + 1);
 
-					if ((Type*)(Childs[_Index].Data) == nullptr && Childs[_Index].Childs.GetSize() == 0)
+					if ((Type*)(Children[_Index].Data) == nullptr && Children[_Index].Children.GetSize() == 0)
 					{
-						Childs.Erase(_Index);
+						Children.Erase(_Index);
 					}
 
 					return;
@@ -219,15 +219,15 @@ namespace BFW
 				return;
 			}
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					Childs[_Index].Erase(_Name + 1, _Length - 1);
+					Children[_Index].Erase(_Name + 1, _Length - 1);
 
-					if ((Type*)(Childs[_Index].Data) == nullptr && Childs[_Index].Childs.GetSize() == 0)
+					if ((Type*)(Children[_Index].Data) == nullptr && Children[_Index].Children.GetSize() == 0)
 					{
-						Childs.Erase(_Index);
+						Children.Erase(_Index);
 					}
 
 					return;
@@ -239,7 +239,7 @@ namespace BFW
 		{
 			Id = (CharT)('\0');
 			Data = UniquePointer<Type>();
-			Childs.Clear();
+			Children.Clear();
 		}
 
 		Type* GetData(const CharT* _Name) requires (!std::is_const_v<T>)
@@ -254,11 +254,11 @@ namespace BFW
 				return Data.GetData();
 			}
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					return Childs[_Index].GetData(_Name + 1);
+					return Children[_Index].GetData(_Name + 1);
 				}
 			}
 
@@ -277,11 +277,11 @@ namespace BFW
 				return Data.GetData();
 			}
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					return Childs[_Index].GetData(_Name + 1, _Length - 1);
+					return Children[_Index].GetData(_Name + 1, _Length - 1);
 				}
 			}
 
@@ -300,11 +300,11 @@ namespace BFW
 				return Data.GetData();
 			}
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					return Childs[_Index].GetData(_Name + 1);
+					return Children[_Index].GetData(_Name + 1);
 				}
 			}
 
@@ -323,11 +323,11 @@ namespace BFW
 				return Data.GetData();
 			}
 
-			for (size_t _Index = 0; _Index < Childs.GetSize(); _Index++)
+			for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 			{
-				if (_Name[0] == Childs[_Index].Id)
+				if (_Name[0] == Children[_Index].Id)
 				{
-					return Childs[_Index].GetData(_Name + 1, _Length - 1);
+					return Children[_Index].GetData(_Name + 1, _Length - 1);
 				}
 			}
 
@@ -367,7 +367,7 @@ namespace BFW
 
 			Id = _Other.Id;
 			Data = _Other.Data;
-			Childs = _Other.Childs;
+			Children = _Other.Children;
 
 			return *this;
 		}
@@ -381,7 +381,7 @@ namespace BFW
 
 			Id = _Other.Id;
 			Data = (UniquePointer<Type>&&)(_Other.Data);
-			Childs = (Vector<Trie>&&)(_Other.Childs);
+			Children = (Vector<Trie>&&)(_Other.Children);
 
 			_Other.Id = (CharT)('\0');
 
@@ -392,7 +392,7 @@ namespace BFW
 
 		CharT Id;
 		UniquePointer<Type> Data;
-		Vector<Trie> Childs;
+		Vector<Trie> Children;
 
 	};
 

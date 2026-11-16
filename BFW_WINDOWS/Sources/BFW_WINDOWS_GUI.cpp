@@ -405,7 +405,7 @@ void BFW_WINDOWS::GUI::MainWindowCleanUp(BFW::GUI::Window* _Wnd)
 	WindowData& _WndData = *(WindowData*)(_Wnd->GetUserData());
 	PopUpData* _PopUpData = (PopUpData*)(_WndData.Layout.GetUserData());
 
-	ReleaseAllChilds(_WndData.Layout);
+	ReleaseAllChildren(_WndData.Layout);
 
 	BFW_HEAP_PROFILE_POP(_WndData.LayoutMutex);
 	delete _WndData.LayoutMutex;
@@ -636,7 +636,7 @@ void BFW_WINDOWS::GUI::ChildWindowCleanUp(BFW::GUI::Window* _Wnd)
 	WindowData& _WndData = *(WindowData*)(_Wnd->GetUserData());
 	PopUpData* _PopUpData = (PopUpData*)(_WndData.Layout.GetUserData());
 
-	ReleaseAllChilds(_WndData.Layout);
+	ReleaseAllChildren(_WndData.Layout);
 
 	BFW_HEAP_PROFILE_POP(_WndData.LayoutMutex);
 	delete _WndData.LayoutMutex;
@@ -1089,7 +1089,7 @@ void BFW_WINDOWS::GUI::ResizePopUpLayer(BFW::GUI::PopUp& _Parent, const size_t _
 		{
 		case _DebugWindowPopUpId:
 		{
-			_PopUp.ResizeChilds
+			_PopUp.ResizeChildren
 			(
 				ResizePopUpLayer,
 				_GetMinX, _GetMinY,
@@ -1203,18 +1203,18 @@ void BFW_WINDOWS::GUI::RenderCursor(BFW::GUI::Window& _Wnd, const uint64_t _PopU
 
 
 
-void BFW_WINDOWS::GUI::ReleaseAllChilds(BFW::GUI::PopUp& _Wnd)
+void BFW_WINDOWS::GUI::ReleaseAllChildren(BFW::GUI::PopUp& _Wnd)
 {
 	for (size_t _Index = 0; _Index < _Wnd.GetPanels().GetSize(); _Index++)
 	{
-		ReleaseAllChilds(_Wnd.GetPanels()[_Index]);
+		ReleaseAllChildren(_Wnd.GetPanels()[_Index]);
 		ReleaseUserData(_Wnd.GetPanels()[_Index].GetUserData());
 		_Wnd.GetPanels()[_Index].SetUserData(nullptr);
 	}
 
 	for (size_t _Index = 0; _Index < _Wnd.GetNodes().GetSize(); _Index++)
 	{
-		ReleaseAllChilds(_Wnd.GetNodes()[_Index]);
+		ReleaseAllChildren(_Wnd.GetNodes()[_Index]);
 		ReleaseUserData(_Wnd.GetNodes()[_Index].GetUserData());
 		_Wnd.GetNodes()[_Index].SetUserData(nullptr);
 	}
@@ -1223,7 +1223,7 @@ void BFW_WINDOWS::GUI::ReleaseAllChilds(BFW::GUI::PopUp& _Wnd)
 	{
 		for (size_t _Index = 0; _Index < _Wnd.GetPopUps()[_Layer].GetSize(); _Index++)
 		{
-			ReleaseAllChilds(_Wnd.GetPopUps()[_Layer][_Index]);
+			ReleaseAllChildren(_Wnd.GetPopUps()[_Layer][_Index]);
 			ReleaseUserData(_Wnd.GetPopUps()[_Layer][_Index].GetUserData());
 			_Wnd.GetPopUps()[_Layer][_Index].SetUserData(nullptr);
 		}
@@ -1560,7 +1560,7 @@ void BFW_WINDOWS::GUI::RenderWindow(RunTime::Application& _ApplicationObj, BFW::
 			_WndData.Layout.SetTrueWidth(GetMinX(_WndData.Layout));
 			_WndData.Layout.SetTrueHeight(GetMinY(_WndData.Layout));
 
-			_WndData.Layout.ResizeChilds
+			_WndData.Layout.ResizeChildren
 			(
 				ResizePopUpLayer,
 				GetMinX, GetMinY,
