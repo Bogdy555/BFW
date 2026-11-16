@@ -338,6 +338,13 @@ static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 		return false;
 	}
 
+	size_t _IndexDots = _Token.find(':');
+
+	if (_IndexDots != BFW_STRING_TYPE_A::npos && BFW_STRING_TYPE_A("-.:0123456789").find(_Token[_IndexDots + 1]) != BFW_STRING_TYPE_A::npos)
+	{
+		return false;
+	}
+
 	BFW::Vector<uint32_t> _CodePoints;
 
 	for (size_t _Index = 0; _Index < _Token.size(); _Index++)
@@ -506,6 +513,27 @@ static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 		return false;
 	}
 
+	if (_IndexDots != BFW_STRING_TYPE_A::npos &&
+		_CodePoints[_IndexDots + 1] != '_' &&
+		_CodePoints[_IndexDots + 1] != ':' &&
+		!(_CodePoints[_IndexDots + 1] >= 'A' && _CodePoints[_IndexDots + 1] <= 'Z') &&
+		!(_CodePoints[_IndexDots + 1] >= 'a' && _CodePoints[_IndexDots + 1] <= 'z') &&
+		!(_CodePoints[_IndexDots + 1] >= 0xC0 && _CodePoints[_IndexDots + 1] <= 0xD6) &&
+		!(_CodePoints[_IndexDots + 1] >= 0xD8 && _CodePoints[_IndexDots + 1] <= 0xF6) &&
+		!(_CodePoints[_IndexDots + 1] >= 0xF8 && _CodePoints[_IndexDots + 1] <= 0x2FF) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x370 && _CodePoints[_IndexDots + 1] <= 0x37D) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x37F && _CodePoints[_IndexDots + 1] <= 0x1FFF) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x200C && _CodePoints[_IndexDots + 1] <= 0x200D) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x2070 && _CodePoints[_IndexDots + 1] <= 0x218F) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x2C00 && _CodePoints[_IndexDots + 1] <= 0x2FEF) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x3001 && _CodePoints[_IndexDots + 1] <= 0xD7FF) &&
+		!(_CodePoints[_IndexDots + 1] >= 0xF900 && _CodePoints[_IndexDots + 1] <= 0xFDCF) &&
+		!(_CodePoints[_IndexDots + 1] >= 0xFDF0 && _CodePoints[_IndexDots + 1] <= 0xFFFD) &&
+		!(_CodePoints[_IndexDots + 1] >= 0x10000 && _CodePoints[_IndexDots + 1] <= 0xEFFFF))
+	{
+		return false;
+	}
+
 	size_t _Count = _CodePoints[0] == ':';
 
 	for (size_t _Index = 1; _Index < _CodePoints.GetSize(); _Index++)
@@ -542,6 +570,119 @@ static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 	if (_Count > 1)
 	{
 		return false;
+	}
+
+	return true;
+}
+
+static const bool ValidateXMLNamespaces(const BFW::Assets::XMLNode& _Node, BFW::Vector<BFW_STRING_TYPE_A>& _Namespaces)
+{
+	size_t _Count = 0;
+
+	for (size_t _Index = 0; _Index < _Node.GetAttributes().GetSize(); _Index++)
+	{
+		if (_Node.GetAttributes()[_Index].starts_with("xmlns:"))
+		{
+			BFW_STRING_TYPE_A _Namespace = _Node.GetAttributes()[_Index].substr(6, _Node.GetAttributes()[_Index].size() - 6);
+
+			if (_Namespace.size() == 0 || ((_Namespace[0] == 'X' || _Namespace[0] == 'x') && (_Namespace[1] == 'M' || _Namespace[1] == 'm') && (_Namespace[2] == 'L' || _Namespace[2] == 'l')))
+			{
+				return false;
+			}
+
+			for (size_t _Index2 = 0; _Index2 < _Count; _Index2++)
+			{
+				if (_Namespace == _Namespaces[_Namespaces.GetSize() - _Count + _Index2])
+				{
+					return false;
+				}
+			}
+
+			_Count++;
+			_Namespaces.PushBack(_Namespace);
+		}
+	}
+
+	size_t _IndexTag = _Node.GetTag().find(':');
+
+	if (_IndexTag != BFW_STRING_TYPE_A::npos)
+	{
+		if (_IndexTag == _Node.GetTag().size() - 1 || _IndexTag == 0)
+		{
+			return false;
+		}
+
+		BFW_STRING_TYPE_A _Namespace = _Node.GetTag().substr(0, _IndexTag);
+
+		bool _Found = (_Namespace[0] == 'X' || _Namespace[0] == 'x') && (_Namespace[1] == 'M' || _Namespace[1] == 'm') && (_Namespace[2] == 'L' || _Namespace[2] == 'l') && _Namespace[3] == '\0';
+
+		for (size_t _Index = 0; _Index < _Namespaces.GetSize(); _Index++)
+		{
+			if (_Namespaces[_Index] == _Namespace)
+			{
+				_Found = true;
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			return false;
+		}
+	}
+
+	for (size_t _AttributeForIndex = 0; _AttributeForIndex < _Node.GetAttributes().GetSize(); _AttributeForIndex++)
+	{
+		if (_Node.GetAttributes()[_AttributeForIndex].starts_with("xmlns:"))
+		{
+			continue;
+		}
+
+		size_t _IndexAttribute = _Node.GetAttributes()[_AttributeForIndex].find(':');
+
+		if (_IndexAttribute != BFW_STRING_TYPE_A::npos)
+		{
+			if (_IndexAttribute == _Node.GetAttributes()[_AttributeForIndex].size() - 1 || _IndexAttribute == 0)
+			{
+				return false;
+			}
+
+			BFW_STRING_TYPE_A _Namespace = _Node.GetAttributes()[_AttributeForIndex].substr(0, _IndexAttribute);
+
+			bool _Found = (_Namespace[0] == 'X' || _Namespace[0] == 'x') && (_Namespace[1] == 'M' || _Namespace[1] == 'm') && (_Namespace[2] == 'L' || _Namespace[2] == 'l') && _Namespace[3] == '\0';
+
+			for (size_t _Index = 0; _Index < _Namespaces.GetSize(); _Index++)
+			{
+				if (_Namespaces[_Index] == _Namespace)
+				{
+					_Found = true;
+					break;
+				}
+			}
+
+			if (!_Found)
+			{
+				return false;
+			}
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _Node.GetChildren().GetSize(); _Index++)
+	{
+		if (_Node.GetChildren()[_Index].GetType() == BFW::Assets::_TextXMLNodeType)
+		{
+			continue;
+		}
+
+		if (!ValidateXMLNamespaces(_Node.GetChildren()[_Index], _Namespaces))
+		{
+			return false;
+		}
+	}
+
+	for (size_t _Index = 0; _Index < _Count; _Index++)
+	{
+		_Namespaces.Erase(_Namespaces.GetSize() - 1);
 	}
 
 	return true;
@@ -3330,6 +3471,14 @@ const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
 		return false;
 	}
 
+	Vector<BFW_STRING_TYPE_A> _Namespaces;
+
+	if (!ValidateXMLNamespaces(Root, _Namespaces))
+	{
+		*this = XML();
+		return false;
+	}
+
 	if (_CurrentPos != _FileContent.GetLength() - 1)
 	{
 		*this = XML();
@@ -3342,6 +3491,13 @@ const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
 BFW::Assets::FileContent BFW::Assets::XML::Save() const
 {
 	if (Root.GetType() != _NodeXMLNodeType)
+	{
+		return FileContent();
+	}
+
+	Vector<BFW_STRING_TYPE_A> _Namespaces;
+
+	if (!ValidateXMLNamespaces(Root, _Namespaces))
 	{
 		return FileContent();
 	}
