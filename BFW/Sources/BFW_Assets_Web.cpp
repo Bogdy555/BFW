@@ -688,6 +688,161 @@ static const bool ValidateXMLNamespaces(const BFW::Assets::XMLNode& _Node, BFW::
 	return true;
 }
 
+static const bool SolveXMLNamespaces(const BFW::Assets::XMLNode& _Node, BFW::Vector<BFW_STRING_TYPE_A>& _Namespaces, BFW::Vector<BFW_STRING_TYPE_A>& _NamespaceValues, const BFW::Assets::XMLNode& _SolvingNode, BFW_STRING_TYPE_A& _SolvingTagNamespace, BFW::Vector<BFW_STRING_TYPE_A>& _SolvingAttributesNamespaces, bool& _Exit)
+{
+	size_t _Count = 0;
+
+	for (size_t _Index = 0; _Index < _Node.GetAttributes().GetSize(); _Index++)
+	{
+		if (_Node.GetAttributes()[_Index].starts_with("xmlns:") || _Node.GetAttributes()[_Index] == "xmlns")
+		{
+			BFW_STRING_TYPE_A _Namespace = _Node.GetAttributes()[_Index].substr(6, _Node.GetAttributes()[_Index].size() - 6);
+
+			if ((_Namespace.size() == 0 && _Node.GetAttributes()[_Index].starts_with("xmlns:")) || (_Namespace.size() != 0 && (_Namespace[0] == 'X' || _Namespace[0] == 'x') && (_Namespace[1] == 'M' || _Namespace[1] == 'm') && (_Namespace[2] == 'L' || _Namespace[2] == 'l')))
+			{
+				return false;
+			}
+
+			for (size_t _Index2 = 0; _Index2 < _Count; _Index2++)
+			{
+				if (_Namespace == _Namespaces[_Namespaces.GetSize() - _Count + _Index2])
+				{
+					return false;
+				}
+			}
+
+			_Count++;
+			_Namespaces.PushBack(_Namespace);
+			_NamespaceValues.PushBack(_Node.GetAttributeValues()[_Index]);
+		}
+	}
+
+	if (&_Node != &_SolvingNode)
+	{
+		for (size_t _Index = 0; _Index < _Node.GetChildren().GetSize(); _Index++)
+		{
+			if (_Node.GetChildren()[_Index].GetType() == BFW::Assets::_TextXMLNodeType)
+			{
+				continue;
+			}
+
+			if (SolveXMLNamespaces(_Node.GetChildren()[_Index], _Namespaces, _NamespaceValues, _SolvingNode, _SolvingTagNamespace, _SolvingAttributesNamespaces, _Exit))
+			{
+				return true;
+			}
+
+			if (_Exit)
+			{
+				return false;
+			}
+		}
+
+		for (size_t _Index = 0; _Index < _Count; _Index++)
+		{
+			_Namespaces.Erase(_Namespaces.GetSize() - 1);
+			_NamespaceValues.Erase(_NamespaceValues.GetSize() - 1);
+		}
+
+		return false;
+	}
+
+	size_t _IndexTag = _Node.GetTag().find(':');
+
+	if (_IndexTag != BFW_STRING_TYPE_A::npos)
+	{
+		if (_IndexTag == _Node.GetTag().size() - 1 || _IndexTag == 0)
+		{
+			_Exit = true;
+			return false;
+		}
+
+		BFW_STRING_TYPE_A _Namespace = _Node.GetTag().substr(0, _IndexTag);
+
+		bool _Found = (_Namespace[0] == 'X' || _Namespace[0] == 'x') && (_Namespace[1] == 'M' || _Namespace[1] == 'm') && (_Namespace[2] == 'L' || _Namespace[2] == 'l') && _Namespace[3] == '\0';
+
+		if (_Found)
+		{
+			_SolvingTagNamespace = "http://www.w3.org/XML/1998/namespace";
+		}
+
+		for (size_t _Index = 0; _Index < _Namespaces.GetSize(); _Index++)
+		{
+			if (_Namespaces[_Namespaces.GetSize() - 1 - _Index] == _Namespace)
+			{
+				_Found = true;
+				_SolvingTagNamespace = _NamespaceValues[_NamespaceValues.GetSize() - 1 - _Index];
+				break;
+			}
+		}
+
+		if (!_Found)
+		{
+			_Exit = true;
+			return false;
+		}
+	}
+	else
+	{
+		for (size_t _Index = 0; _Index < _Namespaces.GetSize(); _Index++)
+		{
+			if (_Namespaces[_Namespaces.GetSize() - 1 - _Index] == "")
+			{
+				_SolvingTagNamespace = _NamespaceValues[_NamespaceValues.GetSize() - 1 - _Index];
+				break;
+			}
+		}
+	}
+
+	_SolvingAttributesNamespaces.Reserve(_Node.GetAttributes().GetSize());
+
+	for (size_t _AttributeForIndex = 0; _AttributeForIndex < _Node.GetAttributes().GetSize(); _AttributeForIndex++)
+	{
+		if (_Node.GetAttributes()[_AttributeForIndex].starts_with("xmlns:") || _Node.GetAttributes()[_AttributeForIndex] == "xmlns")
+		{
+			_SolvingAttributesNamespaces.EmplaceBack("http://www.w3.org/2000/xmlns/");
+			continue;
+		}
+
+		_SolvingAttributesNamespaces.EmplaceBack("");
+
+		size_t _IndexAttribute = _Node.GetAttributes()[_AttributeForIndex].find(':');
+
+		if (_IndexAttribute != BFW_STRING_TYPE_A::npos)
+		{
+			if (_IndexAttribute == _Node.GetAttributes()[_AttributeForIndex].size() - 1 || _IndexAttribute == 0)
+			{
+				return false;
+			}
+
+			BFW_STRING_TYPE_A _Namespace = _Node.GetAttributes()[_AttributeForIndex].substr(0, _IndexAttribute);
+
+			bool _Found = (_Namespace[0] == 'X' || _Namespace[0] == 'x') && (_Namespace[1] == 'M' || _Namespace[1] == 'm') && (_Namespace[2] == 'L' || _Namespace[2] == 'l') && _Namespace[3] == '\0';
+
+			if (_Found)
+			{
+				_SolvingAttributesNamespaces[_SolvingAttributesNamespaces.GetSize() - 1] = "http://www.w3.org/XML/1998/namespace";
+			}
+
+			for (size_t _Index = 0; _Index < _Namespaces.GetSize(); _Index++)
+			{
+				if (_Namespaces[_Namespaces.GetSize() - 1 - _Index] == _Namespace)
+				{
+					_Found = true;
+					_SolvingAttributesNamespaces[_SolvingAttributesNamespaces.GetSize() - 1] = _NamespaceValues[_NamespaceValues.GetSize() - 1 - _Index];
+					break;
+				}
+			}
+
+			if (!_Found)
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 static const bool LoadXMLComment(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos)
 {
 	if (_FileContent[_CurrentPos] != '<' || _FileContent[_CurrentPos + 1] != '!' || _FileContent[_CurrentPos + 2] != '-' || _FileContent[_CurrentPos + 3] != '-')
@@ -2035,7 +2190,7 @@ static const bool SaveXMLNode(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _Stre
 
 	_Stream << "</" << _Node.GetTag() << '>' BFW_WINDOWS_PLATFORM_CALL(<< '\r') << '\n';
 
-	return  true;
+	return true;
 }
 
 static const bool LoadJsonNull(const BFW::Assets::FileContent& _FileContent, size_t& _CurrentPos, BFW::Assets::Json& _Json)
@@ -3823,6 +3978,23 @@ const bool BFW::Assets::XML::IsValid() const
 	Vector<BFW_STRING_TYPE_A> _Namespaces;
 
 	return ValidateXMLNamespaces(Root, _Namespaces);
+}
+
+const bool BFW::Assets::XML::ResolveNamespace(const XMLNode& _Node, BFW_STRING_TYPE_A& _TagNamespace, Vector<BFW_STRING_TYPE_A>& _AttributesNamespaces) const
+{
+	_TagNamespace = "http://www.w3.org/2000/xmlns/";
+	_AttributesNamespaces.Clear();
+
+	if (!IsValid() || _Node.GetType() != _NodeXMLNodeType)
+	{
+		return false;
+	}
+
+	Vector<BFW_STRING_TYPE_A> _Namespaces;
+	Vector<BFW_STRING_TYPE_A> _NamespaceValues;
+	bool _Exit = false;
+
+	return SolveXMLNamespaces(Root, _Namespaces, _NamespaceValues, _Node, _TagNamespace, _AttributesNamespaces, _Exit);
 }
 
 BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetExclamationMarks()

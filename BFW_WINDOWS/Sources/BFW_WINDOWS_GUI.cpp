@@ -1264,7 +1264,7 @@ const bool BFW_WINDOWS::GUI::HandleDefaultLCaptureDrag(const intptr_t _MouseX, c
 			_Menu
 		);
 
-		return  true;
+		return true;
 	}
 
 	if (_WndData.LCapturePath[0]->GetId() == BFW::GUI::_HScrollWindowPopUpId)

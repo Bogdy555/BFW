@@ -572,6 +572,8 @@ namespace BFW
 
 			const bool IsValid() const;
 
+			const bool ResolveNamespace(const XMLNode& _Node, BFW_STRING_TYPE_A& _TagNamespace, Vector<BFW_STRING_TYPE_A>& _AttributesNamespaces) const;
+
 			Vector<XMLNode>& GetExclamationMarks();
 			const Vector<XMLNode>& GetExclamationMarks() const;
 			Vector<XMLNode>& GetQuestionMarks();
