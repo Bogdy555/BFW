@@ -493,6 +493,8 @@ static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 		_CodePoints.PushBack(_CodePoint);
 	}
 
+	_CodePoints.PushBack(0);
+
 	if (_CodePoints[0] != '_' &&
 		_CodePoints[0] != ':' &&
 		!(_CodePoints[0] >= 'A' && _CodePoints[0] <= 'Z') &&
@@ -534,9 +536,9 @@ static const bool IsValidXMLToken(const BFW_STRING_VIEW_TYPE_A& _Token)
 		return false;
 	}
 
-	size_t _Count = _CodePoints[0] == ':';
+	size_t _Count = 0;
 
-	for (size_t _Index = 1; _Index < _CodePoints.GetSize(); _Index++)
+	for (size_t _Index = 1; _Index < _CodePoints.GetSize() - 1; _Index++)
 	{
 		if (_CodePoints[_Index] != '-' &&
 			_CodePoints[_Index] != '_' &&
@@ -1748,7 +1750,7 @@ static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size
 		return true;
 	}
 
-	if (_Node.GetTag() == "script")
+	if (_Node.GetTag() == "script" || _Node.GetTag() == "style")
 	{
 		_Node.GetChildren().EmplaceBack(BFW::Assets::XMLNode());
 		_Node.GetChildren()[0].SetText("");
@@ -1758,7 +1760,7 @@ static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size
 			size_t _OldCurrentPos = _CurrentPos;
 			BFW::Assets::XMLNode _CurrentEntry;
 
-			if (LoadXMLEntry(_FileContent, _CurrentPos, _CurrentEntry, _LeftClosed, _RightClosed) && _LeftClosed && !_RightClosed && _CurrentEntry.GetTag() == "script")
+			if (LoadXMLEntry(_FileContent, _CurrentPos, _CurrentEntry, _LeftClosed, _RightClosed) && _LeftClosed && !_RightClosed && _CurrentEntry.GetTag() == _Node.GetTag())
 			{
 				if (_Node.GetChildren()[0].GetText() == "")
 				{
@@ -1876,7 +1878,7 @@ static const bool SaveXMLString(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STR
 
 		if (_String[_Index] == '\'')
 		{
-			_Stream << "&amp;";
+			_Stream << "&apos;";
 			continue;
 		}
 
