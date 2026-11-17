@@ -50,6 +50,11 @@ void BFW_ESP32::RunTime::MainMenu::Update()
 	FrameBuild();
 }
 
+void BFW_ESP32::RunTime::MainMenu::FixedUpdate()
+{
+
+}
+
 void BFW_ESP32::RunTime::MainMenu::Stop()
 {
 

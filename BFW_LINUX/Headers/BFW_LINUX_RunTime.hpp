@@ -67,6 +67,7 @@ namespace BFW_LINUX
 			void SpawnQueuedMenu(const uint64_t _QueuedMenu) override;
 			void Setup() override;
 			void Update() override;
+			void FixedUpdate() override;
 			void Stop() override;
 
 			void Input();

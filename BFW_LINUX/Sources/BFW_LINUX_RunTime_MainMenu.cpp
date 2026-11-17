@@ -50,6 +50,11 @@ void BFW_LINUX::RunTime::MainMenu::Update()
 	FrameBuild();
 }
 
+void BFW_LINUX::RunTime::MainMenu::FixedUpdate()
+{
+
+}
+
 void BFW_LINUX::RunTime::MainMenu::Stop()
 {
 

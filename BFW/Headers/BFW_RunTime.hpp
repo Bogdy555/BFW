@@ -51,6 +51,7 @@ namespace BFW
 			void SetLagTime(const float _LagTime);
 			void SetSimulationSpeed(const float _SimulationSpeed);
 			void SetSync(const uint64_t _Sync);
+			void SetFixedDelta(const float _FixedDelta);
 
 			const bool CheckOn() const;
 			const int32_t GetReturnValue() const;
@@ -64,6 +65,7 @@ namespace BFW
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
+			const float GetFixedDelta() const;
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -104,6 +106,7 @@ namespace BFW
 			float LagTime;
 			float SimulationSpeed;
 			uint64_t Sync;
+			float FixedDelta;
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
@@ -159,6 +162,7 @@ namespace BFW
 			void SetLagTime(const float _LagTime);
 			void SetSimulationSpeed(const float _SimulationSpeed);
 			void SetSync(const uint64_t _Sync);
+			void SetFixedDelta(const float _FixedDelta);
 
 			const bool CheckOn() const;
 			const uint64_t GetNextMenu() const;
@@ -176,12 +180,14 @@ namespace BFW
 			const float GetLagTime() const;
 			const float GetSimulationSpeed() const;
 			const uint64_t GetSync() const;
+			const float GetFixedDelta() const;
 
 		protected:
 
 			virtual void SpawnQueuedMenu(const uint64_t _QueuedMenu) = 0;
 			virtual void Setup() = 0;
 			virtual void Update() = 0;
+			virtual void FixedUpdate() = 0;
 			virtual void Stop() = 0;
 
 		private:

@@ -88,6 +88,11 @@ void BFW_WINDOWS::RunTime::MainMenu::Update()
 	FrameBuild();
 }
 
+void BFW_WINDOWS::RunTime::MainMenu::FixedUpdate()
+{
+
+}
+
 void BFW_WINDOWS::RunTime::MainMenu::Stop()
 {
 	CleanUpGUI();

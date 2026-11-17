@@ -4,7 +4,7 @@
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), FixedDelta(1.0f / 60.0f), SharedInstanceMemory(), SharedInstanceMutex(), InstanceHandle(NULL), CmdLine(nullptr), ShowCmd(SW_HIDE)
 {
 
 }
@@ -13,7 +13,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), FixedDelta(1.0f / 60.0f), SharedInstanceMemory(), SharedInstanceMutex(), ArgC(0), ArgV(nullptr)
 {
 
 }
@@ -22,7 +22,7 @@ BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessin
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60)
+BFW::RunTime::Application::Application() : On(false), ReturnValue(MultiProcessing::_UnknownErrorReturnValue), CurrentMenu(_NullMenu), FrameTime(), LagTime(1.0f / 10.0f), SimulationSpeed(1.0f), Sync(60), FixedDelta(1.0f / 60.0f)
 {
 
 }
@@ -87,6 +87,7 @@ const int32_t BFW::RunTime::Application::Run(const HINSTANCE _InstanceHandle, co
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+	FixedDelta = 1.0f / 60.0f;
 
 	InstanceHandle = NULL;
 	CmdLine = nullptr;
@@ -158,6 +159,7 @@ const int32_t BFW::RunTime::Application::Run(const size_t _ArgC, const BFW_CHAR_
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+	FixedDelta = 1.0f / 60.0f;
 
 	ArgC = 0;
 	ArgV = nullptr;
@@ -195,6 +197,7 @@ const int32_t BFW::RunTime::Application::Run()
 	LagTime = 1.0f / 10.0f;
 	SimulationSpeed = 1.0f;
 	Sync = 60;
+	FixedDelta = 1.0f / 60.0f;
 
 	int32_t _ReturnValue = ReturnValue;
 	ReturnValue = MultiProcessing::_UnknownErrorReturnValue;
@@ -238,6 +241,11 @@ void BFW::RunTime::Application::SetSimulationSpeed(const float _SimulationSpeed)
 void BFW::RunTime::Application::SetSync(const uint64_t _Sync)
 {
 	Sync = _Sync;
+}
+
+void BFW::RunTime::Application::SetFixedDelta(const float _FixedDelta)
+{
+	FixedDelta = Math::Max(_FixedDelta, 1.0f / 1000000.0f);
 }
 
 const bool BFW::RunTime::Application::CheckOn() const
@@ -298,6 +306,11 @@ const float BFW::RunTime::Application::GetSimulationSpeed() const
 const uint64_t BFW::RunTime::Application::GetSync() const
 {
 	return Sync;
+}
+
+const float BFW::RunTime::Application::GetFixedDelta() const
+{
+	return FixedDelta;
 }
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
@@ -404,12 +417,32 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 	ApplicationObj = _ApplicationObj;
 	ParentMenu = _ParentMenu;
 
+	float _TotalTime = 0.0f;
+
 	GetFrameTime(_PreviousState).Reset();
 
 	Setup();
 	while (On)
 	{
 		GetFrameTime(_CurrentState).Start();
+
+		BFW_ASSERT_MSG(GetSync() == 0 || 1.0f / GetFixedDelta() / (float)(GetSync()) <= 10, BFW_STRING_PREFIX("Invalid fixed update delta time!"));
+
+		_TotalTime += GetFrameTime(_PreviousState);
+
+		size_t _Steps = 0;
+
+		while (_TotalTime >= GetFixedDelta() && _Steps < 10)
+		{
+			FixedUpdate();
+			_Steps++;
+			_TotalTime -= GetFixedDelta();
+		}
+
+		while (_TotalTime >= GetFixedDelta())
+		{
+			_TotalTime -= GetFixedDelta();
+		}
 
 		Update();
 
@@ -433,6 +466,7 @@ const uint64_t BFW::RunTime::Menu::Run(Application* _ApplicationObj, Menu* _Pare
 		{
 			SpawnQueuedMenu(QueuedMenu);
 			QueuedMenu = _NullMenu;
+			_TotalTime = 0.0f;
 			GetFrameTime(_PreviousState).Reset();
 		}
 
@@ -487,6 +521,11 @@ void BFW::RunTime::Menu::SetSimulationSpeed(const float _SimulationSpeed)
 void BFW::RunTime::Menu::SetSync(const uint64_t _Sync)
 {
 	ApplicationObj->SetSync(_Sync);
+}
+
+void BFW::RunTime::Menu::SetFixedDelta(const float _FixedDelta)
+{
+	ApplicationObj->SetFixedDelta(_FixedDelta);
 }
 
 const bool BFW::RunTime::Menu::CheckOn() const
@@ -557,4 +596,9 @@ const float BFW::RunTime::Menu::GetSimulationSpeed() const
 const uint64_t BFW::RunTime::Menu::GetSync() const
 {
 	return ApplicationObj->GetSync();
+}
+
+const float BFW::RunTime::Menu::GetFixedDelta() const
+{
+	return ApplicationObj->GetFixedDelta();
 }

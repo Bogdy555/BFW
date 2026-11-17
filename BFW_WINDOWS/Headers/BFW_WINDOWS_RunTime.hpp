@@ -87,6 +87,7 @@ namespace BFW_WINDOWS
 			void SpawnQueuedMenu(const uint64_t _QueuedMenu) override;
 			void Setup() override;
 			void Update() override;
+			void FixedUpdate() override;
 			void Stop() override;
 
 			void GenerateNodeWindow(BFW::GUI::PopUp& _Parent);
