@@ -570,6 +570,8 @@ namespace BFW
 
 			FileContent Save() const;
 
+			const bool IsValid() const;
+
 			Vector<XMLNode>& GetExclamationMarks();
 			const Vector<XMLNode>& GetExclamationMarks() const;
 			Vector<XMLNode>& GetQuestionMarks();

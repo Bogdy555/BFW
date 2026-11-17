@@ -877,11 +877,6 @@ static const bool LoadXMLString(const BFW::Assets::FileContent& _FileContent, si
 			continue;
 		}
 
-		if (_FileContent[_CurrentPos] == '&')
-		{
-			return false;
-		}
-
 		_String += _FileContent[_CurrentPos];
 		_CurrentPos++;
 	}
@@ -1106,11 +1101,6 @@ static const bool LoadXMLText(const BFW::Assets::FileContent& _FileContent, size
 			_String += '\'';
 			_CurrentPos += 6;
 			continue;
-		}
-
-		if (_FileContent[_CurrentPos] == '&')
-		{
-			return false;
 		}
 
 		_String += _FileContent[_CurrentPos];
@@ -1585,9 +1575,61 @@ static const bool LoadXMLNode(const BFW::Assets::FileContent& _FileContent, size
 		return false;
 	}
 
-	if (_RightClosed)
+	if (_RightClosed ||
+		_Node.GetTag() == "area" ||
+		_Node.GetTag() == "base" ||
+		_Node.GetTag() == "br" ||
+		_Node.GetTag() == "col" ||
+		_Node.GetTag() == "embed" ||
+		_Node.GetTag() == "hr" ||
+		_Node.GetTag() == "img" ||
+		_Node.GetTag() == "input" ||
+		_Node.GetTag() == "link" ||
+		_Node.GetTag() == "meta" ||
+		_Node.GetTag() == "source" ||
+		_Node.GetTag() == "track" ||
+		_Node.GetTag() == "wbr")
 	{
 		return true;
+	}
+
+	if (_Node.GetTag() == "script")
+	{
+		_Node.GetChildren().EmplaceBack(BFW::Assets::XMLNode());
+		_Node.GetChildren()[0].SetText("");
+
+		while (_CurrentPos < _FileContent.GetLength() - 1)
+		{
+			size_t _OldCurrentPos = _CurrentPos;
+			BFW::Assets::XMLNode _CurrentEntry;
+
+			if (LoadXMLEntry(_FileContent, _CurrentPos, _CurrentEntry, _LeftClosed, _RightClosed) && _LeftClosed && !_RightClosed && _CurrentEntry.GetTag() == "script")
+			{
+				if (_Node.GetChildren()[0].GetText() == "")
+				{
+					_Node.GetChildren().Erase(0);
+				}
+
+				return true;
+			}
+
+			_CurrentPos = _OldCurrentPos;
+
+			if (_FileContent[_CurrentPos] == '<')
+			{
+				_Node.GetChildren()[0].SetText(_Node.GetChildren()[0].GetText() + "<");
+				_CurrentPos++;
+			}
+
+			if (!LoadXMLText(_FileContent, _CurrentPos, _CurrentEntry))
+			{
+				return false;
+			}
+
+			_Node.GetChildren()[0].SetText(_Node.GetChildren()[0].GetText() + _CurrentEntry.GetText());
+		}
+
+		return false;
 	}
 
 	while (_CurrentPos < _FileContent.GetLength() - 1)
@@ -1648,7 +1690,7 @@ static const bool SaveXMLString(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STR
 
 	for (size_t _Index = 0; _Index < _String.size(); _Index++)
 	{
-		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
+		if ((const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) <= 0x08 || ((const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) >= 0x0B && (const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) <= 0x1F))
 		{
 			return false;
 		}
@@ -1707,7 +1749,7 @@ static const bool SaveXMLText(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRIN
 
 	for (size_t _Index = 0; _Index < _String.size() - _End; _Index++)
 	{
-		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
+		if ((const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) <= 0x08 || ((const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) >= 0x0B && (const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) <= 0x1F))
 		{
 			return false;
 		}
@@ -1747,7 +1789,7 @@ static const bool SaveXMLText(BFW_STRING_STREAM_TYPE_A& _Stream, const BFW_STRIN
 
 	for (size_t _Index = _String.size() - _End; _Index < _String.size(); _Index++)
 	{
-		if (_String[_Index] <= 0x08 || (_String[_Index] >= 0x0B && _String[_Index] <= 0x1F))
+		if ((const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) <= 0x08 || ((const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) >= 0x0B && (const unsigned BFW_CHAR_TYPE_A)(_String[_Index]) <= 0x1F))
 		{
 			return false;
 		}
@@ -3471,9 +3513,7 @@ const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
 		return false;
 	}
 
-	Vector<BFW_STRING_TYPE_A> _Namespaces;
-
-	if (!ValidateXMLNamespaces(Root, _Namespaces))
+	if (!IsValid())
 	{
 		*this = XML();
 		return false;
@@ -3495,9 +3535,7 @@ BFW::Assets::FileContent BFW::Assets::XML::Save() const
 		return FileContent();
 	}
 
-	Vector<BFW_STRING_TYPE_A> _Namespaces;
-
-	if (!ValidateXMLNamespaces(Root, _Namespaces))
+	if (!IsValid())
 	{
 		return FileContent();
 	}
@@ -3539,6 +3577,252 @@ BFW::Assets::FileContent BFW::Assets::XML::Save() const
 	}
 
 	return _FileContent;
+}
+
+const bool BFW::Assets::XML::IsValid() const
+{
+	if (QuestionMarks.GetSize() > 1 || (QuestionMarks.GetSize() == 1 && (QuestionMarks[0].GetType() != BFW::Assets::_NodeXMLNodeType || QuestionMarks[0].GetChildren().GetSize() != 0 || QuestionMarks[0].GetTag() != "xml" || QuestionMarks[0].GetAttributes().GetSize() != QuestionMarks[0].GetAttributeValues().GetSize())))
+	{
+		return false;
+	}
+
+	if (QuestionMarks.GetSize() == 1)
+	{
+		for (size_t _Index = 0; _Index < QuestionMarks[0].GetAttributes().GetSize(); _Index++)
+		{
+			if (!IsValidXMLToken(QuestionMarks[0].GetAttributes()[_Index]))
+			{
+				return false;
+			}
+
+			for (size_t _Index2 = 0; _Index2 < _Index; _Index2++)
+			{
+				if (QuestionMarks[0].GetAttributes()[_Index] == QuestionMarks[0].GetAttributes()[_Index2])
+				{
+					return false;
+				}
+			}
+
+			for (size_t _CharIndex = 0; _CharIndex < QuestionMarks[0].GetAttributeValues()[_Index].size(); _CharIndex++)
+			{
+				const uint8_t _Char = QuestionMarks[0].GetAttributeValues()[_Index][_CharIndex];
+
+				if (_Char <= 0x08 || (_Char >= 0x0B && _Char <= 0x1F))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	for (size_t _ExclamationIndex = 0; _ExclamationIndex < ExclamationMarks.GetSize(); _ExclamationIndex++)
+	{
+		const BFW::Assets::XMLNode& _Exclamation = ExclamationMarks[_ExclamationIndex];
+
+		if (_Exclamation.GetType() != BFW::Assets::_NodeXMLNodeType || _Exclamation.GetChildren().GetSize() != 0 || _Exclamation.GetTag() != "DOCTYPE" || _Exclamation.GetAttributes().GetSize() != _Exclamation.GetAttributeValues().GetSize())
+		{
+			return false;
+		}
+
+		for (size_t _Index = 0; _Index < _Exclamation.GetAttributes().GetSize(); _Index++)
+		{
+			for (size_t _Index2 = 0; _Index2 < _Index; _Index2++)
+			{
+				if (_Exclamation.GetAttributes()[_Index] == _Exclamation.GetAttributes()[_Index2])
+				{
+					return false;
+				}
+			}
+
+			if (_Exclamation.GetAttributeValues()[_Index] == "")
+			{
+				if (!IsValidXMLToken(_Exclamation.GetAttributes()[_Index]))
+				{
+					return false;
+				}
+
+				continue;
+			}
+
+			if (_Exclamation.GetAttributeValues()[_Index] == "\"")
+			{
+				for (size_t _CharIndex = 0; _CharIndex < _Exclamation.GetAttributes()[_Index].size(); _CharIndex++)
+				{
+					const uint8_t _Char = _Exclamation.GetAttributes()[_Index][_CharIndex];
+
+					if (_Char <= 0x08 || (_Char >= 0x0B && _Char <= 0x1F))
+					{
+						return false;
+					}
+				}
+
+				continue;
+			}
+
+			if (_Exclamation.GetAttributeValues()[_Index] == "[")
+			{
+				BFW_CHAR_TYPE_A _Quotes = '\0';
+				size_t _Open = 0;
+
+				for (size_t _CharIndex = 0; _CharIndex < _Exclamation.GetAttributes()[_Index].size(); _CharIndex++)
+				{
+					const BFW_CHAR_TYPE_A& _Char = _Exclamation.GetAttributes()[_Index][_CharIndex];
+
+					if (_Quotes == '\0')
+					{
+						if (_Char == '\'' || _Char == '\"')
+						{
+							_Quotes = _Char;
+						}
+
+						if (_Char == '[')
+						{
+							_Open++;
+						}
+
+						if (_Char == ']')
+						{
+							if (_Open)
+							{
+								_Open--;
+							}
+							else
+							{
+								return false;
+							}
+						}
+					}
+					else
+					{
+						if (_Quotes == _Char)
+						{
+							_Quotes = '\0';
+						}
+					}
+				}
+
+				if (_Quotes != '\0' || _Open)
+				{
+					return false;
+				}
+
+				continue;
+			}
+
+			if (!IsValidXMLToken(_Exclamation.GetAttributes()[_Index]))
+			{
+				return false;
+			}
+
+			for (size_t _CharIndex = 0; _CharIndex < _Exclamation.GetAttributeValues()[_Index].size(); _CharIndex++)
+			{
+				const uint8_t _Char = _Exclamation.GetAttributeValues()[_Index][_CharIndex];
+
+				if (_Char <= 0x08 || (_Char >= 0x0B && _Char <= 0x1F))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	Vector<const XMLNode*> _Queue;
+	_Queue.PushBack(&Root);
+
+	while (_Queue.GetSize())
+	{
+		const XMLNode* _Current = _Queue[0];
+		_Queue.Erase(0);
+
+		if (_Current->GetType() == _TextXMLNodeType)
+		{
+			const BFW_STRING_TYPE_A& _Text = _Current->GetText();
+
+			if (!_Text.size())
+			{
+				return false;
+			}
+
+			for (size_t _Index = 0; _Index < _Text.size(); _Index++)
+			{
+				const uint8_t _Char = _Text[_Index];
+
+				if (_Char <= 0x08 || (_Char >= 0x0B && _Char <= 0x1F))
+				{
+					return false;
+				}
+			}
+
+			size_t _End = 0;
+
+			while (_End < _Text.size() && std::isspace((const unsigned BFW_CHAR_TYPE_A)(_Text[_Text.size() - 1 - _End])))
+			{
+				_End++;
+			}
+
+			if (_End == 0)
+			{
+				continue;
+			}
+
+			if (!IsValidXMLCDATA(_Text.substr(_Text.size() - _End, _End)))
+			{
+				return false;
+			}
+
+			continue;
+		}
+
+		if (!IsValidXMLToken(_Current->GetTag()))
+		{
+			return false;
+		}
+
+		const Vector<BFW_STRING_TYPE_A>& _Attributes = _Current->GetAttributes();
+		const Vector<BFW_STRING_TYPE_A>& _AttributeValues = _Current->GetAttributeValues();
+
+		if (_Attributes.GetSize() != _AttributeValues.GetSize())
+		{
+			return false;
+		}
+
+		for (size_t _Index = 0; _Index < _Attributes.GetSize(); _Index++)
+		{
+			if (!IsValidXMLToken(_Attributes[_Index]))
+			{
+				return false;
+			}
+
+			for (size_t _Index2 = 0; _Index2 < _Index; _Index2++)
+			{
+				if (_Attributes[_Index] == _Attributes[_Index2])
+				{
+					return false;
+				}
+			}
+
+			for (size_t _CharIndex = 0; _CharIndex < _AttributeValues[_Index].size(); _CharIndex++)
+			{
+				const uint8_t _Char = _AttributeValues[_Index][_CharIndex];
+
+				if (_Char <= 0x08 || (_Char >= 0x0B && _Char <= 0x1F))
+				{
+					return false;
+				}
+			}
+		}
+
+		const Vector<XMLNode>& _Children = _Current->GetChildren();
+
+		for (size_t _Index = 0; _Index < _Children.GetSize(); _Index++)
+		{
+			_Queue.PushBack(&_Children[_Index]);
+		}
+	}
+
+	Vector<BFW_STRING_TYPE_A> _Namespaces;
+
+	return ValidateXMLNamespaces(Root, _Namespaces);
 }
 
 BFW::Vector<BFW::Assets::XMLNode>& BFW::Assets::XML::GetExclamationMarks()
