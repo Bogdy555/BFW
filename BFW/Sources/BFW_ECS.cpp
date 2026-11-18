@@ -1452,7 +1452,10 @@ const BFW::Assets::Json BFW::ECS::Entity::Serialize() const
 
 	for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 	{
-		_Children.PushBack(Children[_Index].Serialize());
+		if (_Children.PushBack(Children[_Index].Serialize()).GetType() == Assets::_NullJsonType)
+		{
+			return Assets::Json();
+		}
 	}
 
 	return _Result;
