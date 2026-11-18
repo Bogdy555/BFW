@@ -31,6 +31,10 @@ namespace BFW
 			TransformComponent(TransformComponent&& _Other) noexcept;
 			~TransformComponent();
 
+			const bool Deserialize(const Assets::Json& _Json);
+
+			const Assets::Json Serialize() const;
+
 			const Math::Mat4 Model(const Entity* _Parent) const;
 
 			TransformComponent& operator= (const TransformComponent& _Other);
@@ -55,6 +59,10 @@ namespace BFW
 			CameraComponent(const CameraComponent& _Other);
 			CameraComponent(CameraComponent&& _Other) noexcept;
 			~CameraComponent();
+
+			const bool Deserialize(const Assets::Json& _Json);
+
+			const Assets::Json Serialize() const;
 
 			const Math::Mat4 View() const;
 			const Math::Mat4 Projection(const float _AspectRatio) const;
@@ -93,7 +101,11 @@ namespace BFW
 			LightComponent(LightComponent&& _Other) noexcept;
 			~LightComponent();
 
+			const bool Deserialize(const Assets::Json& _Json);
+
 			void SetType(const uint8_t _Type);
+
+			const Assets::Json Serialize() const;
 
 			const uint8_t GetType() const;
 
@@ -122,6 +134,8 @@ namespace BFW
 			Entity(Entity&& _Other) noexcept;
 			~Entity();
 
+			const bool Deserialize(const Assets::Json& _Json);
+
 			void SetCurrentScene(Scene* _CurrentScene);
 
 			const bool SetName(const BFW_STRING_VIEW_TYPE& _Name);
@@ -142,6 +156,8 @@ namespace BFW
 
 			void RemoveCameraComponent();
 			void RemoveLightComponent();
+
+			const Assets::Json Serialize() const;
 
 			const bool HasTag(const BFW_STRING_VIEW_TYPE& _Tag) const;
 
@@ -190,6 +206,12 @@ namespace BFW
 			Scene(const Scene& _Other);
 			Scene(Scene&& _Other) noexcept;
 			~Scene();
+
+			const bool Deserialize(const Assets::Json& _Json);
+
+
+
+			const Assets::Json Serialize() const;
 
 
 

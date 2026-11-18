@@ -53,6 +53,76 @@ BFW::ECS::TransformComponent::~TransformComponent()
 
 }
 
+const bool BFW::ECS::TransformComponent::Deserialize(const Assets::Json& _Json)
+{
+	...;
+}
+
+const BFW::Assets::Json BFW::ECS::TransformComponent::Serialize() const
+{
+	Assets::Json _Result;
+
+	_Result.SetObject();
+
+	Assets::JsonObjectData& _ObjectData = _Result.GetObjectData();
+
+	_ObjectData.Tags.PushBack("Position.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Position.x);
+
+	_ObjectData.Tags.PushBack("Position.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Position.y);
+
+	_ObjectData.Tags.PushBack("Position.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Position.z);
+
+	_ObjectData.Tags.PushBack("Rotation.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Rotation.x);
+
+	_ObjectData.Tags.PushBack("Rotation.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Rotation.y);
+
+	_ObjectData.Tags.PushBack("Rotation.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Rotation.z);
+
+	_ObjectData.Tags.PushBack("ScaleByX.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByX.x);
+
+	_ObjectData.Tags.PushBack("ScaleByX.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByX.y);
+
+	_ObjectData.Tags.PushBack("ScaleByX.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByX.z);
+
+	_ObjectData.Tags.PushBack("ScaleByY.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByY.x);
+
+	_ObjectData.Tags.PushBack("ScaleByY.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByY.y);
+
+	_ObjectData.Tags.PushBack("ScaleByY.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByY.z);
+
+	_ObjectData.Tags.PushBack("ScaleByZ.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByZ.x);
+
+	_ObjectData.Tags.PushBack("ScaleByZ.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByZ.y);
+
+	_ObjectData.Tags.PushBack("ScaleByZ.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ScaleByZ.z);
+
+	_ObjectData.Tags.PushBack("FlipAxis.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(FlipAxis.x);
+
+	_ObjectData.Tags.PushBack("FlipAxis.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(FlipAxis.y);
+
+	_ObjectData.Tags.PushBack("FlipAxis.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(FlipAxis.z);
+
+	return _Result;
+}
+
 const BFW::Math::Mat4 BFW::ECS::TransformComponent::Model(const Entity* _Parent) const
 {
 	if (_Parent)
@@ -136,6 +206,55 @@ BFW::ECS::CameraComponent::CameraComponent(CameraComponent&& _Other) noexcept : 
 BFW::ECS::CameraComponent::~CameraComponent()
 {
 	SafePointer<CameraComponent>::ReleaseAll(this);
+}
+
+const bool BFW::ECS::CameraComponent::Deserialize(const Assets::Json& _Json)
+{
+	...;
+}
+
+const BFW::Assets::Json BFW::ECS::CameraComponent::Serialize() const
+{
+	Assets::Json _Result;
+
+	_Result.SetObject();
+
+	Assets::JsonObjectData& _ObjectData = _Result.GetObjectData();
+
+	_ObjectData.Tags.PushBack("Position.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Position.x);
+
+	_ObjectData.Tags.PushBack("Position.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Position.y);
+
+	_ObjectData.Tags.PushBack("Position.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Position.z);
+
+	_ObjectData.Tags.PushBack("Rotation.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Rotation.x);
+
+	_ObjectData.Tags.PushBack("Rotation.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Rotation.y);
+
+	_ObjectData.Tags.PushBack("Rotation.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Rotation.z);
+
+	_ObjectData.Tags.PushBack("FieldOfView");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(FieldOfView);
+
+	_ObjectData.Tags.PushBack("NearPlane");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(NearPlane);
+
+	_ObjectData.Tags.PushBack("FarPlane");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(FarPlane);
+
+	_ObjectData.Tags.PushBack("Perspective");
+	_ObjectData.Object.PushBack(Assets::Json()).SetBool(Perspective);
+
+	_ObjectData.Tags.PushBack("XRatioFOV");
+	_ObjectData.Object.PushBack(Assets::Json()).SetBool(XRatioFOV);
+
+	return _Result;
 }
 
 const BFW::Math::Mat4 BFW::ECS::CameraComponent::View() const
@@ -239,6 +358,11 @@ BFW::ECS::LightComponent::~LightComponent()
 	SafePointer<LightComponent>::ReleaseAll(this);
 }
 
+const bool BFW::ECS::LightComponent::Deserialize(const Assets::Json& _Json)
+{
+	...;
+}
+
 void BFW::ECS::LightComponent::SetType(const uint8_t _Type)
 {
 	if (_Type > 2)
@@ -247,6 +371,47 @@ void BFW::ECS::LightComponent::SetType(const uint8_t _Type)
 	}
 
 	Type = _Type;
+}
+
+const BFW::Assets::Json BFW::ECS::LightComponent::Serialize() const
+{
+	Assets::Json _Result;
+
+	_Result.SetObject();
+
+	Assets::JsonObjectData& _ObjectData = _Result.GetObjectData();
+
+	_ObjectData.Tags.PushBack("Type");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Type);
+
+	_ObjectData.Tags.PushBack("Color.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Color.x);
+
+	_ObjectData.Tags.PushBack("Color.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Color.y);
+
+	_ObjectData.Tags.PushBack("Color.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Color.z);
+
+	_ObjectData.Tags.PushBack("Intensity");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Intensity);
+
+	_ObjectData.Tags.PushBack("Direction.x");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Direction.x);
+
+	_ObjectData.Tags.PushBack("Direction.y");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Direction.y);
+
+	_ObjectData.Tags.PushBack("Direction.z");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(Direction.z);
+
+	_ObjectData.Tags.PushBack("ThetaCone");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ThetaCone);
+
+	_ObjectData.Tags.PushBack("ThetaFade");
+	_ObjectData.Object.PushBack(Assets::Json()).SetNumber(ThetaFade);
+
+	return _Result;
 }
 
 const uint8_t BFW::ECS::LightComponent::GetType() const
@@ -342,6 +507,11 @@ BFW::ECS::Entity::~Entity()
 	GUID::ReleaseString(GUID);
 	RemoveCameraComponent();
 	RemoveLightComponent();
+}
+
+const bool BFW::ECS::Entity::Deserialize(const Assets::Json& _Json)
+{
+	...;
 }
 
 void BFW::ECS::Entity::SetCurrentScene(Scene* _CurrentScene)
@@ -516,6 +686,78 @@ void BFW::ECS::Entity::RemoveLightComponent()
 	bool _Removed = !CurrentScene || !(LightComponent*)(Light) || EntityRemoveComponent<LightComponent>(CurrentScene->LightComponents, Light);
 }
 
+const BFW::Assets::Json BFW::ECS::Entity::Serialize() const
+{
+	Assets::Json _Result;
+
+	_Result.SetObject();
+
+	Assets::JsonObjectData& _ObjectData = _Result.GetObjectData();
+
+	bool _Error = false;
+
+	_ObjectData.Tags.PushBack("GUID");
+	_ObjectData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(GUID, &_Error));
+
+	if (_Error)
+	{
+		return Assets::Json();
+	}
+
+	_ObjectData.Tags.PushBack("Name");
+	_ObjectData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(Name, &_Error));
+
+	if (_Error)
+	{
+		return Assets::Json();
+	}
+
+	_ObjectData.Tags.PushBack("TagsList");
+	_ObjectData.Object.PushBack(Assets::Json()).SetArray();
+	Vector<Assets::Json>& _TagsList = _ObjectData.Object[_ObjectData.Object.GetSize() - 1].GetArray();
+
+	for (size_t _Index = 0; _Index < TagsList.GetSize(); _Index++)
+	{
+		_TagsList.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(TagsList[_Index], &_Error));
+
+		if (_Error)
+		{
+			return Assets::Json();
+		}
+	}
+
+	_ObjectData.Tags.PushBack("Transform");
+	_ObjectData.Object.PushBack(Transform.Serialize());
+
+	if ((const CameraComponent*)(Camera))
+	{
+		_ObjectData.Tags.PushBack("Camera");
+		_ObjectData.Object.PushBack(Camera->Serialize());
+	}
+
+	if ((const LightComponent*)(Light))
+	{
+		_ObjectData.Tags.PushBack("Light");
+		_ObjectData.Object.PushBack(Light->Serialize());
+	}
+
+	if (!Children.GetSize())
+	{
+		return _Result;
+	}
+
+	_ObjectData.Tags.PushBack("Children");
+	_ObjectData.Object.PushBack(Assets::Json()).SetArray();
+	Vector<Assets::Json>& _Children = _ObjectData.Object[_ObjectData.Object.GetSize() - 1].GetArray();
+
+	for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
+	{
+		_Children.PushBack(Children[_Index].Serialize());
+	}
+
+	return _Result;
+}
+
 const bool BFW::ECS::Entity::HasTag(const BFW_STRING_VIEW_TYPE& _Tag) const
 {
 	return Tags.GetData(BFW_STRING_TYPE(_Tag).c_str()) != nullptr;
@@ -685,6 +927,27 @@ BFW::ECS::Scene::Scene(Scene&& _Other) noexcept
 BFW::ECS::Scene::~Scene()
 {
 	// vezi ca e delicat aici cu care moare primul
+}
+
+const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
+{
+	...;
+}
+
+const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
+{
+	Assets::Json _Result;
+
+	_Result.SetArray();
+
+	Vector<Assets::Json>& _Entities = _Result.GetArray();
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Entities.PushBack(Entities[_Index].Serialize());
+	}
+
+	return _Result;
 }
 
 BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)
