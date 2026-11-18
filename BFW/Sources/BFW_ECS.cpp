@@ -55,7 +55,240 @@ BFW::ECS::TransformComponent::~TransformComponent()
 
 const bool BFW::ECS::TransformComponent::Deserialize(const Assets::Json& _Json)
 {
-	...;
+	*this = TransformComponent();
+
+	if (_Json.GetType() != Assets::_ObjectJsonType)
+	{
+		return false;
+	}
+
+	const Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	if (_ObjectData.Tags.GetSize() != _ObjectData.Object.GetSize())
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
+	{
+		if (_ObjectData.Tags[_Index] == "Position.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			Position.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Position.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			Position.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Position.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			Position.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Rotation.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			Rotation.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Rotation.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			Rotation.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Rotation.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			Rotation.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByX.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByX.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByX.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByX.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByX.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByX.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByY.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByY.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByY.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByY.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByY.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByY.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByZ.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByZ.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByZ.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByZ.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ScaleByZ.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			ScaleByZ.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "FlipAxis.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			FlipAxis.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "FlipAxis.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			FlipAxis.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "FlipAxis.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = TransformComponent();
+				return false;
+			}
+
+			FlipAxis.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+	}
+
+	return true;
 }
 
 const BFW::Assets::Json BFW::ECS::TransformComponent::Serialize() const
@@ -210,7 +443,156 @@ BFW::ECS::CameraComponent::~CameraComponent()
 
 const bool BFW::ECS::CameraComponent::Deserialize(const Assets::Json& _Json)
 {
-	...;
+	*this = CameraComponent();
+
+	if (_Json.GetType() != Assets::_ObjectJsonType)
+	{
+		return false;
+	}
+
+	const Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	if (_ObjectData.Tags.GetSize() != _ObjectData.Object.GetSize())
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
+	{
+		if (_ObjectData.Tags[_Index] == "Position.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Position.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Position.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Position.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Position.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Position.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Rotation.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Rotation.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Rotation.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Rotation.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Rotation.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Rotation.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "FieldOfView")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			FieldOfView = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "NearPlane")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			NearPlane = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "FarPlane")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			FarPlane = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Perspective")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_BoolJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			Perspective = _ObjectData.Object[_Index].GetBool();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "XRatioFOV")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_BoolJsonType)
+			{
+				*this = CameraComponent();
+				return false;
+			}
+
+			XRatioFOV = _ObjectData.Object[_Index].GetBool();
+			continue;
+		}
+	}
+
+	return true;
 }
 
 const BFW::Assets::Json BFW::ECS::CameraComponent::Serialize() const
@@ -360,7 +742,153 @@ BFW::ECS::LightComponent::~LightComponent()
 
 const bool BFW::ECS::LightComponent::Deserialize(const Assets::Json& _Json)
 {
-	...;
+	*this = LightComponent();
+
+	if (_Json.GetType() != Assets::_ObjectJsonType)
+	{
+		return false;
+	}
+
+	const Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	if (_ObjectData.Tags.GetSize() != _ObjectData.Object.GetSize())
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
+	{
+		if (_ObjectData.Tags[_Index] == "Type")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			float _Type = (uint8_t)(_ObjectData.Object[_Index].GetNumber());
+
+			if (_Type < 0.0f || _Type > 2.0f || _Type != floorf(_Type))
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Type = _Type;
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Color.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Color.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Color.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Color.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Color.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Color.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Intensity")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Intensity = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Direction.x")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Direction.x = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Direction.y")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Direction.y = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Direction.z")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			Direction.z = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ThetaCone")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			ThetaCone = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "ThetaFade")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_NumberJsonType)
+			{
+				*this = LightComponent();
+				return false;
+			}
+
+			ThetaFade = _ObjectData.Object[_Index].GetNumber();
+			continue;
+		}
+	}
+
+	return true;
 }
 
 void BFW::ECS::LightComponent::SetType(const uint8_t _Type)
@@ -511,7 +1039,173 @@ BFW::ECS::Entity::~Entity()
 
 const bool BFW::ECS::Entity::Deserialize(const Assets::Json& _Json)
 {
-	...;
+	*this = Entity();
+
+	if (_Json.GetType() != Assets::_ObjectJsonType)
+	{
+		return false;
+	}
+
+	const Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	if (_ObjectData.Tags.GetSize() != _ObjectData.Object.GetSize())
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
+	{
+		if (_ObjectData.Tags[_Index] == "GUID")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_StringJsonType)
+			{
+				*this = Entity();
+				return false;
+			}
+
+			bool _Error = false;
+
+			GUID::ReleaseString(GUID);
+			GUID = BFW_UTF8_TO_MACHINE(_ObjectData.Object[_Index].GetString(), &_Error);
+
+			if (_Error || !GUID.size())
+			{
+				*this = Entity();
+				return false;
+			}
+
+			uint64_t _GUID = 0;
+			BFW_STRING_STREAM_TYPE _Stream(GUID);
+			_Stream.imbue(std::locale::classic());
+
+			if (!(_Stream >> _GUID) || !_Stream.eof())
+			{
+				*this = Entity();
+				return false;
+			}
+
+			if (GUID::Reserve(_GUID))
+			{
+				continue;
+			}
+
+			BFW_STRING_TYPE _NewGUID = GUID::GetString();
+
+			GUID = _NewGUID;
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Name")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_StringJsonType)
+			{
+				*this = Entity();
+				return false;
+			}
+
+			bool _Error = false;
+
+			Name = BFW_UTF8_TO_MACHINE(_ObjectData.Object[_Index].GetString(), &_Error);
+
+			if (_Error || !Name.size())
+			{
+				*this = Entity();
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "TagsList")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_ArrayJsonType)
+			{
+				*this = Entity();
+				return false;
+			}
+
+			const Vector<Assets::Json>& _TagsList = _ObjectData.Object[_Index].GetArray();
+
+			for (size_t _TagIndex = 0; _TagIndex < _TagsList.GetSize(); _TagIndex++)
+			{
+				if (_TagsList[_TagIndex].GetType() != Assets::_StringJsonType)
+				{
+					*this = Entity();
+					return false;
+				}
+
+				bool _Error = false;
+
+				AddTag(BFW_UTF8_TO_MACHINE(_TagsList[_TagIndex].GetString(), &_Error));
+
+				if (_Error)
+				{
+					*this = Entity();
+					return false;
+				}
+			}
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Transform")
+		{
+			if (!Transform.Deserialize(_ObjectData.Object[_Index]))
+			{
+				*this = Entity();
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Camera" && CurrentScene)
+		{
+			if (!AddCameraComponent().Deserialize(_ObjectData.Object[_Index]))
+			{
+				*this = Entity();
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Light" && CurrentScene)
+		{
+			if (!AddLightComponent().Deserialize(_ObjectData.Object[_Index]))
+			{
+				*this = Entity();
+				return false;
+			}
+
+			continue;
+		}
+
+		if (_ObjectData.Tags[_Index] == "Children")
+		{
+			if (_ObjectData.Object[_Index].GetType() != Assets::_ArrayJsonType)
+			{
+				*this = Entity();
+				return false;
+			}
+
+			const Vector<Assets::Json>& _Children = _ObjectData.Object[_Index].GetArray();
+
+			for (size_t _ChildIndex = 0; _ChildIndex < _Children.GetSize(); _ChildIndex++)
+			{
+				if (!EmplaceChild(Entity()).Deserialize(_Children[_ChildIndex]))
+				{
+					*this = Entity();
+					return false;
+				}
+			}
+
+			continue;
+		}
+	}
+
+	return true;
 }
 
 void BFW::ECS::Entity::SetCurrentScene(Scene* _CurrentScene)
@@ -638,16 +1332,18 @@ void BFW::ECS::Entity::SetParent(Entity* _Parent)
 	Parent = _Parent;
 }
 
-void BFW::ECS::Entity::PushChild(const Entity& _Child)
+BFW::ECS::Entity& BFW::ECS::Entity::PushChild(const Entity& _Child)
 {
-	Children.PushBack(_Child);
+	Children.PushBack(_Child).SetCurrentScene(CurrentScene);
 	Children[Children.GetSize() - 1].Parent = this;
+	return Children[Children.GetSize() - 1];
 }
 
-void BFW::ECS::Entity::EmplaceChild(Entity&& _Child) noexcept
+BFW::ECS::Entity& BFW::ECS::Entity::EmplaceChild(Entity&& _Child)
 {
-	Children.EmplaceBack((Entity&&)(_Child));
+	Children.EmplaceBack((Entity&&)(_Child)).SetCurrentScene(CurrentScene);
 	Children[Children.GetSize() - 1].Parent = this;
+	return Children[Children.GetSize() - 1];
 }
 
 void BFW::ECS::Entity::EraseChild(const size_t _Index)
@@ -660,20 +1356,24 @@ void BFW::ECS::Entity::ClearChildren()
 	Children.Clear();
 }
 
-void BFW::ECS::Entity::AddCameraComponent(const CameraComponent& _Component)
+BFW::ECS::CameraComponent& BFW::ECS::Entity::AddCameraComponent(const CameraComponent& _Component)
 {
 	if (!CurrentScene || !EntityAddComponent<CameraComponent>(CurrentScene->CameraComponents, Camera, _Component))
 	{
 		throw nullptr;
 	}
+
+	return *Camera;
 }
 
-void BFW::ECS::Entity::AddLightComponent(const LightComponent& _Component)
+BFW::ECS::LightComponent& BFW::ECS::Entity::AddLightComponent(const LightComponent& _Component)
 {
 	if (!CurrentScene || !EntityAddComponent<LightComponent>(CurrentScene->LightComponents, Light, _Component))
 	{
 		throw nullptr;
 	}
+
+	return *Light;
 }
 
 void BFW::ECS::Entity::RemoveCameraComponent()
@@ -909,29 +1609,146 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 
 
 
-BFW::ECS::Scene::Scene()
+BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr)
 {
 
 }
 
-BFW::ECS::Scene::Scene(const Scene& _Other)
+BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
 {
 
 }
 
-BFW::ECS::Scene::Scene(Scene&& _Other) noexcept
+BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
 {
 
 }
 
 BFW::ECS::Scene::~Scene()
 {
-	// vezi ca e delicat aici cu care moare primul
+	Clear();
 }
 
 const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 {
-	...;
+	*this = Scene();
+
+	if (_Json.GetType() != Assets::_ArrayJsonType || _Json.GetArray()[0].GetType() != Assets::_ObjectJsonType)
+	{
+		return false;
+	}
+
+	const Assets::JsonObjectData& _SceneData = _Json.GetArray()[0].GetObjectData();
+
+	if (_SceneData.Tags.GetSize() != _SceneData.Object.GetSize())
+	{
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _SceneData.Tags.GetSize(); _Index++)
+	{
+		if (_SceneData.Tags[_Index] == "Name")
+		{
+			if (_SceneData.Object[_Index].GetType() != Assets::_StringJsonType)
+			{
+				*this = Scene();
+				return false;
+			}
+
+			bool _Error = false;
+
+			Name = BFW_UTF8_TO_MACHINE(_SceneData.Object[_Index].GetString(), &_Error);
+
+			if (_Error || !Name.size())
+			{
+				*this = Scene();
+				return false;
+			}
+
+			continue;
+		}
+	}
+
+	const Vector<Assets::Json>& _Entities = _Json.GetArray();
+
+	for (size_t _Index = 1; _Index < _Entities.GetSize(); _Index++)
+	{
+		Entity& _Entity = Entities.EmplaceBack(Entity());
+		_Entity.SetCurrentScene(this);
+
+		if (!_Entity.Deserialize(_Entities[_Index]))
+		{
+			*this = Scene();
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void BFW::ECS::Scene::Setup(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+{
+
+}
+
+void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+{
+
+}
+
+void BFW::ECS::Scene::FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+{
+
+}
+
+void BFW::ECS::Scene::Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+{
+
+}
+
+BFW::ECS::Entity& BFW::ECS::Scene::Add()
+{
+
+}
+
+BFW::ECS::Entity& BFW::ECS::Scene::Add(const Entity& _Entity)
+{
+
+}
+
+BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity)
+{
+
+}
+
+void BFW::ECS::Scene::Remove(const size_t _Index)
+{
+
+}
+
+void BFW::ECS::Scene::Remove(const BFW_STRING_VIEW_TYPE& _GUID)
+{
+
+}
+
+void BFW::ECS::Scene::Remove(const Entity* _Entity)
+{
+
+}
+
+void BFW::ECS::Scene::Clear()
+{
+
+}
+
+const bool BFW::ECS::Scene::SetName(const BFW_STRING_VIEW_TYPE& _Name)
+{
+
+}
+
+void BFW::ECS::Scene::SetActiveCamera(const CameraComponent* _ActiveCamera)
+{
+
 }
 
 const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
@@ -940,14 +1757,110 @@ const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
 
 	_Result.SetArray();
 
-	Vector<Assets::Json>& _Entities = _Result.GetArray();
+	Vector<Assets::Json>& _Array = _Result.GetArray();
+
+	_Array.EmplaceBack(Assets::Json()).SetObject();
+	Assets::JsonObjectData& _SceneData = _Array[0].GetObjectData();
+
+	bool _Error = false;
+
+	_SceneData.Tags.PushBack("Name");
+	_SceneData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(Name, &_Error));
+
+	if (_Error)
+	{
+		return Assets::Json();
+	}
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
-		_Entities.PushBack(Entities[_Index].Serialize());
+		if (_Array.PushBack(Entities[_Index].Serialize()).GetType() == Assets::_NullJsonType)
+		{
+			return Assets::Json();
+		}
 	}
 
 	return _Result;
+}
+
+BFW::ECS::Entity* BFW::ECS::Scene::Find(const BFW_STRING_VIEW_TYPE& _GUID)
+{
+
+}
+
+const BFW::ECS::Entity* BFW::ECS::Scene::Find(const BFW_STRING_VIEW_TYPE& _GUID) const
+{
+
+}
+
+BFW::ECS::Entity* BFW::ECS::Scene::FindByName(const BFW_STRING_VIEW_TYPE& _Name)
+{
+
+}
+
+const BFW::ECS::Entity* BFW::ECS::Scene::FindByName(const BFW_STRING_VIEW_TYPE& _Name) const
+{
+
+}
+
+const BFW::Vector<BFW::ECS::Entity*> BFW::ECS::Scene::FindByTag(const BFW_STRING_VIEW_TYPE& _Tag)
+{
+
+}
+
+const BFW::Vector<const BFW::ECS::Entity*> BFW::ECS::Scene::FindByTag(const BFW_STRING_VIEW_TYPE& _Tag) const
+{
+
+}
+
+const bool BFW::ECS::Scene::Contains(const Entity* _Entity) const
+{
+
+}
+
+const bool BFW::ECS::Scene::Contains(const BFW_STRING_VIEW_TYPE& _GUID) const
+{
+
+}
+
+const BFW_STRING_TYPE& BFW::ECS::Scene::GetGUID() const
+{
+
+}
+
+const BFW_STRING_TYPE& BFW::ECS::Scene::GetName() const
+{
+
+}
+
+BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera()
+{
+
+}
+
+const BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera() const
+{
+
+}
+
+const size_t BFW::ECS::Scene::GetTotalCount() const
+{
+
+}
+
+const size_t BFW::ECS::Scene::GetRootCount() const
+{
+
+}
+
+BFW::ECS::Entity& BFW::ECS::Scene::GetEntity(const size_t _Index)
+{
+
+}
+
+const BFW::ECS::Entity& BFW::ECS::Scene::GetEntity(const size_t _Index) const
+{
+
 }
 
 BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)

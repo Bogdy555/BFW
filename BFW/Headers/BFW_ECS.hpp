@@ -146,13 +146,13 @@ namespace BFW
 
 			void SetParent(Entity* _Parent);
 
-			void PushChild(const Entity& _Child);
-			void EmplaceChild(Entity&& _Child) noexcept;
+			Entity& PushChild(const Entity& _Child);
+			Entity& EmplaceChild(Entity&& _Child);
 			void EraseChild(const size_t _Index);
 			void ClearChildren();
 
-			void AddCameraComponent(const CameraComponent& _Component = CameraComponent());
-			void AddLightComponent(const LightComponent& _Component = LightComponent());
+			CameraComponent& AddCameraComponent(const CameraComponent& _Component = CameraComponent());
+			LightComponent& AddLightComponent(const LightComponent& _Component = LightComponent());
 
 			void RemoveCameraComponent();
 			void RemoveLightComponent();
@@ -209,11 +209,47 @@ namespace BFW
 
 			const bool Deserialize(const Assets::Json& _Json);
 
+			void Setup(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
+			void Update(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
+			void FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
+			void Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
 
+			Entity& Add();
+			Entity& Add(const Entity& _Entity);
+			Entity& Add(Entity&& _Entity);
+
+			void Remove(const size_t _Index);
+			void Remove(const BFW_STRING_VIEW_TYPE& _GUID);
+			void Remove(const Entity* _Entity);
+
+			void Clear();
+
+			const bool SetName(const BFW_STRING_VIEW_TYPE& _Name);
+
+			void SetActiveCamera(const CameraComponent* _ActiveCamera);
 
 			const Assets::Json Serialize() const;
 
+			Entity* Find(const BFW_STRING_VIEW_TYPE& _GUID);
+			const Entity* Find(const BFW_STRING_VIEW_TYPE& _GUID) const;
+			Entity* FindByName(const BFW_STRING_VIEW_TYPE& _Name);
+			const Entity* FindByName(const BFW_STRING_VIEW_TYPE& _Name) const;
+			const Vector<Entity*> FindByTag(const BFW_STRING_VIEW_TYPE& _Tag);
+			const Vector<const Entity*> FindByTag(const BFW_STRING_VIEW_TYPE& _Tag) const;
 
+			const bool Contains(const Entity* _Entity) const;
+			const bool Contains(const BFW_STRING_VIEW_TYPE& _GUID) const;
+
+			const BFW_STRING_TYPE& GetGUID() const;
+			const BFW_STRING_TYPE& GetName() const;
+
+			CameraComponent* GetActiveCamera();
+			const CameraComponent* GetActiveCamera() const;
+
+			const size_t GetTotalCount() const;
+			const size_t GetRootCount() const;
+			Entity& GetEntity(const size_t _Index);
+			const Entity& GetEntity(const size_t _Index) const;
 
 			Scene& operator= (const Scene& _Other);
 			Scene& operator= (Scene&& _Other) noexcept;
@@ -222,9 +258,17 @@ namespace BFW
 
 			friend Entity;
 
+			BFW_STRING_TYPE GUID;
+			BFW_STRING_TYPE Name;
+
 			Vector<Entity> Entities;
 			Vector<CameraComponent> CameraComponents;
 			Vector<LightComponent> LightComponents;
+
+			Vector<Entity> SpawnQueue;
+			Vector<SafePointer<Entity>> DespawnQueue;
+
+			SafePointer<const CameraComponent> ActiveCamera;
 
 		};
 

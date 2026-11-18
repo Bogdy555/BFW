@@ -54,8 +54,8 @@ namespace BFW
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3);
 		const uint32_t BFW_API ConstructUnicodePointA(const BFW_CHAR_TYPE_A _Char1, const BFW_CHAR_TYPE_A _Char2, const BFW_CHAR_TYPE_A _Char3, const BFW_CHAR_TYPE_A _Char4);
 
-		Vector<BFW_CHAR_TYPE_A> BFW_API DeconstructUnicodePointA(const uint32_t _Char);
-		Vector<BFW_CHAR_TYPE_W> BFW_API DeconstructUnicodePointW(const uint32_t _Char);
+		const Vector<BFW_CHAR_TYPE_A> BFW_API DeconstructUnicodePointA(const uint32_t _Char);
+		const Vector<BFW_CHAR_TYPE_W> BFW_API DeconstructUnicodePointW(const uint32_t _Char);
 
 		const bool BFW_API IsValidUTF8String(const BFW_STRING_VIEW_TYPE_A& _String);
 		const bool BFW_API IsValidUnicodeString(const BFW_STRING_VIEW_TYPE_W& _String);

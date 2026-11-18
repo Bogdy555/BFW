@@ -3191,6 +3191,11 @@ static const bool SaveJsonObject(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _S
 
 	const BFW::Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
 
+	if (_ObjectData.Tags.GetSize() != _ObjectData.Object.GetSize())
+	{
+		return false;
+	}
+
 	for (size_t _Index = 0; _Index < _ObjectData.Tags.GetSize(); _Index++)
 	{
 		BFW::Assets::Json _Tag;
@@ -3380,80 +3385,6 @@ static const bool SaveJsonArray(size_t& _TabLevel, BFW_STRING_STREAM_TYPE_A& _St
 	_Stream << ']';
 
 	return true;
-}
-
-
-
-BFW::Assets::JsonObjectData::JsonObjectData() : Object(), Tags()
-{
-
-}
-
-BFW::Assets::JsonObjectData::JsonObjectData(const JsonObjectData& _Other) : Object(_Other.Object), Tags(_Other.Tags)
-{
-
-}
-
-BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : Object((Vector<Json>&&)(_Other.Object)), Tags((Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags))
-{
-
-}
-
-BFW::Assets::JsonObjectData::~JsonObjectData()
-{
-
-}
-
-BFW::Assets::Json& BFW::Assets::JsonObjectData::operator[] (const BFW_CHAR_TYPE_A* _Tag)
-{
-	for (size_t _Index = 0; _Index < Tags.GetSize(); _Index++)
-	{
-		if (Tags[_Index] == _Tag)
-		{
-			return Object[_Index];
-		}
-	}
-
-	throw nullptr;
-}
-
-const BFW::Assets::Json& BFW::Assets::JsonObjectData::operator[] (const BFW_CHAR_TYPE_A* _Tag) const
-{
-	for (size_t _Index = 0; _Index < Tags.GetSize(); _Index++)
-	{
-		if (Tags[_Index] == _Tag)
-		{
-			return Object[_Index];
-		}
-	}
-
-	throw nullptr;
-}
-
-BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (const JsonObjectData& _Other)
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	Object = _Other.Object;
-	Tags = _Other.Tags;
-
-	return *this;
-}
-
-BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectData&& _Other) noexcept
-{
-	if (this == &_Other)
-	{
-		return *this;
-	}
-
-	Object = (Vector<Json>&&)(_Other.Object);
-	Tags = (Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags);
-
-	return *this;
 }
 
 
@@ -4053,6 +3984,80 @@ BFW::Assets::XML& BFW::Assets::XML::operator= (XML&& _Other) noexcept
 	ExclamationMarks = (Vector<XMLNode>&&)(_Other.ExclamationMarks);
 	QuestionMarks = (Vector<XMLNode>&&)(_Other.QuestionMarks);
 	Root = (XMLNode&&)(_Other.Root);
+
+	return *this;
+}
+
+
+
+BFW::Assets::JsonObjectData::JsonObjectData() : Object(), Tags()
+{
+
+}
+
+BFW::Assets::JsonObjectData::JsonObjectData(const JsonObjectData& _Other) : Object(_Other.Object), Tags(_Other.Tags)
+{
+
+}
+
+BFW::Assets::JsonObjectData::JsonObjectData(JsonObjectData&& _Other) noexcept : Object((Vector<Json>&&)(_Other.Object)), Tags((Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags))
+{
+
+}
+
+BFW::Assets::JsonObjectData::~JsonObjectData()
+{
+
+}
+
+BFW::Assets::Json& BFW::Assets::JsonObjectData::operator[] (const BFW_CHAR_TYPE_A* _Tag)
+{
+	for (size_t _Index = 0; _Index < Tags.GetSize(); _Index++)
+	{
+		if (Tags[_Index] == _Tag)
+		{
+			return Object[_Index];
+		}
+	}
+
+	throw nullptr;
+}
+
+const BFW::Assets::Json& BFW::Assets::JsonObjectData::operator[] (const BFW_CHAR_TYPE_A* _Tag) const
+{
+	for (size_t _Index = 0; _Index < Tags.GetSize(); _Index++)
+	{
+		if (Tags[_Index] == _Tag)
+		{
+			return Object[_Index];
+		}
+	}
+
+	throw nullptr;
+}
+
+BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (const JsonObjectData& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Object = _Other.Object;
+	Tags = _Other.Tags;
+
+	return *this;
+}
+
+BFW::Assets::JsonObjectData& BFW::Assets::JsonObjectData::operator= (JsonObjectData&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	Object = (Vector<Json>&&)(_Other.Object);
+	Tags = (Vector<BFW_STRING_TYPE_A>&&)(_Other.Tags);
 
 	return *this;
 }

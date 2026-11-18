@@ -611,7 +611,7 @@ const uint32_t BFW_API BFW::String::ConstructUnicodePointA(const BFW_CHAR_TYPE_A
 	return ((uint32_t)(_Char1 & 0x07) << 18) | ((uint32_t)(_Char2 & 0x3F) << 12) | ((uint32_t)(_Char3 & 0x3F) << 6) | (uint32_t)(_Char4 & 0x3F);
 }
 
-BFW::Vector<BFW_CHAR_TYPE_A> BFW_API BFW::String::DeconstructUnicodePointA(const uint32_t _Char)
+const BFW::Vector<BFW_CHAR_TYPE_A> BFW_API BFW::String::DeconstructUnicodePointA(const uint32_t _Char)
 {
 	Vector<BFW_CHAR_TYPE_A> _Chars;
 	_Chars.Reserve(4);
@@ -647,7 +647,7 @@ BFW::Vector<BFW_CHAR_TYPE_A> BFW_API BFW::String::DeconstructUnicodePointA(const
 
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_ESP32_PLATFORM
 
-BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const uint32_t _Char)
+const BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const uint32_t _Char)
 {
 	Vector<BFW_CHAR_TYPE_W> _Chars;
 	_Chars.Reserve(2);
@@ -668,7 +668,7 @@ BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const uint32_t _Char)
+const BFW::Vector<BFW_CHAR_TYPE_W> BFW_API BFW::String::DeconstructUnicodePointW(const uint32_t _Char)
 {
 	Vector<BFW_CHAR_TYPE_W> _Chars;
 	_Chars.Reserve(2);
