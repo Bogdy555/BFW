@@ -144,7 +144,7 @@ void BFW_API BFW::Log::Stop()
 
 #ifdef BFW_ESP32_PLATFORM
 
-const bool BFW_API BFW::Log::Init(const BFW_STRING_VIEW_TYPE _SDCardPath)
+const bool BFW_API BFW::Log::Init(const BFW_STRING_VIEW_TYPE& _SDCardPath)
 {
 #ifdef BFW_DEBUG
 

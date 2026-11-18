@@ -1012,7 +1012,17 @@ namespace BFW
 
 		static void MoveAll(T* _Pointer, T* _Other) noexcept
 		{
-			_Pointer->SafePointers = (Vector<SafePointer*>&&)(_Other->SafePointers);
+			if (_Pointer == _Other)
+			{
+				return;
+			}
+
+			for (size_t _Index = 0; _Index < _Other->SafePointers.GetSize(); _Index++)
+			{
+				_Pointer->SafePointers.PushBack(_Other->SafePointers[_Index]);
+			}
+
+			_Other->SafePointers.Clear();
 
 			for (size_t _Index = 0; _Index < _Pointer->SafePointers.GetSize(); _Index++)
 			{

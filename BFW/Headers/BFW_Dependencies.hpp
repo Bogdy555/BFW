@@ -320,6 +320,23 @@ namespace BFW
 
 	}
 
+	namespace ECS
+	{
+
+		class BFW_API TransformComponent;
+
+		class BFW_API CameraComponent;
+
+		enum BFW_API LightTypes : const uint8_t;
+
+		class BFW_API LightComponent;
+
+		class BFW_API Entity;
+
+		class BFW_API Scene;
+
+	}
+
 }
 
 

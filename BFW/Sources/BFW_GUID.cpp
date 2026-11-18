@@ -73,7 +73,7 @@ const BFW_STRING_TYPE BFW_API BFW::GUID::GetString()
 	BFW_NON_UNICODE_CALL(return GetStringA());
 }
 
-const bool BFW_API BFW::GUID::ReserveStringA(const BFW_STRING_VIEW_TYPE_A _GUID)
+const bool BFW_API BFW::GUID::ReserveStringA(const BFW_STRING_VIEW_TYPE_A& _GUID)
 {
 	uint64_t _TrueGUID = 0;
 	BFW_STRING_STREAM_TYPE_A _Stream(BFW_STRING_TYPE_A(_GUID).c_str());
@@ -87,7 +87,7 @@ const bool BFW_API BFW::GUID::ReserveStringA(const BFW_STRING_VIEW_TYPE_A _GUID)
 	return Reserve(_TrueGUID);
 }
 
-const bool BFW_API BFW::GUID::ReserveStringW(const BFW_STRING_VIEW_TYPE_W _GUID)
+const bool BFW_API BFW::GUID::ReserveStringW(const BFW_STRING_VIEW_TYPE_W& _GUID)
 {
 	uint64_t _TrueGUID = 0;
 	BFW_STRING_STREAM_TYPE_W _Stream(BFW_STRING_TYPE_W(_GUID).c_str());
@@ -101,31 +101,41 @@ const bool BFW_API BFW::GUID::ReserveStringW(const BFW_STRING_VIEW_TYPE_W _GUID)
 	return Reserve(_TrueGUID);
 }
 
-const bool BFW_API BFW::GUID::ReserveString(const BFW_STRING_VIEW_TYPE _GUID)
+const bool BFW_API BFW::GUID::ReserveString(const BFW_STRING_VIEW_TYPE& _GUID)
 {
 	BFW_UNICODE_CALL(return ReserveStringW(_GUID));
 	BFW_NON_UNICODE_CALL(return ReserveStringA(_GUID));
 }
 
-void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_VIEW_TYPE_A _GUID)
+void BFW_API BFW::GUID::ReleaseStringA(const BFW_STRING_VIEW_TYPE_A& _GUID)
 {
-	GUIDMutex.lock();
+	uint64_t _TrueGUID = 0;
+	BFW_STRING_STREAM_TYPE_A _Stream(BFW_STRING_TYPE_A(_GUID).c_str());
+	_Stream.imbue(std::locale::classic());
 
-	ExistentGUIDs.Erase(BFW_UTF8_TO_MACHINE(_GUID, nullptr).c_str());
+	if (!(_Stream >> _TrueGUID) || !_Stream.eof())
+	{
+		return;
+	}
 
-	GUIDMutex.unlock();
+	Release(_TrueGUID);
 }
 
-void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_VIEW_TYPE_W _GUID)
+void BFW_API BFW::GUID::ReleaseStringW(const BFW_STRING_VIEW_TYPE_W& _GUID)
 {
-	GUIDMutex.lock();
+	uint64_t _TrueGUID = 0;
+	BFW_STRING_STREAM_TYPE_W _Stream(BFW_STRING_TYPE_W(_GUID).c_str());
+	_Stream.imbue(std::locale::classic());
 
-	ExistentGUIDs.Erase(BFW_UNICODE_TO_MACHINE(_GUID, nullptr).c_str());
+	if (!(_Stream >> _TrueGUID) || !_Stream.eof())
+	{
+		return;
+	}
 
-	GUIDMutex.unlock();
+	Release(_TrueGUID);
 }
 
-void BFW_API BFW::GUID::ReleaseString(const BFW_STRING_VIEW_TYPE _GUID)
+void BFW_API BFW::GUID::ReleaseString(const BFW_STRING_VIEW_TYPE& _GUID)
 {
 	BFW_UNICODE_CALL(ReleaseStringW(_GUID));
 	BFW_NON_UNICODE_CALL(ReleaseStringA(_GUID));

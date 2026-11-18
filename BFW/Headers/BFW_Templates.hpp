@@ -63,6 +63,9 @@ BFW_EXTERN template class BFW_API BFW::Trie<BFW_STRING_TYPE_A>;
 BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW_STRING_TYPE_W>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW_STRING_TYPE_W>>;
 BFW_EXTERN template class BFW_API BFW::Trie<BFW_STRING_TYPE_W>;
+BFW_EXTERN template class BFW_API BFW::UniquePointer<bool>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<bool>>;
+BFW_EXTERN template class BFW_API BFW::Trie<bool>;
 
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Debug::HeapPointer>;
 
@@ -152,6 +155,16 @@ BFW_EXTERN template class BFW_API BFW::Trie<BFW::WeakPointer<BFW::Assets::XML>>;
 BFW_EXTERN template class BFW_API BFW::UniquePointer<BFW::WeakPointer<BFW::Assets::Json>>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::Trie<BFW::WeakPointer<BFW::Assets::Json>>>;
 BFW_EXTERN template class BFW_API BFW::Trie<BFW::WeakPointer<BFW::Assets::Json>>;
+
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::ECS::CameraComponent>*>;
+BFW_EXTERN template class BFW_API BFW::SafePointer<BFW::ECS::CameraComponent>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::ECS::LightComponent>*>;
+BFW_EXTERN template class BFW_API BFW::SafePointer<BFW::ECS::LightComponent>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::ECS::Entity>*>;
+BFW_EXTERN template class BFW_API BFW::SafePointer<BFW::ECS::Entity>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::Entity>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::CameraComponent>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::LightComponent>;
 
 #endif
 

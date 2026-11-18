@@ -32,6 +32,8 @@
 
 #include "BFW_Assets.hpp"
 
+#include "BFW_ECS.hpp"
+
 
 
 #endif
