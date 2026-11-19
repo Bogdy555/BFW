@@ -1702,7 +1702,7 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 {
 	*this = Scene();
 
-	if (_Json.GetType() != Assets::_ArrayJsonType || _Json.GetArray()[0].GetType() != Assets::_ObjectJsonType)
+	if (_Json.GetType() != Assets::_ArrayJsonType || !_Json.GetArray().GetSize() || _Json.GetArray()[0].GetType() != Assets::_ObjectJsonType)
 	{
 		return false;
 	}
