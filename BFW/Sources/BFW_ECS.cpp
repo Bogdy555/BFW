@@ -1614,7 +1614,7 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 
 BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr)
 {
-	...;
+
 }
 
 BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
@@ -1703,7 +1703,7 @@ void BFW::ECS::Scene::Setup(RunTime::Application* _Application, RunTime::Menu* _
 			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
-			...; // QueueAssets
+
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -1728,7 +1728,7 @@ void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* 
 			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
-			...;
+
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -1737,16 +1737,52 @@ void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* 
 		}
 	}
 
-	for (size_t _Index = 0; _Index < DespawnQueue.GetSize(); _Index++)
+	for (size_t _DespawnIndex = 0; _DespawnIndex < DespawnQueue.GetSize(); _DespawnIndex++)
 	{
-		...;
+		if ((Entity*)(DespawnQueue[_DespawnIndex]) == nullptr)
+		{
+			continue;
+		}
+
+		if (!DespawnQueue[_DespawnIndex]->GetParent())
+		{
+			for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+			{
+				if ((Entity*)(DespawnQueue[_DespawnIndex]) == &Entities[_Index])
+				{
+					Entities.Erase(_Index);
+					break;
+				}
+			}
+
+			continue;
+		}
+
+		Entity* _Parent = DespawnQueue[_DespawnIndex]->GetParent();
+
+		for (size_t _Index = 0; _Index < _Parent->GetChildrenSize(); _Index++)
+		{
+			if ((Entity*)(DespawnQueue[_DespawnIndex]) == &_Parent->GetChild(_Index))
+			{
+				_Parent->EraseChild(_Index);
+				break;
+			}
+		}
 	}
 
 	DespawnQueue.Clear();
 
-	for (size_t _Index = 0; _Index < SpawnQueue.GetSize(); _Index++)
+	for (size_t _SpawnIndex = 0; _SpawnIndex < SpawnQueue.GetSize(); _SpawnIndex++)
 	{
-		...;
+		if (!SpawnQueue[_SpawnIndex].GetParent())
+		{
+			Entities.EmplaceBack((Entity&&)(SpawnQueue[_SpawnIndex]));
+			continue;
+		}
+
+		Entity* _Parent = SpawnQueue[_SpawnIndex].GetParent();
+
+		_Parent->EmplaceChild((Entity&&)(SpawnQueue[_SpawnIndex]));
 	}
 
 	SpawnQueue.Clear();
@@ -1754,12 +1790,48 @@ void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* 
 
 void BFW::ECS::Scene::FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
-	...;
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
 }
 
 void BFW::ECS::Scene::Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
-	...;
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
 }
 
 BFW::ECS::Entity& BFW::ECS::Scene::Add()
@@ -1787,7 +1859,6 @@ BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity)
 
 	_NewEntity = (Entity&&)(_Entity);
 	_NewEntity.SetCurrentScene(this);
-	_NewEntity.SetParent(nullptr);
 
 	return _NewEntity;
 }
@@ -2263,8 +2334,8 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)
 		return *this;
 	}
 
-	GUID::ReleaseString(GUID);
 	Clear();
+	GUID::ReleaseString(GUID);
 
 	...;
 
@@ -2278,8 +2349,8 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (Scene&& _Other) noexcept
 		return *this;
 	}
 
-	GUID::ReleaseString(GUID);
 	Clear();
+	GUID::ReleaseString(GUID);
 
 	...;
 
