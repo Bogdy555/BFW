@@ -678,6 +678,7 @@ namespace BFW
 			Manager(Manager&& _Other) noexcept;
 			~Manager();
 
+			void QueueRawFile(const BFW_CHAR_TYPE* _Name);
 			void QueueBitMap(const BFW_CHAR_TYPE* _Name);
 			void QueueHdr(const BFW_CHAR_TYPE* _Name);
 			void QueueWave(const BFW_CHAR_TYPE* _Name);
@@ -691,6 +692,7 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+			void QueueResourceRawFile(const size_t _Id);
 			void QueueResourceBitMap(const size_t _Id);
 			void QueueResourceHdr(const size_t _Id);
 			void QueueResourceWave(const size_t _Id);
@@ -706,6 +708,7 @@ namespace BFW
 
 			const bool Flush();
 
+			void AddDynamicRawFile(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
 			void AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
 			void AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
@@ -717,6 +720,7 @@ namespace BFW
 			void AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
 
+			void AddDynamicRawFileRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
 			void AddDynamicHdrRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
 			void AddDynamicWaveRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
@@ -730,6 +734,7 @@ namespace BFW
 
 			void Update();
 
+			void ReleaseRawFile(const BFW_CHAR_TYPE* _Name);
 			void ReleaseBitMap(const BFW_CHAR_TYPE* _Name);
 			void ReleaseHdr(const BFW_CHAR_TYPE* _Name);
 			void ReleaseWave(const BFW_CHAR_TYPE* _Name);
@@ -743,6 +748,7 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+			void ReleaseResourceRawFile(const size_t _Id);
 			void ReleaseResourceBitMap(const size_t _Id);
 			void ReleaseResourceHdr(const size_t _Id);
 			void ReleaseResourceWave(const size_t _Id);
@@ -756,6 +762,7 @@ namespace BFW
 
 #endif
 
+			const bool WasRawFileUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasBitMapUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasHdrUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasWaveUpdated(const BFW_CHAR_TYPE* _Name);
@@ -767,6 +774,8 @@ namespace BFW
 			const bool WasJavaScriptUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasJsonUpdated(const BFW_CHAR_TYPE* _Name);
 
+			SharedPointer<FileContent> GetRawFile(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<FileContent> GetRawFile(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<BitMap> GetBitMap(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Hdr> GetHdr(const BFW_CHAR_TYPE* _Name);
@@ -790,6 +799,8 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+			SharedPointer<FileContent> GetResourceRawFile(const size_t _Id);
+			const SharedPointer<FileContent> GetResourceRawFile(const size_t _Id) const;
 			SharedPointer<BitMap> GetResourceBitMap(const size_t _Id);
 			const SharedPointer<BitMap> GetResourceBitMap(const size_t _Id) const;
 			SharedPointer<Hdr> GetResourceHdr(const size_t _Id);
@@ -831,6 +842,7 @@ namespace BFW
 
 			void RefreshCache();
 
+			Vector<BFW_STRING_TYPE> QueuedRawFiles;
 			Vector<BFW_STRING_TYPE> QueuedBitMaps;
 			Vector<BFW_STRING_TYPE> QueuedHdrs;
 			Vector<BFW_STRING_TYPE> QueuedWaves;
@@ -844,6 +856,7 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+			Vector<size_t> QueuedResourceRawFiles;
 			Vector<size_t> QueuedResourceBitMaps;
 			Vector<size_t> QueuedResourceHdrs;
 			Vector<size_t> QueuedResourceWaves;
@@ -857,6 +870,7 @@ namespace BFW
 
 #endif
 
+			Trie<SharedPointer<FileContent>> LoadedRawFiles;
 			Trie<SharedPointer<BitMap>> LoadedBitMaps;
 			Trie<SharedPointer<Hdr>> LoadedHdrs;
 			Trie<SharedPointer<Wave>> LoadedWaves;
@@ -870,6 +884,7 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+			Trie<SharedPointer<FileContent>> LoadedResourceRawFiles;
 			Trie<SharedPointer<BitMap>> LoadedResourceBitMaps;
 			Trie<SharedPointer<Hdr>> LoadedResourceHdrs;
 			Trie<SharedPointer<Wave>> LoadedResourceWaves;
@@ -883,6 +898,7 @@ namespace BFW
 
 #endif
 
+			mutable Vector<BFW_STRING_TYPE> CachedRawFileNames;
 			mutable Vector<BFW_STRING_TYPE> CachedBitMapNames;
 			mutable Vector<BFW_STRING_TYPE> CachedHdrNames;
 			mutable Vector<BFW_STRING_TYPE> CachedWaveNames;
@@ -894,6 +910,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJsonNames;
 
+			mutable Trie<WeakPointer<FileContent>> CachedRawFiles;
 			mutable Trie<WeakPointer<BitMap>> CachedBitMaps;
 			mutable Trie<WeakPointer<Hdr>> CachedHdrs;
 			mutable Trie<WeakPointer<Wave>> CachedWaves;
@@ -905,6 +922,7 @@ namespace BFW
 			mutable Trie<WeakPointer<FileContent>> CachedJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedJsons;
 
+			mutable Trie<uint64_t> LastWriteRawFiles;
 			mutable Trie<uint64_t> LastWriteBitMaps;
 			mutable Trie<uint64_t> LastWriteHdrs;
 			mutable Trie<uint64_t> LastWriteWaves;
@@ -916,6 +934,7 @@ namespace BFW
 			mutable Trie<uint64_t> LastWriteJavaScripts;
 			mutable Trie<uint64_t> LastWriteJsons;
 
+			mutable Trie<uint64_t> OldLastWriteRawFiles;
 			mutable Trie<uint64_t> OldLastWriteBitMaps;
 			mutable Trie<uint64_t> OldLastWriteHdrs;
 			mutable Trie<uint64_t> OldLastWriteWaves;
@@ -929,6 +948,7 @@ namespace BFW
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+			mutable Vector<BFW_STRING_TYPE> CachedResourceRawFileNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceBitMapNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceHdrNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceWaveNames;
@@ -940,6 +960,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJsonNames;
 
+			mutable Trie<WeakPointer<FileContent>> CachedResourceRawFiles;
 			mutable Trie<WeakPointer<BitMap>> CachedResourceBitMaps;
 			mutable Trie<WeakPointer<Hdr>> CachedResourceHdrs;
 			mutable Trie<WeakPointer<Wave>> CachedResourceWaves;

@@ -1894,6 +1894,29 @@ void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* 
 	SpawnQueue.Clear();
 }
 
+void BFW::ECS::Scene::LateUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+{
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+}
+
 void BFW::ECS::Scene::FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
@@ -1940,28 +1963,63 @@ void BFW::ECS::Scene::Render(RunTime::Application* _Application, RunTime::Menu* 
 	}
 }
 
-BFW::ECS::Entity& BFW::ECS::Scene::Add()
+void BFW::ECS::Scene::Stop(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+}
+
+BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity* _Parent)
+{
+	if (_Parent && _Parent->GetCurrentScene() != this)
+	{
+		throw nullptr;
+	}
+
 	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
 
 	_NewEntity.SetCurrentScene(this);
+	_NewEntity.SetParent(_Parent);
 
 	return _NewEntity;
 }
 
-BFW::ECS::Entity& BFW::ECS::Scene::Add(const Entity& _Entity)
+BFW::ECS::Entity& BFW::ECS::Scene::Add(const Entity& _Entity, Entity* _Parent)
 {
+	if (_Parent && _Parent->GetCurrentScene() != this)
+	{
+		throw nullptr;
+	}
+
 	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
 
 	_NewEntity = _Entity;
 	_NewEntity.SetCurrentScene(this);
+	_NewEntity.SetParent(_Parent);
 
 	return _NewEntity;
 }
 
-BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity)
+BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity, Entity* _Parent)
 {
-	if (_Entity.GetParent() && _Entity.GetParent()->GetCurrentScene() != this)
+	if (_Parent && _Parent->GetCurrentScene() != this)
 	{
 		throw nullptr;
 	}
@@ -1970,6 +2028,7 @@ BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity)
 
 	_NewEntity = (Entity&&)(_Entity);
 	_NewEntity.SetCurrentScene(this);
+	_NewEntity.SetParent(_Parent);
 
 	return _NewEntity;
 }

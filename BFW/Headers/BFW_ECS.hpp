@@ -211,12 +211,14 @@ namespace BFW
 
 			void Setup(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
 			void Update(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
+			void LateUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
 			void FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
 			void Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
+			void Stop(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
 
-			Entity& Add();
-			Entity& Add(const Entity& _Entity);
-			Entity& Add(Entity&& _Entity);
+			Entity& Add(Entity* _Parent = nullptr);
+			Entity& Add(const Entity& _Entity, Entity* _Parent = nullptr);
+			Entity& Add(Entity&& _Entity, Entity* _Parent = nullptr);
 			Entity* AddPrefab(const Assets::Json& _Json, Entity* _Parent = nullptr);
 
 			void Remove(const size_t _Index);

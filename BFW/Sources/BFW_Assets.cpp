@@ -18,6 +18,7 @@ template <typename T> static const bool ManagerLoaderWithPath(BFW::Assets::FileC
 	return _Asset->Load(_FileContent, _Path, _CurrentPath);
 }
 
+static const bool (*ManagerRawFileLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::FileContent>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerMoveLoader;
 static const bool (*ManagerBitMapLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::BitMap>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::BitMap>;
 static const bool (*ManagerHdrLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Hdr>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::Hdr>;
 static const bool (*ManagerWaveLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Wave>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::Wave>;
@@ -1528,6 +1529,7 @@ BFW::Assets::FileContent& BFW::Assets::FileContent::operator= (FileContent&& _Ot
 #ifdef BFW_WINDOWS_PLATFORM
 
 BFW::Assets::Manager::Manager() :
+	QueuedRawFiles(),
 	QueuedBitMaps(),
 	QueuedHdrs(),
 	QueuedWaves(),
@@ -1539,6 +1541,7 @@ BFW::Assets::Manager::Manager() :
 	QueuedJavaScripts(),
 	QueuedJsons(),
 
+	QueuedResourceRawFiles(),
 	QueuedResourceBitMaps(),
 	QueuedResourceHdrs(),
 	QueuedResourceWaves(),
@@ -1550,6 +1553,7 @@ BFW::Assets::Manager::Manager() :
 	QueuedResourceJavaScripts(),
 	QueuedResourceJsons(),
 
+	LoadedRawFiles(),
 	LoadedBitMaps(),
 	LoadedHdrs(),
 	LoadedWaves(),
@@ -1561,6 +1565,7 @@ BFW::Assets::Manager::Manager() :
 	LoadedJavaScripts(),
 	LoadedJsons(),
 
+	LoadedResourceRawFiles(),
 	LoadedResourceBitMaps(),
 	LoadedResourceHdrs(),
 	LoadedResourceWaves(),
@@ -1572,6 +1577,7 @@ BFW::Assets::Manager::Manager() :
 	LoadedResourceJavaScripts(),
 	LoadedResourceJsons(),
 
+	CachedRawFileNames(),
 	CachedBitMapNames(),
 	CachedHdrNames(),
 	CachedWaveNames(),
@@ -1583,6 +1589,7 @@ BFW::Assets::Manager::Manager() :
 	CachedJavaScriptNames(),
 	CachedJsonNames(),
 
+	CachedRawFiles(),
 	CachedBitMaps(),
 	CachedHdrs(),
 	CachedWaves(),
@@ -1594,6 +1601,7 @@ BFW::Assets::Manager::Manager() :
 	CachedJavaScripts(),
 	CachedJsons(),
 
+	LastWriteRawFiles(),
 	LastWriteBitMaps(),
 	LastWriteHdrs(),
 	LastWriteWaves(),
@@ -1605,6 +1613,7 @@ BFW::Assets::Manager::Manager() :
 	LastWriteJavaScripts(),
 	LastWriteJsons(),
 
+	OldLastWriteRawFiles(),
 	OldLastWriteBitMaps(),
 	OldLastWriteHdrs(),
 	OldLastWriteWaves(),
@@ -1616,6 +1625,7 @@ BFW::Assets::Manager::Manager() :
 	OldLastWriteJavaScripts(),
 	OldLastWriteJsons(),
 
+	CachedResourceRawFileNames(),
 	CachedResourceBitMapNames(),
 	CachedResourceHdrNames(),
 	CachedResourceWaveNames(),
@@ -1627,6 +1637,7 @@ BFW::Assets::Manager::Manager() :
 	CachedResourceJavaScriptNames(),
 	CachedResourceJsonNames(),
 
+	CachedResourceRawFiles(),
 	CachedResourceBitMaps(),
 	CachedResourceHdrs(),
 	CachedResourceWaves(),
@@ -1642,6 +1653,7 @@ BFW::Assets::Manager::Manager() :
 }
 
 BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
+	QueuedRawFiles((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedRawFiles)),
 	QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)),
 	QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)),
 	QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)),
@@ -1653,6 +1665,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	QueuedJavaScripts((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts)),
 	QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)),
 
+	QueuedResourceRawFiles((Vector<size_t>&&)(_Other.QueuedResourceRawFiles)),
 	QueuedResourceBitMaps((Vector<size_t>&&)(_Other.QueuedResourceBitMaps)),
 	QueuedResourceHdrs((Vector<size_t>&&)(_Other.QueuedResourceHdrs)),
 	QueuedResourceWaves((Vector<size_t>&&)(_Other.QueuedResourceWaves)),
@@ -1664,6 +1677,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	QueuedResourceJavaScripts((Vector<size_t>&&)(_Other.QueuedResourceJavaScripts)),
 	QueuedResourceJsons((Vector<size_t>&&)(_Other.QueuedResourceJsons)),
 
+	LoadedRawFiles((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles)),
 	LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)),
 	LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)),
 	LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)),
@@ -1675,6 +1689,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LoadedJavaScripts((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts)),
 	LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)),
 
+	LoadedResourceRawFiles((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceRawFiles)),
 	LoadedResourceBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps)),
 	LoadedResourceHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs)),
 	LoadedResourceWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves)),
@@ -1686,6 +1701,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LoadedResourceJavaScripts((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceJavaScripts)),
 	LoadedResourceJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons)),
 
+	CachedRawFileNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames)),
 	CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)),
 	CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)),
 	CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)),
@@ -1697,6 +1713,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedJavaScriptNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames)),
 	CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)),
 
+	CachedRawFiles((Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles)),
 	CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)),
 	CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)),
 	CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)),
@@ -1708,6 +1725,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedJavaScripts((Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts)),
 	CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)),
 
+	LastWriteRawFiles((Trie<uint64_t>&&)(_Other.LastWriteRawFiles)),
 	LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)),
 	LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)),
 	LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)),
@@ -1719,6 +1737,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LastWriteJavaScripts((Trie<uint64_t>&&)(_Other.LastWriteJavaScripts)),
 	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)),
 
+	OldLastWriteRawFiles((Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles)),
 	OldLastWriteBitMaps((Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps)),
 	OldLastWriteHdrs((Trie<uint64_t>&&)(_Other.OldLastWriteHdrs)),
 	OldLastWriteWaves((Trie<uint64_t>&&)(_Other.OldLastWriteWaves)),
@@ -1730,6 +1749,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	OldLastWriteJavaScripts((Trie<uint64_t>&&)(_Other.OldLastWriteJavaScripts)),
 	OldLastWriteJsons((Trie<uint64_t>&&)(_Other.OldLastWriteJsons)),
 
+	CachedResourceRawFileNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceRawFileNames)),
 	CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)),
 	CachedResourceHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames)),
 	CachedResourceWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames)),
@@ -1741,6 +1761,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedResourceJavaScriptNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJavaScriptNames)),
 	CachedResourceJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames)),
 
+	CachedResourceRawFiles((Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceRawFiles)),
 	CachedResourceBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps)),
 	CachedResourceHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs)),
 	CachedResourceWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves)),
@@ -1760,6 +1781,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 #if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
 
 BFW::Assets::Manager::Manager() :
+	QueuedRawFiles(),
 	QueuedBitMaps(),
 	QueuedHdrs(),
 	QueuedWaves(),
@@ -1771,6 +1793,7 @@ BFW::Assets::Manager::Manager() :
 	QueuedJavaScripts(),
 	QueuedJsons(),
 
+	LoadedRawFiles(),
 	LoadedBitMaps(),
 	LoadedHdrs(),
 	LoadedWaves(),
@@ -1782,6 +1805,7 @@ BFW::Assets::Manager::Manager() :
 	LoadedJavaScripts(),
 	LoadedJsons(),
 
+	CachedRawFileNames(),
 	CachedBitMapNames(),
 	CachedHdrNames(),
 	CachedWaveNames(),
@@ -1793,6 +1817,7 @@ BFW::Assets::Manager::Manager() :
 	CachedJavaScriptNames(),
 	CachedJsonNames(),
 
+	CachedRawFiles(),
 	CachedBitMaps(),
 	CachedHdrs(),
 	CachedWaves(),
@@ -1804,6 +1829,7 @@ BFW::Assets::Manager::Manager() :
 	CachedJavaScripts(),
 	CachedJsons(),
 
+	LastWriteRawFiles(),
 	LastWriteBitMaps(),
 	LastWriteHdrs(),
 	LastWriteWaves(),
@@ -1815,6 +1841,7 @@ BFW::Assets::Manager::Manager() :
 	LastWriteJavaScripts(),
 	LastWriteJsons(),
 
+	OldLastWriteRawFiles(),
 	OldLastWriteBitMaps(),
 	OldLastWriteHdrs(),
 	OldLastWriteWaves(),
@@ -1830,6 +1857,7 @@ BFW::Assets::Manager::Manager() :
 }
 
 BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
+	QueuedRawFiles((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedRawFiles)),
 	QueuedBitMaps((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps)),
 	QueuedHdrs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs)),
 	QueuedWaves((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves)),
@@ -1841,6 +1869,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	QueuedJavaScripts((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts)),
 	QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)),
 
+	LoadedRawFiles((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles)),
 	LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)),
 	LoadedHdrs((Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs)),
 	LoadedWaves((Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves)),
@@ -1852,6 +1881,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LoadedJavaScripts((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts)),
 	LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)),
 
+	CachedRawFileNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames)),
 	CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)),
 	CachedHdrNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames)),
 	CachedWaveNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames)),
@@ -1863,6 +1893,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedJavaScriptNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames)),
 	CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)),
 
+	CachedRawFiles((Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles)),
 	CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)),
 	CachedHdrs((Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs)),
 	CachedWaves((Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves)),
@@ -1874,6 +1905,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedJavaScripts((Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts)),
 	CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)),
 
+	LastWriteRawFiles((Trie<uint64_t>&&)(_Other.LastWriteRawFiles)),
 	LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)),
 	LastWriteHdrs((Trie<uint64_t>&&)(_Other.LastWriteHdrs)),
 	LastWriteWaves((Trie<uint64_t>&&)(_Other.LastWriteWaves)),
@@ -1885,6 +1917,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LastWriteJavaScripts((Trie<uint64_t>&&)(_Other.LastWriteJavaScripts)),
 	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)),
 
+	OldLastWriteRawFiles((Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles)),
 	OldLastWriteBitMaps((Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps)),
 	OldLastWriteHdrs((Trie<uint64_t>&&)(_Other.OldLastWriteHdrs)),
 	OldLastWriteWaves((Trie<uint64_t>&&)(_Other.OldLastWriteWaves)),
@@ -1904,6 +1937,11 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 BFW::Assets::Manager::~Manager()
 {
 
+}
+
+void BFW::Assets::Manager::QueueRawFile(const BFW_CHAR_TYPE* _Name)
+{
+	ManagerQueue(_Name, QueuedRawFiles);
 }
 
 void BFW::Assets::Manager::QueueBitMap(const BFW_CHAR_TYPE* _Name)
@@ -1957,6 +1995,11 @@ void BFW::Assets::Manager::QueueJson(const BFW_CHAR_TYPE* _Name)
 }
 
 #ifdef BFW_WINDOWS_PLATFORM
+
+void BFW::Assets::Manager::QueueResourceRawFile(const size_t _Id)
+{
+	ManagerQueueResource(_Id, QueuedResourceRawFiles);
+}
 
 void BFW::Assets::Manager::QueueResourceBitMap(const size_t _Id)
 {
@@ -2017,6 +2060,7 @@ const bool BFW::Assets::Manager::Flush()
 	bool _Fail = false;
 	Vector<std::thread> _Threads;
 
+	ManagerFlushAllocate<FileContent>(QueuedRawFiles, LoadedRawFiles, CachedRawFiles, LastWriteRawFiles, CachedRawFileNames);
 	ManagerFlushAllocate<BitMap>(QueuedBitMaps, LoadedBitMaps, CachedBitMaps, LastWriteBitMaps, CachedBitMapNames);
 	ManagerFlushAllocate<Hdr>(QueuedHdrs, LoadedHdrs, CachedHdrs, LastWriteHdrs, CachedHdrNames);
 	ManagerFlushAllocate<Wave>(QueuedWaves, LoadedWaves, CachedWaves, LastWriteWaves, CachedWaveNames);
@@ -2028,6 +2072,7 @@ const bool BFW::Assets::Manager::Flush()
 	ManagerFlushAllocate<FileContent>(QueuedJavaScripts, LoadedJavaScripts, CachedJavaScripts, LastWriteJavaScripts, CachedJavaScriptNames);
 	ManagerFlushAllocate<Json>(QueuedJsons, LoadedJsons, CachedJsons, LastWriteJsons, CachedJsonNames);
 
+	ManagerFlushSpawn<FileContent>(_Threads, _Fail, QueuedRawFiles, LoadedRawFiles, LastWriteRawFiles, ManagerRawFileLoader);
 	ManagerFlushSpawn<BitMap>(_Threads, _Fail, QueuedBitMaps, LoadedBitMaps, LastWriteBitMaps, ManagerBitMapLoader);
 	ManagerFlushSpawn<Hdr>(_Threads, _Fail, QueuedHdrs, LoadedHdrs, LastWriteHdrs, ManagerHdrLoader);
 	ManagerFlushSpawn<Wave>(_Threads, _Fail, QueuedWaves, LoadedWaves, LastWriteWaves, ManagerWaveLoader);
@@ -2041,6 +2086,7 @@ const bool BFW::Assets::Manager::Flush()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+	ManagerFlushAllocateResource<FileContent>(QueuedResourceRawFiles, LoadedResourceRawFiles, CachedResourceRawFiles, CachedResourceRawFileNames);
 	ManagerFlushAllocateResource<BitMap>(QueuedResourceBitMaps, LoadedResourceBitMaps, CachedResourceBitMaps, CachedResourceBitMapNames);
 	ManagerFlushAllocateResource<Hdr>(QueuedResourceHdrs, LoadedResourceHdrs, CachedResourceHdrs, CachedResourceHdrNames);
 	ManagerFlushAllocateResource<Wave>(QueuedResourceWaves, LoadedResourceWaves, CachedResourceWaves, CachedResourceWaveNames);
@@ -2052,6 +2098,7 @@ const bool BFW::Assets::Manager::Flush()
 	ManagerFlushAllocateResource<FileContent>(QueuedResourceJavaScripts, LoadedResourceJavaScripts, CachedResourceJavaScripts, CachedResourceJavaScriptNames);
 	ManagerFlushAllocateResource<Json>(QueuedResourceJsons, LoadedResourceJsons, CachedResourceJsons, CachedResourceJsonNames);
 
+	ManagerFlushSpawnResource<FileContent>(_Threads, _Fail, QueuedResourceRawFiles, BFW_RAW_RESOURCE, LoadedResourceRawFiles, ManagerRawFileLoader);
 	ManagerFlushSpawnResource<BitMap>(_Threads, _Fail, QueuedResourceBitMaps, BFW_BMP_RESOURCE, LoadedResourceBitMaps, ManagerBitMapLoader);
 	ManagerFlushSpawnResource<Hdr>(_Threads, _Fail, QueuedResourceHdrs, BFW_HDR_RESOURCE, LoadedResourceHdrs, ManagerHdrLoader);
 	ManagerFlushSpawnResource<Wave>(_Threads, _Fail, QueuedResourceWaves, BFW_WAV_RESOURCE, LoadedResourceWaves, ManagerWaveLoader);
@@ -2072,6 +2119,7 @@ const bool BFW::Assets::Manager::Flush()
 
 	if (_Fail)
 	{
+		QueuedRawFiles.Clear();
 		QueuedBitMaps.Clear();
 		QueuedHdrs.Clear();
 		QueuedWaves.Clear();
@@ -2085,6 +2133,7 @@ const bool BFW::Assets::Manager::Flush()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+		QueuedResourceRawFiles.Clear();
 		QueuedResourceBitMaps.Clear();
 		QueuedResourceHdrs.Clear();
 		QueuedResourceWaves.Clear();
@@ -2101,6 +2150,7 @@ const bool BFW::Assets::Manager::Flush()
 		return false;
 	}
 
+	Vector<BFW_STRING_TYPE> _NewQueuedRawFiles;
 	Vector<BFW_STRING_TYPE> _NewQueuedBitMaps;
 	Vector<BFW_STRING_TYPE> _NewQueuedHdrs;
 	Vector<BFW_STRING_TYPE> _NewQueuedWaves;
@@ -2112,6 +2162,7 @@ const bool BFW::Assets::Manager::Flush()
 	Vector<BFW_STRING_TYPE> _NewQueuedJavaScripts;
 	Vector<BFW_STRING_TYPE> _NewQueuedJsons;
 
+	Trie<bool> _TrieNewQueuedRawFiles;
 	Trie<bool> _TrieNewQueuedBitMaps;
 	Trie<bool> _TrieNewQueuedHdrs;
 	Trie<bool> _TrieNewQueuedWaves;
@@ -2125,6 +2176,7 @@ const bool BFW::Assets::Manager::Flush()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+	Vector<size_t> _NewQueuedResourceRawFiles;
 	Vector<size_t> _NewQueuedResourceBitMaps;
 	Vector<size_t> _NewQueuedResourceHdrs;
 	Vector<size_t> _NewQueuedResourceWaves;
@@ -2136,6 +2188,7 @@ const bool BFW::Assets::Manager::Flush()
 	Vector<size_t> _NewQueuedResourceJavaScripts;
 	Vector<size_t> _NewQueuedResourceJsons;
 
+	Trie<bool> _TrieNewQueuedResourceRawFiles;
 	Trie<bool> _TrieNewQueuedResourceBitMaps;
 	Trie<bool> _TrieNewQueuedResourceHdrs;
 	Trie<bool> _TrieNewQueuedResourceWaves;
@@ -2169,6 +2222,7 @@ const bool BFW::Assets::Manager::Flush()
 
 #endif
 
+	QueuedRawFiles = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedRawFiles);
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedBitMaps);
 	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedWaves);
@@ -2182,6 +2236,7 @@ const bool BFW::Assets::Manager::Flush()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+	QueuedResourceRawFiles = (Vector<size_t>&&)(_NewQueuedResourceRawFiles);
 	QueuedResourceBitMaps = (Vector<size_t>&&)(_NewQueuedResourceBitMaps);
 	QueuedResourceHdrs = (Vector<size_t>&&)(_NewQueuedResourceHdrs);
 	QueuedResourceWaves = (Vector<size_t>&&)(_NewQueuedResourceWaves);
@@ -2197,6 +2252,7 @@ const bool BFW::Assets::Manager::Flush()
 
 	if
 	(
+		QueuedRawFiles.GetSize() ||
 		QueuedBitMaps.GetSize() ||
 		QueuedHdrs.GetSize() ||
 		QueuedWaves.GetSize() ||
@@ -2216,6 +2272,7 @@ const bool BFW::Assets::Manager::Flush()
 
 	else if
 	(
+		QueuedResourceRawFiles.GetSize() ||
 		QueuedResourceBitMaps.GetSize() ||
 		QueuedResourceHdrs.GetSize() ||
 		QueuedResourceWaves.GetSize() ||
@@ -2234,6 +2291,11 @@ const bool BFW::Assets::Manager::Flush()
 #endif
 
 	return true;
+}
+
+void BFW::Assets::Manager::AddDynamicRawFile(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+{
+	ManagerAddDynamic<FileContent>(_Name, _Asset, LoadedRawFiles, CachedRawFiles, CachedRawFileNames);
 }
 
 void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
@@ -2284,6 +2346,11 @@ void BFW::Assets::Manager::AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, Shar
 void BFW::Assets::Manager::AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset)
 {
 	ManagerAddDynamic<Json>(_Name, _Asset, LoadedJsons, CachedJsons, CachedJsonNames);
+}
+
+void BFW::Assets::Manager::AddDynamicRawFileRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+{
+	ManagerAddDynamicRef<FileContent>(_Name, _Asset, CachedRawFiles, CachedRawFileNames);
 }
 
 void BFW::Assets::Manager::AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
@@ -2340,6 +2407,7 @@ void BFW::Assets::Manager::Update()
 {
 	RefreshCache();
 
+	OldLastWriteRawFiles = LastWriteRawFiles;
 	OldLastWriteBitMaps = LastWriteBitMaps;
 	OldLastWriteHdrs = LastWriteHdrs;
 	OldLastWriteWaves = LastWriteWaves;
@@ -2353,6 +2421,7 @@ void BFW::Assets::Manager::Update()
 
 	Vector<std::thread> _Threads;
 
+	ManagerUpdate<FileContent>(_Threads, CachedRawFiles, LastWriteRawFiles, CachedRawFileNames, ManagerRawFileLoader);
 	ManagerUpdate<BitMap>(_Threads, CachedBitMaps, LastWriteBitMaps, CachedBitMapNames, ManagerBitMapLoader);
 	ManagerUpdate<Hdr>(_Threads, CachedHdrs, LastWriteHdrs, CachedHdrNames, ManagerHdrLoader);
 	ManagerUpdate<Wave>(_Threads, CachedWaves, LastWriteWaves, CachedWaveNames, ManagerWaveLoader);
@@ -2368,6 +2437,11 @@ void BFW::Assets::Manager::Update()
 	{
 		_Threads[_Index].join();
 	}
+}
+
+void BFW::Assets::Manager::ReleaseRawFile(const BFW_CHAR_TYPE* _Name)
+{
+	ManagerRelease<FileContent>(_Name, LoadedRawFiles);
 }
 
 void BFW::Assets::Manager::ReleaseBitMap(const BFW_CHAR_TYPE* _Name)
@@ -2422,6 +2496,11 @@ void BFW::Assets::Manager::ReleaseJson(const BFW_CHAR_TYPE* _Name)
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+void BFW::Assets::Manager::ReleaseResourceRawFile(const size_t _Id)
+{
+	ManagerReleaseResource<FileContent>(_Id, LoadedResourceRawFiles);
+}
+
 void BFW::Assets::Manager::ReleaseResourceBitMap(const size_t _Id)
 {
 	ManagerReleaseResource<BitMap>(_Id, LoadedResourceBitMaps);
@@ -2474,6 +2553,11 @@ void BFW::Assets::Manager::ReleaseResourceJson(const size_t _Id)
 
 #endif
 
+const bool BFW::Assets::Manager::WasRawFileUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteRawFiles, OldLastWriteRawFiles);
+}
+
 const bool BFW::Assets::Manager::WasBitMapUpdated(const BFW_CHAR_TYPE* _Name)
 {
 	return ManagerWasUpdated(_Name, LastWriteBitMaps, OldLastWriteBitMaps);
@@ -2522,6 +2606,16 @@ const bool BFW::Assets::Manager::WasJavaScriptUpdated(const BFW_CHAR_TYPE* _Name
 const bool BFW::Assets::Manager::WasJsonUpdated(const BFW_CHAR_TYPE* _Name)
 {
 	return ManagerWasUpdated(_Name, LastWriteJsons, OldLastWriteJsons);
+}
+
+BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetRawFile(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerGet<FileContent>(_Name, CachedRawFiles, LastWriteRawFiles, CachedRawFileNames, ManagerRawFileLoader);
+}
+
+const BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetRawFile(const BFW_CHAR_TYPE* _Name) const
+{
+	return ManagerGet<FileContent>(_Name, CachedRawFiles, LastWriteRawFiles, CachedRawFileNames, ManagerRawFileLoader);
 }
 
 BFW::SharedPointer<BFW::Assets::BitMap> BFW::Assets::Manager::GetBitMap(const BFW_CHAR_TYPE* _Name)
@@ -2625,6 +2719,16 @@ const BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetJson(const 
 }
 
 #ifdef BFW_WINDOWS_PLATFORM
+
+BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetResourceRawFile(const size_t _Id)
+{
+	return ManagerGetResource<FileContent>(_Id, BFW_RAW_RESOURCE, CachedResourceRawFiles, CachedResourceRawFileNames, ManagerRawFileLoader);
+}
+
+const BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetResourceRawFile(const size_t _Id) const
+{
+	return ManagerGetResource<FileContent>(_Id, BFW_RAW_RESOURCE, CachedResourceRawFiles, CachedResourceRawFileNames, ManagerRawFileLoader);
+}
 
 BFW::SharedPointer<BFW::Assets::BitMap> BFW::Assets::Manager::GetResourceBitMap(const size_t _Id)
 {
@@ -3269,6 +3373,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 		return *this;
 	}
 
+	QueuedRawFiles = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedRawFiles);
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps);
 	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves);
@@ -3280,6 +3385,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedJavaScripts = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
 
+	QueuedResourceRawFiles = (Vector<size_t>&&)(_Other.QueuedResourceRawFiles);
 	QueuedResourceBitMaps = (Vector<size_t>&&)(_Other.QueuedResourceBitMaps);
 	QueuedResourceHdrs = (Vector<size_t>&&)(_Other.QueuedResourceHdrs);
 	QueuedResourceWaves = (Vector<size_t>&&)(_Other.QueuedResourceWaves);
@@ -3291,6 +3397,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedResourceJavaScripts = (Vector<size_t>&&)(_Other.QueuedResourceJavaScripts);
 	QueuedResourceJsons = (Vector<size_t>&&)(_Other.QueuedResourceJsons);
 
+	LoadedRawFiles = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
 	LoadedHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs);
 	LoadedWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves);
@@ -3302,6 +3409,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LoadedJavaScripts = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
 
+	LoadedResourceRawFiles = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceRawFiles);
 	LoadedResourceBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps);
 	LoadedResourceHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedResourceHdrs);
 	LoadedResourceWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedResourceWaves);
@@ -3313,6 +3421,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LoadedResourceJavaScripts = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceJavaScripts);
 	LoadedResourceJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons);
 
+	CachedRawFileNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
 	CachedHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames);
 	CachedWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames);
@@ -3324,6 +3433,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedJavaScriptNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
 
+	CachedRawFiles = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
 	CachedHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs);
 	CachedWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves);
@@ -3335,6 +3445,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedJavaScripts = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
 
+	LastWriteRawFiles = (Trie<uint64_t>&&)(_Other.LastWriteRawFiles);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
 	LastWriteHdrs = (Trie<uint64_t>&&)(_Other.LastWriteHdrs);
 	LastWriteWaves = (Trie<uint64_t>&&)(_Other.LastWriteWaves);
@@ -3346,6 +3457,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.LastWriteJavaScripts);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 
+	OldLastWriteRawFiles = (Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles);
 	OldLastWriteBitMaps = (Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps);
 	OldLastWriteHdrs = (Trie<uint64_t>&&)(_Other.OldLastWriteHdrs);
 	OldLastWriteWaves = (Trie<uint64_t>&&)(_Other.OldLastWriteWaves);
@@ -3357,6 +3469,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	OldLastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.OldLastWriteJavaScripts);
 	OldLastWriteJsons = (Trie<uint64_t>&&)(_Other.OldLastWriteJsons);
 
+	CachedResourceRawFileNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceRawFileNames);
 	CachedResourceBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames);
 	CachedResourceHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceHdrNames);
 	CachedResourceWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceWaveNames);
@@ -3368,6 +3481,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedResourceJavaScriptNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJavaScriptNames);
 	CachedResourceJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames);
 
+	CachedResourceRawFiles = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceRawFiles);
 	CachedResourceBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps);
 	CachedResourceHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedResourceHdrs);
 	CachedResourceWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedResourceWaves);
@@ -3393,6 +3507,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 		return *this;
 	}
 
+	QueuedRawFiles = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedRawFiles);
 	QueuedBitMaps = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedBitMaps);
 	QueuedHdrs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedHdrs);
 	QueuedWaves = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedWaves);
@@ -3404,6 +3519,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedJavaScripts = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
 
+	LoadedRawFiles = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
 	LoadedHdrs = (Trie<SharedPointer<Hdr>>&&)(_Other.LoadedHdrs);
 	LoadedWaves = (Trie<SharedPointer<Wave>>&&)(_Other.LoadedWaves);
@@ -3415,6 +3531,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LoadedJavaScripts = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
 
+	CachedRawFileNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
 	CachedHdrNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedHdrNames);
 	CachedWaveNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedWaveNames);
@@ -3426,6 +3543,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedJavaScriptNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
 
+	CachedRawFiles = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
 	CachedHdrs = (Trie<WeakPointer<Hdr>>&&)(_Other.CachedHdrs);
 	CachedWaves = (Trie<WeakPointer<Wave>>&&)(_Other.CachedWaves);
@@ -3437,6 +3555,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedJavaScripts = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
 
+	LastWriteRawFiles = (Trie<uint64_t>&&)(_Other.LastWriteRawFiles);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
 	LastWriteHdrs = (Trie<uint64_t>&&)(_Other.LastWriteHdrs);
 	LastWriteWaves = (Trie<uint64_t>&&)(_Other.LastWriteWaves);
@@ -3448,6 +3567,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.LastWriteJavaScripts);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
 
+	OldLastWriteRawFiles = (Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles);
 	OldLastWriteBitMaps = (Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps);
 	OldLastWriteHdrs = (Trie<uint64_t>&&)(_Other.OldLastWriteHdrs);
 	OldLastWriteWaves = (Trie<uint64_t>&&)(_Other.OldLastWriteWaves);
@@ -3466,6 +3586,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 
 void BFW::Assets::Manager::RefreshCache()
 {
+	ManagerRefreshCache<FileContent>(CachedRawFiles, LastWriteRawFiles, CachedRawFileNames);
 	ManagerRefreshCache<BitMap>(CachedBitMaps, LastWriteBitMaps, CachedBitMapNames);
 	ManagerRefreshCache<Hdr>(CachedHdrs, LastWriteHdrs, CachedHdrNames);
 	ManagerRefreshCache<Wave>(CachedWaves, LastWriteWaves, CachedWaveNames);
@@ -3479,6 +3600,7 @@ void BFW::Assets::Manager::RefreshCache()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
+	ManagerRefreshResourceCache<FileContent>(CachedResourceRawFiles, CachedResourceRawFileNames);
 	ManagerRefreshResourceCache<BitMap>(CachedResourceBitMaps, CachedResourceBitMapNames);
 	ManagerRefreshResourceCache<Hdr>(CachedResourceHdrs, CachedResourceHdrNames);
 	ManagerRefreshResourceCache<Wave>(CachedResourceWaves, CachedResourceWaveNames);
