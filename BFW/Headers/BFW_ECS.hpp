@@ -217,6 +217,7 @@ namespace BFW
 			Entity& Add();
 			Entity& Add(const Entity& _Entity);
 			Entity& Add(Entity&& _Entity);
+			Entity* AddPrefab(const Assets::Json& _Json, Entity* _Parent = nullptr);
 
 			void Remove(const size_t _Index);
 			void Remove(const BFW_STRING_VIEW_TYPE& _GUID);

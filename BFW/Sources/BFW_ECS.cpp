@@ -774,7 +774,7 @@ const bool BFW::ECS::LightComponent::Deserialize(const Assets::Json& _Json)
 				return false;
 			}
 
-			Type = _Type;
+			Type = (uint8_t)(_Type);
 
 			continue;
 		}
@@ -1032,9 +1032,9 @@ BFW::ECS::Entity::~Entity()
 {
 	SafePointer<Entity>::ReleaseAll(this);
 
-	GUID::ReleaseString(GUID);
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	GUID::ReleaseString(GUID);
 }
 
 const bool BFW::ECS::Entity::Deserialize(const Assets::Json& _Json)
@@ -1543,9 +1543,9 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (const Entity& _Other)
 		return *this;
 	}
 
-	GUID::ReleaseString(GUID);
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	GUID::ReleaseString(GUID);
 
 	Transform = _Other.Transform;
 	CurrentScene = _Other.CurrentScene;
@@ -1586,9 +1586,9 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 		return *this;
 	}
 
-	GUID::ReleaseString(GUID);
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	GUID::ReleaseString(GUID);
 
 	SafePointer<Entity>::MoveAll(this, &_Other);
 
@@ -1617,14 +1617,79 @@ BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name
 
 }
 
-BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
+BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Other.Name), Entities(_Other.Entities), CameraComponents(), LightComponents(), SpawnQueue(_Other.SpawnQueue), DespawnQueue(), ActiveCamera(nullptr)
 {
-	...;
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		Entities[_Index].SetCurrentScene(this);
+	}
+
+	for (size_t _Index = 0; _Index < SpawnQueue.GetSize(); _Index++)
+	{
+		SpawnQueue[_Index].SetCurrentScene(this);
+	}
+
+	Vector<Entity*> _Queue;
+	Vector<const Entity*> _OldQueue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+		_OldQueue.PushBack(&_Other.Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			const Entity* _OldCurrent = _OldQueue[_OldQueue.GetSize() - 1];
+			_OldQueue.Erase(_OldQueue.GetSize() - 1);
+
+			for (size_t _SpawnIndex = 0; _SpawnIndex < _Other.SpawnQueue.GetSize(); _SpawnIndex++)
+			{
+				if (_OldCurrent == _Other.SpawnQueue[_SpawnIndex].GetParent())
+				{
+					SpawnQueue[_SpawnIndex].SetParent(_Current);
+				}
+			}
+
+			for (size_t _DespawnIndex = 0; _DespawnIndex < _Other.DespawnQueue.GetSize(); _DespawnIndex++)
+			{
+				if (_OldCurrent == (const Entity*)(_Other.DespawnQueue[_DespawnIndex]))
+				{
+					DespawnQueue.PushBack(_Current);
+					break;
+				}
+			}
+
+			if ((const CameraComponent*)(_Other.ActiveCamera) != nullptr && (const CameraComponent*)(_Other.ActiveCamera) == (const CameraComponent*)(_OldCurrent->GetCamera()))
+			{
+				ActiveCamera = _Current->GetCamera();
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+				_OldQueue.PushBack(&_OldCurrent->GetChild(_Child));
+			}
+		}
+	}
 }
 
-BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
+BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(_Other.GUID), Name(_Other.Name), Entities((Vector<Entity>&&)(_Other.Entities)), CameraComponents(), LightComponents(), SpawnQueue((Vector<Entity>&&)(_Other.SpawnQueue)), DespawnQueue((Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue)), ActiveCamera((SafePointer<CameraComponent>)(_Other.ActiveCamera))
 {
-	...;
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		Entities[_Index].SetCurrentScene(this);
+	}
+
+	for (size_t _Index = 0; _Index < SpawnQueue.GetSize(); _Index++)
+	{
+		SpawnQueue[_Index].SetCurrentScene(this);
+	}
+
+	_Other.GUID = GUID::GetString();
+	_Other.Name = BFW_STRING_PREFIX("Name");
 }
 
 BFW::ECS::Scene::~Scene()
@@ -1651,6 +1716,47 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 
 	for (size_t _Index = 0; _Index < _SceneData.Tags.GetSize(); _Index++)
 	{
+		if (_SceneData.Tags[_Index] == "GUID")
+		{
+			if (_SceneData.Object[_Index].GetType() != Assets::_StringJsonType)
+			{
+				*this = Scene();
+				return false;
+			}
+
+			bool _Error = false;
+
+			GUID::ReleaseString(GUID);
+			GUID = BFW_UTF8_TO_MACHINE(_SceneData.Object[_Index].GetString(), &_Error);
+
+			if (_Error || !GUID.size())
+			{
+				*this = Scene();
+				return false;
+			}
+
+			uint64_t _GUID = 0;
+			BFW_STRING_STREAM_TYPE _Stream(GUID);
+			_Stream.imbue(std::locale::classic());
+
+			if (!(_Stream >> _GUID) || !_Stream.eof())
+			{
+				*this = Scene();
+				return false;
+			}
+
+			if (GUID::Reserve(_GUID))
+			{
+				continue;
+			}
+
+			BFW_STRING_TYPE _NewGUID = GUID::GetString();
+
+			GUID = _NewGUID;
+
+			continue;
+		}
+
 		if (_SceneData.Tags[_Index] == "Name")
 		{
 			if (_SceneData.Object[_Index].GetType() != Assets::_StringJsonType)
@@ -1855,12 +1961,38 @@ BFW::ECS::Entity& BFW::ECS::Scene::Add(const Entity& _Entity)
 
 BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity)
 {
+	if (_Entity.GetParent() && _Entity.GetParent()->GetCurrentScene() != this)
+	{
+		throw nullptr;
+	}
+
 	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
 
 	_NewEntity = (Entity&&)(_Entity);
 	_NewEntity.SetCurrentScene(this);
 
 	return _NewEntity;
+}
+
+BFW::ECS::Entity* BFW::ECS::Scene::AddPrefab(const Assets::Json& _Json, Entity* _Parent)
+{
+	if (_Parent && _Parent->GetCurrentScene() != this)
+	{
+		throw nullptr;
+	}
+
+	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
+
+	_NewEntity.SetCurrentScene(this);
+	_NewEntity.SetParent(_Parent);
+
+	if (!_NewEntity.Deserialize(_Json))
+	{
+		SpawnQueue.Erase(SpawnQueue.GetSize() - 1);
+		return nullptr;
+	}
+
+	return &SpawnQueue[SpawnQueue.GetSize() - 1];
 }
 
 void BFW::ECS::Scene::Remove(const size_t _Index)
@@ -1931,6 +2063,14 @@ const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
 	Assets::JsonObjectData& _SceneData = _Array[0].GetObjectData();
 
 	bool _Error = false;
+
+	_SceneData.Tags.PushBack("GUID");
+	_SceneData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(GUID, &_Error));
+
+	if (_Error)
+	{
+		return Assets::Json();
+	}
 
 	_SceneData.Tags.PushBack("Name");
 	_SceneData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(Name, &_Error));
@@ -2231,58 +2371,12 @@ const BFW_STRING_TYPE& BFW::ECS::Scene::GetName() const
 
 BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera()
 {
-	Vector<Entity*> _Queue;
-
-	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
-	{
-		_Queue.PushBack(&Entities[_Index]);
-
-		while (_Queue.GetSize())
-		{
-			Entity* _Current = _Queue[_Queue.GetSize() - 1];
-			_Queue.Erase(_Queue.GetSize() - 1);
-
-			if ((CameraComponent*)(_Current->GetCamera()) != nullptr)
-			{
-				return (CameraComponent*)(_Current->GetCamera());
-			}
-
-			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
-			{
-				_Queue.PushBack(&_Current->GetChild(_Child));
-			}
-		}
-	}
-
-	return nullptr;
+	return (CameraComponent*)(ActiveCamera);
 }
 
 const BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera() const
 {
-	Vector<const Entity*> _Queue;
-
-	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
-	{
-		_Queue.PushBack(&Entities[_Index]);
-
-		while (_Queue.GetSize())
-		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
-			_Queue.Erase(_Queue.GetSize() - 1);
-
-			if ((const CameraComponent*)(_Current->GetCamera()) != nullptr)
-			{
-				return (const CameraComponent*)(_Current->GetCamera());
-			}
-
-			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
-			{
-				_Queue.PushBack(&_Current->GetChild(_Child));
-			}
-		}
-	}
-
-	return nullptr;
+	return (const CameraComponent*)(ActiveCamera);
 }
 
 const size_t BFW::ECS::Scene::GetTotalCount() const
@@ -2337,7 +2431,67 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)
 	Clear();
 	GUID::ReleaseString(GUID);
 
-	...;
+	GUID = GUID::GetString();
+	Name = _Other.Name;
+	Entities = _Other.Entities;
+	SpawnQueue = _Other.SpawnQueue;
+	ActiveCamera = nullptr;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		Entities[_Index].SetCurrentScene(this);
+	}
+
+	for (size_t _Index = 0; _Index < SpawnQueue.GetSize(); _Index++)
+	{
+		SpawnQueue[_Index].SetCurrentScene(this);
+	}
+
+	Vector<Entity*> _Queue;
+	Vector<const Entity*> _OldQueue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+		_OldQueue.PushBack(&_Other.Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			const Entity* _OldCurrent = _OldQueue[_OldQueue.GetSize() - 1];
+			_OldQueue.Erase(_OldQueue.GetSize() - 1);
+
+			for (size_t _SpawnIndex = 0; _SpawnIndex < _Other.SpawnQueue.GetSize(); _SpawnIndex++)
+			{
+				if (_OldCurrent == _Other.SpawnQueue[_SpawnIndex].GetParent())
+				{
+					SpawnQueue[_SpawnIndex].SetParent(_Current);
+				}
+			}
+
+			for (size_t _DespawnIndex = 0; _DespawnIndex < _Other.DespawnQueue.GetSize(); _DespawnIndex++)
+			{
+				if (_OldCurrent == (const Entity*)(_Other.DespawnQueue[_DespawnIndex]))
+				{
+					DespawnQueue.PushBack(_Current);
+					break;
+				}
+			}
+
+			if ((const CameraComponent*)(_Other.ActiveCamera) != nullptr && (const CameraComponent*)(_Other.ActiveCamera) == (const CameraComponent*)(_OldCurrent->GetCamera()))
+			{
+				ActiveCamera = _Current->GetCamera();
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+				_OldQueue.PushBack(&_OldCurrent->GetChild(_Child));
+			}
+		}
+	}
 
 	return *this;
 }
@@ -2352,7 +2506,25 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (Scene&& _Other) noexcept
 	Clear();
 	GUID::ReleaseString(GUID);
 
-	...;
+	GUID = _Other.GUID;
+	Name = _Other.Name;
+	Entities = (Vector<Entity>&&)(_Other.Entities);
+	SpawnQueue = (Vector<Entity>&&)(_Other.SpawnQueue);
+	DespawnQueue = (Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue);
+	ActiveCamera = (SafePointer<CameraComponent>)(_Other.ActiveCamera);
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		Entities[_Index].SetCurrentScene(this);
+	}
+
+	for (size_t _Index = 0; _Index < SpawnQueue.GetSize(); _Index++)
+	{
+		SpawnQueue[_Index].SetCurrentScene(this);
+	}
+
+	_Other.GUID = GUID::GetString();
+	_Other.Name = BFW_STRING_PREFIX("Name");
 
 	return *this;
 }

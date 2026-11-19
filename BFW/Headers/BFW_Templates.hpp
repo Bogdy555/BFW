@@ -163,8 +163,10 @@ BFW_EXTERN template class BFW_API BFW::SafePointer<BFW::ECS::LightComponent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::ECS::Entity>*>;
 BFW_EXTERN template class BFW_API BFW::SafePointer<BFW::ECS::Entity>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::Entity>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::Entity*>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::CameraComponent>;
 BFW_EXTERN template class BFW_API BFW::Vector<BFW::ECS::LightComponent>;
+BFW_EXTERN template class BFW_API BFW::Vector<BFW::SafePointer<BFW::ECS::Entity>>;
 
 #endif
 
