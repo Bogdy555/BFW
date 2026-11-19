@@ -268,7 +268,7 @@ namespace BFW
 			Vector<Entity> SpawnQueue;
 			Vector<SafePointer<Entity>> DespawnQueue;
 
-			SafePointer<const CameraComponent> ActiveCamera;
+			SafePointer<CameraComponent> ActiveCamera;
 
 		};
 

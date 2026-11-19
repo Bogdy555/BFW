@@ -1614,22 +1614,23 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 
 BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr)
 {
-
+	...;
 }
 
 BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
 {
-
+	...;
 }
 
 BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(), Name(), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera()
 {
-
+	...;
 }
 
 BFW::ECS::Scene::~Scene()
 {
 	Clear();
+	GUID::ReleaseString(GUID);
 }
 
 const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
@@ -1691,67 +1692,160 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 
 void BFW::ECS::Scene::Setup(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
+	Vector<const Entity*> _Queue;
 
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			...; // QueueAssets
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+
+	_Manager.Flush();
 }
 
 void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
+	Vector<const Entity*> _Queue;
 
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			...;
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+
+	for (size_t _Index = 0; _Index < DespawnQueue.GetSize(); _Index++)
+	{
+		...;
+	}
+
+	DespawnQueue.Clear();
+
+	for (size_t _Index = 0; _Index < SpawnQueue.GetSize(); _Index++)
+	{
+		...;
+	}
+
+	SpawnQueue.Clear();
 }
 
 void BFW::ECS::Scene::FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
-
+	...;
 }
 
 void BFW::ECS::Scene::Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
 {
-
+	...;
 }
 
 BFW::ECS::Entity& BFW::ECS::Scene::Add()
 {
+	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
 
+	_NewEntity.SetCurrentScene(this);
+
+	return _NewEntity;
 }
 
 BFW::ECS::Entity& BFW::ECS::Scene::Add(const Entity& _Entity)
 {
+	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
 
+	_NewEntity = _Entity;
+	_NewEntity.SetCurrentScene(this);
+
+	return _NewEntity;
 }
 
 BFW::ECS::Entity& BFW::ECS::Scene::Add(Entity&& _Entity)
 {
+	Entity& _NewEntity = SpawnQueue.EmplaceBack(Entity());
 
+	_NewEntity = (Entity&&)(_Entity);
+	_NewEntity.SetCurrentScene(this);
+	_NewEntity.SetParent(nullptr);
+
+	return _NewEntity;
 }
 
 void BFW::ECS::Scene::Remove(const size_t _Index)
 {
-
+	DespawnQueue.EmplaceBack(SafePointer<Entity>(&Entities[_Index]));
 }
 
 void BFW::ECS::Scene::Remove(const BFW_STRING_VIEW_TYPE& _GUID)
 {
-
+	DespawnQueue.EmplaceBack(SafePointer<Entity>(Find(_GUID)));
 }
 
 void BFW::ECS::Scene::Remove(const Entity* _Entity)
 {
-
+	DespawnQueue.EmplaceBack(SafePointer<Entity>((Entity*)(_Entity)));
 }
 
 void BFW::ECS::Scene::Clear()
 {
-
+	Entities.Clear();
+	CameraComponents.Clear();
+	LightComponents.Clear();
+	SpawnQueue.Clear();
+	DespawnQueue.Clear();
 }
 
 const bool BFW::ECS::Scene::SetName(const BFW_STRING_VIEW_TYPE& _Name)
 {
+	if (!_Name.size())
+	{
+		return false;
+	}
 
+	Name = _Name;
+
+	return true;
 }
 
 void BFW::ECS::Scene::SetActiveCamera(const CameraComponent* _ActiveCamera)
 {
+	if (!_ActiveCamera)
+	{
+		ActiveCamera = nullptr;
+		return;
+	}
 
+	for (size_t _Index = 0; _Index < CameraComponents.GetSize(); _Index++)
+	{
+		if (_ActiveCamera == &CameraComponents[_Index])
+		{
+			ActiveCamera = (CameraComponent*)(_ActiveCamera);
+			return;
+		}
+	}
+
+	throw nullptr;
 }
 
 const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
@@ -1788,82 +1882,378 @@ const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
 
 BFW::ECS::Entity* BFW::ECS::Scene::Find(const BFW_STRING_VIEW_TYPE& _GUID)
 {
+	if (!_GUID.size())
+	{
+		return nullptr;
+	}
 
+	Vector<Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->GetGUID() == _GUID)
+			{
+				return _Current;
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 const BFW::ECS::Entity* BFW::ECS::Scene::Find(const BFW_STRING_VIEW_TYPE& _GUID) const
 {
+	if (!_GUID.size())
+	{
+		return nullptr;
+	}
 
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->GetGUID() == _GUID)
+			{
+				return _Current;
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 BFW::ECS::Entity* BFW::ECS::Scene::FindByName(const BFW_STRING_VIEW_TYPE& _Name)
 {
+	if (!_Name.size())
+	{
+		return nullptr;
+	}
 
+	Vector<Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->GetName() == _Name)
+			{
+				return _Current;
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 const BFW::ECS::Entity* BFW::ECS::Scene::FindByName(const BFW_STRING_VIEW_TYPE& _Name) const
 {
+	if (!_Name.size())
+	{
+		return nullptr;
+	}
 
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->GetName() == _Name)
+			{
+				return _Current;
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 const BFW::Vector<BFW::ECS::Entity*> BFW::ECS::Scene::FindByTag(const BFW_STRING_VIEW_TYPE& _Tag)
 {
+	if (!_Tag.size())
+	{
+		return Vector<Entity*>();
+	}
 
+	Vector<Entity*> _Result;
+
+	Vector<Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->HasTag(_Tag))
+			{
+				_Result.PushBack(_Current);
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return _Result;
 }
 
 const BFW::Vector<const BFW::ECS::Entity*> BFW::ECS::Scene::FindByTag(const BFW_STRING_VIEW_TYPE& _Tag) const
 {
+	if (!_Tag.size())
+	{
+		return Vector<const Entity*>();
+	}
 
+	Vector<const Entity*> _Result;
+
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->HasTag(_Tag))
+			{
+				_Result.PushBack(_Current);
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return _Result;
 }
 
 const bool BFW::ECS::Scene::Contains(const Entity* _Entity) const
 {
+	if (!_Entity)
+	{
+		return false;
+	}
 
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current == _Entity)
+			{
+				return true;
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return false;
 }
 
 const bool BFW::ECS::Scene::Contains(const BFW_STRING_VIEW_TYPE& _GUID) const
 {
+	if (!_GUID.size())
+	{
+		return false;
+	}
 
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if (_Current->GetGUID() == _GUID)
+			{
+				return true;
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return false;
 }
 
 const BFW_STRING_TYPE& BFW::ECS::Scene::GetGUID() const
 {
-
+	return GUID;
 }
 
 const BFW_STRING_TYPE& BFW::ECS::Scene::GetName() const
 {
-
+	return Name;
 }
 
 BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera()
 {
+	Vector<Entity*> _Queue;
 
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if ((CameraComponent*)(_Current->GetCamera()) != nullptr)
+			{
+				return (CameraComponent*)(_Current->GetCamera());
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 const BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera() const
 {
+	Vector<const Entity*> _Queue;
 
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if ((const CameraComponent*)(_Current->GetCamera()) != nullptr)
+			{
+				return (const CameraComponent*)(_Current->GetCamera());
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Child));
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 const size_t BFW::ECS::Scene::GetTotalCount() const
 {
+	size_t _Size = 0;
 
+	Vector<const Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			_Size++;
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+
+	return _Size;
 }
 
 const size_t BFW::ECS::Scene::GetRootCount() const
 {
-
+	return Entities.GetSize();
 }
 
 BFW::ECS::Entity& BFW::ECS::Scene::GetEntity(const size_t _Index)
 {
-
+	return Entities[_Index];
 }
 
 const BFW::ECS::Entity& BFW::ECS::Scene::GetEntity(const size_t _Index) const
 {
-
+	return Entities[_Index];
 }
 
 BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)
@@ -1873,7 +2263,10 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)
 		return *this;
 	}
 
+	GUID::ReleaseString(GUID);
+	Clear();
 
+	...;
 
 	return *this;
 }
@@ -1885,7 +2278,10 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (Scene&& _Other) noexcept
 		return *this;
 	}
 
+	GUID::ReleaseString(GUID);
+	Clear();
 
+	...;
 
 	return *this;
 }
