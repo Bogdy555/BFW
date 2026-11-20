@@ -15,6 +15,13 @@
 namespace BFW_ESP32
 {
 
+	namespace MultiProcessing
+	{
+
+
+
+	}
+
 	namespace RunTime
 	{
 

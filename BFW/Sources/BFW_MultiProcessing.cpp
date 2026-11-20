@@ -2,6 +2,14 @@
 
 
 
+#ifdef BFW_ESP32_PLATFORM
+
+BFW::Trie<void*> BFW_API (*BFW::MultiProcessing::LoadLibrary)(const BFW_CHAR_TYPE* _Path) = nullptr;
+
+#endif
+
+
+
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 #ifdef BFW_WINDOWS_PLATFORM

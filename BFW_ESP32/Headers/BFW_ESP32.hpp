@@ -8,6 +8,8 @@
 
 #include "BFW_ESP32_Resources.hpp"
 
+#include "BFW_ESP32_MultiProcessing.hpp"
+
 #include "BFW_ESP32_RunTime.hpp"
 
 

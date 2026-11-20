@@ -29,6 +29,8 @@ void setup()
 		BFW_MESSAGE_BOX_ERROR(NULL, BFW_STRING_PREFIX("Error!"), BFW_STRING_PREFIX("An unexpected error occurred!"));
 	}
 
+	BFW::MultiProcessing::LoadLibrary = BFW_ESP32::MultiProcessing::LoadLibrary;
+
 	BFW_DEBUG_CALL
 	(
 		if (!BFW::Log::Init())

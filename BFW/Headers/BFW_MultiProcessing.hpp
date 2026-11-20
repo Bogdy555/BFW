@@ -45,6 +45,12 @@ namespace BFW
 
 #endif
 
+#ifdef BFW_ESP32_PLATFORM
+
+		extern Trie<void*> BFW_API (*LoadLibrary)(const BFW_CHAR_TYPE* _Path);
+
+#endif
+
 #if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
 
 		class BFW_API Process
