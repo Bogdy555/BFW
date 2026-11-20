@@ -22,11 +22,13 @@
     <File Path="BFW_ESP32/Headers/BFW_ESP32.hpp" />
     <File Path="BFW_ESP32/Headers/BFW_ESP32_Dependencies.hpp" />
     <File Path="BFW_ESP32/Headers/BFW_ESP32_Macros.hpp" />
+    <File Path="BFW_ESP32/Headers/BFW_ESP32_MultiProcessing.hpp" />
     <File Path="BFW_ESP32/Headers/BFW_ESP32_Resources.hpp" />
     <File Path="BFW_ESP32/Headers/BFW_ESP32_RunTime.hpp" />
   </Folder>
   <Folder Name="/BFW_ESP32/Sources/">
     <File Path="BFW_ESP32/Sources/BFW_ESP32_EntryPoint.cpp" />
+    <File Path="BFW_ESP32/Sources/BFW_ESP32_MultiProcessing.cpp" />
     <File Path="BFW_ESP32/Sources/BFW_ESP32_RunTime_Application.cpp" />
     <File Path="BFW_ESP32/Sources/BFW_ESP32_RunTime_MainMenu.cpp" />
   </Folder>
