@@ -31,6 +31,7 @@
 #include <sys/mman.h>
 #include <semaphore.h>
 #include <linux/joystick.h>
+#include <dlfcn.h>
 
 #endif
 
