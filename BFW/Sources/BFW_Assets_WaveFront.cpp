@@ -2134,7 +2134,7 @@ void BFW::Assets::WaveFrontObj::Clear()
 	MaterialLibs.Clear();
 }
 
-BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save(const bool _SaveColors, const bool _SaveNormals, const bool _SaveTextureCoords, const bool _SaveMaterials) const
+const BFW::Assets::FileContent BFW::Assets::WaveFrontObj::Save(const bool _SaveColors, const bool _SaveNormals, const bool _SaveTextureCoords, const bool _SaveMaterials) const
 {
 	if (!MeshNames.GetSize())
 	{
@@ -4852,7 +4852,7 @@ void BFW::Assets::MaterialLib::Clear()
 	Materials.Clear();
 }
 
-BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
+const BFW::Assets::FileContent BFW::Assets::MaterialLib::Save() const
 {
 	if (!MaterialNames.GetSize())
 	{

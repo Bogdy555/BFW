@@ -465,7 +465,7 @@ void BFW::Assets::Wave::Destroy()
 	Size = 0;
 }
 
-BFW::Assets::FileContent BFW::Assets::Wave::Save() const
+const BFW::Assets::FileContent BFW::Assets::Wave::Save() const
 {
 	if (!Data)
 	{

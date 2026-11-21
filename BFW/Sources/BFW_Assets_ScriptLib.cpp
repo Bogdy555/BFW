@@ -325,9 +325,9 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #ifdef BFW_ESP32_PLATFORM
 
-		void* const* (*Get)(Trie<void*>& _Handle, const BFW_STRING_TYPE& _Symbol) = [](Trie<void*>& _Handle, const BFW_STRING_TYPE& _Symbol) -> void* const*
+		void* (*Get)(Trie<void*>& _Handle, const BFW_STRING_TYPE& _Symbol) = [](Trie<void*>& _Handle, const BFW_STRING_TYPE& _Symbol) -> void*
 			{
-				void* const* _Result = _Handle.Get(_Symbol.c_str());
+				void** _Result = _Handle.GetData(_Symbol.c_str());
 
 				if (!_Result)
 				{

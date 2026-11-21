@@ -3616,7 +3616,7 @@ const bool BFW::Assets::XML::Load(const FileContent& _FileContent)
 	return true;
 }
 
-BFW::Assets::FileContent BFW::Assets::XML::Save() const
+const BFW::Assets::FileContent BFW::Assets::XML::Save() const
 {
 	if (Root.GetType() != _NodeXMLNodeType)
 	{
@@ -4200,7 +4200,7 @@ void BFW::Assets::Json::SetObject()
 	ObjectDataValue = JsonObjectData();
 }
 
-BFW::Assets::FileContent BFW::Assets::Json::Save() const
+const BFW::Assets::FileContent BFW::Assets::Json::Save() const
 {
 	if (Type != _ObjectJsonType && Type != _ArrayJsonType)
 	{

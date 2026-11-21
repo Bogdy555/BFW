@@ -664,7 +664,7 @@ void BFW::Assets::BitMap::Destroy()
 	Height = 0;
 }
 
-BFW::Assets::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
+const BFW::Assets::FileContent BFW::Assets::BitMap::Save(const bool _Flip) const
 {
 	if (!Data)
 	{
@@ -1441,7 +1441,7 @@ void BFW::Assets::Hdr::Destroy()
 	Height = 0;
 }
 
-BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
+const BFW::Assets::FileContent BFW::Assets::Hdr::Save(const bool _Flip) const
 {
 	if (!Data)
 	{
