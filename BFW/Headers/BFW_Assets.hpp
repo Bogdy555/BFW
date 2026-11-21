@@ -79,7 +79,7 @@ namespace BFW
 			const bool Load(const FileContent& _FileContent, const bool _Flip = true);
 			void Destroy();
 
-			FileContent Save(const bool _Flip = true) const;
+			const FileContent Save(const bool _Flip = true) const;
 
 			uint8_t* GetData();
 			const uint8_t* GetData() const;
@@ -122,7 +122,7 @@ namespace BFW
 			const bool Load(const FileContent& _FileContent, const bool _Flip = true);
 			void Destroy();
 
-			FileContent Save(const bool _Flip = true) const;
+			const FileContent Save(const bool _Flip = true) const;
 
 			float* GetData();
 			const float* GetData() const;
@@ -187,7 +187,7 @@ namespace BFW
 			const bool Load(const FileContent& _FileContent);
 			void Destroy();
 
-			FileContent Save() const;
+			const FileContent Save() const;
 
 			const WaveFormat GetInfo() const;
 			uint8_t* GetData8();
@@ -323,7 +323,7 @@ namespace BFW
 			void Erase(const BFW_CHAR_TYPE* _Name);
 			void Clear();
 
-			FileContent Save(const bool _SaveColors = false, const bool _SaveNormals = true, const bool _SaveTextureCoords = true, const bool _SaveMaterials = true) const;
+			const FileContent Save(const bool _SaveColors = false, const bool _SaveNormals = true, const bool _SaveTextureCoords = true, const bool _SaveMaterials = true) const;
 
 			const Vector<BFW_STRING_TYPE>& GetMeshNames() const;
 
@@ -489,7 +489,7 @@ namespace BFW
 			void Erase(const BFW_CHAR_TYPE* _Name);
 			void Clear();
 
-			FileContent Save() const;
+			const FileContent Save() const;
 
 			const Vector<BFW_STRING_TYPE>& GetMaterialNames() const;
 
@@ -568,7 +568,7 @@ namespace BFW
 
 			const bool Load(const FileContent& _FileContent);
 
-			FileContent Save() const;
+			const FileContent Save() const;
 
 			const bool IsValid() const;
 
@@ -642,7 +642,7 @@ namespace BFW
 			void SetArray();
 			void SetObject();
 
-			FileContent Save() const;
+			const FileContent Save() const;
 
 			const uint8_t GetType() const;
 			const bool GetBool() const;
@@ -668,6 +668,59 @@ namespace BFW
 
 		};
 
+		class BFW_API ScriptLib
+		{
+
+		public:
+
+			ScriptLib();
+			ScriptLib(const ScriptLib& _Other);
+			ScriptLib(ScriptLib&& _Other) noexcept;
+			~ScriptLib();
+
+			const bool Load(const FileContent& _FileContent, const BFW_CHAR_TYPE* _Path = nullptr, const BFW_CHAR_TYPE* _CurrentPath = nullptr);
+
+			const bool Start();
+			void Stop();
+
+			void SetLib(const BFW_STRING_VIEW_TYPE& _Lib);
+			void SetNames(const Vector<BFW_STRING_TYPE>& _Names);
+
+			const FileContent Save() const;
+
+			const BFW_STRING_TYPE& GetLib() const;
+			const Vector<BFW_STRING_TYPE>& GetNames() const;
+			const void* GetSymbol(const BFW_STRING_VIEW_TYPE& _Name, const BFW_STRING_VIEW_TYPE& _Symbol) const;
+
+			ScriptLib& operator= (const ScriptLib& _Other);
+			ScriptLib& operator= (ScriptLib&& _Other) noexcept;
+
+		private:
+
+			BFW_STRING_TYPE Lib;
+			Vector<BFW_STRING_TYPE> Names;
+			Trie<Trie<void*>> Cache;
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+			HMODULE Handle;
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+			void* Handle;
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+			Trie<void*> Handle;
+
+#endif
+
+		};
+
 		class BFW_API Manager
 		{
 
@@ -689,6 +742,7 @@ namespace BFW
 			void QueueCSS(const BFW_CHAR_TYPE* _Name);
 			void QueueJavaScript(const BFW_CHAR_TYPE* _Name);
 			void QueueJson(const BFW_CHAR_TYPE* _Name);
+			void QueueScriptLib(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -703,6 +757,7 @@ namespace BFW
 			void QueueResourceCSS(const size_t _Id);
 			void QueueResourceJavaScript(const size_t _Id);
 			void QueueResourceJson(const size_t _Id);
+			void QueueResourceScriptLib(const size_t _Id);
 
 #endif
 
@@ -719,6 +774,7 @@ namespace BFW
 			void AddDynamicCSS(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
+			void AddDynamicScriptLib(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib>& _Asset);
 
 			void AddDynamicRawFileRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
@@ -731,6 +787,7 @@ namespace BFW
 			void AddDynamicCSSRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJavaScriptRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
+			void AddDynamicScriptLibRef(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib>& _Asset);
 
 			void Update();
 
@@ -745,6 +802,7 @@ namespace BFW
 			void ReleaseCSS(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJavaScript(const BFW_CHAR_TYPE* _Name);
 			void ReleaseJson(const BFW_CHAR_TYPE* _Name);
+			void ReleaseScriptLib(const BFW_CHAR_TYPE* _Name);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -759,6 +817,7 @@ namespace BFW
 			void ReleaseResourceCSS(const size_t _Id);
 			void ReleaseResourceJavaScript(const size_t _Id);
 			void ReleaseResourceJson(const size_t _Id);
+			void ReleaseResourceScriptLib(const size_t _Id);
 
 #endif
 
@@ -773,6 +832,7 @@ namespace BFW
 			const bool WasCSSUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasJavaScriptUpdated(const BFW_CHAR_TYPE* _Name);
 			const bool WasJsonUpdated(const BFW_CHAR_TYPE* _Name);
+			const bool WasScriptLibUpdated(const BFW_CHAR_TYPE* _Name);
 
 			SharedPointer<FileContent> GetRawFile(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<FileContent> GetRawFile(const BFW_CHAR_TYPE* _Name) const;
@@ -796,6 +856,8 @@ namespace BFW
 			const SharedPointer<FileContent> GetJavaScript(const BFW_CHAR_TYPE* _Name) const;
 			SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name);
 			const SharedPointer<Json> GetJson(const BFW_CHAR_TYPE* _Name) const;
+			SharedPointer<ScriptLib> GetScriptLib(const BFW_CHAR_TYPE* _Name);
+			const SharedPointer<ScriptLib> GetScriptLib(const BFW_CHAR_TYPE* _Name) const;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -821,6 +883,8 @@ namespace BFW
 			const SharedPointer<FileContent> GetResourceJavaScript(const size_t _Id) const;
 			SharedPointer<Json> GetResourceJson(const size_t _Id);
 			const SharedPointer<Json> GetResourceJson(const size_t _Id) const;
+			SharedPointer<ScriptLib> GetResourceScriptLib(const size_t _Id);
+			const SharedPointer<ScriptLib> GetResourceScriptLib(const size_t _Id) const;
 
 #endif
 
@@ -834,6 +898,9 @@ namespace BFW
 
 			const bool SaveWaveFrontObj(const BFW_CHAR_TYPE* _Name, const BFW_STRING_VIEW_TYPE& _FileName, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const;
 			const bool SaveMaterialLib(const BFW_CHAR_TYPE* _Name, const BFW_STRING_VIEW_TYPE& _FileName, Vector<BFW_STRING_TYPE>& _Paths, Vector<FileContent>& _FileContents) const;
+
+			const bool StartAllScripts();
+			void StopAllScripts();
 
 			Manager& operator= (const Manager& _Other) = delete;
 			Manager& operator= (Manager&& _Other) noexcept;
@@ -853,6 +920,7 @@ namespace BFW
 			Vector<BFW_STRING_TYPE> QueuedCSSs;
 			Vector<BFW_STRING_TYPE> QueuedJavaScripts;
 			Vector<BFW_STRING_TYPE> QueuedJsons;
+			Vector<BFW_STRING_TYPE> QueuedScriptLibs;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -867,6 +935,7 @@ namespace BFW
 			Vector<size_t> QueuedResourceCSSs;
 			Vector<size_t> QueuedResourceJavaScripts;
 			Vector<size_t> QueuedResourceJsons;
+			Vector<size_t> QueuedResourceScriptLibs;
 
 #endif
 
@@ -881,6 +950,7 @@ namespace BFW
 			Trie<SharedPointer<FileContent>> LoadedCSSs;
 			Trie<SharedPointer<FileContent>> LoadedJavaScripts;
 			Trie<SharedPointer<Json>> LoadedJsons;
+			Trie<SharedPointer<ScriptLib>> LoadedScriptLibs;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -895,6 +965,7 @@ namespace BFW
 			Trie<SharedPointer<FileContent>> LoadedResourceCSSs;
 			Trie<SharedPointer<FileContent>> LoadedResourceJavaScripts;
 			Trie<SharedPointer<Json>> LoadedResourceJsons;
+			Trie<SharedPointer<ScriptLib>> LoadedResourceScriptLibs;
 
 #endif
 
@@ -909,6 +980,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedCSSNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedJsonNames;
+			mutable Vector<BFW_STRING_TYPE> CachedScriptLibNames;
 
 			mutable Trie<WeakPointer<FileContent>> CachedRawFiles;
 			mutable Trie<WeakPointer<BitMap>> CachedBitMaps;
@@ -921,6 +993,7 @@ namespace BFW
 			mutable Trie<WeakPointer<FileContent>> CachedCSSs;
 			mutable Trie<WeakPointer<FileContent>> CachedJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedJsons;
+			mutable Trie<WeakPointer<ScriptLib>> CachedScriptLibs;
 
 			mutable Trie<uint64_t> LastWriteRawFiles;
 			mutable Trie<uint64_t> LastWriteBitMaps;
@@ -933,6 +1006,7 @@ namespace BFW
 			mutable Trie<uint64_t> LastWriteCSSs;
 			mutable Trie<uint64_t> LastWriteJavaScripts;
 			mutable Trie<uint64_t> LastWriteJsons;
+			mutable Trie<uint64_t> LastWriteScriptLibs;
 
 			mutable Trie<uint64_t> OldLastWriteRawFiles;
 			mutable Trie<uint64_t> OldLastWriteBitMaps;
@@ -945,6 +1019,7 @@ namespace BFW
 			mutable Trie<uint64_t> OldLastWriteCSSs;
 			mutable Trie<uint64_t> OldLastWriteJavaScripts;
 			mutable Trie<uint64_t> OldLastWriteJsons;
+			mutable Trie<uint64_t> OldLastWriteScriptLibs;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -959,6 +1034,7 @@ namespace BFW
 			mutable Vector<BFW_STRING_TYPE> CachedResourceCSSNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJavaScriptNames;
 			mutable Vector<BFW_STRING_TYPE> CachedResourceJsonNames;
+			mutable Vector<BFW_STRING_TYPE> CachedResourceScriptLibNames;
 
 			mutable Trie<WeakPointer<FileContent>> CachedResourceRawFiles;
 			mutable Trie<WeakPointer<BitMap>> CachedResourceBitMaps;
@@ -971,6 +1047,7 @@ namespace BFW
 			mutable Trie<WeakPointer<FileContent>> CachedResourceCSSs;
 			mutable Trie<WeakPointer<FileContent>> CachedResourceJavaScripts;
 			mutable Trie<WeakPointer<Json>> CachedResourceJsons;
+			mutable Trie<WeakPointer<ScriptLib>> CachedResourceScriptLibs;
 
 #endif
 

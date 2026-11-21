@@ -250,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\BFW_Assets.cpp" />
+    <ClCompile Include="Sources\BFW_Assets_ScriptLib.cpp" />
     <ClCompile Include="Sources\BFW_Assets_WaveFront.cpp" />
     <ClCompile Include="Sources\BFW_Assets_Images.cpp" />
     <ClCompile Include="Sources\BFW_Assets_Sounds.cpp" />

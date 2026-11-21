@@ -122,6 +122,31 @@ namespace BFW
 
 		};
 
+		class BFW_API ScriptComponent
+		{
+
+		public:
+
+			ScriptComponent();
+			ScriptComponent(const ScriptComponent& _Other);
+			ScriptComponent(ScriptComponent&& _Other) noexcept;
+			~ScriptComponent();
+
+			const bool Deserialize(const Assets::Json& _Json);
+
+			const Assets::Json Serialize() const;
+
+			ScriptComponent& operator= (const ScriptComponent& _Other);
+			ScriptComponent& operator= (ScriptComponent&& _Other) noexcept;
+
+		private:
+
+			friend SafePointer<ScriptComponent>;
+
+			mutable Vector<SafePointer<ScriptComponent>*> SafePointers;
+
+		};
+
 		class BFW_API Entity
 		{
 

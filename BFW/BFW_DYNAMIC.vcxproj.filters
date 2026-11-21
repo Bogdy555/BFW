@@ -191,5 +191,8 @@
     <ClCompile Include="Sources\BFW_ECS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\BFW_Assets_ScriptLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

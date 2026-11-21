@@ -29,6 +29,7 @@ static const bool (*ManagerXMLLoader)(BFW::Assets::FileContent& _FileContent, BF
 static const bool (*ManagerCSSLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::FileContent>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerMoveLoader;
 static const bool (*ManagerJavaScriptLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::FileContent>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerMoveLoader;
 static const bool (*ManagerJsonLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::Json>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerDefaultLoader<BFW::Assets::Json>;
+static const bool (*ManagerScriptLibLoader)(BFW::Assets::FileContent& _FileContent, BFW::SharedPointer<BFW::Assets::ScriptLib>& _Asset, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath) = ManagerLoaderWithPath<BFW::Assets::ScriptLib>;
 
 static void ManagerQueue(const BFW_CHAR_TYPE* _Name, BFW::Vector<BFW_STRING_TYPE>& _Queued)
 {
@@ -1540,6 +1541,7 @@ BFW::Assets::Manager::Manager() :
 	QueuedCSSs(),
 	QueuedJavaScripts(),
 	QueuedJsons(),
+	QueuedScriptLibs(),
 
 	QueuedResourceRawFiles(),
 	QueuedResourceBitMaps(),
@@ -1552,6 +1554,7 @@ BFW::Assets::Manager::Manager() :
 	QueuedResourceCSSs(),
 	QueuedResourceJavaScripts(),
 	QueuedResourceJsons(),
+	QueuedResourceScriptLibs(),
 
 	LoadedRawFiles(),
 	LoadedBitMaps(),
@@ -1564,6 +1567,7 @@ BFW::Assets::Manager::Manager() :
 	LoadedCSSs(),
 	LoadedJavaScripts(),
 	LoadedJsons(),
+	LoadedScriptLibs(),
 
 	LoadedResourceRawFiles(),
 	LoadedResourceBitMaps(),
@@ -1576,6 +1580,7 @@ BFW::Assets::Manager::Manager() :
 	LoadedResourceCSSs(),
 	LoadedResourceJavaScripts(),
 	LoadedResourceJsons(),
+	LoadedResourceScriptLibs(),
 
 	CachedRawFileNames(),
 	CachedBitMapNames(),
@@ -1588,6 +1593,7 @@ BFW::Assets::Manager::Manager() :
 	CachedCSSNames(),
 	CachedJavaScriptNames(),
 	CachedJsonNames(),
+	CachedScriptLibNames(),
 
 	CachedRawFiles(),
 	CachedBitMaps(),
@@ -1600,6 +1606,7 @@ BFW::Assets::Manager::Manager() :
 	CachedCSSs(),
 	CachedJavaScripts(),
 	CachedJsons(),
+	CachedScriptLibs(),
 
 	LastWriteRawFiles(),
 	LastWriteBitMaps(),
@@ -1612,6 +1619,7 @@ BFW::Assets::Manager::Manager() :
 	LastWriteCSSs(),
 	LastWriteJavaScripts(),
 	LastWriteJsons(),
+	LastWriteScriptLibs(),
 
 	OldLastWriteRawFiles(),
 	OldLastWriteBitMaps(),
@@ -1624,6 +1632,7 @@ BFW::Assets::Manager::Manager() :
 	OldLastWriteCSSs(),
 	OldLastWriteJavaScripts(),
 	OldLastWriteJsons(),
+	OldLastWriteScriptLibs(),
 
 	CachedResourceRawFileNames(),
 	CachedResourceBitMapNames(),
@@ -1636,6 +1645,7 @@ BFW::Assets::Manager::Manager() :
 	CachedResourceCSSNames(),
 	CachedResourceJavaScriptNames(),
 	CachedResourceJsonNames(),
+	CachedResourceScriptLibNames(),
 
 	CachedResourceRawFiles(),
 	CachedResourceBitMaps(),
@@ -1647,7 +1657,8 @@ BFW::Assets::Manager::Manager() :
 	CachedResourceXMLs(),
 	CachedResourceCSSs(),
 	CachedResourceJavaScripts(),
-	CachedResourceJsons()
+	CachedResourceJsons(),
+	CachedResourceScriptLibs()
 {
 
 }
@@ -1664,6 +1675,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	QueuedCSSs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedCSSs)),
 	QueuedJavaScripts((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts)),
 	QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)),
+	QueuedScriptLibs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedScriptLibs)),
 
 	QueuedResourceRawFiles((Vector<size_t>&&)(_Other.QueuedResourceRawFiles)),
 	QueuedResourceBitMaps((Vector<size_t>&&)(_Other.QueuedResourceBitMaps)),
@@ -1676,6 +1688,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	QueuedResourceCSSs((Vector<size_t>&&)(_Other.QueuedResourceCSSs)),
 	QueuedResourceJavaScripts((Vector<size_t>&&)(_Other.QueuedResourceJavaScripts)),
 	QueuedResourceJsons((Vector<size_t>&&)(_Other.QueuedResourceJsons)),
+	QueuedResourceScriptLibs((Vector<size_t>&&)(_Other.QueuedResourceScriptLibs)),
 
 	LoadedRawFiles((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles)),
 	LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)),
@@ -1688,6 +1701,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LoadedCSSs((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedCSSs)),
 	LoadedJavaScripts((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts)),
 	LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)),
+	LoadedScriptLibs((Trie<SharedPointer<ScriptLib>>&&)(_Other.LoadedScriptLibs)),
 
 	LoadedResourceRawFiles((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceRawFiles)),
 	LoadedResourceBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps)),
@@ -1700,6 +1714,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LoadedResourceCSSs((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceCSSs)),
 	LoadedResourceJavaScripts((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceJavaScripts)),
 	LoadedResourceJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons)),
+	LoadedResourceScriptLibs((Trie<SharedPointer<ScriptLib>>&&)(_Other.LoadedResourceScriptLibs)),
 
 	CachedRawFileNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames)),
 	CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)),
@@ -1712,6 +1727,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedCSSNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedCSSNames)),
 	CachedJavaScriptNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames)),
 	CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)),
+	CachedScriptLibNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedScriptLibNames)),
 
 	CachedRawFiles((Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles)),
 	CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)),
@@ -1724,6 +1740,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedCSSs((Trie<WeakPointer<FileContent>>&&)(_Other.CachedCSSs)),
 	CachedJavaScripts((Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts)),
 	CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)),
+	CachedScriptLibs((Trie<WeakPointer<ScriptLib>>&&)(_Other.CachedScriptLibs)),
 
 	LastWriteRawFiles((Trie<uint64_t>&&)(_Other.LastWriteRawFiles)),
 	LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)),
@@ -1736,6 +1753,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LastWriteCSSs((Trie<uint64_t>&&)(_Other.LastWriteCSSs)),
 	LastWriteJavaScripts((Trie<uint64_t>&&)(_Other.LastWriteJavaScripts)),
 	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)),
+	LastWriteScriptLibs((Trie<uint64_t>&&)(_Other.LastWriteScriptLibs)),
 
 	OldLastWriteRawFiles((Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles)),
 	OldLastWriteBitMaps((Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps)),
@@ -1748,6 +1766,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	OldLastWriteCSSs((Trie<uint64_t>&&)(_Other.OldLastWriteCSSs)),
 	OldLastWriteJavaScripts((Trie<uint64_t>&&)(_Other.OldLastWriteJavaScripts)),
 	OldLastWriteJsons((Trie<uint64_t>&&)(_Other.OldLastWriteJsons)),
+	OldLastWriteScriptLibs((Trie<uint64_t>&&)(_Other.OldLastWriteScriptLibs)),
 
 	CachedResourceRawFileNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceRawFileNames)),
 	CachedResourceBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames)),
@@ -1760,6 +1779,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedResourceCSSNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceCSSNames)),
 	CachedResourceJavaScriptNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJavaScriptNames)),
 	CachedResourceJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames)),
+	CachedResourceScriptLibNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceScriptLibNames)),
 
 	CachedResourceRawFiles((Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceRawFiles)),
 	CachedResourceBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps)),
@@ -1771,7 +1791,8 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedResourceXMLs((Trie<WeakPointer<XML>>&&)(_Other.CachedResourceXMLs)),
 	CachedResourceCSSs((Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceCSSs)),
 	CachedResourceJavaScripts((Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceJavaScripts)),
-	CachedResourceJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons))
+	CachedResourceJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons)),
+	CachedResourceScriptLibs((Trie<WeakPointer<ScriptLib>>&&)(_Other.CachedResourceScriptLibs))
 {
 
 }
@@ -1792,6 +1813,7 @@ BFW::Assets::Manager::Manager() :
 	QueuedCSSs(),
 	QueuedJavaScripts(),
 	QueuedJsons(),
+	QueuedScriptLibs(),
 
 	LoadedRawFiles(),
 	LoadedBitMaps(),
@@ -1804,6 +1826,7 @@ BFW::Assets::Manager::Manager() :
 	LoadedCSSs(),
 	LoadedJavaScripts(),
 	LoadedJsons(),
+	LoadedScriptLibs(),
 
 	CachedRawFileNames(),
 	CachedBitMapNames(),
@@ -1816,6 +1839,7 @@ BFW::Assets::Manager::Manager() :
 	CachedCSSNames(),
 	CachedJavaScriptNames(),
 	CachedJsonNames(),
+	CachedScriptLibNames(),
 
 	CachedRawFiles(),
 	CachedBitMaps(),
@@ -1828,6 +1852,7 @@ BFW::Assets::Manager::Manager() :
 	CachedCSSs(),
 	CachedJavaScripts(),
 	CachedJsons(),
+	CachedScriptLibs(),
 
 	LastWriteRawFiles(),
 	LastWriteBitMaps(),
@@ -1840,6 +1865,7 @@ BFW::Assets::Manager::Manager() :
 	LastWriteCSSs(),
 	LastWriteJavaScripts(),
 	LastWriteJsons(),
+	LastWriteScriptLibs(),
 
 	OldLastWriteRawFiles(),
 	OldLastWriteBitMaps(),
@@ -1851,7 +1877,8 @@ BFW::Assets::Manager::Manager() :
 	OldLastWriteXMLs(),
 	OldLastWriteCSSs(),
 	OldLastWriteJavaScripts(),
-	OldLastWriteJsons()
+	OldLastWriteJsons(),
+	OldLastWriteScriptLibs()
 {
 
 }
@@ -1868,6 +1895,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	QueuedCSSs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedCSSs)),
 	QueuedJavaScripts((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts)),
 	QueuedJsons((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons)),
+	QueuedScriptLibs((Vector<BFW_STRING_TYPE>&&)(_Other.QueuedScriptLibs)),
 
 	LoadedRawFiles((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles)),
 	LoadedBitMaps((Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps)),
@@ -1880,6 +1908,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LoadedCSSs((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedCSSs)),
 	LoadedJavaScripts((Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts)),
 	LoadedJsons((Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons)),
+	LoadedScriptLibs((Trie<SharedPointer<ScriptLib>>&&)(_Other.LoadedScriptLibs)),
 
 	CachedRawFileNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames)),
 	CachedBitMapNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames)),
@@ -1892,6 +1921,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedCSSNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedCSSNames)),
 	CachedJavaScriptNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames)),
 	CachedJsonNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames)),
+	CachedScriptLibNames((Vector<BFW_STRING_TYPE>&&)(_Other.CachedScriptLibNames)),
 
 	CachedRawFiles((Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles)),
 	CachedBitMaps((Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps)),
@@ -1904,6 +1934,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	CachedCSSs((Trie<WeakPointer<FileContent>>&&)(_Other.CachedCSSs)),
 	CachedJavaScripts((Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts)),
 	CachedJsons((Trie<WeakPointer<Json>>&&)(_Other.CachedJsons)),
+	CachedScriptLibs((Trie<WeakPointer<ScriptLib>>&&)(_Other.CachedScriptLibs)),
 
 	LastWriteRawFiles((Trie<uint64_t>&&)(_Other.LastWriteRawFiles)),
 	LastWriteBitMaps((Trie<uint64_t>&&)(_Other.LastWriteBitMaps)),
@@ -1916,6 +1947,7 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	LastWriteCSSs((Trie<uint64_t>&&)(_Other.LastWriteCSSs)),
 	LastWriteJavaScripts((Trie<uint64_t>&&)(_Other.LastWriteJavaScripts)),
 	LastWriteJsons((Trie<uint64_t>&&)(_Other.LastWriteJsons)),
+	LastWriteScriptLibs((Trie<uint64_t>&&)(_Other.LastWriteScriptLibs)),
 
 	OldLastWriteRawFiles((Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles)),
 	OldLastWriteBitMaps((Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps)),
@@ -1927,7 +1959,8 @@ BFW::Assets::Manager::Manager(Manager&& _Other) noexcept :
 	OldLastWriteXMLs((Trie<uint64_t>&&)(_Other.OldLastWriteXMLs)),
 	OldLastWriteCSSs((Trie<uint64_t>&&)(_Other.OldLastWriteCSSs)),
 	OldLastWriteJavaScripts((Trie<uint64_t>&&)(_Other.OldLastWriteJavaScripts)),
-	OldLastWriteJsons((Trie<uint64_t>&&)(_Other.OldLastWriteJsons))
+	OldLastWriteJsons((Trie<uint64_t>&&)(_Other.OldLastWriteJsons)),
+	OldLastWriteScriptLibs((Trie<uint64_t>&&)(_Other.OldLastWriteScriptLibs))
 {
 
 }
@@ -1994,6 +2027,11 @@ void BFW::Assets::Manager::QueueJson(const BFW_CHAR_TYPE* _Name)
 	ManagerQueue(_Name, QueuedJsons);
 }
 
+void BFW::Assets::Manager::QueueScriptLib(const BFW_CHAR_TYPE* _Name)
+{
+	ManagerQueue(_Name, QueuedScriptLibs);
+}
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 void BFW::Assets::Manager::QueueResourceRawFile(const size_t _Id)
@@ -2051,6 +2089,11 @@ void BFW::Assets::Manager::QueueResourceJson(const size_t _Id)
 	ManagerQueueResource(_Id, QueuedResourceJsons);
 }
 
+void BFW::Assets::Manager::QueueResourceScriptLib(const size_t _Id)
+{
+	ManagerQueueResource(_Id, QueuedResourceScriptLibs);
+}
+
 #endif
 
 const bool BFW::Assets::Manager::Flush()
@@ -2071,6 +2114,7 @@ const bool BFW::Assets::Manager::Flush()
 	ManagerFlushAllocate<FileContent>(QueuedCSSs, LoadedCSSs, CachedCSSs, LastWriteCSSs, CachedCSSNames);
 	ManagerFlushAllocate<FileContent>(QueuedJavaScripts, LoadedJavaScripts, CachedJavaScripts, LastWriteJavaScripts, CachedJavaScriptNames);
 	ManagerFlushAllocate<Json>(QueuedJsons, LoadedJsons, CachedJsons, LastWriteJsons, CachedJsonNames);
+	ManagerFlushAllocate<ScriptLib>(QueuedScriptLibs, LoadedScriptLibs, CachedScriptLibs, LastWriteScriptLibs, CachedScriptLibNames);
 
 	ManagerFlushSpawn<FileContent>(_Threads, _Fail, QueuedRawFiles, LoadedRawFiles, LastWriteRawFiles, ManagerRawFileLoader);
 	ManagerFlushSpawn<BitMap>(_Threads, _Fail, QueuedBitMaps, LoadedBitMaps, LastWriteBitMaps, ManagerBitMapLoader);
@@ -2083,6 +2127,7 @@ const bool BFW::Assets::Manager::Flush()
 	ManagerFlushSpawn<FileContent>(_Threads, _Fail, QueuedCSSs, LoadedCSSs, LastWriteCSSs, ManagerCSSLoader);
 	ManagerFlushSpawn<FileContent>(_Threads, _Fail, QueuedJavaScripts, LoadedJavaScripts, LastWriteJavaScripts, ManagerJavaScriptLoader);
 	ManagerFlushSpawn<Json>(_Threads, _Fail, QueuedJsons, LoadedJsons, LastWriteJsons, ManagerJsonLoader);
+	ManagerFlushSpawn<ScriptLib>(_Threads, _Fail, QueuedScriptLibs, LoadedScriptLibs, LastWriteScriptLibs, ManagerScriptLibLoader);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -2097,6 +2142,7 @@ const bool BFW::Assets::Manager::Flush()
 	ManagerFlushAllocateResource<FileContent>(QueuedResourceCSSs, LoadedResourceCSSs, CachedResourceCSSs, CachedResourceCSSNames);
 	ManagerFlushAllocateResource<FileContent>(QueuedResourceJavaScripts, LoadedResourceJavaScripts, CachedResourceJavaScripts, CachedResourceJavaScriptNames);
 	ManagerFlushAllocateResource<Json>(QueuedResourceJsons, LoadedResourceJsons, CachedResourceJsons, CachedResourceJsonNames);
+	ManagerFlushAllocateResource<ScriptLib>(QueuedResourceScriptLibs, LoadedResourceScriptLibs, CachedResourceScriptLibs, CachedResourceScriptLibNames);
 
 	ManagerFlushSpawnResource<FileContent>(_Threads, _Fail, QueuedResourceRawFiles, BFW_RAW_RESOURCE, LoadedResourceRawFiles, ManagerRawFileLoader);
 	ManagerFlushSpawnResource<BitMap>(_Threads, _Fail, QueuedResourceBitMaps, BFW_BMP_RESOURCE, LoadedResourceBitMaps, ManagerBitMapLoader);
@@ -2109,6 +2155,7 @@ const bool BFW::Assets::Manager::Flush()
 	ManagerFlushSpawnResource<FileContent>(_Threads, _Fail, QueuedResourceCSSs, BFW_CSS_RESOURCE, LoadedResourceCSSs, ManagerCSSLoader);
 	ManagerFlushSpawnResource<FileContent>(_Threads, _Fail, QueuedResourceJavaScripts, BFW_JS_RESOURCE, LoadedResourceJavaScripts, ManagerJavaScriptLoader);
 	ManagerFlushSpawnResource<Json>(_Threads, _Fail, QueuedResourceJsons, BFW_JSON_RESOURCE, LoadedResourceJsons, ManagerJsonLoader);
+	ManagerFlushSpawnResource<ScriptLib>(_Threads, _Fail, QueuedResourceScriptLibs, BFW_JSON_RESOURCE, LoadedResourceScriptLibs, ManagerScriptLibLoader);
 
 #endif
 
@@ -2130,6 +2177,7 @@ const bool BFW::Assets::Manager::Flush()
 		QueuedCSSs.Clear();
 		QueuedJavaScripts.Clear();
 		QueuedJsons.Clear();
+		QueuedScriptLibs.Clear();
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -2144,6 +2192,7 @@ const bool BFW::Assets::Manager::Flush()
 		QueuedResourceCSSs.Clear();
 		QueuedResourceJavaScripts.Clear();
 		QueuedResourceJsons.Clear();
+		QueuedResourceScriptLibs.Clear();
 
 #endif
 
@@ -2161,6 +2210,7 @@ const bool BFW::Assets::Manager::Flush()
 	Vector<BFW_STRING_TYPE> _NewQueuedCSSs;
 	Vector<BFW_STRING_TYPE> _NewQueuedJavaScripts;
 	Vector<BFW_STRING_TYPE> _NewQueuedJsons;
+	Vector<BFW_STRING_TYPE> _NewQueuedScriptLibs;
 
 	Trie<bool> _TrieNewQueuedRawFiles;
 	Trie<bool> _TrieNewQueuedBitMaps;
@@ -2173,6 +2223,7 @@ const bool BFW::Assets::Manager::Flush()
 	Trie<bool> _TrieNewQueuedCSSs;
 	Trie<bool> _TrieNewQueuedJavaScripts;
 	Trie<bool> _TrieNewQueuedJsons;
+	Trie<bool> _TrieNewQueuedScriptLibs;
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -2187,6 +2238,7 @@ const bool BFW::Assets::Manager::Flush()
 	Vector<size_t> _NewQueuedResourceCSSs;
 	Vector<size_t> _NewQueuedResourceJavaScripts;
 	Vector<size_t> _NewQueuedResourceJsons;
+	Vector<size_t> _NewQueuedResourceScriptLibs;
 
 	Trie<bool> _TrieNewQueuedResourceRawFiles;
 	Trie<bool> _TrieNewQueuedResourceBitMaps;
@@ -2199,6 +2251,7 @@ const bool BFW::Assets::Manager::Flush()
 	Trie<bool> _TrieNewQueuedResourceCSSs;
 	Trie<bool> _TrieNewQueuedResourceJavaScripts;
 	Trie<bool> _TrieNewQueuedResourceJsons;
+	Trie<bool> _TrieNewQueuedResourceScriptLibs;
 
 #endif
 
@@ -2233,6 +2286,7 @@ const bool BFW::Assets::Manager::Flush()
 	QueuedCSSs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedCSSs);
 	QueuedJavaScripts = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedJavaScripts);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedJsons);
+	QueuedScriptLibs = (Vector<BFW_STRING_TYPE>&&)(_NewQueuedScriptLibs);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -2247,6 +2301,7 @@ const bool BFW::Assets::Manager::Flush()
 	QueuedResourceCSSs = (Vector<size_t>&&)(_NewQueuedResourceCSSs);
 	QueuedResourceJavaScripts = (Vector<size_t>&&)(_NewQueuedResourceJavaScripts);
 	QueuedResourceJsons = (Vector<size_t>&&)(_NewQueuedResourceJsons);
+	QueuedResourceScriptLibs = (Vector<size_t>&&)(_NewQueuedResourceScriptLibs);
 
 #endif
 
@@ -2262,7 +2317,8 @@ const bool BFW::Assets::Manager::Flush()
 		QueuedXMLs.GetSize() ||
 		QueuedCSSs.GetSize() ||
 		QueuedJavaScripts.GetSize() ||
-		QueuedJsons.GetSize()
+		QueuedJsons.GetSize() ||
+		QueuedScriptLibs.GetSize()
 	)
 	{
 		return Flush();
@@ -2282,7 +2338,8 @@ const bool BFW::Assets::Manager::Flush()
 		QueuedResourceXMLs.GetSize() ||
 		QueuedResourceCSSs.GetSize() ||
 		QueuedResourceJavaScripts.GetSize() ||
-		QueuedResourceJsons.GetSize()
+		QueuedResourceJsons.GetSize() ||
+		QueuedResourceScriptLibs.GetSize()
 	)
 	{
 		return Flush();
@@ -2348,6 +2405,11 @@ void BFW::Assets::Manager::AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPoin
 	ManagerAddDynamic<Json>(_Name, _Asset, LoadedJsons, CachedJsons, CachedJsonNames);
 }
 
+void BFW::Assets::Manager::AddDynamicScriptLib(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib>& _Asset)
+{
+	ManagerAddDynamic<ScriptLib>(_Name, _Asset, LoadedScriptLibs, CachedScriptLibs, CachedScriptLibNames);
+}
+
 void BFW::Assets::Manager::AddDynamicRawFileRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
 {
 	ManagerAddDynamicRef<FileContent>(_Name, _Asset, CachedRawFiles, CachedRawFileNames);
@@ -2403,6 +2465,11 @@ void BFW::Assets::Manager::AddDynamicJsonRef(const BFW_CHAR_TYPE* _Name, SharedP
 	ManagerAddDynamicRef<Json>(_Name, _Asset, CachedJsons, CachedJsonNames);
 }
 
+void BFW::Assets::Manager::AddDynamicScriptLibRef(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib>& _Asset)
+{
+	ManagerAddDynamicRef<ScriptLib>(_Name, _Asset, CachedScriptLibs, CachedScriptLibNames);
+}
+
 void BFW::Assets::Manager::Update()
 {
 	RefreshCache();
@@ -2418,6 +2485,7 @@ void BFW::Assets::Manager::Update()
 	OldLastWriteCSSs = LastWriteCSSs;
 	OldLastWriteJavaScripts = LastWriteJavaScripts;
 	OldLastWriteJsons = LastWriteJsons;
+	OldLastWriteScriptLibs = LastWriteScriptLibs;
 
 	Vector<std::thread> _Threads;
 
@@ -2432,6 +2500,7 @@ void BFW::Assets::Manager::Update()
 	ManagerUpdate<FileContent>(_Threads, CachedCSSs, LastWriteCSSs, CachedCSSNames, ManagerCSSLoader);
 	ManagerUpdate<FileContent>(_Threads, CachedJavaScripts, LastWriteJavaScripts, CachedJavaScriptNames, ManagerJavaScriptLoader);
 	ManagerUpdate<Json>(_Threads, CachedJsons, LastWriteJsons, CachedJsonNames, ManagerJsonLoader);
+	ManagerUpdate<ScriptLib>(_Threads, CachedScriptLibs, LastWriteScriptLibs, CachedScriptLibNames, ManagerScriptLibLoader);
 
 	for (size_t _Index = 0; _Index < _Threads.GetSize(); _Index++)
 	{
@@ -2494,6 +2563,11 @@ void BFW::Assets::Manager::ReleaseJson(const BFW_CHAR_TYPE* _Name)
 	ManagerRelease<Json>(_Name, LoadedJsons);
 }
 
+void BFW::Assets::Manager::ReleaseScriptLib(const BFW_CHAR_TYPE* _Name)
+{
+	ManagerRelease<ScriptLib>(_Name, LoadedScriptLibs);
+}
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 void BFW::Assets::Manager::ReleaseResourceRawFile(const size_t _Id)
@@ -2551,6 +2625,11 @@ void BFW::Assets::Manager::ReleaseResourceJson(const size_t _Id)
 	ManagerReleaseResource<Json>(_Id, LoadedResourceJsons);
 }
 
+void BFW::Assets::Manager::ReleaseResourceScriptLib(const size_t _Id)
+{
+	ManagerReleaseResource<ScriptLib>(_Id, LoadedResourceScriptLibs);
+}
+
 #endif
 
 const bool BFW::Assets::Manager::WasRawFileUpdated(const BFW_CHAR_TYPE* _Name)
@@ -2606,6 +2685,11 @@ const bool BFW::Assets::Manager::WasJavaScriptUpdated(const BFW_CHAR_TYPE* _Name
 const bool BFW::Assets::Manager::WasJsonUpdated(const BFW_CHAR_TYPE* _Name)
 {
 	return ManagerWasUpdated(_Name, LastWriteJsons, OldLastWriteJsons);
+}
+
+const bool BFW::Assets::Manager::WasScriptLibUpdated(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerWasUpdated(_Name, LastWriteScriptLibs, OldLastWriteScriptLibs);
 }
 
 BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetRawFile(const BFW_CHAR_TYPE* _Name)
@@ -2718,6 +2802,16 @@ const BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetJson(const 
 	return ManagerGet<Json>(_Name, CachedJsons, LastWriteJsons, CachedJsonNames, ManagerJsonLoader);
 }
 
+BFW::SharedPointer<BFW::Assets::ScriptLib> BFW::Assets::Manager::GetScriptLib(const BFW_CHAR_TYPE* _Name)
+{
+	return ManagerGet<ScriptLib>(_Name, CachedScriptLibs, LastWriteScriptLibs, CachedScriptLibNames, ManagerScriptLibLoader);
+}
+
+const BFW::SharedPointer<BFW::Assets::ScriptLib> BFW::Assets::Manager::GetScriptLib(const BFW_CHAR_TYPE* _Name) const
+{
+	return ManagerGet<ScriptLib>(_Name, CachedScriptLibs, LastWriteScriptLibs, CachedScriptLibNames, ManagerScriptLibLoader);
+}
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 BFW::SharedPointer<BFW::Assets::FileContent> BFW::Assets::Manager::GetResourceRawFile(const size_t _Id)
@@ -2828,6 +2922,16 @@ BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetResourceJson(cons
 const BFW::SharedPointer<BFW::Assets::Json> BFW::Assets::Manager::GetResourceJson(const size_t _Id) const
 {
 	return ManagerGetResource<Json>(_Id, BFW_JSON_RESOURCE, CachedResourceJsons, CachedResourceJsonNames, ManagerJsonLoader);
+}
+
+BFW::SharedPointer<BFW::Assets::ScriptLib> BFW::Assets::Manager::GetResourceScriptLib(const size_t _Id)
+{
+	return ManagerGetResource<ScriptLib>(_Id, BFW_JSON_RESOURCE, CachedResourceScriptLibs, CachedResourceScriptLibNames, ManagerScriptLibLoader);
+}
+
+const BFW::SharedPointer<BFW::Assets::ScriptLib> BFW::Assets::Manager::GetResourceScriptLib(const size_t _Id) const
+{
+	return ManagerGetResource<ScriptLib>(_Id, BFW_JSON_RESOURCE, CachedResourceScriptLibs, CachedResourceScriptLibNames, ManagerScriptLibLoader);
 }
 
 #endif
@@ -3364,6 +3468,54 @@ const bool BFW::Assets::Manager::SaveMaterialLib(const BFW_CHAR_TYPE* _Name, con
 	return true;
 }
 
+const bool BFW::Assets::Manager::StartAllScripts()
+{
+	RefreshCache();
+
+	bool _Result = true;
+
+	for (size_t _Index = 0; _Index < CachedScriptLibNames.GetSize(); _Index++)
+	{
+		if (!CachedScriptLibs.GetData(CachedScriptLibNames[_Index].c_str())->Lock()->Start())
+		{
+			_Result = false;
+		}
+	}
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	for (size_t _Index = 0; _Index < CachedResourceScriptLibNames.GetSize(); _Index++)
+	{
+		if (!CachedResourceScriptLibs.GetData(CachedResourceScriptLibNames[_Index].c_str())->Lock()->Start())
+		{
+			_Result = false;
+		}
+	}
+
+#endif
+
+	return _Result;
+}
+
+void BFW::Assets::Manager::StopAllScripts()
+{
+	RefreshCache();
+
+	for (size_t _Index = 0; _Index < CachedScriptLibNames.GetSize(); _Index++)
+	{
+		CachedScriptLibs.GetData(CachedScriptLibNames[_Index].c_str())->Lock()->Stop();
+	}
+
+#ifdef BFW_WINDOWS_PLATFORM
+
+	for (size_t _Index = 0; _Index < CachedResourceScriptLibNames.GetSize(); _Index++)
+	{
+		CachedResourceScriptLibs.GetData(CachedResourceScriptLibNames[_Index].c_str())->Lock()->Stop();
+	}
+
+#endif
+}
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcept
@@ -3384,6 +3536,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedCSSs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedCSSs);
 	QueuedJavaScripts = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
+	QueuedScriptLibs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedScriptLibs);
 
 	QueuedResourceRawFiles = (Vector<size_t>&&)(_Other.QueuedResourceRawFiles);
 	QueuedResourceBitMaps = (Vector<size_t>&&)(_Other.QueuedResourceBitMaps);
@@ -3396,6 +3549,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedResourceCSSs = (Vector<size_t>&&)(_Other.QueuedResourceCSSs);
 	QueuedResourceJavaScripts = (Vector<size_t>&&)(_Other.QueuedResourceJavaScripts);
 	QueuedResourceJsons = (Vector<size_t>&&)(_Other.QueuedResourceJsons);
+	QueuedResourceScriptLibs = (Vector<size_t>&&)(_Other.QueuedResourceScriptLibs);
 
 	LoadedRawFiles = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
@@ -3408,6 +3562,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LoadedCSSs = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedCSSs);
 	LoadedJavaScripts = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
+	LoadedScriptLibs = (Trie<SharedPointer<ScriptLib>>&&)(_Other.LoadedScriptLibs);
 
 	LoadedResourceRawFiles = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceRawFiles);
 	LoadedResourceBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedResourceBitMaps);
@@ -3420,6 +3575,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LoadedResourceCSSs = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceCSSs);
 	LoadedResourceJavaScripts = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedResourceJavaScripts);
 	LoadedResourceJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedResourceJsons);
+	LoadedResourceScriptLibs = (Trie<SharedPointer<ScriptLib>>&&)(_Other.LoadedResourceScriptLibs);
 
 	CachedRawFileNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
@@ -3432,6 +3588,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedCSSNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedCSSNames);
 	CachedJavaScriptNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
+	CachedScriptLibNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedScriptLibNames);
 
 	CachedRawFiles = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
@@ -3444,6 +3601,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedCSSs = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedCSSs);
 	CachedJavaScripts = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
+	CachedScriptLibs = (Trie<WeakPointer<ScriptLib>>&&)(_Other.CachedScriptLibs);
 
 	LastWriteRawFiles = (Trie<uint64_t>&&)(_Other.LastWriteRawFiles);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
@@ -3456,6 +3614,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LastWriteCSSs = (Trie<uint64_t>&&)(_Other.LastWriteCSSs);
 	LastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.LastWriteJavaScripts);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
+	LastWriteScriptLibs = (Trie<uint64_t>&&)(_Other.LastWriteScriptLibs);
 
 	OldLastWriteRawFiles = (Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles);
 	OldLastWriteBitMaps = (Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps);
@@ -3468,6 +3627,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	OldLastWriteCSSs = (Trie<uint64_t>&&)(_Other.OldLastWriteCSSs);
 	OldLastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.OldLastWriteJavaScripts);
 	OldLastWriteJsons = (Trie<uint64_t>&&)(_Other.OldLastWriteJsons);
+	OldLastWriteScriptLibs = (Trie<uint64_t>&&)(_Other.OldLastWriteScriptLibs);
 
 	CachedResourceRawFileNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceRawFileNames);
 	CachedResourceBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceBitMapNames);
@@ -3480,6 +3640,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedResourceCSSNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceCSSNames);
 	CachedResourceJavaScriptNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJavaScriptNames);
 	CachedResourceJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceJsonNames);
+	CachedResourceScriptLibNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedResourceScriptLibNames);
 
 	CachedResourceRawFiles = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceRawFiles);
 	CachedResourceBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedResourceBitMaps);
@@ -3492,6 +3653,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedResourceCSSs = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceCSSs);
 	CachedResourceJavaScripts = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedResourceJavaScripts);
 	CachedResourceJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedResourceJsons);
+	CachedResourceScriptLibs = (Trie<WeakPointer<ScriptLib>>&&)(_Other.CachedResourceScriptLibs);
 
 	return *this;
 }
@@ -3518,6 +3680,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	QueuedCSSs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedCSSs);
 	QueuedJavaScripts = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJavaScripts);
 	QueuedJsons = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedJsons);
+	QueuedScriptLibs = (Vector<BFW_STRING_TYPE>&&)(_Other.QueuedScriptLibs);
 
 	LoadedRawFiles = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedRawFiles);
 	LoadedBitMaps = (Trie<SharedPointer<BitMap>>&&)(_Other.LoadedBitMaps);
@@ -3530,6 +3693,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LoadedCSSs = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedCSSs);
 	LoadedJavaScripts = (Trie<SharedPointer<FileContent>>&&)(_Other.LoadedJavaScripts);
 	LoadedJsons = (Trie<SharedPointer<Json>>&&)(_Other.LoadedJsons);
+	LoadedScriptLibs = (Trie<SharedPointer<ScriptLib>>&&)(_Other.LoadedScriptLibs);
 
 	CachedRawFileNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedRawFileNames);
 	CachedBitMapNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedBitMapNames);
@@ -3542,6 +3706,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedCSSNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedCSSNames);
 	CachedJavaScriptNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJavaScriptNames);
 	CachedJsonNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedJsonNames);
+	CachedScriptLibNames = (Vector<BFW_STRING_TYPE>&&)(_Other.CachedScriptLibNames);
 
 	CachedRawFiles = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedRawFiles);
 	CachedBitMaps = (Trie<WeakPointer<BitMap>>&&)(_Other.CachedBitMaps);
@@ -3554,6 +3719,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	CachedCSSs = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedCSSs);
 	CachedJavaScripts = (Trie<WeakPointer<FileContent>>&&)(_Other.CachedJavaScripts);
 	CachedJsons = (Trie<WeakPointer<Json>>&&)(_Other.CachedJsons);
+	CachedScriptLibs = (Trie<WeakPointer<ScriptLib>>&&)(_Other.CachedScriptLibs);
 
 	LastWriteRawFiles = (Trie<uint64_t>&&)(_Other.LastWriteRawFiles);
 	LastWriteBitMaps = (Trie<uint64_t>&&)(_Other.LastWriteBitMaps);
@@ -3566,6 +3732,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	LastWriteCSSs = (Trie<uint64_t>&&)(_Other.LastWriteCSSs);
 	LastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.LastWriteJavaScripts);
 	LastWriteJsons = (Trie<uint64_t>&&)(_Other.LastWriteJsons);
+	LastWriteScriptLibs = (Trie<uint64_t>&&)(_Other.LastWriteScriptLibs);
 
 	OldLastWriteRawFiles = (Trie<uint64_t>&&)(_Other.OldLastWriteRawFiles);
 	OldLastWriteBitMaps = (Trie<uint64_t>&&)(_Other.OldLastWriteBitMaps);
@@ -3578,6 +3745,7 @@ BFW::Assets::Manager& BFW::Assets::Manager::operator= (Manager&& _Other) noexcep
 	OldLastWriteCSSs = (Trie<uint64_t>&&)(_Other.OldLastWriteCSSs);
 	OldLastWriteJavaScripts = (Trie<uint64_t>&&)(_Other.OldLastWriteJavaScripts);
 	OldLastWriteJsons = (Trie<uint64_t>&&)(_Other.OldLastWriteJsons);
+	OldLastWriteScriptLibs = (Trie<uint64_t>&&)(_Other.OldLastWriteScriptLibs);
 
 	return *this;
 }
@@ -3597,6 +3765,7 @@ void BFW::Assets::Manager::RefreshCache()
 	ManagerRefreshCache<FileContent>(CachedCSSs, LastWriteCSSs, CachedCSSNames);
 	ManagerRefreshCache<FileContent>(CachedJavaScripts, LastWriteJavaScripts, CachedJavaScriptNames);
 	ManagerRefreshCache<Json>(CachedJsons, LastWriteJsons, CachedJsonNames);
+	ManagerRefreshCache<ScriptLib>(CachedScriptLibs, LastWriteScriptLibs, CachedScriptLibNames);
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -3611,6 +3780,7 @@ void BFW::Assets::Manager::RefreshCache()
 	ManagerRefreshResourceCache<FileContent>(CachedResourceCSSs, CachedResourceCSSNames);
 	ManagerRefreshResourceCache<FileContent>(CachedResourceJavaScripts, CachedResourceJavaScriptNames);
 	ManagerRefreshResourceCache<Json>(CachedResourceJsons, CachedResourceJsonNames);
+	ManagerRefreshResourceCache<ScriptLib>(CachedResourceScriptLibs, CachedResourceScriptLibNames);
 
 #endif
 }

@@ -316,6 +316,8 @@ namespace BFW
 
 		class BFW_API Json;
 
+		class BFW_API ScriptLib;
+
 		class BFW_API Manager;
 
 	}
@@ -330,6 +332,8 @@ namespace BFW
 		enum BFW_API LightTypes : const uint8_t;
 
 		class BFW_API LightComponent;
+
+		class BFW_API ScriptComponent;
 
 		class BFW_API Entity;
 
