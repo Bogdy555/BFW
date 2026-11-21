@@ -1,5 +1,5 @@
 #!/bin/bash
 
 if [ -z "$SolutionDir" ]; then
-	SolutionDir=$HOME/Desktop/BFW/
+	SolutionDir=/mnt/c/Users/Bogdan/source/repos/BFW/
 fi

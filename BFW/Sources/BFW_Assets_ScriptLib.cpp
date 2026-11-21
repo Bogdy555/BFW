@@ -135,19 +135,20 @@ BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib)
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), Names(), Cache(), Handle()
+BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), Names(), Cache(), Started(false), Handle()
 {
 
 }
 
-BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Names(_Other.Names), Cache(_Other.Cache), Handle(_Other.Handle)
+BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Names(_Other.Names), Cache(_Other.Cache), Started(_Other.Started), Handle(_Other.Handle)
 {
 
 }
 
-BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), Names((Vector<BFW_STRING_TYPE>&&)(_Other.Names)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Handle((Trie<void*>&&)(_Other.Handle))
+BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), Names((Vector<BFW_STRING_TYPE>&&)(_Other.Names)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Started(_Other.Started), Handle((Trie<void*>&&)(_Other.Handle))
 {
 	_Other.Lib = BFW_STRING_PREFIX("");
+	_Other.Started = false;
 }
 
 #endif
@@ -159,9 +160,35 @@ BFW::Assets::ScriptLib::~ScriptLib()
 
 const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const BFW_CHAR_TYPE* _Path, const BFW_CHAR_TYPE* _CurrentPath)
 {
+#ifdef BFW_WINDOWS_PLATFORM
+
+	if (Handle)
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+	if (Handle)
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+	if (Started)
+	{
+		return false;
+	}
+
+#endif
+
 	Lib = BFW_STRING_PREFIX("");
 	Names = Vector<BFW_STRING_TYPE>();
-	Stop();
 
 	if (_Path != nullptr && _CurrentPath != nullptr && ((std::filesystem::exists(_Path) && !std::filesystem::is_regular_file(_Path)) || !std::filesystem::is_directory(_CurrentPath)))
 	{
@@ -237,9 +264,12 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 
 const bool BFW::Assets::ScriptLib::Start()
 {
-	Stop();
-
 #ifdef BFW_WINDOWS_PLATFORM
+
+	if (Handle)
+	{
+		return true;
+	}
 
 	Handle = LoadLibrary(Lib.c_str());
 
@@ -252,6 +282,11 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #ifdef BFW_LINUX_PLATFORM
 
+	if (Handle)
+	{
+		return true;
+	}
+
 	Handle = dlopen(BFW_MACHINE_TO_UTF8(Lib, nullptr).c_str(), RTLD_LAZY);
 
 	if (!Handle)
@@ -262,6 +297,11 @@ const bool BFW::Assets::ScriptLib::Start()
 #endif
 
 #ifdef BFW_ESP32_PLATFORM
+
+	if (Started)
+	{
+		return true;
+	}
 
 	Handle = BFW::MultiProcessing::LoadLibrary(Lib.c_str());
 
@@ -347,6 +387,12 @@ const bool BFW::Assets::ScriptLib::Start()
 		_Cache.Push(BFW_STRING_PREFIX("OnStop"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnStop")));
 	}
 
+#ifdef BFW_ESP32_PLATFORM
+
+	Started = true;
+
+#endif
+
 	return true;
 }
 
@@ -381,21 +427,78 @@ void BFW::Assets::ScriptLib::Stop()
 #ifdef BFW_ESP32_PLATFORM
 
 	Cache = Trie<Trie<void*>>();
+	Started = false;
 	Handle = Trie<void*>();
 
 #endif
 }
 
-void BFW::Assets::ScriptLib::SetLib(const BFW_STRING_VIEW_TYPE& _Lib)
+const bool BFW::Assets::ScriptLib::SetLib(const BFW_STRING_VIEW_TYPE& _Lib)
 {
-	Stop();
+#ifdef BFW_WINDOWS_PLATFORM
+
+	if (Handle)
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+	if (Handle)
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+	if (Started)
+	{
+		return false;
+	}
+
+#endif
+
 	Lib = _Lib;
+
+	return true;
 }
 
-void BFW::Assets::ScriptLib::SetNames(const Vector<BFW_STRING_TYPE>& _Names)
+const bool BFW::Assets::ScriptLib::SetNames(const Vector<BFW_STRING_TYPE>& _Names)
 {
-	Stop();
+#ifdef BFW_WINDOWS_PLATFORM
+
+	if (Handle)
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef BFW_LINUX_PLATFORM
+
+	if (Handle)
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+	if (Started)
+	{
+		return false;
+	}
+
+#endif
+
 	Names = _Names;
+
+	return true;
 }
 
 const BFW::Assets::FileContent BFW::Assets::ScriptLib::Save() const
@@ -579,6 +682,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (const ScriptLib& _Oth
 	Lib = _Other.Lib;
 	Names = _Other.Names;
 	Cache = _Other.Cache;
+	Started = _Other.Started;
 	Handle = _Other.Handle;
 
 	return *this;
@@ -596,9 +700,11 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (ScriptLib&& _Other) n
 	Lib = _Other.Lib;
 	Names = (Vector<BFW_STRING_TYPE>&&)(_Other.Names);
 	Cache = (Trie<Trie<void*>>&&)(_Other.Cache);
+	Started = _Other.Started;
 	Handle = (Trie<void*>&&)(_Other.Handle);
 
 	_Other.Lib = BFW_STRING_PREFIX("");
+	_Other.Started = false;
 
 	return *this;
 }

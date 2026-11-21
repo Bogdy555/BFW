@@ -683,8 +683,8 @@ namespace BFW
 			const bool Start();
 			void Stop();
 
-			void SetLib(const BFW_STRING_VIEW_TYPE& _Lib);
-			void SetNames(const Vector<BFW_STRING_TYPE>& _Names);
+			const bool SetLib(const BFW_STRING_VIEW_TYPE& _Lib);
+			const bool SetNames(const Vector<BFW_STRING_TYPE>& _Names);
 
 			const FileContent Save() const;
 
@@ -715,6 +715,7 @@ namespace BFW
 
 #ifdef BFW_ESP32_PLATFORM
 
+			bool Started;
 			Trie<void*> Handle;
 
 #endif
