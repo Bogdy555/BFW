@@ -134,7 +134,20 @@ namespace BFW
 
 			const bool Deserialize(const Assets::Json& _Json);
 
+			void SetScript(const BFW_STRING_VIEW_TYPE& _ScriptLibName, const BFW_STRING_VIEW_TYPE& _NameSpace);
+
+			void OnSetup(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
+			void OnUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
+			void OnLateUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
+			void OnFixedUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
+			void OnRender(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
+			void OnStop(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
+
 			const Assets::Json Serialize() const;
+
+			const BFW_STRING_TYPE& GetScriptLibName() const;
+			const BFW_STRING_TYPE& GetNameSpace() const;
+			const Assets::Json& GetSerializedData() const;
 
 			ScriptComponent& operator= (const ScriptComponent& _Other);
 			ScriptComponent& operator= (ScriptComponent&& _Other) noexcept;
@@ -144,6 +157,13 @@ namespace BFW
 			friend SafePointer<ScriptComponent>;
 
 			mutable Vector<SafePointer<ScriptComponent>*> SafePointers;
+
+			BFW_STRING_TYPE ScriptLibName;
+			SharedPointer<Assets::ScriptLib> ScriptLib;
+			BFW_STRING_TYPE NameSpace;
+
+			Assets::Json Object;
+			Assets::Json SerializedData;
 
 		};
 
@@ -234,12 +254,12 @@ namespace BFW
 
 			const bool Deserialize(const Assets::Json& _Json);
 
-			void Setup(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
-			void Update(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
-			void LateUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
-			void FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
-			void Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
-			void Stop(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager);
+			void Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
+			void Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
+			void LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
+			void FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
+			void Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
+			void Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
 
 			Entity& Add(Entity* _Parent = nullptr);
 			Entity& Add(const Entity& _Entity, Entity* _Parent = nullptr);

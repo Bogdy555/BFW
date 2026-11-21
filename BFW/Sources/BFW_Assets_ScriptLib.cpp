@@ -89,12 +89,12 @@ static const bool ScriptLibLoadPath(const BFW_CHAR_TYPE* _Path, const BFW_CHAR_T
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), Names(), Cache(), Handle(NULL)
+BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), NameSpaces(), Cache(), Handle(NULL)
 {
 
 }
 
-BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Names(_Other.Names), Cache(), Handle(NULL)
+BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), NameSpaces(_Other.NameSpaces), Cache(), Handle(NULL)
 {
 	if (_Other.Handle && !Start())
 	{
@@ -102,7 +102,7 @@ BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Na
 	}
 }
 
-BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), Names((Vector<BFW_STRING_TYPE>&&)(_Other.Names)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Handle(_Other.Handle)
+BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), NameSpaces((Vector<BFW_STRING_TYPE>&&)(_Other.NameSpaces)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Handle(_Other.Handle)
 {
 	_Other.Lib = BFW_STRING_PREFIX("");
 	_Other.Handle = NULL;
@@ -112,12 +112,12 @@ BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib)
 
 #ifdef BFW_LINUX_PLATFORM
 
-BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), Names(), Cache(), Handle(nullptr)
+BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), NameSpaces(), Cache(), Handle(nullptr)
 {
 
 }
 
-BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Names(_Other.Names), Cache(), Handle(nullptr)
+BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), NameSpaces(_Other.NameSpaces), Cache(), Handle(nullptr)
 {
 	if (_Other.Handle && !Start())
 	{
@@ -125,7 +125,7 @@ BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Na
 	}
 }
 
-BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), Names((Vector<BFW_STRING_TYPE>&&)(_Other.Names)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Handle(_Other.Handle)
+BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), NameSpaces((Vector<BFW_STRING_TYPE>&&)(_Other.NameSpaces)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Handle(_Other.Handle)
 {
 	_Other.Lib = BFW_STRING_PREFIX("");
 	_Other.Handle = nullptr;
@@ -135,17 +135,17 @@ BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib)
 
 #ifdef BFW_ESP32_PLATFORM
 
-BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), Names(), Cache(), Started(false), Handle()
+BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), NameSpaces(), Cache(), Started(false), Handle()
 {
 
 }
 
-BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), Names(_Other.Names), Cache(_Other.Cache), Started(_Other.Started), Handle(_Other.Handle)
+BFW::Assets::ScriptLib::ScriptLib(const ScriptLib& _Other) : Lib(_Other.Lib), NameSpaces(_Other.NameSpaces), Cache(_Other.Cache), Started(_Other.Started), Handle(_Other.Handle)
 {
 
 }
 
-BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), Names((Vector<BFW_STRING_TYPE>&&)(_Other.Names)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Started(_Other.Started), Handle((Trie<void*>&&)(_Other.Handle))
+BFW::Assets::ScriptLib::ScriptLib(ScriptLib&& _Other) noexcept : Lib(_Other.Lib), NameSpaces((Vector<BFW_STRING_TYPE>&&)(_Other.NameSpaces)), Cache((Trie<Trie<void*>>&&)(_Other.Cache)), Started(_Other.Started), Handle((Trie<void*>&&)(_Other.Handle))
 {
 	_Other.Lib = BFW_STRING_PREFIX("");
 	_Other.Started = false;
@@ -188,7 +188,7 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 #endif
 
 	Lib = BFW_STRING_PREFIX("");
-	Names = Vector<BFW_STRING_TYPE>();
+	NameSpaces = Vector<BFW_STRING_TYPE>();
 
 	if (_Path != nullptr && _CurrentPath != nullptr && ((std::filesystem::exists(_Path) && !std::filesystem::is_regular_file(_Path)) || !std::filesystem::is_directory(_CurrentPath)))
 	{
@@ -206,7 +206,7 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 
 	if (_ObjectData.Tags.GetSize() != 2 ||
 		_ObjectData.Tags[0] != "Lib" ||
-		_ObjectData.Tags[1] != "Names" ||
+		_ObjectData.Tags[1] != "NameSpaces" ||
 		_ObjectData.Object.GetSize() != 2 ||
 		_ObjectData.Object[0].GetType() != _StringJsonType ||
 		_ObjectData.Object[1].GetType() != _ArrayJsonType)
@@ -214,7 +214,7 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 		return false;
 	}
 
-	Vector<BFW_STRING_TYPE> _Names;
+	Vector<BFW_STRING_TYPE> _NameSpaces;
 
 	for (size_t _Index = 0; _Index < _ObjectData.Object[1].GetArray().GetSize(); _Index++)
 	{
@@ -225,18 +225,18 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 
 		bool _Error = false;
 
-		_Names.PushBack(BFW_UTF8_TO_MACHINE(_ObjectData.Object[1].GetArray()[_Index].GetString(), &_Error));
+		_NameSpaces.PushBack(BFW_UTF8_TO_MACHINE(_ObjectData.Object[1].GetArray()[_Index].GetString(), &_Error));
 
 		if (_Error)
 		{
 			return false;
 		}
 
-		for (size_t _CheckIndex = 0; _CheckIndex < _Names.GetSize() - 1; _CheckIndex++)
+		for (size_t _CheckIndex = 0; _CheckIndex < _NameSpaces.GetSize() - 1; _CheckIndex++)
 		{
-			if (_Names[_CheckIndex] == _Names[_Names.GetSize() - 1])
+			if (_NameSpaces[_CheckIndex] == _NameSpaces[_NameSpaces.GetSize() - 1])
 			{
-				_Names.Erase(_Names.GetSize() - 1);
+				_NameSpaces.Erase(_NameSpaces.GetSize() - 1);
 				break;
 			}
 		}
@@ -257,7 +257,7 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 		return false;
 	}
 
-	Names = _Names;
+	NameSpaces = _NameSpaces;
 
 	return true;
 }
@@ -307,13 +307,13 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #endif
 
-	for (size_t _Index = 0; _Index < Names.GetSize(); _Index++)
+	for (size_t _Index = 0; _Index < NameSpaces.GetSize(); _Index++)
 	{
 		bool _Found = false;
 
 		for (size_t _Index2 = 0; _Index2 < _Index; _Index2++)
 		{
-			if (Names[_Index] == Names[_Index2])
+			if (NameSpaces[_Index] == NameSpaces[_Index2])
 			{
 				_Found = true;
 				break;
@@ -325,7 +325,7 @@ const bool BFW::Assets::ScriptLib::Start()
 			continue;
 		}
 
-		Trie<void*>& _Cache = Cache.Emplace(Names[_Index].c_str(), Trie<void*>());
+		Trie<void*>& _Cache = Cache.Emplace(NameSpaces[_Index].c_str(), Trie<void*>());
 
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -379,12 +379,12 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #endif
 
-		_Cache.Push(BFW_STRING_PREFIX("OnSetup"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnSetup")));
-		_Cache.Push(BFW_STRING_PREFIX("OnUpdate"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnUpdate")));
-		_Cache.Push(BFW_STRING_PREFIX("OnLateUpdate"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnLateUpdate")));
-		_Cache.Push(BFW_STRING_PREFIX("OnFixedUpdate"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnFixedUpdate")));
-		_Cache.Push(BFW_STRING_PREFIX("OnRender"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnRender")));
-		_Cache.Push(BFW_STRING_PREFIX("OnStop"), Get(Handle, Names[_Index] + BFW_STRING_PREFIX("::OnStop")));
+		_Cache.Push(BFW_STRING_PREFIX("OnSetup"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnSetup")));
+		_Cache.Push(BFW_STRING_PREFIX("OnUpdate"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnUpdate")));
+		_Cache.Push(BFW_STRING_PREFIX("OnLateUpdate"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnLateUpdate")));
+		_Cache.Push(BFW_STRING_PREFIX("OnFixedUpdate"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnFixedUpdate")));
+		_Cache.Push(BFW_STRING_PREFIX("OnRender"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnRender")));
+		_Cache.Push(BFW_STRING_PREFIX("OnStop"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnStop")));
 	}
 
 #ifdef BFW_ESP32_PLATFORM
@@ -467,7 +467,7 @@ const bool BFW::Assets::ScriptLib::SetLib(const BFW_STRING_VIEW_TYPE& _Lib)
 	return true;
 }
 
-const bool BFW::Assets::ScriptLib::SetNames(const Vector<BFW_STRING_TYPE>& _Names)
+const bool BFW::Assets::ScriptLib::SetNameSpaces(const Vector<BFW_STRING_TYPE>& _NameSpaces)
 {
 #ifdef BFW_WINDOWS_PLATFORM
 
@@ -496,7 +496,7 @@ const bool BFW::Assets::ScriptLib::SetNames(const Vector<BFW_STRING_TYPE>& _Name
 
 #endif
 
-	Names = _Names;
+	NameSpaces = _NameSpaces;
 
 	return true;
 }
@@ -517,18 +517,18 @@ const BFW::Assets::FileContent BFW::Assets::ScriptLib::Save() const
 		return FileContent();
 	}
 
-	_Config.GetObjectData().Tags.PushBack("Names");
+	_Config.GetObjectData().Tags.PushBack("NameSpaces");
 	_Config.GetObjectData().Object.EmplaceBack(Json()).SetArray();
 
 	Vector<Json>& _Array = _Config.GetObjectData().Object[_Config.GetObjectData().Object.GetSize() - 1].GetArray();
 
-	for (size_t _Index = 0; _Index < Names.GetSize(); _Index++)
+	for (size_t _Index = 0; _Index < NameSpaces.GetSize(); _Index++)
 	{
 		bool _Found = false;
 
 		for (size_t _Index2 = 0; _Index2 < _Index; _Index2++)
 		{
-			if (Names[_Index] == Names[_Index2])
+			if (NameSpaces[_Index] == NameSpaces[_Index2])
 			{
 				_Found = true;
 				break;
@@ -540,7 +540,7 @@ const BFW::Assets::FileContent BFW::Assets::ScriptLib::Save() const
 			continue;
 		}
 
-		_Array.EmplaceBack(Json()).SetString(BFW_MACHINE_TO_UTF8(Names[_Index], &_Error));
+		_Array.EmplaceBack(Json()).SetString(BFW_MACHINE_TO_UTF8(NameSpaces[_Index], &_Error));
 
 		if (_Error)
 		{
@@ -556,21 +556,21 @@ const BFW_STRING_TYPE& BFW::Assets::ScriptLib::GetLib() const
 	return Lib;
 }
 
-const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::ScriptLib::GetNames() const
+const BFW::Vector<BFW_STRING_TYPE>& BFW::Assets::ScriptLib::GetNameSpaces() const
 {
-	return Names;
+	return NameSpaces;
 }
 
-const void* BFW::Assets::ScriptLib::GetSymbol(const BFW_STRING_VIEW_TYPE& _Name, const BFW_STRING_VIEW_TYPE& _Symbol) const
+const void* BFW::Assets::ScriptLib::GetSymbol(const BFW_STRING_VIEW_TYPE& _NameSpace, const BFW_STRING_VIEW_TYPE& _Symbol) const
 {
-	const Trie<void*>* _NameTrie = Cache.GetData(_Name.data(), _Name.size());
+	const Trie<void*>* _NameSpaceTrie = Cache.GetData(_NameSpace.data(), _NameSpace.size());
 
-	if (!_NameTrie)
+	if (!_NameSpaceTrie)
 	{
 		return nullptr;
 	}
 
-	void* const* _Result = _NameTrie->GetData(_Symbol.data(), _Symbol.size());
+	void* const* _Result = _NameSpaceTrie->GetData(_Symbol.data(), _Symbol.size());
 
 	if (!_Result)
 	{
@@ -592,7 +592,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (const ScriptLib& _Oth
 	Stop();
 
 	Lib = _Other.Lib;
-	Names = _Other.Names;
+	NameSpaces = _Other.NameSpaces;
 
 	if (_Other.Handle && !Start())
 	{
@@ -612,7 +612,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (ScriptLib&& _Other) n
 	Stop();
 
 	Lib = _Other.Lib;
-	Names = (Vector<BFW_STRING_TYPE>&&)(_Other.Names);
+	NameSpaces = (Vector<BFW_STRING_TYPE>&&)(_Other.NameSpaces);
 	Cache = (Trie<Trie<void*>>&&)(_Other.Cache);
 	Handle = _Other.Handle;
 
@@ -636,7 +636,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (const ScriptLib& _Oth
 	Stop();
 
 	Lib = _Other.Lib;
-	Names = _Other.Names;
+	NameSpaces = _Other.NameSpaces;
 
 	if (_Other.Handle && !Start())
 	{
@@ -656,7 +656,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (ScriptLib&& _Other) n
 	Stop();
 
 	Lib = _Other.Lib;
-	Names = (Vector<BFW_STRING_TYPE>&&)(_Other.Names);
+	NameSpaces = (Vector<BFW_STRING_TYPE>&&)(_Other.NameSpaces);
 	Cache = (Trie<Trie<void*>>&&)(_Other.Cache);
 	Handle = _Other.Handle;
 
@@ -680,7 +680,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (const ScriptLib& _Oth
 	Stop();
 
 	Lib = _Other.Lib;
-	Names = _Other.Names;
+	NameSpaces = _Other.NameSpaces;
 	Cache = _Other.Cache;
 	Started = _Other.Started;
 	Handle = _Other.Handle;
@@ -698,7 +698,7 @@ BFW::Assets::ScriptLib& BFW::Assets::ScriptLib::operator= (ScriptLib&& _Other) n
 	Stop();
 
 	Lib = _Other.Lib;
-	Names = (Vector<BFW_STRING_TYPE>&&)(_Other.Names);
+	NameSpaces = (Vector<BFW_STRING_TYPE>&&)(_Other.NameSpaces);
 	Cache = (Trie<Trie<void*>>&&)(_Other.Cache);
 	Started = _Other.Started;
 	Handle = (Trie<void*>&&)(_Other.Handle);

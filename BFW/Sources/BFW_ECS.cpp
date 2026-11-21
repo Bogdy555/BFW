@@ -991,6 +991,288 @@ BFW::ECS::LightComponent& BFW::ECS::LightComponent::operator= (LightComponent&& 
 
 
 
+BFW::ECS::ScriptComponent::ScriptComponent() : SafePointers(), ScriptLibName(BFW_STRING_PREFIX("")), ScriptLib(), NameSpace(BFW_STRING_PREFIX("")), Object(), SerializedData()
+{
+
+}
+
+BFW::ECS::ScriptComponent::ScriptComponent(const ScriptComponent& _Other) : SafePointers(), ScriptLibName(_Other.ScriptLibName), ScriptLib(_Other.ScriptLib), NameSpace(_Other.NameSpace), Object(_Other.Object), SerializedData(_Other.SerializedData)
+{
+
+}
+
+BFW::ECS::ScriptComponent::ScriptComponent(ScriptComponent&& _Other) noexcept : SafePointers(), ScriptLibName(_Other.ScriptLibName), ScriptLib((SharedPointer<Assets::ScriptLib>&&)(_Other.ScriptLib)), NameSpace(_Other.NameSpace), Object((Assets::Json&&)(_Other.Object)), SerializedData((Assets::Json&&)(_Other.SerializedData))
+{
+	SafePointer<ScriptComponent>::MoveAll(this, &_Other);
+
+	_Other.ScriptLibName = BFW_STRING_PREFIX("");
+	_Other.NameSpace = BFW_STRING_PREFIX("");
+}
+
+BFW::ECS::ScriptComponent::~ScriptComponent()
+{
+	SafePointer<ScriptComponent>::ReleaseAll(this);
+}
+
+const bool BFW::ECS::ScriptComponent::Deserialize(const Assets::Json& _Json)
+{
+	*this = ScriptComponent();
+
+	if (_Json.GetType() != Assets::_ObjectJsonType)
+	{
+		return false;
+	}
+
+	const Assets::JsonObjectData& _ObjectData = _Json.GetObjectData();
+
+	if (_ObjectData.Tags.GetSize() != 3 ||
+		_ObjectData.Tags[0] != "ScriptLibName" ||
+		_ObjectData.Tags[1] != "NameSpace" ||
+		_ObjectData.Tags[2] != "SerializedData" ||
+		_ObjectData.Object.GetSize() != 3 ||
+		_ObjectData.Object[0].GetType() != Assets::_StringJsonType ||
+		_ObjectData.Object[1].GetType() != Assets::_StringJsonType)
+	{
+		return false;
+	}
+
+	bool _Error = false;
+
+	ScriptLibName = BFW_UTF8_TO_MACHINE(_ObjectData.Object[0].GetString(), &_Error);
+
+	if (_Error)
+	{
+		*this = ScriptComponent();
+		return false;
+	}
+
+	NameSpace = BFW_UTF8_TO_MACHINE(_ObjectData.Object[1].GetString(), &_Error);
+
+	if (_Error)
+	{
+		*this = ScriptComponent();
+		return false;
+	}
+
+	SerializedData = _ObjectData.Object[2];
+
+	return true;
+}
+
+void BFW::ECS::ScriptComponent::SetScript(const BFW_STRING_VIEW_TYPE& _ScriptLibName, const BFW_STRING_VIEW_TYPE& _NameSpace)
+{
+	ScriptLibName = _ScriptLibName;
+	ScriptLib.Release();
+	NameSpace = _NameSpace;
+	Object = Assets::Json();
+	SerializedData = Assets::Json();
+}
+
+void BFW::ECS::ScriptComponent::OnSetup(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene)
+{
+	if (!(Assets::ScriptLib*)(ScriptLib))
+	{
+		return;
+	}
+
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnSetup")));
+
+	if (!_Symbol)
+	{
+		return;
+	}
+
+	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+}
+
+void BFW::ECS::ScriptComponent::OnUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene)
+{
+	if (!(Assets::ScriptLib*)(ScriptLib))
+	{
+		return;
+	}
+
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnUpdate")));
+
+	if (!_Symbol)
+	{
+		return;
+	}
+
+	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+}
+
+void BFW::ECS::ScriptComponent::OnLateUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene)
+{
+	if (!(Assets::ScriptLib*)(ScriptLib))
+	{
+		return;
+	}
+
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnLateUpdate")));
+
+	if (!_Symbol)
+	{
+		return;
+	}
+
+	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+}
+
+void BFW::ECS::ScriptComponent::OnFixedUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene)
+{
+	if (!(Assets::ScriptLib*)(ScriptLib))
+	{
+		return;
+	}
+
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnFixedUpdate")));
+
+	if (!_Symbol)
+	{
+		return;
+	}
+
+	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+}
+
+void BFW::ECS::ScriptComponent::OnRender(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene)
+{
+	if (!(Assets::ScriptLib*)(ScriptLib))
+	{
+		return;
+	}
+
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnRender")));
+
+	if (!_Symbol)
+	{
+		return;
+	}
+
+	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+}
+
+void BFW::ECS::ScriptComponent::OnStop(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene)
+{
+	if (!(Assets::ScriptLib*)(ScriptLib))
+	{
+		return;
+	}
+
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnStop")));
+
+	if (!_Symbol)
+	{
+		return;
+	}
+
+	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+}
+
+const BFW::Assets::Json BFW::ECS::ScriptComponent::Serialize() const
+{
+	if (!ScriptLibName.size())
+	{
+		return Assets::Json();
+	}
+
+	Assets::Json _Result;
+
+	_Result.SetObject();
+
+	Assets::JsonObjectData& _ObjectData = _Result.GetObjectData();
+
+	bool _Error = false;
+
+	_ObjectData.Tags.PushBack("ScriptLibName");
+	_ObjectData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(ScriptLibName, &_Error).c_str());
+
+	if (_Error)
+	{
+		return Assets::Json();
+	}
+
+	_ObjectData.Tags.PushBack("NameSpace");
+	_ObjectData.Object.PushBack(Assets::Json()).SetString(BFW_MACHINE_TO_UTF8(NameSpace, &_Error).c_str());
+
+	if (_Error)
+	{
+		return Assets::Json();
+	}
+
+	_ObjectData.Tags.PushBack("SerializedData");
+	_ObjectData.Object.PushBack(SerializedData);
+
+	return _Result;
+}
+
+const BFW_STRING_TYPE& BFW::ECS::ScriptComponent::GetScriptLibName() const
+{
+	return ScriptLibName;
+}
+
+const BFW_STRING_TYPE& BFW::ECS::ScriptComponent::GetNameSpace() const
+{
+	return NameSpace;
+}
+
+const BFW::Assets::Json& BFW::ECS::ScriptComponent::GetSerializedData() const
+{
+	return SerializedData;
+}
+
+BFW::ECS::ScriptComponent& BFW::ECS::ScriptComponent::operator= (const ScriptComponent& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	ScriptLibName = _Other.ScriptLibName;
+	ScriptLib = _Other.ScriptLib;
+	NameSpace = _Other.NameSpace;
+	Object = _Other.Object;
+	SerializedData = _Other.SerializedData;
+
+	return *this;
+}
+
+BFW::ECS::ScriptComponent& BFW::ECS::ScriptComponent::operator= (ScriptComponent&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	SafePointer<ScriptComponent>::MoveAll(this, &_Other);
+
+	ScriptLibName = _Other.ScriptLibName;
+	ScriptLib = (SharedPointer<Assets::ScriptLib>&&)(_Other.ScriptLib);
+	NameSpace = _Other.NameSpace;
+	Object = (Assets::Json&&)(_Other.Object);
+	SerializedData = (Assets::Json&&)(_Other.SerializedData);
+
+	_Other.ScriptLibName = BFW_STRING_PREFIX("");
+	_Other.NameSpace = BFW_STRING_PREFIX("");
+
+	return *this;
+}
+
+
+
 BFW::ECS::Entity::Entity() : Transform(), SafePointers(), CurrentScene(nullptr), GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), TagsList(), Tags(), Parent(nullptr), Children(), Camera(), Light()
 {
 
@@ -1796,7 +2078,7 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 	return true;
 }
 
-void BFW::ECS::Scene::Setup(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
 
@@ -1821,7 +2103,7 @@ void BFW::ECS::Scene::Setup(RunTime::Application* _Application, RunTime::Menu* _
 	_Manager.Flush();
 }
 
-void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
 
@@ -1894,7 +2176,7 @@ void BFW::ECS::Scene::Update(RunTime::Application* _Application, RunTime::Menu* 
 	SpawnQueue.Clear();
 }
 
-void BFW::ECS::Scene::LateUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
 
@@ -1917,7 +2199,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application* _Application, RunTime::Me
 	}
 }
 
-void BFW::ECS::Scene::FixedUpdate(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
 
@@ -1940,7 +2222,7 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application* _Application, RunTime::M
 	}
 }
 
-void BFW::ECS::Scene::Render(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
 
@@ -1963,7 +2245,7 @@ void BFW::ECS::Scene::Render(RunTime::Application* _Application, RunTime::Menu* 
 	}
 }
 
-void BFW::ECS::Scene::Stop(RunTime::Application* _Application, RunTime::Menu* _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
 	Vector<const Entity*> _Queue;
 

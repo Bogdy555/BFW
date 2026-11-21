@@ -684,13 +684,13 @@ namespace BFW
 			void Stop();
 
 			const bool SetLib(const BFW_STRING_VIEW_TYPE& _Lib);
-			const bool SetNames(const Vector<BFW_STRING_TYPE>& _Names);
+			const bool SetNameSpaces(const Vector<BFW_STRING_TYPE>& _NameSpaces);
 
 			const FileContent Save() const;
 
 			const BFW_STRING_TYPE& GetLib() const;
-			const Vector<BFW_STRING_TYPE>& GetNames() const;
-			const void* GetSymbol(const BFW_STRING_VIEW_TYPE& _Name, const BFW_STRING_VIEW_TYPE& _Symbol) const;
+			const Vector<BFW_STRING_TYPE>& GetNameSpaces() const;
+			const void* GetSymbol(const BFW_STRING_VIEW_TYPE& _NameSpace, const BFW_STRING_VIEW_TYPE& _Symbol) const;
 
 			ScriptLib& operator= (const ScriptLib& _Other);
 			ScriptLib& operator= (ScriptLib&& _Other) noexcept;
@@ -698,7 +698,7 @@ namespace BFW
 		private:
 
 			BFW_STRING_TYPE Lib;
-			Vector<BFW_STRING_TYPE> Names;
+			Vector<BFW_STRING_TYPE> NameSpaces;
 			Trie<Trie<void*>> Cache;
 
 #ifdef BFW_WINDOWS_PLATFORM
