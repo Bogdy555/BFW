@@ -1167,6 +1167,7 @@ void BFW::ECS::ScriptComponent::OnStop(Entity& _Entity, RunTime::Application& _A
 {
 	if (!(Assets::ScriptLib*)(ScriptLib))
 	{
+		Object = Assets::Json();
 		return;
 	}
 
@@ -1176,10 +1177,12 @@ void BFW::ECS::ScriptComponent::OnStop(Entity& _Entity, RunTime::Application& _A
 
 	if (!_Symbol)
 	{
+		Object = Assets::Json();
 		return;
 	}
 
 	_Symbol(_Entity, Object, SerializedData, _Application, _Menu, _Manager, _Scene);
+	Object = Assets::Json();
 }
 
 const BFW::Assets::Json BFW::ECS::ScriptComponent::Serialize() const
@@ -1273,12 +1276,12 @@ BFW::ECS::ScriptComponent& BFW::ECS::ScriptComponent::operator= (ScriptComponent
 
 
 
-BFW::ECS::Entity::Entity() : Transform(), SafePointers(), CurrentScene(nullptr), GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), TagsList(), Tags(), Parent(nullptr), Children(), Camera(), Light()
+BFW::ECS::Entity::Entity() : Transform(), SafePointers(), CurrentScene(nullptr), GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), TagsList(), Tags(), Parent(nullptr), Children(), Camera(), Light(), Script()
 {
 
 }
 
-BFW::ECS::Entity::Entity(const Entity& _Other) : Transform(_Other.Transform), SafePointers(), CurrentScene(_Other.CurrentScene), GUID(GUID::GetString()), Name(_Other.Name), TagsList(_Other.TagsList), Tags(_Other.Tags), Parent(nullptr), Children(_Other.Children), Camera(), Light()
+BFW::ECS::Entity::Entity(const Entity& _Other) : Transform(_Other.Transform), SafePointers(), CurrentScene(_Other.CurrentScene), GUID(GUID::GetString()), Name(_Other.Name), TagsList(_Other.TagsList), Tags(_Other.Tags), Parent(nullptr), Children(_Other.Children), Camera(), Light(), Script()
 {
 	for (size_t _Index = 0; _Index < Children.GetSize(); _Index++)
 	{
@@ -1299,9 +1302,14 @@ BFW::ECS::Entity::Entity(const Entity& _Other) : Transform(_Other.Transform), Sa
 	{
 		AddLightComponent(*_Other.Light);
 	}
+
+	if ((const ScriptComponent*)(_Other.Script))
+	{
+		AddScriptComponent(*_Other.Script);
+	}
 }
 
-BFW::ECS::Entity::Entity(Entity&& _Other) noexcept : Transform((TransformComponent&&)(_Other.Transform)), SafePointers(), CurrentScene(_Other.CurrentScene), GUID(_Other.GUID), Name(_Other.Name), TagsList((Vector<BFW_STRING_TYPE>&&)(_Other.TagsList)), Tags((Trie<bool>&&)(_Other.Tags)), Parent((SafePointer<Entity>&&)(_Other.Parent)), Children((Vector<Entity>&&)(_Other.Children)), Camera((SafePointer<CameraComponent>&&)(_Other.Camera)), Light((SafePointer<LightComponent>&&)(_Other.Light))
+BFW::ECS::Entity::Entity(Entity&& _Other) noexcept : Transform((TransformComponent&&)(_Other.Transform)), SafePointers(), CurrentScene(_Other.CurrentScene), GUID(_Other.GUID), Name(_Other.Name), TagsList((Vector<BFW_STRING_TYPE>&&)(_Other.TagsList)), Tags((Trie<bool>&&)(_Other.Tags)), Parent((SafePointer<Entity>&&)(_Other.Parent)), Children((Vector<Entity>&&)(_Other.Children)), Camera((SafePointer<CameraComponent>&&)(_Other.Camera)), Light((SafePointer<LightComponent>&&)(_Other.Light)), Script((SafePointer<ScriptComponent>&&)(_Other.Script))
 {
 	SafePointer<Entity>::MoveAll(this, &_Other);
 
@@ -1316,6 +1324,7 @@ BFW::ECS::Entity::~Entity()
 
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	RemoveScriptComponent();
 	GUID::ReleaseString(GUID);
 }
 
@@ -1464,6 +1473,17 @@ const bool BFW::ECS::Entity::Deserialize(const Assets::Json& _Json)
 			continue;
 		}
 
+		if (_ObjectData.Tags[_Index] == "Script" && CurrentScene)
+		{
+			if (!AddScriptComponent().Deserialize(_ObjectData.Object[_Index]))
+			{
+				*this = Entity();
+				return false;
+			}
+
+			continue;
+		}
+
 		if (_ObjectData.Tags[_Index] == "Children")
 		{
 			if (_ObjectData.Object[_Index].GetType() != Assets::_ArrayJsonType)
@@ -1501,6 +1521,8 @@ void BFW::ECS::Entity::SetCurrentScene(Scene* _CurrentScene)
 	CameraComponent _Camera;
 	bool _HasLightComponent = (LightComponent*)(Light) != nullptr;
 	LightComponent _Light;
+	bool _HasScriptComponent = (ScriptComponent*)(Script) != nullptr;
+	ScriptComponent _Script;
 
 	if (_HasCameraComponent)
 	{
@@ -1512,8 +1534,14 @@ void BFW::ECS::Entity::SetCurrentScene(Scene* _CurrentScene)
 		_Light = *Light;
 	}
 
+	if (_HasScriptComponent)
+	{
+		_Script = *Script;
+	}
+
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	RemoveScriptComponent();
 
 	CurrentScene = _CurrentScene;
 
@@ -1525,6 +1553,11 @@ void BFW::ECS::Entity::SetCurrentScene(Scene* _CurrentScene)
 	if (_HasLightComponent)
 	{
 		AddLightComponent(_Light);
+	}
+
+	if (_HasScriptComponent)
+	{
+		AddScriptComponent(_Script);
 	}
 
 	Parent = nullptr;
@@ -1658,6 +1691,16 @@ BFW::ECS::LightComponent& BFW::ECS::Entity::AddLightComponent(const LightCompone
 	return *Light;
 }
 
+BFW::ECS::ScriptComponent& BFW::ECS::Entity::AddScriptComponent(const ScriptComponent& _Component)
+{
+	if (!CurrentScene || !EntityAddComponent<ScriptComponent>(CurrentScene->ScriptComponents, Script, _Component))
+	{
+		throw nullptr;
+	}
+
+	return *Script;
+}
+
 void BFW::ECS::Entity::RemoveCameraComponent()
 {
 	bool _Removed = !CurrentScene || !(CameraComponent*)(Camera) || EntityRemoveComponent<CameraComponent>(CurrentScene->CameraComponents, Camera);
@@ -1666,6 +1709,11 @@ void BFW::ECS::Entity::RemoveCameraComponent()
 void BFW::ECS::Entity::RemoveLightComponent()
 {
 	bool _Removed = !CurrentScene || !(LightComponent*)(Light) || EntityRemoveComponent<LightComponent>(CurrentScene->LightComponents, Light);
+}
+
+void BFW::ECS::Entity::RemoveScriptComponent()
+{
+	bool _Removed = !CurrentScene || !(ScriptComponent*)(Script) || EntityRemoveComponent<ScriptComponent>(CurrentScene->ScriptComponents, Script);
 }
 
 const BFW::Assets::Json BFW::ECS::Entity::Serialize() const
@@ -1721,6 +1769,12 @@ const BFW::Assets::Json BFW::ECS::Entity::Serialize() const
 	{
 		_ObjectData.Tags.PushBack("Light");
 		_ObjectData.Object.PushBack(Light->Serialize());
+	}
+
+	if ((const ScriptComponent*)(Script))
+	{
+		_ObjectData.Tags.PushBack("Script");
+		_ObjectData.Object.PushBack(Script->Serialize());
 	}
 
 	if (!Children.GetSize())
@@ -1818,6 +1872,16 @@ const BFW::SafePointer<BFW::ECS::LightComponent> BFW::ECS::Entity::GetLight() co
 	return Light;
 }
 
+BFW::SafePointer<BFW::ECS::ScriptComponent> BFW::ECS::Entity::GetScript()
+{
+	return Script;
+}
+
+const BFW::SafePointer<BFW::ECS::ScriptComponent> BFW::ECS::Entity::GetScript() const
+{
+	return Script;
+}
+
 BFW::ECS::Entity& BFW::ECS::Entity::operator= (const Entity& _Other)
 {
 	if (this == &_Other)
@@ -1827,6 +1891,7 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (const Entity& _Other)
 
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	RemoveScriptComponent();
 	GUID::ReleaseString(GUID);
 
 	Transform = _Other.Transform;
@@ -1858,6 +1923,11 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (const Entity& _Other)
 		AddLightComponent(*_Other.Light);
 	}
 
+	if ((const ScriptComponent*)(_Other.Script))
+	{
+		AddScriptComponent(*_Other.Script);
+	}
+
 	return *this;
 }
 
@@ -1870,6 +1940,7 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 
 	RemoveCameraComponent();
 	RemoveLightComponent();
+	RemoveScriptComponent();
 	GUID::ReleaseString(GUID);
 
 	SafePointer<Entity>::MoveAll(this, &_Other);
@@ -1884,6 +1955,7 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 	Children = (Vector<Entity>&&)(_Other.Children);
 	Camera = (SafePointer<CameraComponent>&&)(_Other.Camera);
 	Light = (SafePointer<LightComponent>&&)(_Other.Light);
+	Script = (SafePointer<ScriptComponent>&&)(_Other.Script);
 
 	_Other.CurrentScene = nullptr;
 	_Other.GUID = GUID::GetString();

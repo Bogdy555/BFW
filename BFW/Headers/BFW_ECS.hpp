@@ -198,9 +198,11 @@ namespace BFW
 
 			CameraComponent& AddCameraComponent(const CameraComponent& _Component = CameraComponent());
 			LightComponent& AddLightComponent(const LightComponent& _Component = LightComponent());
+			ScriptComponent& AddScriptComponent(const ScriptComponent& _Component = ScriptComponent());
 
 			void RemoveCameraComponent();
 			void RemoveLightComponent();
+			void RemoveScriptComponent();
 
 			const Assets::Json Serialize() const;
 
@@ -220,6 +222,8 @@ namespace BFW
 			const SafePointer<CameraComponent> GetCamera() const;
 			SafePointer<LightComponent> GetLight();
 			const SafePointer<LightComponent> GetLight() const;
+			SafePointer<ScriptComponent> GetScript();
+			const SafePointer<ScriptComponent> GetScript() const;
 
 			Entity& operator= (const Entity& _Other);
 			Entity& operator= (Entity&& _Other) noexcept;
@@ -239,6 +243,7 @@ namespace BFW
 			Vector<Entity> Children;
 			SafePointer<CameraComponent> Camera;
 			SafePointer<LightComponent> Light;
+			SafePointer<ScriptComponent> Script;
 
 		};
 
@@ -312,6 +317,7 @@ namespace BFW
 			Vector<Entity> Entities;
 			Vector<CameraComponent> CameraComponents;
 			Vector<LightComponent> LightComponents;
+			Vector<ScriptComponent> ScriptComponents;
 
 			Vector<Entity> SpawnQueue;
 			Vector<SafePointer<Entity>> DespawnQueue;
