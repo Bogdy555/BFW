@@ -2356,8 +2356,6 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 		DespawnQueue.Erase(_DespawnIndex);
 	}
 
-	DespawnQueue.Clear();
-
 	for (size_t _SpawnIndex = 0; _SpawnIndex < SpawnQueue.GetSize(); _SpawnIndex++)
 	{
 		if (!SpawnQueue[_SpawnIndex].GetParent())
