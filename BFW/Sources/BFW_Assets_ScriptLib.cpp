@@ -87,6 +87,52 @@ static const bool ScriptLibLoadPath(const BFW_CHAR_TYPE* _Path, const BFW_CHAR_T
 
 
 
+BFW::Assets::Script::Script() : OnSetup(nullptr), OnUpdate(nullptr), OnLateUpdate(nullptr), OnFixedUpdate(nullptr), OnRender(nullptr), OnStop(nullptr)
+{
+
+}
+
+BFW::Assets::Script::Script(void* _OnSetup, void* _OnUpdate, void* _OnLateUpdate, void* _OnFixedUpdate, void* _OnRender, void* _OnStop) : OnSetup(_OnSetup), OnUpdate(_OnUpdate), OnLateUpdate(_OnLateUpdate), OnFixedUpdate(_OnFixedUpdate), OnRender(_OnRender), OnStop(_OnStop)
+{
+
+}
+
+BFW::Assets::Script::Script(Script&& _Other) noexcept : OnSetup(_Other.OnSetup), OnUpdate(_Other.OnUpdate), OnLateUpdate(_Other.OnLateUpdate), OnFixedUpdate(_Other.OnFixedUpdate), OnRender(_Other.OnRender), OnStop(_Other.OnStop)
+{
+	_Other.OnSetup = nullptr;
+	_Other.OnUpdate = nullptr;
+	_Other.OnLateUpdate = nullptr;
+	_Other.OnFixedUpdate = nullptr;
+	_Other.OnRender = nullptr;
+	_Other.OnStop = nullptr;
+}
+
+BFW::Assets::Script& BFW::Assets::Script::operator=(Script&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	OnSetup = _Other.OnSetup;
+	OnUpdate = _Other.OnUpdate;
+	OnLateUpdate = _Other.OnLateUpdate;
+	OnFixedUpdate = _Other.OnFixedUpdate;
+	OnRender = _Other.OnRender;
+	OnStop = _Other.OnStop;
+
+	_Other.OnSetup = nullptr;
+	_Other.OnUpdate = nullptr;
+	_Other.OnLateUpdate = nullptr;
+	_Other.OnFixedUpdate = nullptr;
+	_Other.OnRender = nullptr;
+	_Other.OnStop = nullptr;
+
+	return *this;
+}
+
+
+
 #ifdef BFW_WINDOWS_PLATFORM
 
 BFW::Assets::ScriptLib::ScriptLib() : Lib(BFW_STRING_PREFIX("")), NameSpaces(), Cache(), Handle(NULL)
@@ -227,7 +273,7 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 
 		_NameSpaces.PushBack(BFW_UTF8_TO_MACHINE(_ObjectData.Object[1].GetArray()[_Index].GetString(), &_Error));
 
-		if (_Error)
+		if (_Error || !_NameSpaces[_NameSpaces.GetSize() - 1].size())
 		{
 			return false;
 		}
@@ -246,7 +292,7 @@ const bool BFW::Assets::ScriptLib::Load(const FileContent& _FileContent, const B
 
 	Lib = BFW_UTF8_TO_MACHINE(_ObjectData.Object[0].GetString(), &_Error);
 
-	if (_Error)
+	if (_Error || !Lib.size())
 	{
 		return false;
 	}
@@ -329,11 +375,11 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #ifdef BFW_WINDOWS_PLATFORM
 
-		void* (*Get)(HMODULE _Handle, const BFW_STRING_TYPE& _Symbol) = [](HMODULE _Handle, const BFW_STRING_TYPE& _Symbol) -> void*
+		void* (*Get)(HMODULE _Handle, const BFW_STRING_TYPE& _NameSpace) = [](HMODULE _Handle, const BFW_STRING_TYPE& _NameSpace) -> void*
 			{
 				bool _Error = false;
 
-				void* _Result = GetProcAddress(_Handle, BFW_MACHINE_TO_UTF8(_Symbol, &_Error).c_str());
+				void* _Result = GetProcAddress(_Handle, BFW_MACHINE_TO_UTF8(_NameSpace, &_Error).c_str());
 
 				if (_Error)
 				{
@@ -347,11 +393,11 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #ifdef BFW_LINUX_PLATFORM
 
-		void* (*Get)(void* _Handle, const BFW_STRING_TYPE& _Symbol) = [](void* _Handle, const BFW_STRING_TYPE& _Symbol) -> void*
+		void* (*Get)(void* _Handle, const BFW_STRING_TYPE& _NameSpace) = [](void* _Handle, const BFW_STRING_TYPE& _NameSpace) -> void*
 			{
 				bool _Error = false;
 
-				void* _Result = dlsym(_Handle, BFW_MACHINE_TO_UTF8(_Symbol, &_Error).c_str());
+				void* _Result = dlsym(_Handle, BFW_MACHINE_TO_UTF8(_NameSpace, &_Error).c_str());
 
 				if (_Error)
 				{
@@ -365,9 +411,9 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #ifdef BFW_ESP32_PLATFORM
 
-		void* (*Get)(Trie<void*>& _Handle, const BFW_STRING_TYPE& _Symbol) = [](Trie<void*>& _Handle, const BFW_STRING_TYPE& _Symbol) -> void*
+		void* (*Get)(Trie<void*>& _Handle, const BFW_STRING_TYPE& _NameSpace) = [](Trie<void*>& _Handle, const BFW_STRING_TYPE& _NameSpace) -> void*
 			{
-				void** _Result = _Handle.GetData(_Symbol.c_str());
+				void** _Result = _Handle.GetData(_NameSpace.c_str());
 
 				if (!_Result)
 				{
@@ -379,12 +425,26 @@ const bool BFW::Assets::ScriptLib::Start()
 
 #endif
 
-		_Cache.Push(BFW_STRING_PREFIX("OnSetup"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnSetup")));
-		_Cache.Push(BFW_STRING_PREFIX("OnUpdate"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnUpdate")));
-		_Cache.Push(BFW_STRING_PREFIX("OnLateUpdate"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnLateUpdate")));
-		_Cache.Push(BFW_STRING_PREFIX("OnFixedUpdate"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnFixedUpdate")));
-		_Cache.Push(BFW_STRING_PREFIX("OnRender"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnRender")));
-		_Cache.Push(BFW_STRING_PREFIX("OnStop"), Get(Handle, NameSpaces[_Index] + BFW_STRING_PREFIX("::OnStop")));
+		Script* _Script = (Script*)(Get(Handle, NameSpaces[_Index]));
+
+		if (!_Script)
+		{
+			_Cache.Push(BFW_STRING_PREFIX("OnSetup"), nullptr);
+			_Cache.Push(BFW_STRING_PREFIX("OnUpdate"), nullptr);
+			_Cache.Push(BFW_STRING_PREFIX("OnLateUpdate"), nullptr);
+			_Cache.Push(BFW_STRING_PREFIX("OnFixedUpdate"), nullptr);
+			_Cache.Push(BFW_STRING_PREFIX("OnRender"), nullptr);
+			_Cache.Push(BFW_STRING_PREFIX("OnStop"), nullptr);
+
+			continue;
+		}
+
+		_Cache.Push(BFW_STRING_PREFIX("OnSetup"), _Script->OnSetup);
+		_Cache.Push(BFW_STRING_PREFIX("OnUpdate"), _Script->OnUpdate);
+		_Cache.Push(BFW_STRING_PREFIX("OnLateUpdate"), _Script->OnLateUpdate);
+		_Cache.Push(BFW_STRING_PREFIX("OnFixedUpdate"), _Script->OnFixedUpdate);
+		_Cache.Push(BFW_STRING_PREFIX("OnRender"), _Script->OnRender);
+		_Cache.Push(BFW_STRING_PREFIX("OnStop"), _Script->OnStop);
 	}
 
 #ifdef BFW_ESP32_PLATFORM
@@ -512,7 +572,7 @@ const BFW::Assets::FileContent BFW::Assets::ScriptLib::Save() const
 	_Config.GetObjectData().Tags.PushBack("Lib");
 	_Config.GetObjectData().Object.EmplaceBack(Json()).SetString(BFW_MACHINE_TO_UTF8(Lib, &_Error));
 
-	if (_Error)
+	if (_Error || !Lib.size())
 	{
 		return FileContent();
 	}
@@ -542,7 +602,7 @@ const BFW::Assets::FileContent BFW::Assets::ScriptLib::Save() const
 
 		_Array.EmplaceBack(Json()).SetString(BFW_MACHINE_TO_UTF8(NameSpaces[_Index], &_Error));
 
-		if (_Error)
+		if (_Error || !_Array[_Array.GetSize() - 1].GetString().size())
 		{
 			return FileContent();
 		}

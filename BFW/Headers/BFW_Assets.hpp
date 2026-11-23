@@ -668,6 +668,25 @@ namespace BFW
 
 		};
 
+		struct BFW_API Script
+		{
+
+			Script();
+			Script(void* _OnSetup, void* _OnUpdate, void* _OnLateUpdate, void* _OnFixedUpdate, void* _OnRender, void* _OnStop);
+			Script(const Script& _Other) = default;
+			Script(Script&& _Other) noexcept;
+			Script& operator= (const Script& _Other) = default;
+			Script& operator= (Script&& _Other) noexcept;
+
+			void* OnSetup;
+			void* OnUpdate;
+			void* OnLateUpdate;
+			void* OnFixedUpdate;
+			void* OnRender;
+			void* OnStop;
+
+		};
+
 		class BFW_API ScriptLib
 		{
 

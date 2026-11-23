@@ -317,6 +317,8 @@ namespace BFW
 
 		class BFW_API Json;
 
+		struct BFW_API Script;
+
 		class BFW_API ScriptLib;
 
 		class BFW_API Manager;
