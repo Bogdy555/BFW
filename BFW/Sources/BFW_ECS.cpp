@@ -2356,20 +2356,42 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 		DespawnQueue.Erase(_DespawnIndex);
 	}
 
-	for (size_t _SpawnIndex = 0; _SpawnIndex < SpawnQueue.GetSize(); _SpawnIndex++)
+	while (SpawnQueue.GetSize())
 	{
+		size_t _SpawnIndex = 0;
+
+		Entity* _Entity = nullptr;
+
 		if (!SpawnQueue[_SpawnIndex].GetParent())
 		{
-			Entities.EmplaceBack((Entity&&)(SpawnQueue[_SpawnIndex]));
-			continue;
+			_Entity = &Entities.EmplaceBack((Entity&&)(SpawnQueue[_SpawnIndex]));
+		}
+		else
+		{
+			Entity* _Parent = SpawnQueue[_SpawnIndex].GetParent();
+			_Entity = &_Parent->EmplaceChild((Entity&&)(SpawnQueue[_SpawnIndex]));
 		}
 
-		Entity* _Parent = SpawnQueue[_SpawnIndex].GetParent();
+		_Queue.PushBack(_Entity);
 
-		_Parent->EmplaceChild((Entity&&)(SpawnQueue[_SpawnIndex]));
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+			{
+				_Current->GetScript()->OnSetup(*_Current, _Application, _Menu, _Manager, *this);
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+
+		SpawnQueue.Erase(_SpawnIndex);
 	}
-
-	SpawnQueue.Clear();
 }
 
 void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
