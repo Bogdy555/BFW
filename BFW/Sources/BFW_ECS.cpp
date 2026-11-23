@@ -2277,10 +2277,13 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 		}
 	}
 
-	for (size_t _DespawnIndex = 0; _DespawnIndex < DespawnQueue.GetSize(); _DespawnIndex++)
+	while (DespawnQueue.GetSize())
 	{
+		size_t _DespawnIndex = 0;
+
 		if ((Entity*)(DespawnQueue[_DespawnIndex]) == nullptr)
 		{
+			DespawnQueue.Erase(_DespawnIndex);
 			continue;
 		}
 
@@ -2288,41 +2291,12 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 		{
 			for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 			{
-				if ((Entity*)(DespawnQueue[_DespawnIndex]) == &Entities[_Index])
+				if ((Entity*)(DespawnQueue[_DespawnIndex]) != &Entities[_Index])
 				{
-					_Queue.PushBack(&Entities[_Index]);
-
-					while (_Queue.GetSize())
-					{
-						Entity* _Current = _Queue[_Queue.GetSize() - 1];
-						_Queue.Erase(_Queue.GetSize() - 1);
-
-						if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
-						{
-							_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
-						}
-
-						for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
-						{
-							_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
-						}
-					}
-
-					Entities.Erase(_Index);
-					break;
+					continue;
 				}
-			}
 
-			continue;
-		}
-
-		Entity* _Parent = DespawnQueue[_DespawnIndex]->GetParent();
-
-		for (size_t _Index = 0; _Index < _Parent->GetChildrenSize(); _Index++)
-		{
-			if ((Entity*)(DespawnQueue[_DespawnIndex]) == &_Parent->GetChild(_Index))
-			{
-				_Queue.PushBack((Entity*)(DespawnQueue[_DespawnIndex]));
+				_Queue.PushBack(&Entities[_Index]);
 
 				while (_Queue.GetSize())
 				{
@@ -2340,10 +2314,46 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 					}
 				}
 
-				_Parent->EraseChild(_Index);
+				Entities.Erase(_Index);
 				break;
 			}
+
+			DespawnQueue.Erase(_DespawnIndex);
+			continue;
 		}
+
+		Entity* _Parent = DespawnQueue[_DespawnIndex]->GetParent();
+
+		for (size_t _Index = 0; _Index < _Parent->GetChildrenSize(); _Index++)
+		{
+			if ((Entity*)(DespawnQueue[_DespawnIndex]) != &_Parent->GetChild(_Index))
+			{
+				continue;
+			}
+
+			_Queue.PushBack((Entity*)(DespawnQueue[_DespawnIndex]));
+
+			while (_Queue.GetSize())
+			{
+				Entity* _Current = _Queue[_Queue.GetSize() - 1];
+				_Queue.Erase(_Queue.GetSize() - 1);
+
+				if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+				{
+					_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+				}
+
+				for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+				{
+					_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+				}
+			}
+
+			_Parent->EraseChild(_Index);
+			break;
+		}
+
+		DespawnQueue.Erase(_DespawnIndex);
 	}
 
 	DespawnQueue.Clear();
