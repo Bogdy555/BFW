@@ -1627,7 +1627,7 @@ void BFW::ECS::Entity::ClearTags()
 
 void BFW::ECS::Entity::SetParent(Entity* _Parent)
 {
-	if (_Parent != nullptr && CurrentScene != _Parent->CurrentScene)
+	if (_Parent == this || (_Parent != nullptr && CurrentScene != _Parent->CurrentScene))
 	{
 		throw nullptr;
 	}
