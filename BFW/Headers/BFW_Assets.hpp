@@ -764,18 +764,18 @@ namespace BFW
 
 			const bool Flush();
 
-			void AddDynamicRawFile(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
-			void AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);
-			void AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset);
-			void AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset);
-			void AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset);
-			void AddDynamicMaterialLib(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib>& _Asset);
-			void AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
-			void AddDynamicXML(const BFW_CHAR_TYPE* _Name, SharedPointer<XML>& _Asset);
-			void AddDynamicCSS(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
-			void AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
-			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset);
-			void AddDynamicScriptLib(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib>& _Asset);
+			void AddDynamicRawFile(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset);
+			void AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap> _Asset);
+			void AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr> _Asset);
+			void AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave> _Asset);
+			void AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj> _Asset);
+			void AddDynamicMaterialLib(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib> _Asset);
+			void AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset);
+			void AddDynamicXML(const BFW_CHAR_TYPE* _Name, SharedPointer<XML> _Asset);
+			void AddDynamicCSS(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset);
+			void AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset);
+			void AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json> _Asset);
+			void AddDynamicScriptLib(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib> _Asset);
 
 			void AddDynamicRawFileRef(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset);
 			void AddDynamicBitMapRef(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset);

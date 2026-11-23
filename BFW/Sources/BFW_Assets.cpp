@@ -499,7 +499,7 @@ template <typename T, typename NextT> static void ManagerFlushQueueNext(BFW::Vec
 
 #endif
 
-template <typename T> static void ManagerAddDynamic(const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T>& _Asset, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
+template <typename T> static void ManagerAddDynamic(const BFW_CHAR_TYPE* _Name, BFW::SharedPointer<T> _Asset, BFW::Trie<BFW::SharedPointer<T>>& _Loaded, BFW::Trie<BFW::WeakPointer<T>>& _Cached, BFW::Vector<BFW_STRING_TYPE>& _CachedNames)
 {
 	if (!_Name || _Name[0] == BFW_STRING_PREFIX('\0') || !BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("Dynamic/")) || !(T*)(_Asset))
 	{
@@ -2350,62 +2350,62 @@ const bool BFW::Assets::Manager::Flush()
 	return true;
 }
 
-void BFW::Assets::Manager::AddDynamicRawFile(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+void BFW::Assets::Manager::AddDynamicRawFile(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset)
 {
 	ManagerAddDynamic<FileContent>(_Name, _Asset, LoadedRawFiles, CachedRawFiles, CachedRawFileNames);
 }
 
-void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap>& _Asset)
+void BFW::Assets::Manager::AddDynamicBitMap(const BFW_CHAR_TYPE* _Name, SharedPointer<BitMap> _Asset)
 {
 	ManagerAddDynamic<BitMap>(_Name, _Asset, LoadedBitMaps, CachedBitMaps, CachedBitMapNames);
 }
 
-void BFW::Assets::Manager::AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr>& _Asset)
+void BFW::Assets::Manager::AddDynamicHdr(const BFW_CHAR_TYPE* _Name, SharedPointer<Hdr> _Asset)
 {
 	ManagerAddDynamic<Hdr>(_Name, _Asset, LoadedHdrs, CachedHdrs, CachedHdrNames);
 }
 
-void BFW::Assets::Manager::AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave>& _Asset)
+void BFW::Assets::Manager::AddDynamicWave(const BFW_CHAR_TYPE* _Name, SharedPointer<Wave> _Asset)
 {
 	ManagerAddDynamic<Wave>(_Name, _Asset, LoadedWaves, CachedWaves, CachedWaveNames);
 }
 
-void BFW::Assets::Manager::AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj>& _Asset)
+void BFW::Assets::Manager::AddDynamicWaveFrontObj(const BFW_CHAR_TYPE* _Name, SharedPointer<WaveFrontObj> _Asset)
 {
 	ManagerAddDynamic<WaveFrontObj>(_Name, _Asset, LoadedWaveFrontObjs, CachedWaveFrontObjs, CachedWaveFrontObjNames);
 }
 
-void BFW::Assets::Manager::AddDynamicMaterialLib(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib>& _Asset)
+void BFW::Assets::Manager::AddDynamicMaterialLib(const BFW_CHAR_TYPE* _Name, SharedPointer<MaterialLib> _Asset)
 {
 	ManagerAddDynamic<MaterialLib>(_Name, _Asset, LoadedMaterialLibs, CachedMaterialLibs, CachedMaterialLibNames);
 }
 
-void BFW::Assets::Manager::AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+void BFW::Assets::Manager::AddDynamicGLSL(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset)
 {
 	ManagerAddDynamic<FileContent>(_Name, _Asset, LoadedGLSLs, CachedGLSLs, CachedGLSLNames);
 }
 
-void BFW::Assets::Manager::AddDynamicXML(const BFW_CHAR_TYPE* _Name, SharedPointer<XML>& _Asset)
+void BFW::Assets::Manager::AddDynamicXML(const BFW_CHAR_TYPE* _Name, SharedPointer<XML> _Asset)
 {
 	ManagerAddDynamic<XML>(_Name, _Asset, LoadedXMLs, CachedXMLs, CachedXMLNames);
 }
 
-void BFW::Assets::Manager::AddDynamicCSS(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+void BFW::Assets::Manager::AddDynamicCSS(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset)
 {
 	ManagerAddDynamic<FileContent>(_Name, _Asset, LoadedCSSs, CachedCSSs, CachedCSSNames);
 }
 
-void BFW::Assets::Manager::AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent>& _Asset)
+void BFW::Assets::Manager::AddDynamicJavaScript(const BFW_CHAR_TYPE* _Name, SharedPointer<FileContent> _Asset)
 {
 	ManagerAddDynamic<FileContent>(_Name, _Asset, LoadedJavaScripts, CachedJavaScripts, CachedJavaScriptNames);
 }
 
-void BFW::Assets::Manager::AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json>& _Asset)
+void BFW::Assets::Manager::AddDynamicJson(const BFW_CHAR_TYPE* _Name, SharedPointer<Json> _Asset)
 {
 	ManagerAddDynamic<Json>(_Name, _Asset, LoadedJsons, CachedJsons, CachedJsonNames);
 }
 
-void BFW::Assets::Manager::AddDynamicScriptLib(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib>& _Asset)
+void BFW::Assets::Manager::AddDynamicScriptLib(const BFW_CHAR_TYPE* _Name, SharedPointer<ScriptLib> _Asset)
 {
 	ManagerAddDynamic<ScriptLib>(_Name, _Asset, LoadedScriptLibs, CachedScriptLibs, CachedScriptLibNames);
 }
