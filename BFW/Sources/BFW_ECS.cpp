@@ -2150,7 +2150,7 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 	return true;
 }
 
-const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
 {
 	Vector<Entity*> _Queue;
 
@@ -2213,7 +2213,15 @@ const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::M
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr && _Current->GetScript()->GetScriptLibName().size() != 0)
 			{
 				_Current->GetScript()->SetScript(_Current->GetScript()->GetScriptLibName(), _Manager.GetScriptLib(_Current->GetScript()->GetScriptLibName().c_str()), _Current->GetScript()->GetNameSpace());
-				_Current->GetScript()->OnSetup(*_Current, _Application, _Menu, _Manager, *this);
+
+				try
+				{
+					_Current->GetScript()->OnSetup(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on setup!"));
+				}
 			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2226,7 +2234,7 @@ const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::M
 	return true;
 }
 
-void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
 {
 	Vector<Entity*> _Queue;
 
@@ -2241,7 +2249,14 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 			{
-				_Current->GetScript()->OnUpdate(*_Current, _Application, _Menu, _Manager, *this);
+				try
+				{
+					_Current->GetScript()->OnUpdate(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on update!"));
+				}
 			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2252,7 +2267,7 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 	}
 }
 
-void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
 {
 	Vector<Entity*> _Queue;
 
@@ -2267,7 +2282,14 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 			{
-				_Current->GetScript()->OnLateUpdate(*_Current, _Application, _Menu, _Manager, *this);
+				try
+				{
+					_Current->GetScript()->OnLateUpdate(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on late update!"));
+				}
 			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2305,7 +2327,14 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 
 					if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 					{
-						_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+						try
+						{
+							_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+						}
+						catch (...)
+						{
+							_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
+						}
 					}
 
 					for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2340,7 +2369,14 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 
 				if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 				{
-					_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+					try
+					{
+						_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+					}
+					catch (...)
+					{
+						_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
+					}
 				}
 
 				for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2381,7 +2417,14 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 			{
-				_Current->GetScript()->OnSetup(*_Current, _Application, _Menu, _Manager, *this);
+				try
+				{
+					_Current->GetScript()->OnSetup(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on setup!"));
+				}
 			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2394,7 +2437,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 	}
 }
 
-void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
 {
 	Vector<Entity*> _Queue;
 
@@ -2409,7 +2452,14 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::M
 
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 			{
-				_Current->GetScript()->OnFixedUpdate(*_Current, _Application, _Menu, _Manager, *this);
+				try
+				{
+					_Current->GetScript()->OnFixedUpdate(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on fixed update!"));
+				}
 			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2420,7 +2470,7 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::M
 	}
 }
 
-void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
 {
 	Vector<Entity*> _Queue;
 
@@ -2435,7 +2485,14 @@ void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& 
 
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 			{
-				_Current->GetScript()->OnRender(*_Current, _Application, _Menu, _Manager, *this);
+				try
+				{
+					_Current->GetScript()->OnRender(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on render!"));
+				}
 			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
@@ -2446,7 +2503,7 @@ void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& 
 	}
 }
 
-void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
 {
 	Vector<Entity*> _Queue;
 
@@ -2461,7 +2518,15 @@ void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _M
 
 			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
 			{
-				_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+				try
+				{
+					_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+				}
+				catch (...)
+				{
+					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
+				}
+
 				_Current->GetScript()->SetScript(_Current->GetScript()->GetScriptLibName(), SharedPointer<Assets::ScriptLib>(), _Current->GetScript()->GetNameSpace());
 			}
 
