@@ -134,7 +134,7 @@ namespace BFW
 
 			const bool Deserialize(const Assets::Json& _Json);
 
-			void SetScript(const BFW_STRING_VIEW_TYPE& _ScriptLibName, const BFW_STRING_VIEW_TYPE& _NameSpace);
+			void SetScript(const BFW_STRING_VIEW_TYPE& _ScriptLibName, const SharedPointer<Assets::ScriptLib> _ScriptLib, const BFW_STRING_VIEW_TYPE& _NameSpace);
 
 			void OnSetup(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
 			void OnUpdate(Entity& _Entity, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene);
@@ -259,7 +259,7 @@ namespace BFW
 
 			const bool Deserialize(const Assets::Json& _Json);
 
-			void Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
+			const bool Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
 			void Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
 			void LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);
 			void FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager);

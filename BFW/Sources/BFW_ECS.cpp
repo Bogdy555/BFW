@@ -1059,10 +1059,10 @@ const bool BFW::ECS::ScriptComponent::Deserialize(const Assets::Json& _Json)
 	return true;
 }
 
-void BFW::ECS::ScriptComponent::SetScript(const BFW_STRING_VIEW_TYPE& _ScriptLibName, const BFW_STRING_VIEW_TYPE& _NameSpace)
+void BFW::ECS::ScriptComponent::SetScript(const BFW_STRING_VIEW_TYPE& _ScriptLibName, const SharedPointer<Assets::ScriptLib> _ScriptLib, const BFW_STRING_VIEW_TYPE& _NameSpace)
 {
 	ScriptLibName = _ScriptLibName;
-	ScriptLib.Release();
+	ScriptLib = _ScriptLib;
 	NameSpace = _NameSpace;
 	Object = Assets::Json();
 	SerializedData = Assets::Json();
@@ -1966,12 +1966,12 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 
 
 
-BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr)
+BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr)
 {
 
 }
 
-BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Other.Name), Entities(_Other.Entities), CameraComponents(), LightComponents(), SpawnQueue(_Other.SpawnQueue), DespawnQueue(), ActiveCamera(nullptr)
+BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Other.Name), Entities(_Other.Entities), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue(_Other.SpawnQueue), DespawnQueue(), ActiveCamera(nullptr)
 {
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2030,7 +2030,7 @@ BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Oth
 	}
 }
 
-BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(_Other.GUID), Name(_Other.Name), Entities((Vector<Entity>&&)(_Other.Entities)), CameraComponents(), LightComponents(), SpawnQueue((Vector<Entity>&&)(_Other.SpawnQueue)), DespawnQueue((Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue)), ActiveCamera((SafePointer<CameraComponent>)(_Other.ActiveCamera))
+BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(_Other.GUID), Name(_Other.Name), Entities((Vector<Entity>&&)(_Other.Entities)), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue((Vector<Entity>&&)(_Other.SpawnQueue)), DespawnQueue((Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue)), ActiveCamera((SafePointer<CameraComponent>)(_Other.ActiveCamera))
 {
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2150,9 +2150,9 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 	return true;
 }
 
-void BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
-	Vector<const Entity*> _Queue;
+	Vector<Entity*> _Queue;
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2160,10 +2160,34 @@ void BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _
 
 		while (_Queue.GetSize())
 		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr && _Current->GetScript()->GetScriptLibName().size() != 0)
+			{
+#ifdef BFW_WINDOWS_PLATFORM
 
+				size_t _Id = 0;
+				BFW_STRING_STREAM_TYPE _Stream(_Current->GetScript()->GetScriptLibName());
+				_Stream.imbue(std::locale::classic());
+
+				if ((_Stream >> _Id) && _Stream.eof())
+				{
+					_Manager.QueueResourceScriptLib(_Id);
+				}
+				else
+				{
+					_Manager.QueueScriptLib(_Current->GetScript()->GetScriptLibName().c_str());
+				}
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+				_Manager.QueueScriptLib(_Current->GetScript()->GetScriptLibName().c_str());
+
+#endif
+			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -2172,12 +2196,10 @@ void BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _
 		}
 	}
 
-	_Manager.Flush();
-}
-
-void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
-{
-	Vector<const Entity*> _Queue;
+	if (!_Manager.Flush())
+	{
+		return false;
+	}
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2185,10 +2207,68 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 
 		while (_Queue.GetSize())
 		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr && _Current->GetScript()->GetScriptLibName().size() != 0)
+			{
+				_Current->GetScript()->SetScript(_Current->GetScript()->GetScriptLibName(), _Manager.GetScriptLib(_Current->GetScript()->GetScriptLibName().c_str()), _Current->GetScript()->GetNameSpace());
+				_Current->GetScript()->OnSetup(*_Current, _Application, _Menu, _Manager, *this);
+			}
 
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+
+	return true;
+}
+
+void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+{
+	Vector<Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+			{
+				_Current->GetScript()->OnUpdate(*_Current, _Application, _Menu, _Manager, *this);
+			}
+
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+}
+
+void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
+{
+	Vector<Entity*> _Queue;
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+			{
+				_Current->GetScript()->OnLateUpdate(*_Current, _Application, _Menu, _Manager, *this);
+			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -2210,6 +2290,24 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 			{
 				if ((Entity*)(DespawnQueue[_DespawnIndex]) == &Entities[_Index])
 				{
+					_Queue.PushBack(&Entities[_Index]);
+
+					while (_Queue.GetSize())
+					{
+						Entity* _Current = _Queue[_Queue.GetSize() - 1];
+						_Queue.Erase(_Queue.GetSize() - 1);
+
+						if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+						{
+							_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+						}
+
+						for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+						{
+							_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+						}
+					}
+
 					Entities.Erase(_Index);
 					break;
 				}
@@ -2224,6 +2322,24 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 		{
 			if ((Entity*)(DespawnQueue[_DespawnIndex]) == &_Parent->GetChild(_Index))
 			{
+				_Queue.PushBack((Entity*)(DespawnQueue[_DespawnIndex]));
+
+				while (_Queue.GetSize())
+				{
+					Entity* _Current = _Queue[_Queue.GetSize() - 1];
+					_Queue.Erase(_Queue.GetSize() - 1);
+
+					if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+					{
+						_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+					}
+
+					for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+					{
+						_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+					}
+				}
+
 				_Parent->EraseChild(_Index);
 				break;
 			}
@@ -2248,32 +2364,9 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 	SpawnQueue.Clear();
 }
 
-void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
-{
-	Vector<const Entity*> _Queue;
-
-	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
-	{
-		_Queue.PushBack(&Entities[_Index]);
-
-		while (_Queue.GetSize())
-		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
-			_Queue.Erase(_Queue.GetSize() - 1);
-
-
-
-			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
-			{
-				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
-			}
-		}
-	}
-}
-
 void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
-	Vector<const Entity*> _Queue;
+	Vector<Entity*> _Queue;
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2281,10 +2374,13 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::M
 
 		while (_Queue.GetSize())
 		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
-
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+			{
+				_Current->GetScript()->OnFixedUpdate(*_Current, _Application, _Menu, _Manager, *this);
+			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -2296,7 +2392,7 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::M
 
 void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
-	Vector<const Entity*> _Queue;
+	Vector<Entity*> _Queue;
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2304,10 +2400,13 @@ void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& 
 
 		while (_Queue.GetSize())
 		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
-
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+			{
+				_Current->GetScript()->OnRender(*_Current, _Application, _Menu, _Manager, *this);
+			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -2319,7 +2418,7 @@ void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& 
 
 void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager)
 {
-	Vector<const Entity*> _Queue;
+	Vector<Entity*> _Queue;
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2327,10 +2426,56 @@ void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _M
 
 		while (_Queue.GetSize())
 		{
-			const Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
 			_Queue.Erase(_Queue.GetSize() - 1);
 
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr)
+			{
+				_Current->GetScript()->OnStop(*_Current, _Application, _Menu, _Manager, *this);
+				_Current->GetScript()->SetScript(_Current->GetScript()->GetScriptLibName(), SharedPointer<Assets::ScriptLib>(), _Current->GetScript()->GetNameSpace());
+			}
 
+			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
+			{
+				_Queue.PushBack(&_Current->GetChild(_Current->GetChildrenSize() - 1 - _Child));
+			}
+		}
+	}
+
+	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
+	{
+		_Queue.PushBack(&Entities[_Index]);
+
+		while (_Queue.GetSize())
+		{
+			Entity* _Current = _Queue[_Queue.GetSize() - 1];
+			_Queue.Erase(_Queue.GetSize() - 1);
+
+			if ((ScriptComponent*)(_Current->GetScript()) != nullptr && _Current->GetScript()->GetScriptLibName().size() != 0)
+			{
+#ifdef BFW_WINDOWS_PLATFORM
+
+				size_t _Id = 0;
+				BFW_STRING_STREAM_TYPE _Stream(_Current->GetScript()->GetScriptLibName());
+				_Stream.imbue(std::locale::classic());
+
+				if ((_Stream >> _Id) && _Stream.eof())
+				{
+					_Manager.ReleaseResourceScriptLib(_Id);
+				}
+				else
+				{
+					_Manager.ReleaseScriptLib(_Current->GetScript()->GetScriptLibName().c_str());
+				}
+
+#endif
+
+#if defined BFW_LINUX_PLATFORM || defined BFW_ESP32_PLATFORM
+
+				_Manager.ReleaseScriptLib(_Current->GetScript()->GetScriptLibName().c_str());
+
+#endif
+			}
 
 			for (size_t _Child = 0; _Child < _Current->GetChildrenSize(); _Child++)
 			{
@@ -2428,6 +2573,7 @@ void BFW::ECS::Scene::Clear()
 	Entities.Clear();
 	CameraComponents.Clear();
 	LightComponents.Clear();
+	ScriptComponents.Clear();
 	SpawnQueue.Clear();
 	DespawnQueue.Clear();
 }
