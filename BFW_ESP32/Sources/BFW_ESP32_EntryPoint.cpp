@@ -4,7 +4,14 @@
 
 void setup()
 {
-	delay(2000);
+	Serial.end();
+
+	Serial.begin(115200);
+
+	while (!Serial)
+	{
+
+	}
 
 	pinMode(10, OUTPUT);
 	digitalWrite(10, HIGH);
