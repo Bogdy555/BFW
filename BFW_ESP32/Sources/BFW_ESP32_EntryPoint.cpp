@@ -4,6 +4,8 @@
 
 void setup()
 {
+	delay(2000);
+
 	pinMode(10, OUTPUT);
 	digitalWrite(10, HIGH);
 
