@@ -2709,7 +2709,7 @@ void BFW::ECS::Scene::SetActiveCamera(const CameraComponent* _ActiveCamera)
 
 void BFW::ECS::Scene::SetSimulationSpeed(const float _SimulationSpeed)
 {
-	SimulationSpeed = _SimulationSpeed;
+	SimulationSpeed = Math::Max(_SimulationSpeed, 0.0f);
 }
 
 void BFW::ECS::Scene::SetQueuedScene(const BFW_STRING_VIEW_TYPE& _QueuedScene)

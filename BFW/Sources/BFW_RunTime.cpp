@@ -230,12 +230,12 @@ void BFW::RunTime::Application::UpdateCurrentFrameTime()
 
 void BFW::RunTime::Application::SetLagTime(const float _LagTime)
 {
-	LagTime = _LagTime;
+	LagTime = Math::Max(_LagTime, 0.0f);
 }
 
 void BFW::RunTime::Application::SetSimulationSpeed(const float _SimulationSpeed)
 {
-	SimulationSpeed = _SimulationSpeed;
+	SimulationSpeed = Math::Max(_SimulationSpeed, 0.0f);
 }
 
 void BFW::RunTime::Application::SetSync(const uint64_t _Sync)
