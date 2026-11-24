@@ -171,7 +171,40 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 
 					try
 					{
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 						_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+						if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("../")))
+						{
+							throw nullptr;
+						}
+						else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX("."))
+						{
+							throw nullptr;
+						}
+						else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX(".."))
+						{
+							throw nullptr;
+						}
+						else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
+						{
+							_LastWrite = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + (_Name + 2)).last_write_time().time_since_epoch().count();
+						}
+						else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
+						{
+							_LastWrite = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + (_Name + 1)).last_write_time().time_since_epoch().count();
+						}
+						else
+						{
+							_LastWrite = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _Name).last_write_time().time_since_epoch().count();
+						}
+
+#endif
 					}
 					catch (...)
 					{
@@ -553,7 +586,40 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 
 		try
 		{
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 			_LastWriteValue = std::filesystem::directory_entry(_CachedNames[_Index]).last_write_time().time_since_epoch().count();
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+			if (_CachedNames[_Index].starts_with(BFW_STRING_PREFIX("../")))
+			{
+				throw nullptr;
+			}
+			else if (_CachedNames[_Index] == BFW_STRING_PREFIX("."))
+			{
+				throw nullptr;
+			}
+			else if (_CachedNames[_Index] == BFW_STRING_PREFIX(".."))
+			{
+				throw nullptr;
+			}
+			else if (_CachedNames[_Index].starts_with(BFW_STRING_PREFIX("./")))
+			{
+				_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _CachedNames[_Index].substr(2)).last_write_time().time_since_epoch().count();
+			}
+			else if (_CachedNames[_Index].starts_with(BFW_STRING_PREFIX("/")))
+			{
+				_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _CachedNames[_Index].substr(1)).last_write_time().time_since_epoch().count();
+			}
+			else
+			{
+				_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _CachedNames[_Index]).last_write_time().time_since_epoch().count();
+			}
+
+#endif
 		}
 		catch (...)
 		{
@@ -766,7 +832,40 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 
 	try
 	{
+#if defined BFW_WINDOWS_PLATFORM || defined BFW_LINUX_PLATFORM
+
 		_LastWriteValue = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
+
+#endif
+
+#ifdef BFW_ESP32_PLATFORM
+
+		if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("../")))
+		{
+			throw nullptr;
+		}
+		else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX("."))
+		{
+			throw nullptr;
+		}
+		else if (BFW_STRING_TYPE(_Name) == BFW_STRING_PREFIX(".."))
+		{
+			throw nullptr;
+		}
+		else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
+		{
+			_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + (_Name + 2)).last_write_time().time_since_epoch().count();
+		}
+		else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
+		{
+			_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + (_Name + 1)).last_write_time().time_since_epoch().count();
+		}
+		else
+		{
+			_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _Name).last_write_time().time_since_epoch().count();
+		}
+
+#endif
 	}
 	catch (...)
 	{
