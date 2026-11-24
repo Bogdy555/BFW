@@ -12,7 +12,7 @@ Compiler=g++
 Linker=g++
 Files="BFW_LINUX_EntryPoint BFW_LINUX_RunTime_Application BFW_LINUX_RunTime_MainMenu"
 CompileFlags="-Wall -Wno-unused-variable -std=c++20 -I./BFW/Headers/ -DBFW_LINUX_PLATFORM -DBFW_LITTLE_ENDIAN -DBFW_LINK_DYNAMIC"
-LinkFlags="-L./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/ -lBFW_DYNAMIC"
+LinkFlags="-rdynamic -L./Binaries/BFW_DYNAMIC/Linux/$Configuration/$Platform/ -lBFW_DYNAMIC"
 
 if [ "$Configuration" == "Debug" ]; then
 	CompileFlags="$CompileFlags -g -O0 -DBFW_DEBUG"

@@ -1075,8 +1075,8 @@ void BFW::ECS::ScriptComponent::OnSetup(Entity& _Entity, RunTime::Application& _
 		return;
 	}
 
-	void (__stdcall *_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
-		(void (__stdcall *)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
+	void (*_Symbol)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene) =
+		(void (*)(Entity& _Entity, Assets::Json& _Object, Assets::Json& _SerializedData, RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Scene& _Scene))
 		(ScriptLib->GetSymbol(NameSpace, BFW_STRING_PREFIX("OnSetup")));
 
 	if (!_Symbol)

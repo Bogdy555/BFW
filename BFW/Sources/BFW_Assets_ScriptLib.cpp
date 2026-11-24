@@ -333,7 +333,41 @@ const bool BFW::Assets::ScriptLib::Start()
 		return true;
 	}
 
-	Handle = dlopen(BFW_MACHINE_TO_UTF8(Lib, nullptr).c_str(), RTLD_LAZY);
+	bool _Error = false;
+
+	BFW_STRING_TYPE_A _Lib = BFW_MACHINE_TO_UTF8(Lib, &_Error);
+
+	if (_Error)
+	{
+		return false;
+	}
+
+	BFW_CHAR_TYPE_A _Path[PATH_MAX];
+
+	size_t _Length = readlink("/proc/self/exe", _Path, PATH_MAX - 1);
+
+	if (_Length == std::numeric_limits<size_t>::max())
+	{
+		return false;
+	}
+
+	_Path[_Length] = '\0';
+
+	try
+	{
+		if (std::filesystem::weakly_canonical(std::filesystem::absolute(_Lib)).lexically_normal() == std::filesystem::weakly_canonical(std::filesystem::absolute(_Path)).lexically_normal())
+		{
+			Handle = dlopen(nullptr, RTLD_LAZY);
+		}
+		else
+		{
+			Handle = dlopen(_Lib.c_str(), RTLD_LAZY);
+		}
+	}
+	catch (...)
+	{
+		return false;
+	}
 
 	if (!Handle)
 	{
