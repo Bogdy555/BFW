@@ -1966,12 +1966,12 @@ BFW::ECS::Entity& BFW::ECS::Entity::operator= (Entity&& _Other) noexcept
 
 
 
-BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr)
+BFW::ECS::Scene::Scene() : GUID(GUID::GetString()), Name(BFW_STRING_PREFIX("Name")), Entities(), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue(), DespawnQueue(), ActiveCamera(nullptr), SimulationSpeed(1.0f), QueuedScene(BFW_STRING_PREFIX(""))
 {
 
 }
 
-BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Other.Name), Entities(_Other.Entities), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue(_Other.SpawnQueue), DespawnQueue(), ActiveCamera(nullptr)
+BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Other.Name), Entities(_Other.Entities), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue(_Other.SpawnQueue), DespawnQueue(), ActiveCamera(nullptr), SimulationSpeed(_Other.SimulationSpeed), QueuedScene(_Other.QueuedScene)
 {
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2030,7 +2030,7 @@ BFW::ECS::Scene::Scene(const Scene& _Other) : GUID(GUID::GetString()), Name(_Oth
 	}
 }
 
-BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(_Other.GUID), Name(_Other.Name), Entities((Vector<Entity>&&)(_Other.Entities)), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue((Vector<Entity>&&)(_Other.SpawnQueue)), DespawnQueue((Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue)), ActiveCamera((SafePointer<CameraComponent>)(_Other.ActiveCamera))
+BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(_Other.GUID), Name(_Other.Name), Entities((Vector<Entity>&&)(_Other.Entities)), CameraComponents(), LightComponents(), ScriptComponents(), SpawnQueue((Vector<Entity>&&)(_Other.SpawnQueue)), DespawnQueue((Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue)), ActiveCamera((SafePointer<CameraComponent>)(_Other.ActiveCamera)), SimulationSpeed(_Other.SimulationSpeed), QueuedScene(_Other.QueuedScene)
 {
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -2044,6 +2044,8 @@ BFW::ECS::Scene::Scene(Scene&& _Other) noexcept : GUID(_Other.GUID), Name(_Other
 
 	_Other.GUID = GUID::GetString();
 	_Other.Name = BFW_STRING_PREFIX("Name");
+	_Other.SimulationSpeed = 1.0f;
+	_Other.QueuedScene = BFW_STRING_PREFIX("");
 }
 
 BFW::ECS::Scene::~Scene()
@@ -2705,6 +2707,16 @@ void BFW::ECS::Scene::SetActiveCamera(const CameraComponent* _ActiveCamera)
 	throw nullptr;
 }
 
+void BFW::ECS::Scene::SetSimulationSpeed(const float _SimulationSpeed)
+{
+	SimulationSpeed = _SimulationSpeed;
+}
+
+void BFW::ECS::Scene::SetQueuedScene(const BFW_STRING_VIEW_TYPE& _QueuedScene)
+{
+	QueuedScene = _QueuedScene;
+}
+
 const BFW::Assets::Json BFW::ECS::Scene::Serialize() const
 {
 	Assets::Json _Result;
@@ -3033,6 +3045,16 @@ const BFW::ECS::CameraComponent* BFW::ECS::Scene::GetActiveCamera() const
 	return (const CameraComponent*)(ActiveCamera);
 }
 
+const float BFW::ECS::Scene::GetSimulationSpeed() const
+{
+	return SimulationSpeed;
+}
+
+const BFW_STRING_TYPE& BFW::ECS::Scene::GetQueuedScene() const
+{
+	return QueuedScene;
+}
+
 const size_t BFW::ECS::Scene::GetTotalCount() const
 {
 	size_t _Size = 0;
@@ -3090,6 +3112,8 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (const Scene& _Other)
 	Entities = _Other.Entities;
 	SpawnQueue = _Other.SpawnQueue;
 	ActiveCamera = nullptr;
+	SimulationSpeed = _Other.SimulationSpeed;
+	QueuedScene = _Other.QueuedScene;
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -3166,6 +3190,8 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (Scene&& _Other) noexcept
 	SpawnQueue = (Vector<Entity>&&)(_Other.SpawnQueue);
 	DespawnQueue = (Vector<SafePointer<Entity>>&&)(_Other.DespawnQueue);
 	ActiveCamera = (SafePointer<CameraComponent>)(_Other.ActiveCamera);
+	SimulationSpeed = _Other.SimulationSpeed;
+	QueuedScene = _Other.QueuedScene;
 
 	for (size_t _Index = 0; _Index < Entities.GetSize(); _Index++)
 	{
@@ -3179,6 +3205,8 @@ BFW::ECS::Scene& BFW::ECS::Scene::operator= (Scene&& _Other) noexcept
 
 	_Other.GUID = GUID::GetString();
 	_Other.Name = BFW_STRING_PREFIX("Name");
+	_Other.SimulationSpeed = 1.0f;
+	_Other.QueuedScene = BFW_STRING_PREFIX("");
 
 	return *this;
 }

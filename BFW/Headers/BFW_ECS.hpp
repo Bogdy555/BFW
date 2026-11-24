@@ -278,8 +278,9 @@ namespace BFW
 			void Clear();
 
 			const bool SetName(const BFW_STRING_VIEW_TYPE& _Name);
-
 			void SetActiveCamera(const CameraComponent* _ActiveCamera);
+			void SetSimulationSpeed(const float _SimulationSpeed);
+			void SetQueuedScene(const BFW_STRING_VIEW_TYPE& _QueuedScene);
 
 			const Assets::Json Serialize() const;
 
@@ -295,9 +296,10 @@ namespace BFW
 
 			const BFW_STRING_TYPE& GetGUID() const;
 			const BFW_STRING_TYPE& GetName() const;
-
 			CameraComponent* GetActiveCamera();
 			const CameraComponent* GetActiveCamera() const;
+			const float GetSimulationSpeed() const;
+			const BFW_STRING_TYPE& GetQueuedScene() const;
 
 			const size_t GetTotalCount() const;
 			const size_t GetRootCount() const;
@@ -323,6 +325,10 @@ namespace BFW
 			Vector<SafePointer<Entity>> DespawnQueue;
 
 			SafePointer<CameraComponent> ActiveCamera;
+
+			float SimulationSpeed;
+
+			BFW_STRING_TYPE QueuedScene;
 
 		};
 
