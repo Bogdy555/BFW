@@ -2150,7 +2150,7 @@ const bool BFW::ECS::Scene::Deserialize(const Assets::Json& _Json)
 	return true;
 }
 
-const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
+const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors)
 {
 	Vector<Entity*> _Queue;
 
@@ -2220,7 +2220,7 @@ const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::M
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on setup!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on setup!"));
 				}
 			}
 
@@ -2234,7 +2234,7 @@ const bool BFW::ECS::Scene::Setup(RunTime::Application& _Application, RunTime::M
 	return true;
 }
 
-void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
+void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors)
 {
 	Vector<Entity*> _Queue;
 
@@ -2255,7 +2255,7 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on update!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on update!"));
 				}
 			}
 
@@ -2267,7 +2267,7 @@ void BFW::ECS::Scene::Update(RunTime::Application& _Application, RunTime::Menu& 
 	}
 }
 
-void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
+void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors)
 {
 	Vector<Entity*> _Queue;
 
@@ -2288,7 +2288,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on late update!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on late update!"));
 				}
 			}
 
@@ -2333,7 +2333,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 						}
 						catch (...)
 						{
-							_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
+							_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
 						}
 					}
 
@@ -2375,7 +2375,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 					}
 					catch (...)
 					{
-						_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
+						_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
 					}
 				}
 
@@ -2423,7 +2423,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on setup!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on setup!"));
 				}
 			}
 
@@ -2437,7 +2437,7 @@ void BFW::ECS::Scene::LateUpdate(RunTime::Application& _Application, RunTime::Me
 	}
 }
 
-void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
+void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors)
 {
 	Vector<Entity*> _Queue;
 
@@ -2458,7 +2458,7 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::M
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on fixed update!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on fixed update!"));
 				}
 			}
 
@@ -2470,7 +2470,7 @@ void BFW::ECS::Scene::FixedUpdate(RunTime::Application& _Application, RunTime::M
 	}
 }
 
-void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
+void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors)
 {
 	Vector<Entity*> _Queue;
 
@@ -2491,7 +2491,7 @@ void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& 
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on render!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on render!"));
 				}
 			}
 
@@ -2503,7 +2503,7 @@ void BFW::ECS::Scene::Render(RunTime::Application& _Application, RunTime::Menu& 
 	}
 }
 
-void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings)
+void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors)
 {
 	Vector<Entity*> _Queue;
 
@@ -2524,7 +2524,7 @@ void BFW::ECS::Scene::Stop(RunTime::Application& _Application, RunTime::Menu& _M
 				}
 				catch (...)
 				{
-					_Warnings.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
+					_Errors.PushBack(_Current->GetName() + BFW_STRING_PREFIX(" (") + _Current->GetGUID() + BFW_STRING_PREFIX(") crashed on stop!"));
 				}
 
 				_Current->GetScript()->SetScript(_Current->GetScript()->GetScriptLibName(), SharedPointer<Assets::ScriptLib>(), _Current->GetScript()->GetNameSpace());

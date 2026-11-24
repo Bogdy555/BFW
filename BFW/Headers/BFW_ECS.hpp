@@ -259,12 +259,12 @@ namespace BFW
 
 			const bool Deserialize(const Assets::Json& _Json);
 
-			const bool Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings);
-			void Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings);
-			void LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings);
-			void FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings);
-			void Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings);
-			void Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Warnings);
+			const bool Setup(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors);
+			void Update(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors);
+			void LateUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors);
+			void FixedUpdate(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors);
+			void Render(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors);
+			void Stop(RunTime::Application& _Application, RunTime::Menu& _Menu, Assets::Manager& _Manager, Vector<BFW_STRING_TYPE>& _Errors);
 
 			Entity& Add(Entity* _Parent = nullptr);
 			Entity& Add(const Entity& _Entity, Entity* _Parent = nullptr);

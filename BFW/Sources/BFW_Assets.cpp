@@ -152,6 +152,10 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 					{
 						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 2), std::ios::binary);
 					}
+					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/sdcard")))
+					{
+						_InStream.open(_Name, std::ios::binary);
+					}
 					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
 					{
 						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 1), std::ios::binary);
@@ -194,6 +198,10 @@ template <typename T> static void ManagerFlushSpawn(BFW::Vector<std::thread>& _T
 						else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
 						{
 							_LastWrite = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + (_Name + 2)).last_write_time().time_since_epoch().count();
+						}
+						else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/sdcard")))
+						{
+							_LastWrite = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
 						}
 						else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
 						{
@@ -610,6 +618,10 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 			{
 				_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _CachedNames[_Index].substr(2)).last_write_time().time_since_epoch().count();
 			}
+			else if (_CachedNames[_Index].starts_with(BFW_STRING_PREFIX("/sdcard")))
+			{
+				_LastWriteValue = std::filesystem::directory_entry(_CachedNames[_Index]).last_write_time().time_since_epoch().count();
+			}
 			else if (_CachedNames[_Index].starts_with(BFW_STRING_PREFIX("/")))
 			{
 				_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + _CachedNames[_Index].substr(1)).last_write_time().time_since_epoch().count();
@@ -671,6 +683,10 @@ template <typename T> static void ManagerUpdate(BFW::Vector<std::thread>& _Threa
 					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
 					{
 						_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 2), std::ios::binary);
+					}
+					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/sdcard")))
+					{
+						_InStream.open(_Name, std::ios::binary);
 					}
 					else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
 					{
@@ -798,6 +814,10 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 	{
 		_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 2), std::ios::binary);
 	}
+	else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/sdcard")))
+	{
+		_InStream.open(_Name, std::ios::binary);
+	}
 	else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
 	{
 		_InStream.open(BFW_STRING_TYPE("/sdcard/") + (_Name + 1), std::ios::binary);
@@ -855,6 +875,10 @@ template <typename T> static BFW::SharedPointer<T> ManagerGet(const BFW_CHAR_TYP
 		else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("./")))
 		{
 			_LastWriteValue = std::filesystem::directory_entry(BFW_STRING_TYPE("/sdcard/") + (_Name + 2)).last_write_time().time_since_epoch().count();
+		}
+		else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/sdcard")))
+		{
+			_LastWriteValue = std::filesystem::directory_entry(_Name).last_write_time().time_since_epoch().count();
 		}
 		else if (BFW_STRING_TYPE(_Name).starts_with(BFW_STRING_PREFIX("/")))
 		{
