@@ -232,6 +232,7 @@
     <ClInclude Include="Headers\BFW_Macros.hpp" />
     <ClInclude Include="Headers\BFW_Math.hpp" />
     <ClInclude Include="Headers\BFW_MultiProcessing.hpp" />
+    <ClInclude Include="Headers\BFW_Rasterizer.hpp" />
     <ClInclude Include="Headers\BFW_Resources.hpp" />
     <ClInclude Include="Headers\BFW_RunTime.hpp" />
     <ClInclude Include="Headers\BFW_SmartPointers.hpp" />
@@ -269,6 +270,7 @@
     <ClCompile Include="Sources\BFW_Math_Random.cpp" />
     <ClCompile Include="Sources\BFW_Math_Vector.cpp" />
     <ClCompile Include="Sources\BFW_MultiProcessing.cpp" />
+    <ClCompile Include="Sources\BFW_Rasterizer.cpp" />
     <ClCompile Include="Sources\BFW_RunTime.cpp" />
     <ClCompile Include="Sources\BFW_String.cpp" />
     <ClCompile Include="Sources\BFW_Time.cpp" />

@@ -200,6 +200,53 @@ namespace BFW
 
 	}
 
+	namespace Rasterizer
+	{
+
+		enum BFW_API DataTypes : const uint8_t;
+
+		enum BFW_API LerpingTypes : const uint8_t;
+
+		enum BFW_API WrappingTypes : const uint8_t;
+
+		enum BFW_API Shapes : const uint8_t;
+
+		enum BFW_API CullingTypes : const uint8_t;
+
+		enum BFW_API DepthTestingTypes : const uint8_t;
+
+		enum BFW_API BlendingTypes : const uint8_t;
+
+		class BFW_API VertexBuffer;
+
+		class BFW_API IndexBuffer;
+
+		struct BFW_API VertexArrayEntry;
+
+		class BFW_API VertexArray;
+
+		typedef const Math::Vec4 (*VertexShaderFnc)(); ...; // ia in calcul tot opengl support ul incluzand flat vao si uniform buffers
+
+		typedef void (*GeometryShaderFnc)(); ...; // ia in calcul tot opengl support ul
+
+		typedef void (*FragmentShaderFnc)(); ...; // ia in calcul tot opengl support ul
+
+		struct BFW_API Program;
+
+		class BFW_API TextureSDR;
+
+		class BFW_API TextureHDR;
+
+		class BFW_API CubeTextureSDR;
+
+		class BFW_API CubeTextureHDR;
+
+		class BFW_API FrameBuffer;
+
+		class BFW_API Context;
+
+	}
+
 	namespace RunTime
 	{
 

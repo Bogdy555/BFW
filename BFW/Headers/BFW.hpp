@@ -24,6 +24,8 @@
 
 #include "BFW_MultiProcessing.hpp"
 
+#include "BFW_Rasterizer.hpp"
+
 #include "BFW_RunTime.hpp"
 
 #include "BFW_Input.hpp"
