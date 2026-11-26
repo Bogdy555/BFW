@@ -205,9 +205,11 @@ namespace BFW
 
 		enum BFW_API DataTypes : const uint8_t;
 
-		enum BFW_API LerpingTypes : const uint8_t;
+		enum BFW_API FilteringTypes : const uint8_t;
 
 		enum BFW_API WrappingTypes : const uint8_t;
+
+		enum BFW_API CubeMapFaces : const size_t;
 
 		enum BFW_API Shapes : const uint8_t;
 
@@ -231,7 +233,7 @@ namespace BFW
 
 		typedef void (*FragmentShaderFnc)(); ...; // ia in calcul tot opengl support ul
 
-		struct BFW_API Program;
+		class BFW_API Program;
 
 		class BFW_API TextureSDR;
 

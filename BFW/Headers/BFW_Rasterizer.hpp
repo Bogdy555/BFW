@@ -27,10 +27,10 @@ namespace BFW
 			_64BitUnsignedIntDataType = 8
 		};
 
-		enum BFW_API LerpingTypes : const uint8_t
+		enum BFW_API FilteringTypes : const uint8_t
 		{
-			_NearestLerpingType = 0,
-			_LinearLerpingType = 1
+			_NearestFilteringType = 0,
+			_LinearFilteringType = 1
 		};
 
 		enum BFW_API WrappingTypes : const uint8_t
@@ -39,6 +39,16 @@ namespace BFW
 			_ClampWrappingType = 1,
 			_RepeatWrappingType = 2,
 			_MirrorWrappingType = 3
+		};
+
+		enum BFW_API CubeMapFaces : const size_t
+		{
+			_RightCubeMapFace = 0,
+			_LeftCubeMapFace = 1,
+			_TopCubeMapFace = 2,
+			_BottomCubeMapFace = 3,
+			_FrontCubeMapFace = 4,
+			_BackCubeMapFace = 5
 		};
 
 		enum BFW_API Shapes : const uint8_t
@@ -122,18 +132,18 @@ namespace BFW
 		struct BFW_API VertexArrayEntry
 		{
 
+			size_t Count;
+			uint8_t DataType;
+			bool Normalize;
+			size_t Stride;
+			size_t Offset;
+
 			VertexArrayEntry();
 			VertexArrayEntry(const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset);
 			VertexArrayEntry(const VertexArrayEntry& _Other) = default;
 			VertexArrayEntry(VertexArrayEntry&& _Other) noexcept;
 			VertexArrayEntry& operator= (const VertexArrayEntry& _Other) = default;
 			VertexArrayEntry& operator= (VertexArrayEntry&& _Other) noexcept;
-
-			size_t Count;
-			uint8_t DataType;
-			bool Normalize;
-			size_t Stride;
-			size_t Offset;
 
 		};
 
@@ -161,19 +171,28 @@ namespace BFW
 
 		};
 
-		struct BFW_API Program
+		class BFW_API Program
 		{
 
-			Program();
-			Program(const VertexShaderFnc& _VertexShader, const GeometryShaderFnc& _GeometryShader, const FragmentShaderFnc& _FragmentShader);
-			Program(const Program& _Other) = default;
-			Program(Program&& _Other) noexcept;
-			Program& operator= (const Program& _Other) = default;
-			Program& operator= (Program&& _Other) noexcept;
+		public:
 
 			VertexShaderFnc VertexShader;
 			GeometryShaderFnc GeometryShader;
 			FragmentShaderFnc FragmentShader;
+			size_t VaryingsVertexToGeometry;
+			size_t FlatsVertexToGeometry;
+			size_t VaryingsGeometryToFragment;
+			size_t FlatsGeometryToFragment;
+
+			Program();
+			Program(const Program& _Other);
+			Program(Program&& _Other) noexcept;
+			~Program();
+
+			const bool IsValid() const;
+
+			Program& operator= (const Program& _Other);
+			Program& operator= (Program&& _Other) noexcept;
 
 		};
 
@@ -188,7 +207,7 @@ namespace BFW
 			~TextureSDR();
 
 			void Data(const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const uint8_t* _Data);
-			void LerpingTypes(const uint8_t _XLerpingType, const uint8_t _YLerpingType);
+			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
 			void WrappingTypes(const uint8_t _XWrappingType, const uint8_t _YWrappingType);
 
 			const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const;
@@ -199,12 +218,16 @@ namespace BFW
 
 		private:
 
+			friend CubeTextureSDR;
+			friend FrameBuffer;
+
 			Vector<Assets::BitMap> TextureChain;
-			uint8_t XLerpingType;
-			uint8_t YLerpingType;
+			uint8_t XFilteringType;
+			uint8_t YFilteringType;
+			uint8_t ZFilteringType;
 			uint8_t XWrappingType;
 			uint8_t YWrappingType;
-			bool LerpingTypeSet;
+			bool FilteringTypeSet;
 			bool WrappingTypeSet;
 
 		};
@@ -220,7 +243,7 @@ namespace BFW
 			~TextureHDR();
 
 			void Data(const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const float* _Data);
-			void LerpingTypes(const uint8_t _XLerpingType, const uint8_t _YLerpingType);
+			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
 			void WrappingTypes(const uint8_t _XWrappingType, const uint8_t _YWrappingType);
 
 			const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const;
@@ -231,12 +254,16 @@ namespace BFW
 
 		private:
 
+			friend CubeTextureHDR;
+			friend FrameBuffer;
+
 			Vector<Assets::Hdr> TextureChain;
-			uint8_t XLerpingType;
-			uint8_t YLerpingType;
+			uint8_t XFilteringType;
+			uint8_t YFilteringType;
+			uint8_t ZFilteringType;
 			uint8_t XWrappingType;
 			uint8_t YWrappingType;
-			bool LerpingTypeSet;
+			bool FilteringTypeSet;
 			bool WrappingTypeSet;
 
 		};
@@ -251,12 +278,20 @@ namespace BFW
 			CubeTextureSDR(CubeTextureSDR&& _Other) noexcept;
 			~CubeTextureSDR();
 
+			void Data(const size_t _Face, const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const uint8_t* _Data);
+			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
+
+			const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const;
+			const Math::Vec4 Sample(const Math::Vec4& _Direction) const;
+
 			CubeTextureSDR& operator= (const CubeTextureSDR& _Other);
 			CubeTextureSDR& operator= (CubeTextureSDR&& _Other) noexcept;
 
 		private:
 
+			friend FrameBuffer;
 
+			Vector<TextureSDR> Textures;
 
 		};
 
@@ -270,12 +305,20 @@ namespace BFW
 			CubeTextureHDR(CubeTextureHDR&& _Other) noexcept;
 			~CubeTextureHDR();
 
+			void Data(const size_t _Face, const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const float* _Data);
+			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
+
+			const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const;
+			const Math::Vec4 Sample(const Math::Vec4& _Direction) const;
+
 			CubeTextureHDR& operator= (const CubeTextureHDR& _Other);
 			CubeTextureHDR& operator= (CubeTextureHDR&& _Other) noexcept;
 
 		private:
 
+			friend FrameBuffer;
 
+			Vector<TextureHDR> Textures;
 
 		};
 
@@ -289,12 +332,32 @@ namespace BFW
 			FrameBuffer(FrameBuffer&& _Other) noexcept;
 			~FrameBuffer();
 
+			void AttachColorSDR(TextureSDR& _Texture, const size_t _Level);
+			void AttachColorHDR(TextureHDR& _Texture, const size_t _Level);
+			void AttachColorCubeSDR(CubeTextureSDR& _Texture, const size_t _Face, const size_t _Level);
+			void AttachColorCubeHDR(CubeTextureHDR& _Texture, const size_t _Face, const size_t _Level);
+			void AttachDepth(TextureHDR& _Texture, const size_t _Level);
+
+			const bool IsValid() const;
+
+			void ReadSDR(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, uint8_t* _Data);
+			void ReadHDR(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, float* _Data);
+
+			Assets::BitMap& GetColorSDR();
+			const Assets::BitMap& GetColorSDR() const;
+			Assets::Hdr& GetColorHDR();
+			const Assets::Hdr& GetColorHDR() const;
+			Assets::Hdr& GetDepth();
+			const Assets::Hdr& GetDepth() const;
+
 			FrameBuffer& operator= (const FrameBuffer& _Other);
 			FrameBuffer& operator= (FrameBuffer&& _Other) noexcept;
 
 		private:
 
-
+			Assets::BitMap* ColorSDR;
+			Assets::Hdr* ColorHDR;
+			Assets::Hdr* Depth;
 
 		};
 

@@ -483,6 +483,16 @@ const bool BFW::Assets::BitMap::Create(const size_t _Width, const size_t _Height
 		Data[_Index] = 0;
 	}
 
+	if (ChannelsCount != 4)
+	{
+		return true;
+	}
+
+	for (size_t _Index = 0; _Index < Width * Height; _Index++)
+	{
+		Data[_Index * ChannelsCount + 3] = 255;
+	}
+
 	return true;
 }
 
@@ -885,7 +895,7 @@ uint8_t* BFW::Assets::BitMap::operator[] (const size_t _PositionY)
 	return Data + _PositionY * Width * ChannelsCount;
 }
 
-const uint8_t* BFW::Assets::BitMap::operator* (const size_t _PositionY) const
+const uint8_t* BFW::Assets::BitMap::operator[] (const size_t _PositionY) const
 {
 	return Data + _PositionY * Width * ChannelsCount;
 }
@@ -1011,7 +1021,17 @@ const bool BFW::Assets::Hdr::Create(const size_t _Width, const size_t _Height, c
 
 	for (size_t _Index = 0; _Index < Width * Height * ChannelsCount; _Index++)
 	{
-		Data[_Index] = 0;
+		Data[_Index] = 0.0f;
+	}
+
+	if (ChannelsCount != 4)
+	{
+		return true;
+	}
+
+	for (size_t _Index = 0; _Index < Width * Height; _Index++)
+	{
+		Data[_Index * ChannelsCount + 3] = 1.0f;
 	}
 
 	return true;
@@ -1693,7 +1713,7 @@ float* BFW::Assets::Hdr::operator[] (const size_t _PositionY)
 	return Data + _PositionY * Width * ChannelsCount;
 }
 
-const float* BFW::Assets::Hdr::operator* (const size_t _PositionY) const
+const float* BFW::Assets::Hdr::operator[] (const size_t _PositionY) const
 {
 	return Data + _PositionY * Width * ChannelsCount;
 }

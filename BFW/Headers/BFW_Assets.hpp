@@ -94,7 +94,7 @@ namespace BFW
 			const uint8_t& operator* () const;
 
 			uint8_t* operator[] (const size_t _PositionY);
-			const uint8_t* operator* (const size_t _PositionY) const;
+			const uint8_t* operator[] (const size_t _PositionY) const;
 
 			BitMap& operator= (const BitMap& _Other);
 			BitMap& operator= (BitMap&& _Other) noexcept;
@@ -137,7 +137,7 @@ namespace BFW
 			const float& operator* () const;
 
 			float* operator[] (const size_t _PositionY);
-			const float* operator* (const size_t _PositionY) const;
+			const float* operator[] (const size_t _PositionY) const;
 
 			Hdr& operator= (const Hdr& _Other);
 			Hdr& operator= (Hdr&& _Other) noexcept;
@@ -671,19 +671,19 @@ namespace BFW
 		struct BFW_API Script
 		{
 
-			Script();
-			Script(void* _OnSetup, void* _OnUpdate, void* _OnLateUpdate, void* _OnFixedUpdate, void* _OnRender, void* _OnStop);
-			Script(const Script& _Other) = default;
-			Script(Script&& _Other) noexcept;
-			Script& operator= (const Script& _Other) = default;
-			Script& operator= (Script&& _Other) noexcept;
-
 			void* OnSetup;
 			void* OnUpdate;
 			void* OnLateUpdate;
 			void* OnFixedUpdate;
 			void* OnRender;
 			void* OnStop;
+
+			Script();
+			Script(void* _OnSetup, void* _OnUpdate, void* _OnLateUpdate, void* _OnFixedUpdate, void* _OnRender, void* _OnStop);
+			Script(const Script& _Other) = default;
+			Script(Script&& _Other) noexcept;
+			Script& operator= (const Script& _Other) = default;
+			Script& operator= (Script&& _Other) noexcept;
 
 		};
 
