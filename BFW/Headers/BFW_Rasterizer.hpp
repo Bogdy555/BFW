@@ -337,11 +337,14 @@ namespace BFW
 			void AttachColorCubeSDR(CubeTextureSDR& _Texture, const size_t _Face, const size_t _Level);
 			void AttachColorCubeHDR(CubeTextureHDR& _Texture, const size_t _Face, const size_t _Level);
 			void AttachDepth(TextureHDR& _Texture, const size_t _Level);
+			void DetachColor();
+			void DetachDepth();
 
 			const bool IsValid() const;
 
 			void ReadSDR(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, uint8_t* _Data);
 			void ReadHDR(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, float* _Data);
+			void ReadDepth(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, float* _Data);
 
 			Assets::BitMap& GetColorSDR();
 			const Assets::BitMap& GetColorSDR() const;
@@ -380,7 +383,7 @@ namespace BFW
 
 		};
 
-		const bool LastError();
+		const bool GetLastError();
 
 	}
 
