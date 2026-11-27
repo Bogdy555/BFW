@@ -223,6 +223,8 @@ namespace BFW
 
 		class BFW_API IndexBuffer;
 
+		class BFW_API UniformBuffer;
+
 		struct BFW_API VertexArrayEntry;
 
 		class BFW_API VertexArray;

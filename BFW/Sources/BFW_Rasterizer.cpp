@@ -227,18 +227,99 @@ BFW::Rasterizer::IndexBuffer& BFW::Rasterizer::IndexBuffer::operator= (IndexBuff
 
 
 
-BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry() : Count(0), DataType(_FloatDataType), Normalize(false), Stride(0), Offset(0)
+BFW::Rasterizer::UniformBuffer::UniformBuffer() : DataVector()
 {
 
 }
 
-BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry(const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset) : Count(_Count), DataType(_DataType), Normalize(_Normalize), Stride(_Stride), Offset(_Offset)
+BFW::Rasterizer::UniformBuffer::UniformBuffer(const UniformBuffer& _Other) : DataVector(_Other.DataVector)
 {
 
 }
 
-BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry(VertexArrayEntry&& _Other) noexcept : Count(_Other.Count), DataType(_Other.DataType), Normalize(_Other.Normalize), Stride(_Other.Stride), Offset(_Other.Offset)
+BFW::Rasterizer::UniformBuffer::UniformBuffer(UniformBuffer&& _Other) noexcept : DataVector((Vector<uint8_t>&&)(_Other.DataVector))
 {
+
+}
+
+BFW::Rasterizer::UniformBuffer::~UniformBuffer()
+{
+
+}
+
+void BFW::Rasterizer::UniformBuffer::Data(const size_t _Size, const uint8_t* _Data)
+{
+	DataVector = Vector<uint8_t>(_Size);
+
+	if (!_Data)
+	{
+		return;
+	}
+
+	for (size_t _Index = 0; _Index < _Size; _Index++)
+	{
+		DataVector[_Index] = _Data[_Index];
+	}
+}
+
+void BFW::Rasterizer::UniformBuffer::SubData(const size_t _Offset, const size_t _Size, const uint8_t* _Data)
+{
+	if (_Offset + _Size > DataVector.GetSize() || !_Data)
+	{
+		LastError = true;
+		return;
+	}
+
+	for (size_t _Index = 0; _Index < _Size; _Index++)
+	{
+		DataVector[_Index + _Offset] = _Data[_Index];
+	}
+}
+
+const uint8_t* BFW::Rasterizer::UniformBuffer::GetData() const
+{
+	return DataVector.GetData();
+}
+
+BFW::Rasterizer::UniformBuffer& BFW::Rasterizer::UniformBuffer::operator= (const UniformBuffer& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	DataVector = _Other.DataVector;
+
+	return *this;
+}
+
+BFW::Rasterizer::UniformBuffer& BFW::Rasterizer::UniformBuffer::operator= (UniformBuffer&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	DataVector = (Vector<uint8_t>&&)(_Other.DataVector);
+
+	return *this;
+}
+
+
+
+BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry() : VBO(nullptr), Count(0), DataType(_FloatDataType), Normalize(false), Stride(0), Offset(0)
+{
+
+}
+
+BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry(VertexBuffer* _VBO, const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset) : VBO(_VBO), Count(_Count), DataType(_DataType), Normalize(_Normalize), Stride(_Stride), Offset(_Offset)
+{
+
+}
+
+BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry(VertexArrayEntry&& _Other) noexcept : VBO(_Other.VBO), Count(_Other.Count), DataType(_Other.DataType), Normalize(_Other.Normalize), Stride(_Other.Stride), Offset(_Other.Offset)
+{
+	_Other.VBO = nullptr;
 	_Other.Count = 0;
 	_Other.DataType = _FloatDataType;
 	_Other.Normalize = false;
@@ -253,12 +334,14 @@ BFW::Rasterizer::VertexArrayEntry& BFW::Rasterizer::VertexArrayEntry::operator= 
 		return *this;
 	}
 
+	VBO = _Other.VBO;
 	Count = _Other.Count;
 	DataType = _Other.DataType;
 	Normalize = _Other.Normalize;
 	Stride = _Other.Stride;
 	Offset = _Other.Offset;
 
+	_Other.VBO = nullptr;
 	_Other.Count = 0;
 	_Other.DataType = _FloatDataType;
 	_Other.Normalize = false;
@@ -270,19 +353,19 @@ BFW::Rasterizer::VertexArrayEntry& BFW::Rasterizer::VertexArrayEntry::operator= 
 
 
 
-BFW::Rasterizer::VertexArray::VertexArray() : EnabledEntries(), Entries()
+BFW::Rasterizer::VertexArray::VertexArray() : IBO(nullptr), EnabledEntries(), Entries()
 {
 
 }
 
-BFW::Rasterizer::VertexArray::VertexArray(const VertexArray& _Other) : EnabledEntries(_Other.EnabledEntries), Entries(_Other.Entries)
+BFW::Rasterizer::VertexArray::VertexArray(const VertexArray& _Other) : IBO(_Other.IBO), EnabledEntries(_Other.EnabledEntries), Entries(_Other.Entries)
 {
 
 }
 
-BFW::Rasterizer::VertexArray::VertexArray(VertexArray&& _Other) noexcept : EnabledEntries((Vector<bool>&&)(_Other.EnabledEntries)), Entries((Vector<VertexArrayEntry>&&)(_Other.Entries))
+BFW::Rasterizer::VertexArray::VertexArray(VertexArray&& _Other) noexcept : IBO(_Other.IBO), EnabledEntries((Vector<bool>&&)(_Other.EnabledEntries)), Entries((Vector<VertexArrayEntry>&&)(_Other.Entries))
 {
-
+	_Other.IBO = nullptr;
 }
 
 BFW::Rasterizer::VertexArray::~VertexArray()
@@ -304,36 +387,43 @@ void BFW::Rasterizer::VertexArray::EnableAttribute(const size_t _Index)
 	}
 
 	EnabledEntries[_Index] = true;
-	Entries[_Index] = VertexArrayEntry();
 }
 
 void BFW::Rasterizer::VertexArray::DisableAttribute(const size_t _Index)
 {
 	if (_Index >= EnabledEntries.GetSize())
 	{
-		LastError = true;
 		return;
 	}
 
 	EnabledEntries[_Index] = false;
-	Entries[_Index] = VertexArrayEntry();
-
-	while (EnabledEntries.GetSize() && !EnabledEntries[EnabledEntries.GetSize() - 1])
-	{
-		EnabledEntries.Erase(EnabledEntries.GetSize() - 1);
-		Entries.Erase(Entries.GetSize() - 1);
-	}
 }
 
 void BFW::Rasterizer::VertexArray::AttributePointer(const size_t _Index, const VertexArrayEntry& _Entry)
 {
-	if (_Index >= EnabledEntries.GetSize() || !EnabledEntries[_Index] || _Entry.DataType > _64BitUnsignedIntDataType)
+	if (!_Entry.VBO || _Entry.DataType > _64BitUnsignedIntDataType)
 	{
 		LastError = true;
 		return;
 	}
 
+	size_t _CurrentSize = EnabledEntries.GetSize();
+
+	EnabledEntries.Reserve(_Index + 1);
+	Entries.Reserve(_Index + 1);
+
+	for (size_t _ForIndex = _CurrentSize; _ForIndex < _Index + 1; _ForIndex++)
+	{
+		EnabledEntries.PushBack(false);
+		Entries.EmplaceBack(VertexArrayEntry());
+	}
+
 	Entries[_Index] = _Entry;
+}
+
+void BFW::Rasterizer::VertexArray::BindIBO(IndexBuffer* _IBO)
+{
+	IBO = _IBO;
 }
 
 BFW::Rasterizer::VertexArray& BFW::Rasterizer::VertexArray::operator= (const VertexArray& _Other)
@@ -343,6 +433,7 @@ BFW::Rasterizer::VertexArray& BFW::Rasterizer::VertexArray::operator= (const Ver
 		return *this;
 	}
 
+	IBO = _Other.IBO;
 	EnabledEntries = _Other.EnabledEntries;
 	Entries = _Other.Entries;
 
@@ -356,8 +447,11 @@ BFW::Rasterizer::VertexArray& BFW::Rasterizer::VertexArray::operator= (VertexArr
 		return *this;
 	}
 
+	IBO = _Other.IBO;
 	EnabledEntries = (Vector<bool>&&)(_Other.EnabledEntries);
 	Entries = (Vector<VertexArrayEntry>&&)(_Other.Entries);
+
+	_Other.IBO = nullptr;
 
 	return *this;
 }
@@ -1451,36 +1545,6 @@ void BFW::Rasterizer::FrameBuffer::ReadDepth(const intptr_t _PositionX, const in
 	}
 }
 
-BFW::Assets::BitMap& BFW::Rasterizer::FrameBuffer::GetColorSDR()
-{
-	return *ColorSDR;
-}
-
-const BFW::Assets::BitMap& BFW::Rasterizer::FrameBuffer::GetColorSDR() const
-{
-	return *ColorSDR;
-}
-
-BFW::Assets::Hdr& BFW::Rasterizer::FrameBuffer::GetColorHDR()
-{
-	return *ColorHDR;
-}
-
-const BFW::Assets::Hdr& BFW::Rasterizer::FrameBuffer::GetColorHDR() const
-{
-	return *ColorHDR;
-}
-
-BFW::Assets::Hdr& BFW::Rasterizer::FrameBuffer::GetDepth()
-{
-	return *Depth;
-}
-
-const BFW::Assets::Hdr& BFW::Rasterizer::FrameBuffer::GetDepth() const
-{
-	return *Depth;
-}
-
 BFW::Rasterizer::FrameBuffer& BFW::Rasterizer::FrameBuffer::operator= (const FrameBuffer& _Other)
 {
 	if (this == &_Other)
@@ -1514,6 +1578,11 @@ BFW::Rasterizer::FrameBuffer& BFW::Rasterizer::FrameBuffer::operator= (FrameBuff
 }
 
 
+
+void BFW::Rasterizer::SetLastError()
+{
+	LastError = true;
+}
 
 const bool BFW::Rasterizer::GetLastError()
 {

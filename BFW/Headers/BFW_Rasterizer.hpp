@@ -129,9 +129,34 @@ namespace BFW
 
 		};
 
+		class BFW_API UniformBuffer
+		{
+
+		public:
+
+			UniformBuffer();
+			UniformBuffer(const UniformBuffer& _Other);
+			UniformBuffer(UniformBuffer&& _Other) noexcept;
+			~UniformBuffer();
+
+			void Data(const size_t _Size, const uint8_t* _Data);
+			void SubData(const size_t _Offset, const size_t _Size, const uint8_t* _Data);
+
+			const uint8_t* GetData() const;
+
+			UniformBuffer& operator= (const UniformBuffer& _Other);
+			UniformBuffer& operator= (UniformBuffer&& _Other) noexcept;
+
+		private:
+
+			Vector<uint8_t> DataVector;
+
+		};
+
 		struct BFW_API VertexArrayEntry
 		{
 
+			VertexBuffer* VBO;
 			size_t Count;
 			uint8_t DataType;
 			bool Normalize;
@@ -139,7 +164,7 @@ namespace BFW
 			size_t Offset;
 
 			VertexArrayEntry();
-			VertexArrayEntry(const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset);
+			VertexArrayEntry(VertexBuffer* _VBO, const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset);
 			VertexArrayEntry(const VertexArrayEntry& _Other) = default;
 			VertexArrayEntry(VertexArrayEntry&& _Other) noexcept;
 			VertexArrayEntry& operator= (const VertexArrayEntry& _Other) = default;
@@ -161,11 +186,14 @@ namespace BFW
 			void DisableAttribute(const size_t _Index);
 			void AttributePointer(const size_t _Index, const VertexArrayEntry& _Entry);
 
+			void BindIBO(IndexBuffer* _IBO);
+
 			VertexArray& operator= (const VertexArray& _Other);
 			VertexArray& operator= (VertexArray&& _Other) noexcept;
 
 		private:
 
+			IndexBuffer* IBO;
 			Vector<bool> EnabledEntries;
 			Vector<VertexArrayEntry> Entries;
 
@@ -346,13 +374,6 @@ namespace BFW
 			void ReadHDR(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, float* _Data);
 			void ReadDepth(const intptr_t _PositionX, const intptr_t _PositionY, const size_t _Width, const size_t _Height, float* _Data);
 
-			Assets::BitMap& GetColorSDR();
-			const Assets::BitMap& GetColorSDR() const;
-			Assets::Hdr& GetColorHDR();
-			const Assets::Hdr& GetColorHDR() const;
-			Assets::Hdr& GetDepth();
-			const Assets::Hdr& GetDepth() const;
-
 			FrameBuffer& operator= (const FrameBuffer& _Other);
 			FrameBuffer& operator= (FrameBuffer&& _Other) noexcept;
 
@@ -374,15 +395,48 @@ namespace BFW
 			Context(Context&& _Other) noexcept;
 			~Context();
 
+			void Clear();
+			void ClearColor();
+			void ClearDepth();
+
+			void DrawArrays(const uint8_t _Shape, const size_t _First, const size_t _Count, const VertexArray& _VAO, const Program& _Program, FrameBuffer& _FBO);
+			void DrawElements(const uint8_t _Shape, const size_t _Count, const void* _Indices, const VertexArray& _VAO, const Program& _Program, FrameBuffer& _FBO);
+
+			void SetClearColorValue(const Math::Vec4& _ClearColorValue);
+			void SetClearDepthValue(const float _ClearDepthValue);
+
+			void SetViewPort(const intptr_t _ViewPortX, const intptr_t _ViewPortY, const size_t _ViewPortWidth, const size_t _ViewPortHeight);
+
+			void SetCullingType(const uint8_t _CullingType);
+			void SetDepthTestingType(const uint8_t _DepthTestingType);
+			void SetBlendingType(const uint8_t _BlendingType);
+
 			Context& operator= (const Context& _Other);
 			Context& operator= (Context&& _Other) noexcept;
 
 		private:
 
+			void VertexPass();
+			void GeometryPass();
+			void ClippingPass();
+			void CullingPass();
+			void RasterizingPass();
 
+			Math::Vec4 ClearColorValue;
+			float ClearDepthValue;
+
+			intptr_t ViewPortX;
+			intptr_t ViewPortY;
+			size_t ViewPortWidth;
+			size_t ViewPortHeight;
+
+			uint8_t CullingType;
+			uint8_t DepthTestingType;
+			uint8_t BlendingType;
 
 		};
 
+		void SetLastError();
 		const bool GetLastError();
 
 	}
