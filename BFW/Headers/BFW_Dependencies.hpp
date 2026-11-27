@@ -235,6 +235,8 @@ namespace BFW
 
 		typedef void (*FragmentShaderFnc)(); ...; // ia in calcul tot opengl support ul
 
+		class BFW_API Uniform;
+
 		class BFW_API Program;
 
 		class BFW_API TextureSDR;

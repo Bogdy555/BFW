@@ -458,17 +458,311 @@ BFW::Rasterizer::VertexArray& BFW::Rasterizer::VertexArray::operator= (VertexArr
 
 
 
-BFW::Rasterizer::Program::Program() : VertexShader(nullptr), GeometryShader(nullptr), FragmentShader(nullptr), VaryingsVertexToGeometry(0), FlatsVertexToGeometry(0), VaryingsGeometryToFragment(0), FlatsGeometryToFragment(0)
+BFW::Rasterizer::Uniform::Uniform() : Floats(), Ints(), UInts()
+{
+	for (size_t _Index = 0; _Index < 16; _Index++)
+	{
+		Floats[_Index] = 0.0f;
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Ints[_Index] = 0;
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		UInts[_Index] = 0;
+	}
+}
+
+BFW::Rasterizer::Uniform::Uniform(const Uniform& _Other) : Floats(), Ints(), UInts()
+{
+	for (size_t _Index = 0; _Index < 16; _Index++)
+	{
+		Floats[_Index] = _Other.Floats[_Index];
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Ints[_Index] = _Other.Ints[_Index];
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		UInts[_Index] = _Other.UInts[_Index];
+	}
+}
+
+BFW::Rasterizer::Uniform::Uniform(Uniform&& _Other) noexcept : Floats(), Ints(), UInts()
+{
+	for (size_t _Index = 0; _Index < 16; _Index++)
+	{
+		Floats[_Index] = _Other.Floats[_Index];
+		_Other.Floats[_Index] = 0.0f;
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Ints[_Index] = _Other.Ints[_Index];
+		_Other.Ints[_Index] = 0;
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		UInts[_Index] = _Other.UInts[_Index];
+		_Other.UInts[_Index] = 0;
+	}
+}
+
+BFW::Rasterizer::Uniform::~Uniform()
 {
 
 }
 
-BFW::Rasterizer::Program::Program(const Program& _Other) : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment)
+void BFW::Rasterizer::Uniform::Set1f(const float _XVal)
+{
+	Floats[0] = _XVal;
+}
+
+void BFW::Rasterizer::Uniform::Set2f(const float _XVal, const float _YVal)
+{
+	Floats[0] = _XVal;
+	Floats[1] = _YVal;
+}
+
+void BFW::Rasterizer::Uniform::Set3f(const float _XVal, const float _YVal, const float _ZVal)
+{
+	Floats[0] = _XVal;
+	Floats[1] = _YVal;
+	Floats[2] = _ZVal;
+}
+
+void BFW::Rasterizer::Uniform::Set4f(const float _XVal, const float _YVal, const float _ZVal, const float _WVal)
+{
+	Floats[0] = _XVal;
+	Floats[1] = _YVal;
+	Floats[2] = _ZVal;
+	Floats[4] = _WVal;
+}
+
+void BFW::Rasterizer::Uniform::Set1i(const int32_t _XVal)
+{
+	Ints[0] = _XVal;
+}
+
+void BFW::Rasterizer::Uniform::Set2i(const int32_t _XVal, const int32_t _YVal)
+{
+	Ints[0] = _XVal;
+	Ints[1] = _YVal;
+}
+
+void BFW::Rasterizer::Uniform::Set3i(const int32_t _XVal, const int32_t _YVal, const int32_t _ZVal)
+{
+	Ints[0] = _XVal;
+	Ints[1] = _YVal;
+	Ints[2] = _ZVal;
+}
+
+void BFW::Rasterizer::Uniform::Set4i(const int32_t _XVal, const int32_t _YVal, const int32_t _ZVal, const int32_t _WVal)
+{
+	Ints[0] = _XVal;
+	Ints[1] = _YVal;
+	Ints[2] = _ZVal;
+	Ints[4] = _WVal;
+}
+
+void BFW::Rasterizer::Uniform::Set1ui(const uint32_t _XVal)
+{
+	UInts[0] = _XVal;
+}
+
+void BFW::Rasterizer::Uniform::Set2ui(const uint32_t _XVal, const uint32_t _YVal)
+{
+	UInts[0] = _XVal;
+	UInts[1] = _YVal;
+}
+
+void BFW::Rasterizer::Uniform::Set3ui(const uint32_t _XVal, const uint32_t _YVal, const uint32_t _ZVal)
+{
+	UInts[0] = _XVal;
+	UInts[1] = _YVal;
+	UInts[2] = _ZVal;
+}
+
+void BFW::Rasterizer::Uniform::Set4ui(const uint32_t _XVal, const uint32_t _YVal, const uint32_t _ZVal, const uint32_t _WVal)
+{
+	UInts[0] = _XVal;
+	UInts[1] = _YVal;
+	UInts[2] = _ZVal;
+	UInts[4] = _WVal;
+}
+
+void BFW::Rasterizer::Uniform::Set2m(const float* _Data)
+{
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Floats[_Index] = _Data[_Index];
+	}
+}
+
+void BFW::Rasterizer::Uniform::Set3m(const float* _Data)
+{
+	for (size_t _Index = 0; _Index < 9; _Index++)
+	{
+		Floats[_Index] = _Data[_Index];
+	}
+}
+
+void BFW::Rasterizer::Uniform::Set4m(const float* _Data)
+{
+	for (size_t _Index = 0; _Index < 16; _Index++)
+	{
+		Floats[_Index] = _Data[_Index];
+	}
+}
+
+const float& BFW::Rasterizer::Uniform::Get1f() const
+{
+	return *Floats;
+}
+
+const BFW::Math::Vec2& BFW::Rasterizer::Uniform::Get2f() const
+{
+	return *(Math::Vec2*)(Floats);
+}
+
+const BFW::Math::Vec3& BFW::Rasterizer::Uniform::Get3f() const
+{
+	return *(Math::Vec3*)(Floats);
+}
+
+const BFW::Math::Vec4& BFW::Rasterizer::Uniform::Get4f() const
+{
+	return *(Math::Vec4*)(Floats);
+}
+
+const int32_t& BFW::Rasterizer::Uniform::Get1i() const
+{
+	return *Ints;
+}
+
+const int32_t* BFW::Rasterizer::Uniform::Get2i() const
+{
+	return Ints;
+}
+
+const int32_t* BFW::Rasterizer::Uniform::Get3i() const
+{
+	return Ints;
+}
+
+const int32_t* BFW::Rasterizer::Uniform::Get4i() const
+{
+	return Ints;
+}
+
+const uint32_t& BFW::Rasterizer::Uniform::Get1ui() const
+{
+	return *UInts;
+}
+
+const uint32_t* BFW::Rasterizer::Uniform::Get2ui() const
+{
+	return UInts;
+}
+
+const uint32_t* BFW::Rasterizer::Uniform::Get3ui() const
+{
+	return UInts;
+}
+
+const uint32_t* BFW::Rasterizer::Uniform::Get4ui() const
+{
+	return UInts;
+}
+
+const BFW::Math::Mat2& BFW::Rasterizer::Uniform::Get2m() const
+{
+	return *(Math::Mat2*)(Floats);
+}
+
+const BFW::Math::Mat3& BFW::Rasterizer::Uniform::Get3m() const
+{
+	return *(Math::Mat3*)(Floats);
+}
+
+const BFW::Math::Mat4& BFW::Rasterizer::Uniform::Get4m() const
+{
+	return *(Math::Mat4*)(Floats);
+}
+
+BFW::Rasterizer::Uniform& BFW::Rasterizer::Uniform::operator= (const Uniform& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	for (size_t _Index = 0; _Index < 16; _Index++)
+	{
+		Floats[_Index] = _Other.Floats[_Index];
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Ints[_Index] = _Other.Ints[_Index];
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		UInts[_Index] = _Other.UInts[_Index];
+	}
+
+	return *this;
+}
+
+BFW::Rasterizer::Uniform& BFW::Rasterizer::Uniform::operator= (Uniform&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	for (size_t _Index = 0; _Index < 16; _Index++)
+	{
+		Floats[_Index] = _Other.Floats[_Index];
+		_Other.Floats[_Index] = 0.0f;
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		Ints[_Index] = _Other.Ints[_Index];
+		_Other.Ints[_Index] = 0;
+	}
+
+	for (size_t _Index = 0; _Index < 4; _Index++)
+	{
+		UInts[_Index] = _Other.UInts[_Index];
+		_Other.UInts[_Index] = 0;
+	}
+
+	return *this;
+}
+
+
+
+BFW::Rasterizer::Program::Program() : VertexShader(nullptr), GeometryShader(nullptr), FragmentShader(nullptr), VaryingsVertexToGeometry(0), FlatsVertexToGeometry(0), VaryingsGeometryToFragment(0), FlatsGeometryToFragment(0), Uniforms()
 {
 
 }
 
-BFW::Rasterizer::Program::Program(Program&& _Other) noexcept : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment)
+BFW::Rasterizer::Program::Program(const Program& _Other) : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment), Uniforms(_Other.Uniforms)
+{
+
+}
+
+BFW::Rasterizer::Program::Program(Program&& _Other) noexcept : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment), Uniforms((Trie<Uniform, BFW_CHAR_TYPE_A>&&)(_Other.Uniforms))
 {
 	_Other.VertexShader = nullptr;
 	_Other.GeometryShader = nullptr;
@@ -513,6 +807,7 @@ BFW::Rasterizer::Program& BFW::Rasterizer::Program::operator= (const Program& _O
 	FlatsVertexToGeometry = _Other.FlatsVertexToGeometry;
 	VaryingsGeometryToFragment = _Other.VaryingsGeometryToFragment;
 	FlatsGeometryToFragment = _Other.FlatsGeometryToFragment;
+	Uniforms = _Other.Uniforms;
 
 	return *this;
 }
@@ -531,6 +826,7 @@ BFW::Rasterizer::Program& BFW::Rasterizer::Program::operator= (Program&& _Other)
 	FlatsVertexToGeometry = _Other.FlatsVertexToGeometry;
 	VaryingsGeometryToFragment = _Other.VaryingsGeometryToFragment;
 	FlatsGeometryToFragment = _Other.FlatsGeometryToFragment;
+	Uniforms = (Trie<Uniform, BFW_CHAR_TYPE_A>&&)(_Other.Uniforms);
 
 	_Other.VertexShader = nullptr;
 	_Other.GeometryShader = nullptr;

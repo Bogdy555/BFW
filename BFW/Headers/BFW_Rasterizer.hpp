@@ -199,6 +199,65 @@ namespace BFW
 
 		};
 
+		class BFW_API Uniform
+		{
+
+		public:
+
+			Uniform();
+			Uniform(const Uniform& _Other);
+			Uniform(Uniform&& _Other) noexcept;
+			~Uniform();
+
+			void Set1f(const float _XVal);
+			void Set2f(const float _XVal, const float _YVal);
+			void Set3f(const float _XVal, const float _YVal, const float _ZVal);
+			void Set4f(const float _XVal, const float _YVal, const float _ZVal, const float _WVal);
+
+			void Set1i(const int32_t _XVal);
+			void Set2i(const int32_t _XVal, const int32_t _YVal);
+			void Set3i(const int32_t _XVal, const int32_t _YVal, const int32_t _ZVal);
+			void Set4i(const int32_t _XVal, const int32_t _YVal, const int32_t _ZVal, const int32_t _WVal);
+
+			void Set1ui(const uint32_t _XVal);
+			void Set2ui(const uint32_t _XVal, const uint32_t _YVal);
+			void Set3ui(const uint32_t _XVal, const uint32_t _YVal, const uint32_t _ZVal);
+			void Set4ui(const uint32_t _XVal, const uint32_t _YVal, const uint32_t _ZVal, const uint32_t _WVal);
+
+			void Set2m(const float* _Data);
+			void Set3m(const float* _Data);
+			void Set4m(const float* _Data);
+
+			const float& Get1f() const;
+			const Math::Vec2& Get2f() const;
+			const Math::Vec3& Get3f() const;
+			const Math::Vec4& Get4f() const;
+
+			const int32_t& Get1i() const;
+			const int32_t* Get2i() const;
+			const int32_t* Get3i() const;
+			const int32_t* Get4i() const;
+
+			const uint32_t& Get1ui() const;
+			const uint32_t* Get2ui() const;
+			const uint32_t* Get3ui() const;
+			const uint32_t* Get4ui() const;
+
+			const Math::Mat2& Get2m() const;
+			const Math::Mat3& Get3m() const;
+			const Math::Mat4& Get4m() const;
+
+			Uniform& operator= (const Uniform& _Other);
+			Uniform& operator= (Uniform&& _Other) noexcept;
+
+		private:
+
+			float Floats[16];
+			int32_t Ints[4];
+			uint32_t UInts[4];
+
+		};
+
 		class BFW_API Program
 		{
 
@@ -211,6 +270,7 @@ namespace BFW
 			size_t FlatsVertexToGeometry;
 			size_t VaryingsGeometryToFragment;
 			size_t FlatsGeometryToFragment;
+			Trie<Uniform, BFW_CHAR_TYPE_A> Uniforms;
 
 			Program();
 			Program(const Program& _Other);
