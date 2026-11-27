@@ -458,7 +458,7 @@ BFW::Rasterizer::VertexArray& BFW::Rasterizer::VertexArray::operator= (VertexArr
 
 
 
-BFW::Rasterizer::Uniform::Uniform() : Floats(), Ints(), UInts()
+BFW::Rasterizer::Uniform::Uniform() : Floats(), Ints(), UInts(), UInt64(0)
 {
 	for (size_t _Index = 0; _Index < 16; _Index++)
 	{
@@ -476,7 +476,7 @@ BFW::Rasterizer::Uniform::Uniform() : Floats(), Ints(), UInts()
 	}
 }
 
-BFW::Rasterizer::Uniform::Uniform(const Uniform& _Other) : Floats(), Ints(), UInts()
+BFW::Rasterizer::Uniform::Uniform(const Uniform& _Other) : Floats(), Ints(), UInts(), UInt64(_Other.UInt64)
 {
 	for (size_t _Index = 0; _Index < 16; _Index++)
 	{
@@ -494,7 +494,7 @@ BFW::Rasterizer::Uniform::Uniform(const Uniform& _Other) : Floats(), Ints(), UIn
 	}
 }
 
-BFW::Rasterizer::Uniform::Uniform(Uniform&& _Other) noexcept : Floats(), Ints(), UInts()
+BFW::Rasterizer::Uniform::Uniform(Uniform&& _Other) noexcept : Floats(), Ints(), UInts(), UInt64(_Other.UInt64)
 {
 	for (size_t _Index = 0; _Index < 16; _Index++)
 	{
@@ -513,6 +513,8 @@ BFW::Rasterizer::Uniform::Uniform(Uniform&& _Other) noexcept : Floats(), Ints(),
 		UInts[_Index] = _Other.UInts[_Index];
 		_Other.UInts[_Index] = 0;
 	}
+
+	_Other.UInt64 = 0;
 }
 
 BFW::Rasterizer::Uniform::~Uniform()
@@ -622,6 +624,11 @@ void BFW::Rasterizer::Uniform::Set4m(const float* _Data)
 	}
 }
 
+void BFW::Rasterizer::Uniform::Setui64(const uint64_t _UInt64)
+{
+	UInt64 = _UInt64;
+}
+
 const float& BFW::Rasterizer::Uniform::Get1f() const
 {
 	return *Floats;
@@ -697,6 +704,11 @@ const BFW::Math::Mat4& BFW::Rasterizer::Uniform::Get4m() const
 	return *(Math::Mat4*)(Floats);
 }
 
+const uint64_t& BFW::Rasterizer::Uniform::Getui64() const
+{
+	return UInt64;
+}
+
 BFW::Rasterizer::Uniform& BFW::Rasterizer::Uniform::operator= (const Uniform& _Other)
 {
 	if (this == &_Other)
@@ -718,6 +730,8 @@ BFW::Rasterizer::Uniform& BFW::Rasterizer::Uniform::operator= (const Uniform& _O
 	{
 		UInts[_Index] = _Other.UInts[_Index];
 	}
+
+	UInt64 = _Other.UInt64;
 
 	return *this;
 }
@@ -746,6 +760,9 @@ BFW::Rasterizer::Uniform& BFW::Rasterizer::Uniform::operator= (Uniform&& _Other)
 		UInts[_Index] = _Other.UInts[_Index];
 		_Other.UInts[_Index] = 0;
 	}
+
+	UInt64 = _Other.UInt64;
+	_Other.UInt64 = 0;
 
 	return *this;
 }

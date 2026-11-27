@@ -228,6 +228,8 @@ namespace BFW
 			void Set3m(const float* _Data);
 			void Set4m(const float* _Data);
 
+			void Setui64(const uint64_t _UInt64);
+
 			const float& Get1f() const;
 			const Math::Vec2& Get2f() const;
 			const Math::Vec3& Get3f() const;
@@ -247,6 +249,8 @@ namespace BFW
 			const Math::Mat3& Get3m() const;
 			const Math::Mat4& Get4m() const;
 
+			const uint64_t& Getui64() const;
+
 			Uniform& operator= (const Uniform& _Other);
 			Uniform& operator= (Uniform&& _Other) noexcept;
 
@@ -255,6 +259,7 @@ namespace BFW
 			float Floats[16];
 			int32_t Ints[4];
 			uint32_t UInts[4];
+			uint64_t UInt64;
 
 		};
 
