@@ -312,7 +312,7 @@ BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry() : VBO(nullptr), Count(0), 
 
 }
 
-BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry(VertexBuffer* _VBO, const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset) : VBO(_VBO), Count(_Count), DataType(_DataType), Normalize(_Normalize), Stride(_Stride), Offset(_Offset)
+BFW::Rasterizer::VertexArrayEntry::VertexArrayEntry(const VertexBuffer* _VBO, const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset) : VBO(_VBO), Count(_Count), DataType(_DataType), Normalize(_Normalize), Stride(_Stride), Offset(_Offset)
 {
 
 }
@@ -421,7 +421,7 @@ void BFW::Rasterizer::VertexArray::AttributePointer(const size_t _Index, const V
 	Entries[_Index] = _Entry;
 }
 
-void BFW::Rasterizer::VertexArray::BindIBO(IndexBuffer* _IBO)
+void BFW::Rasterizer::VertexArray::BindIBO(const IndexBuffer* _IBO)
 {
 	IBO = _IBO;
 }
@@ -769,17 +769,17 @@ BFW::Rasterizer::Uniform& BFW::Rasterizer::Uniform::operator= (Uniform&& _Other)
 
 
 
-BFW::Rasterizer::Program::Program() : VertexShader(nullptr), GeometryShader(nullptr), FragmentShader(nullptr), VaryingsVertexToGeometry(0), FlatsVertexToGeometry(0), VaryingsGeometryToFragment(0), FlatsGeometryToFragment(0), Uniforms()
+BFW::Rasterizer::Program::Program() : VertexShader(nullptr), GeometryShader(nullptr), FragmentShader(nullptr), VaryingsVertexToGeometry(0), FlatsVertexToGeometry(0), VaryingsGeometryToFragment(0), FlatsGeometryToFragment(0), UniformBlocks(), Uniforms(), UniformBlockBindings()
 {
 
 }
 
-BFW::Rasterizer::Program::Program(const Program& _Other) : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment), Uniforms(_Other.Uniforms)
+BFW::Rasterizer::Program::Program(const Program& _Other) : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment), UniformBlocks(_Other.UniformBlocks), Uniforms(_Other.Uniforms), UniformBlockBindings(_Other.UniformBlockBindings)
 {
 
 }
 
-BFW::Rasterizer::Program::Program(Program&& _Other) noexcept : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment), Uniforms((Trie<Uniform, BFW_CHAR_TYPE_A>&&)(_Other.Uniforms))
+BFW::Rasterizer::Program::Program(Program&& _Other) noexcept : VertexShader(_Other.VertexShader), GeometryShader(_Other.GeometryShader), FragmentShader(_Other.FragmentShader), VaryingsVertexToGeometry(_Other.VaryingsVertexToGeometry), FlatsVertexToGeometry(_Other.FlatsVertexToGeometry), VaryingsGeometryToFragment(_Other.VaryingsGeometryToFragment), FlatsGeometryToFragment(_Other.FlatsGeometryToFragment), UniformBlocks((Vector<BFW_STRING_TYPE_A>&&)(_Other.UniformBlocks)), Uniforms((Trie<Uniform, BFW_CHAR_TYPE_A>&&)(_Other.Uniforms)), UniformBlockBindings((Trie<size_t, BFW_CHAR_TYPE_A>&&)(_Other.UniformBlockBindings))
 {
 	_Other.VertexShader = nullptr;
 	_Other.GeometryShader = nullptr;
@@ -807,6 +807,22 @@ const bool BFW::Rasterizer::Program::IsValid() const
 		return false;
 	}
 
+	for (size_t _Index = 0; _Index < UniformBlocks.GetSize(); _Index++)
+	{
+		if (!UniformBlocks[_Index].size())
+		{
+			return false;
+		}
+
+		for (size_t _Index2 = 0; _Index2 < _Index; _Index2++)
+		{
+			if (UniformBlocks[_Index] == UniformBlocks[_Index2])
+			{
+				return false;
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -824,7 +840,9 @@ BFW::Rasterizer::Program& BFW::Rasterizer::Program::operator= (const Program& _O
 	FlatsVertexToGeometry = _Other.FlatsVertexToGeometry;
 	VaryingsGeometryToFragment = _Other.VaryingsGeometryToFragment;
 	FlatsGeometryToFragment = _Other.FlatsGeometryToFragment;
+	UniformBlocks = _Other.UniformBlocks;
 	Uniforms = _Other.Uniforms;
+	UniformBlockBindings = _Other.UniformBlockBindings;
 
 	return *this;
 }
@@ -843,7 +861,9 @@ BFW::Rasterizer::Program& BFW::Rasterizer::Program::operator= (Program&& _Other)
 	FlatsVertexToGeometry = _Other.FlatsVertexToGeometry;
 	VaryingsGeometryToFragment = _Other.VaryingsGeometryToFragment;
 	FlatsGeometryToFragment = _Other.FlatsGeometryToFragment;
+	UniformBlocks = (Vector<BFW_STRING_TYPE_A>&&)(_Other.UniformBlocks);
 	Uniforms = (Trie<Uniform, BFW_CHAR_TYPE_A>&&)(_Other.Uniforms);
+	UniformBlockBindings = (Trie<size_t, BFW_CHAR_TYPE_A>&&)(_Other.UniformBlockBindings);
 
 	_Other.VertexShader = nullptr;
 	_Other.GeometryShader = nullptr;

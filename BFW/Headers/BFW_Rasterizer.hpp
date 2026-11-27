@@ -156,7 +156,7 @@ namespace BFW
 		struct BFW_API VertexArrayEntry
 		{
 
-			VertexBuffer* VBO;
+			const VertexBuffer* VBO;
 			size_t Count;
 			uint8_t DataType;
 			bool Normalize;
@@ -164,7 +164,7 @@ namespace BFW
 			size_t Offset;
 
 			VertexArrayEntry();
-			VertexArrayEntry(VertexBuffer* _VBO, const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset);
+			VertexArrayEntry(const VertexBuffer* _VBO, const size_t _Count, const uint8_t _DataType, const bool _Normalize, const size_t _Stride, const size_t _Offset);
 			VertexArrayEntry(const VertexArrayEntry& _Other) = default;
 			VertexArrayEntry(VertexArrayEntry&& _Other) noexcept;
 			VertexArrayEntry& operator= (const VertexArrayEntry& _Other) = default;
@@ -186,14 +186,14 @@ namespace BFW
 			void DisableAttribute(const size_t _Index);
 			void AttributePointer(const size_t _Index, const VertexArrayEntry& _Entry);
 
-			void BindIBO(IndexBuffer* _IBO);
+			void BindIBO(const IndexBuffer* _IBO);
 
 			VertexArray& operator= (const VertexArray& _Other);
 			VertexArray& operator= (VertexArray&& _Other) noexcept;
 
 		private:
 
-			IndexBuffer* IBO;
+			const IndexBuffer* IBO;
 			Vector<bool> EnabledEntries;
 			Vector<VertexArrayEntry> Entries;
 
@@ -275,7 +275,9 @@ namespace BFW
 			size_t FlatsVertexToGeometry;
 			size_t VaryingsGeometryToFragment;
 			size_t FlatsGeometryToFragment;
+			Vector<BFW_STRING_TYPE_A> UniformBlocks;
 			Trie<Uniform, BFW_CHAR_TYPE_A> Uniforms;
+			Trie<size_t, BFW_CHAR_TYPE_A> UniformBlockBindings;
 
 			Program();
 			Program(const Program& _Other);
@@ -476,6 +478,8 @@ namespace BFW
 			void SetDepthTestingType(const uint8_t _DepthTestingType);
 			void SetBlendingType(const uint8_t _BlendingType);
 
+			void SetUniformBufferBinding(const UniformBuffer* _UniformBufferBinding, const size_t _UniformBufferBindingOffset, const size_t _UniformBufferBindingSize);
+
 			Context& operator= (const Context& _Other);
 			Context& operator= (Context&& _Other) noexcept;
 
@@ -498,6 +502,10 @@ namespace BFW
 			uint8_t CullingType;
 			uint8_t DepthTestingType;
 			uint8_t BlendingType;
+
+			Vector<const UniformBuffer*> UniformBufferBindings;
+			Vector<size_t> UniformBufferBindingOffsets;
+			Vector<size_t> UniformBufferBindingSizes;
 
 		};
 
