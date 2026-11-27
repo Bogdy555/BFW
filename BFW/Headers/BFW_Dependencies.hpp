@@ -239,9 +239,13 @@ namespace BFW
 
 		class BFW_API Program;
 
+		class BFW_API Texture;
+
 		class BFW_API TextureSDR;
 
 		class BFW_API TextureHDR;
+
+		class BFW_API CubeTexture;
 
 		class BFW_API CubeTextureSDR;
 

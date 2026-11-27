@@ -878,17 +878,63 @@ BFW::Rasterizer::Program& BFW::Rasterizer::Program::operator= (Program&& _Other)
 
 
 
-BFW::Rasterizer::TextureSDR::TextureSDR() : TextureChain(), XFilteringType(_NearestFilteringType), YFilteringType(_NearestFilteringType), ZFilteringType(_NearestFilteringType), XWrappingType(_BlackWrappingType), YWrappingType(_BlackWrappingType), FilteringTypeSet(false), WrappingTypeSet(false)
+BFW::Rasterizer::Texture::Texture()
 {
 
 }
 
-BFW::Rasterizer::TextureSDR::TextureSDR(const TextureSDR& _Other) : TextureChain(_Other.TextureChain), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
+BFW::Rasterizer::Texture::Texture(const Texture& _Other)
 {
 
 }
 
-BFW::Rasterizer::TextureSDR::TextureSDR(TextureSDR&& _Other) noexcept : TextureChain((Vector<Assets::BitMap>&&)(_Other.TextureChain)), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
+BFW::Rasterizer::Texture::Texture(Texture&& _Other) noexcept
+{
+
+}
+
+BFW::Rasterizer::Texture::~Texture()
+{
+
+}
+
+BFW::Rasterizer::Texture& BFW::Rasterizer::Texture::operator= (const Texture& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+
+
+	return *this;
+}
+
+BFW::Rasterizer::Texture& BFW::Rasterizer::Texture::operator= (Texture&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+
+
+	return *this;
+}
+
+
+
+BFW::Rasterizer::TextureSDR::TextureSDR() : Texture(), TextureChain(), XFilteringType(_NearestFilteringType), YFilteringType(_NearestFilteringType), ZFilteringType(_NearestFilteringType), XWrappingType(_BlackWrappingType), YWrappingType(_BlackWrappingType), FilteringTypeSet(false), WrappingTypeSet(false)
+{
+
+}
+
+BFW::Rasterizer::TextureSDR::TextureSDR(const TextureSDR& _Other) : Texture((const Texture&)(_Other)), TextureChain(_Other.TextureChain), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
+{
+
+}
+
+BFW::Rasterizer::TextureSDR::TextureSDR(TextureSDR&& _Other) noexcept : Texture((Texture&&)(_Other)), TextureChain((Vector<Assets::BitMap>&&)(_Other.TextureChain)), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
 {
 	_Other.XFilteringType = _NearestFilteringType;
 	_Other.YFilteringType = _NearestFilteringType;
@@ -1068,11 +1114,6 @@ const BFW::Math::Vec4 BFW::Rasterizer::TextureSDR::Sample(const Math::Vec2& _Tex
 	return _Color;
 }
 
-const BFW::Math::Vec4 BFW::Rasterizer::TextureSDR::Sample(const Math::Vec3& _TextureCoords) const
-{
-	return Sample(Math::Vec2(_TextureCoords), _TextureCoords.z);
-}
-
 BFW::Rasterizer::TextureSDR& BFW::Rasterizer::TextureSDR::operator= (const TextureSDR& _Other)
 {
 	if (this == &_Other)
@@ -1080,6 +1121,7 @@ BFW::Rasterizer::TextureSDR& BFW::Rasterizer::TextureSDR::operator= (const Textu
 		return *this;
 	}
 
+	Texture::operator=((const Texture&)(_Other));
 	TextureChain = _Other.TextureChain;
 	XFilteringType = _Other.XFilteringType;
 	YFilteringType = _Other.YFilteringType;
@@ -1099,6 +1141,7 @@ BFW::Rasterizer::TextureSDR& BFW::Rasterizer::TextureSDR::operator= (TextureSDR&
 		return *this;
 	}
 
+	Texture::operator=((Texture&&)(_Other));
 	TextureChain = (Vector<Assets::BitMap>&&)(_Other.TextureChain);
 	XFilteringType = _Other.XFilteringType;
 	YFilteringType = _Other.YFilteringType;
@@ -1121,17 +1164,17 @@ BFW::Rasterizer::TextureSDR& BFW::Rasterizer::TextureSDR::operator= (TextureSDR&
 
 
 
-BFW::Rasterizer::TextureHDR::TextureHDR() : TextureChain(), XFilteringType(_NearestFilteringType), YFilteringType(_NearestFilteringType), ZFilteringType(_NearestFilteringType), XWrappingType(_BlackWrappingType), YWrappingType(_BlackWrappingType), FilteringTypeSet(false), WrappingTypeSet(false)
+BFW::Rasterizer::TextureHDR::TextureHDR() : Texture(), TextureChain(), XFilteringType(_NearestFilteringType), YFilteringType(_NearestFilteringType), ZFilteringType(_NearestFilteringType), XWrappingType(_BlackWrappingType), YWrappingType(_BlackWrappingType), FilteringTypeSet(false), WrappingTypeSet(false)
 {
 
 }
 
-BFW::Rasterizer::TextureHDR::TextureHDR(const TextureHDR& _Other) : TextureChain(_Other.TextureChain), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
+BFW::Rasterizer::TextureHDR::TextureHDR(const TextureHDR& _Other) : Texture((const Texture&)(_Other)), TextureChain(_Other.TextureChain), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
 {
 
 }
 
-BFW::Rasterizer::TextureHDR::TextureHDR(TextureHDR&& _Other) noexcept : TextureChain((Vector<Assets::Hdr>&&)(_Other.TextureChain)), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
+BFW::Rasterizer::TextureHDR::TextureHDR(TextureHDR&& _Other) noexcept : Texture((Texture&&)(_Other)), TextureChain((Vector<Assets::Hdr>&&)(_Other.TextureChain)), XFilteringType(_Other.XFilteringType), YFilteringType(_Other.YFilteringType), ZFilteringType(_Other.ZFilteringType), XWrappingType(_Other.XWrappingType), YWrappingType(_Other.YWrappingType), FilteringTypeSet(_Other.FilteringTypeSet), WrappingTypeSet(_Other.WrappingTypeSet)
 {
 	_Other.XFilteringType = _NearestFilteringType;
 	_Other.YFilteringType = _NearestFilteringType;
@@ -1311,11 +1354,6 @@ const BFW::Math::Vec4 BFW::Rasterizer::TextureHDR::Sample(const Math::Vec2& _Tex
 	return _Color;
 }
 
-const BFW::Math::Vec4 BFW::Rasterizer::TextureHDR::Sample(const Math::Vec3& _TextureCoords) const
-{
-	return Sample(Math::Vec2(_TextureCoords), _TextureCoords.z);
-}
-
 BFW::Rasterizer::TextureHDR& BFW::Rasterizer::TextureHDR::operator= (const TextureHDR& _Other)
 {
 	if (this == &_Other)
@@ -1323,6 +1361,7 @@ BFW::Rasterizer::TextureHDR& BFW::Rasterizer::TextureHDR::operator= (const Textu
 		return *this;
 	}
 
+	Texture::operator=((const Texture&)(_Other));
 	TextureChain = _Other.TextureChain;
 	XFilteringType = _Other.XFilteringType;
 	YFilteringType = _Other.YFilteringType;
@@ -1342,6 +1381,7 @@ BFW::Rasterizer::TextureHDR& BFW::Rasterizer::TextureHDR::operator= (TextureHDR&
 		return *this;
 	}
 
+	Texture::operator=((Texture&&)(_Other));
 	TextureChain = (Vector<Assets::Hdr>&&)(_Other.TextureChain);
 	XFilteringType = _Other.XFilteringType;
 	YFilteringType = _Other.YFilteringType;
@@ -1364,17 +1404,63 @@ BFW::Rasterizer::TextureHDR& BFW::Rasterizer::TextureHDR::operator= (TextureHDR&
 
 
 
-BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR() : Textures(6)
+BFW::Rasterizer::CubeTexture::CubeTexture()
 {
 
 }
 
-BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(const CubeTextureSDR& _Other) : Textures(_Other.Textures)
+BFW::Rasterizer::CubeTexture::CubeTexture(const CubeTexture& _Other)
 {
 
 }
 
-BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(CubeTextureSDR&& _Other) noexcept : Textures((Vector<TextureSDR>&&)(_Other.Textures))
+BFW::Rasterizer::CubeTexture::CubeTexture(CubeTexture&& _Other) noexcept
+{
+
+}
+
+BFW::Rasterizer::CubeTexture::~CubeTexture()
+{
+
+}
+
+BFW::Rasterizer::CubeTexture& BFW::Rasterizer::CubeTexture::operator= (const CubeTexture& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+
+
+	return *this;
+}
+
+BFW::Rasterizer::CubeTexture& BFW::Rasterizer::CubeTexture::operator= (CubeTexture&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+
+
+	return *this;
+}
+
+
+
+BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR() : CubeTexture(), Textures(6)
+{
+
+}
+
+BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(const CubeTextureSDR& _Other) : CubeTexture((const CubeTexture&)(_Other)), Textures(_Other.Textures)
+{
+
+}
+
+BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(CubeTextureSDR&& _Other) noexcept : CubeTexture((CubeTexture&&)(_Other)), Textures((Vector<TextureSDR>&&)(_Other.Textures))
 {
 	_Other.Textures = Vector<TextureSDR>(6);
 }
@@ -1470,11 +1556,6 @@ const BFW::Math::Vec4 BFW::Rasterizer::CubeTextureSDR::Sample(const Math::Vec3& 
 	return Textures[_Face].Sample(_UV, _MipLevel);
 }
 
-const BFW::Math::Vec4 BFW::Rasterizer::CubeTextureSDR::Sample(const Math::Vec4& _Direction) const
-{
-	return Sample(Math::Vec3(_Direction), _Direction.w);
-}
-
 BFW::Rasterizer::CubeTextureSDR& BFW::Rasterizer::CubeTextureSDR::operator= (const CubeTextureSDR& _Other)
 {
 	if (this == &_Other)
@@ -1482,6 +1563,7 @@ BFW::Rasterizer::CubeTextureSDR& BFW::Rasterizer::CubeTextureSDR::operator= (con
 		return *this;
 	}
 
+	CubeTexture::operator=((const CubeTexture&)(_Other));
 	Textures = _Other.Textures;
 
 	return *this;
@@ -1494,6 +1576,7 @@ BFW::Rasterizer::CubeTextureSDR& BFW::Rasterizer::CubeTextureSDR::operator= (Cub
 		return *this;
 	}
 
+	CubeTexture::operator=((CubeTexture&&)(_Other));
 	Textures = (Vector<TextureSDR>&&)(_Other.Textures);
 
 	_Other.Textures = Vector<TextureSDR>(6);
@@ -1503,17 +1586,17 @@ BFW::Rasterizer::CubeTextureSDR& BFW::Rasterizer::CubeTextureSDR::operator= (Cub
 
 
 
-BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR() : Textures(6)
+BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR() : CubeTexture(), Textures(6)
 {
 
 }
 
-BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(const CubeTextureHDR& _Other) : Textures(_Other.Textures)
+BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(const CubeTextureHDR& _Other) : CubeTexture((const CubeTexture&)(_Other)), Textures(_Other.Textures)
 {
 
 }
 
-BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(CubeTextureHDR&& _Other) noexcept : Textures((Vector<TextureHDR>&&)(_Other.Textures))
+BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(CubeTextureHDR&& _Other) noexcept : CubeTexture((CubeTexture&&)(_Other)), Textures((Vector<TextureHDR>&&)(_Other.Textures))
 {
 	_Other.Textures = Vector<TextureHDR>(6);
 }
@@ -1609,11 +1692,6 @@ const BFW::Math::Vec4 BFW::Rasterizer::CubeTextureHDR::Sample(const Math::Vec3& 
 	return Textures[_Face].Sample(_UV, _MipLevel);
 }
 
-const BFW::Math::Vec4 BFW::Rasterizer::CubeTextureHDR::Sample(const Math::Vec4& _Direction) const
-{
-	return Sample(Math::Vec3(_Direction), _Direction.w);
-}
-
 BFW::Rasterizer::CubeTextureHDR& BFW::Rasterizer::CubeTextureHDR::operator= (const CubeTextureHDR& _Other)
 {
 	if (this == &_Other)
@@ -1621,6 +1699,7 @@ BFW::Rasterizer::CubeTextureHDR& BFW::Rasterizer::CubeTextureHDR::operator= (con
 		return *this;
 	}
 
+	CubeTexture::operator=((const CubeTexture&)(_Other));
 	Textures = _Other.Textures;
 
 	return *this;
@@ -1633,6 +1712,7 @@ BFW::Rasterizer::CubeTextureHDR& BFW::Rasterizer::CubeTextureHDR::operator= (Cub
 		return *this;
 	}
 
+	CubeTexture::operator=((CubeTexture&&)(_Other));
 	Textures = (Vector<TextureHDR>&&)(_Other.Textures);
 
 	_Other.Textures = Vector<TextureHDR>(6);
@@ -1908,6 +1988,415 @@ BFW::Rasterizer::FrameBuffer& BFW::Rasterizer::FrameBuffer::operator= (FrameBuff
 	_Other.Depth = nullptr;
 
 	return *this;
+}
+
+
+
+BFW::Rasterizer::Context::Context(const Context* _Parent) : Parent(_Parent), ClearColorValue(), ClearDepthValue(1.0f), ViewPortX(0), ViewPortY(0), ViewPortWidth(0), ViewPortHeight(0), CullingType(_NoCullingType), DepthTestingType(_NoDepthTestingType), BlendingType(_NoBlendingType), TextureGUIDs(), Textures(), CubeTextureGUIDs(), CubeTextures(), UniformBufferBindings(), UniformBufferBindingOffsets(), UniformBufferBindingSizes()
+{
+
+}
+
+BFW::Rasterizer::Context::Context(const Context& _Other) : Parent(&_Other), ClearColorValue(_Other.ClearColorValue), ClearDepthValue(_Other.ClearDepthValue), ViewPortX(_Other.ViewPortX), ViewPortY(_Other.ViewPortY), ViewPortWidth(_Other.ViewPortWidth), ViewPortHeight(_Other.ViewPortHeight), CullingType(_Other.CullingType), DepthTestingType(_Other.DepthTestingType), BlendingType(_Other.BlendingType), TextureGUIDs(), Textures(), CubeTextureGUIDs(), CubeTextures(), UniformBufferBindings(_Other.UniformBufferBindings), UniformBufferBindingOffsets(_Other.UniformBufferBindingOffsets), UniformBufferBindingSizes(_Other.UniformBufferBindingSizes)
+{
+
+}
+
+BFW::Rasterizer::Context::Context(Context&& _Other) noexcept : Parent(_Other.Parent), ClearColorValue((Math::Vec4&&)(_Other.ClearColorValue)), ClearDepthValue(_Other.ClearDepthValue), ViewPortX(_Other.ViewPortX), ViewPortY(_Other.ViewPortY), ViewPortWidth(_Other.ViewPortWidth), ViewPortHeight(_Other.ViewPortHeight), CullingType(_Other.CullingType), DepthTestingType(_Other.DepthTestingType), BlendingType(_Other.BlendingType), TextureGUIDs((Vector<uint64_t>&&)(_Other.TextureGUIDs)), Textures((Trie<const Texture*>&&)(_Other.Textures)), CubeTextureGUIDs((Vector<uint64_t>&&)(_Other.CubeTextureGUIDs)), CubeTextures((Trie<const CubeTexture*>&&)(_Other.CubeTextures)), UniformBufferBindings((Vector<const UniformBuffer*>&&)(_Other.UniformBufferBindings)), UniformBufferBindingOffsets((Vector<size_t>&&)(_Other.UniformBufferBindingOffsets)), UniformBufferBindingSizes((Vector<size_t>&&)(_Other.UniformBufferBindingSizes))
+{
+	_Other.Parent = nullptr;
+	_Other.ClearDepthValue = 1.0f;
+	_Other.ViewPortX = 0;
+	_Other.ViewPortY = 0;
+	_Other.ViewPortWidth = 0;
+	_Other.ViewPortHeight = 0;
+	_Other.CullingType = _NoCullingType;
+	_Other.DepthTestingType = _NoDepthTestingType;
+	_Other.BlendingType = _NoBlendingType;
+}
+
+BFW::Rasterizer::Context::~Context()
+{
+	for (size_t _Index = 0; _Index < TextureGUIDs.GetSize(); _Index++)
+	{
+		GUID::Release(TextureGUIDs[_Index]);
+	}
+
+	for (size_t _Index = 0; _Index < CubeTextureGUIDs.GetSize(); _Index++)
+	{
+		GUID::Release(CubeTextureGUIDs[_Index]);
+	}
+}
+
+void BFW::Rasterizer::Context::Clear(FrameBuffer& _FBO)
+{
+	if (_FBO.Depth)
+	{
+		for (size_t _PositionY = 0; _PositionY < _FBO.Depth->GetHeight(); _PositionY++)
+		{
+			for (size_t _PositionX = 0; _PositionX < _FBO.Depth->GetWidth(); _PositionX++)
+			{
+				(*_FBO.Depth)[_PositionY][_PositionX] = Math::Clamp(ClearDepthValue, 0.0f, 1.0f);
+			}
+		}
+	}
+
+	if (_FBO.ColorHDR)
+	{
+		for (size_t _PositionY = 0; _PositionY < _FBO.ColorHDR->GetHeight(); _PositionY++)
+		{
+			for (size_t _PositionX = 0; _PositionX < _FBO.ColorHDR->GetWidth(); _PositionX++)
+			{
+				for (size_t _Channel = 0; _Channel < _FBO.ColorHDR->GetChannelsCount(); _Channel++)
+				{
+					(*_FBO.ColorHDR)[_PositionY][_PositionX * _FBO.ColorHDR->GetChannelsCount() + _Channel] = ClearColorValue[_Channel];
+				}
+			}
+		}
+
+		return;
+	}
+
+	if (_FBO.ColorSDR)
+	{
+		for (size_t _PositionY = 0; _PositionY < _FBO.ColorSDR->GetHeight(); _PositionY++)
+		{
+			for (size_t _PositionX = 0; _PositionX < _FBO.ColorSDR->GetWidth(); _PositionX++)
+			{
+				for (size_t _Channel = 0; _Channel < _FBO.ColorSDR->GetChannelsCount(); _Channel++)
+				{
+					(*_FBO.ColorSDR)[_PositionY][_PositionX * _FBO.ColorSDR->GetChannelsCount() + _Channel] = (uint8_t)(Math::Clamp(ClearColorValue[_Channel], 0.0f, 1.0f) * 255.0f);
+				}
+			}
+		}
+	}
+}
+
+void BFW::Rasterizer::Context::ClearColor(FrameBuffer& _FBO)
+{
+	if (_FBO.ColorHDR)
+	{
+		for (size_t _PositionY = 0; _PositionY < _FBO.ColorHDR->GetHeight(); _PositionY++)
+		{
+			for (size_t _PositionX = 0; _PositionX < _FBO.ColorHDR->GetWidth(); _PositionX++)
+			{
+				for (size_t _Channel = 0; _Channel < _FBO.ColorHDR->GetChannelsCount(); _Channel++)
+				{
+					(*_FBO.ColorHDR)[_PositionY][_PositionX * _FBO.ColorHDR->GetChannelsCount() + _Channel] = ClearColorValue[_Channel];
+				}
+			}
+		}
+
+		return;
+	}
+
+	if (_FBO.ColorSDR)
+	{
+		for (size_t _PositionY = 0; _PositionY < _FBO.ColorSDR->GetHeight(); _PositionY++)
+		{
+			for (size_t _PositionX = 0; _PositionX < _FBO.ColorSDR->GetWidth(); _PositionX++)
+			{
+				for (size_t _Channel = 0; _Channel < _FBO.ColorSDR->GetChannelsCount(); _Channel++)
+				{
+					(*_FBO.ColorSDR)[_PositionY][_PositionX * _FBO.ColorSDR->GetChannelsCount() + _Channel] = (uint8_t)(Math::Clamp(ClearColorValue[_Channel], 0.0f, 1.0f) * 255.0f);
+				}
+			}
+		}
+	}
+}
+
+void BFW::Rasterizer::Context::ClearDepth(FrameBuffer& _FBO)
+{
+	if (_FBO.Depth)
+	{
+		for (size_t _PositionY = 0; _PositionY < _FBO.Depth->GetHeight(); _PositionY++)
+		{
+			for (size_t _PositionX = 0; _PositionX < _FBO.Depth->GetWidth(); _PositionX++)
+			{
+				(*_FBO.Depth)[_PositionY][_PositionX] = Math::Clamp(ClearDepthValue, 0.0f, 1.0f);
+			}
+		}
+	}
+}
+
+void BFW::Rasterizer::Context::DrawArrays(const uint8_t _Shape, const size_t _First, const size_t _Count, const VertexArray& _VAO, const Program& _Program, FrameBuffer& _FBO)
+{
+	...;
+}
+
+void BFW::Rasterizer::Context::DrawElements(const uint8_t _Shape, const size_t _Count, const void* _Indices, const VertexArray& _VAO, const Program& _Program, FrameBuffer& _FBO)
+{
+	...;
+}
+
+const BFW::Math::Vec4 BFW::Rasterizer::Context::Sample(const uint64_t _GUID, const Math::Vec2& _TextureCoords, const float _MipLevel) const
+{
+	if (!Textures.GetData(BFW_TO_STRING(_GUID).c_str()))
+	{
+		if (!Parent)
+		{
+			return Math::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		}
+
+		return Parent->Sample(_GUID, _TextureCoords, _MipLevel);
+	}
+
+	Textures[BFW_TO_STRING(_GUID).c_str()]->Sample(_TextureCoords, _MipLevel);
+}
+
+const BFW::Math::Vec4 BFW::Rasterizer::Context::Sample(const uint64_t _GUID, const Math::Vec3& _Direction, const float _MipLevel) const
+{
+	if (!CubeTextures.GetData(BFW_TO_STRING(_GUID).c_str()))
+	{
+		if (!Parent)
+		{
+			return Math::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		}
+
+		return Parent->Sample(_GUID, _Direction, _MipLevel);
+	}
+
+	CubeTextures[BFW_TO_STRING(_GUID).c_str()]->Sample(_Direction, _MipLevel);
+}
+
+void BFW::Rasterizer::Context::SetClearColorValue(const Math::Vec4& _ClearColorValue)
+{
+	ClearColorValue = _ClearColorValue;
+}
+
+void BFW::Rasterizer::Context::SetClearDepthValue(const float _ClearDepthValue)
+{
+	ClearDepthValue = _ClearDepthValue;
+}
+
+void BFW::Rasterizer::Context::SetViewPort(const intptr_t _ViewPortX, const intptr_t _ViewPortY, const size_t _ViewPortWidth, const size_t _ViewPortHeight)
+{
+	ViewPortX = _ViewPortX;
+	ViewPortY = _ViewPortY;
+	ViewPortWidth = _ViewPortWidth;
+	ViewPortHeight = _ViewPortHeight;
+}
+
+const bool BFW::Rasterizer::Context::SetCullingType(const uint8_t _CullingType)
+{
+	if (CullingType > _CounterClockWiseCullingType)
+	{
+		return false;
+	}
+
+	CullingType = _CullingType;
+
+	return true;
+}
+
+const bool BFW::Rasterizer::Context::SetDepthTestingType(const uint8_t _DepthTestingType)
+{
+	if (DepthTestingType > _HigherOrEqualDepthTestingType)
+	{
+		return false;
+	}
+
+	DepthTestingType = _DepthTestingType;
+
+	return true;
+}
+
+const bool BFW::Rasterizer::Context::SetBlendingType(const uint8_t _BlendingType)
+{
+	if (BlendingType > _AdditiveBlendingType)
+	{
+		return false;
+	}
+
+	BlendingType = _BlendingType;
+
+	return true;
+}
+
+void BFW::Rasterizer::Context::SetTextureGUID(const Texture* _Texture, const uint64_t _GUID)
+{
+	if (!_GUID)
+	{
+		LastError = true;
+		return;
+	}
+
+	Textures.Push(BFW_TO_STRING(_GUID).c_str(), _Texture);
+
+	for (size_t _Index = 0; _Index < TextureGUIDs.GetSize(); _Index++)
+	{
+		if (TextureGUIDs[_Index] == _GUID)
+		{
+			return;
+		}
+	}
+
+	TextureGUIDs.PushBack(_GUID);
+}
+
+void BFW::Rasterizer::Context::SetCubeTextureGUID(const CubeTexture* _Texture, const uint64_t _GUID)
+{
+	if (!_GUID)
+	{
+		LastError = true;
+		return;
+	}
+
+	CubeTextures.Push(BFW_TO_STRING(_GUID).c_str(), _Texture);
+
+	for (size_t _Index = 0; _Index < CubeTextureGUIDs.GetSize(); _Index++)
+	{
+		if (CubeTextureGUIDs[_Index] == _GUID)
+		{
+			return;
+		}
+	}
+
+	CubeTextureGUIDs.PushBack(_GUID);
+}
+
+void BFW::Rasterizer::Context::SetUniformBufferBinding(const size_t _Slot, const UniformBuffer* _UniformBufferBinding, const size_t _UniformBufferBindingOffset, const size_t _UniformBufferBindingSize)
+{
+	if ((_UniformBufferBinding != nullptr && !_UniformBufferBindingSize) || (_UniformBufferBinding != nullptr && (_UniformBufferBindingOffset >= _UniformBufferBinding->DataVector.GetSize() || _UniformBufferBindingOffset + _UniformBufferBindingSize > _UniformBufferBinding->DataVector.GetSize())))
+	{
+		LastError = true;
+		return;
+	}
+
+	size_t _CurrentSize = UniformBufferBindings.GetSize();
+
+	UniformBufferBindings.Reserve(_Slot + 1);
+	UniformBufferBindingOffsets.Reserve(_Slot + 1);
+	UniformBufferBindingSizes.Reserve(_Slot + 1);
+
+	for (size_t _Index = _CurrentSize; _Index < _Slot + 1; _Index++)
+	{
+		UniformBufferBindings.PushBack(nullptr);
+		UniformBufferBindingOffsets.PushBack(0);
+		UniformBufferBindingSizes.PushBack(0);
+	}
+
+	UniformBufferBindings[_Slot] = _UniformBufferBinding;
+	UniformBufferBindingOffsets[_Slot] = _UniformBufferBindingOffset;
+	UniformBufferBindingSizes[_Slot] = _UniformBufferBindingSize;
+
+	while (UniformBufferBindings.GetSize() && UniformBufferBindings[UniformBufferBindings.GetSize() - 1] == nullptr)
+	{
+		UniformBufferBindings.Erase(UniformBufferBindings.GetSize() - 1);
+		UniformBufferBindingOffsets.Erase(UniformBufferBindingOffsets.GetSize() - 1);
+		UniformBufferBindingSizes.Erase(UniformBufferBindingSizes.GetSize() - 1);
+	}
+}
+
+BFW::Rasterizer::Context& BFW::Rasterizer::Context::operator= (const Context& _Other)
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	for (size_t _Index = 0; _Index < TextureGUIDs.GetSize(); _Index++)
+	{
+		GUID::Release(TextureGUIDs[_Index]);
+	}
+
+	for (size_t _Index = 0; _Index < CubeTextureGUIDs.GetSize(); _Index++)
+	{
+		GUID::Release(CubeTextureGUIDs[_Index]);
+	}
+
+	Parent = &_Other;
+	ClearColorValue = _Other.ClearColorValue;
+	ClearDepthValue = _Other.ClearDepthValue;
+	ViewPortX = _Other.ViewPortX;
+	ViewPortY = _Other.ViewPortY;
+	ViewPortWidth = _Other.ViewPortWidth;
+	ViewPortHeight = _Other.ViewPortHeight;
+	CullingType = _Other.CullingType;
+	DepthTestingType = _Other.DepthTestingType;
+	BlendingType = _Other.BlendingType;
+	TextureGUIDs.Clear();
+	Textures.Clear();
+	CubeTextureGUIDs.Clear();
+	CubeTextures.Clear();
+	UniformBufferBindings = _Other.UniformBufferBindings;
+	UniformBufferBindingOffsets = _Other.UniformBufferBindingOffsets;
+	UniformBufferBindingSizes = _Other.UniformBufferBindingSizes;
+
+	return *this;
+}
+
+BFW::Rasterizer::Context& BFW::Rasterizer::Context::operator= (Context&& _Other) noexcept
+{
+	if (this == &_Other)
+	{
+		return *this;
+	}
+
+	for (size_t _Index = 0; _Index < TextureGUIDs.GetSize(); _Index++)
+	{
+		GUID::Release(TextureGUIDs[_Index]);
+	}
+
+	for (size_t _Index = 0; _Index < CubeTextureGUIDs.GetSize(); _Index++)
+	{
+		GUID::Release(CubeTextureGUIDs[_Index]);
+	}
+
+	Parent = _Other.Parent;
+	ClearColorValue = (Math::Vec4&&)(_Other.ClearColorValue);
+	ClearDepthValue = _Other.ClearDepthValue;
+	ViewPortX = _Other.ViewPortX;
+	ViewPortY = _Other.ViewPortY;
+	ViewPortWidth = _Other.ViewPortWidth;
+	ViewPortHeight = _Other.ViewPortHeight;
+	CullingType = _Other.CullingType;
+	DepthTestingType = _Other.DepthTestingType;
+	BlendingType = _Other.BlendingType;
+	TextureGUIDs = (Vector<uint64_t>&&)(_Other.TextureGUIDs);
+	Textures = (Trie<const Texture*>&&)(_Other.Textures);
+	CubeTextureGUIDs = (Vector<uint64_t>&&)(_Other.CubeTextureGUIDs);
+	CubeTextures = (Trie<const CubeTexture*>&&)(_Other.CubeTextures);
+	UniformBufferBindings = (Vector<const UniformBuffer*>&&)(_Other.UniformBufferBindings);
+	UniformBufferBindingOffsets = (Vector<size_t>&&)(_Other.UniformBufferBindingOffsets);
+	UniformBufferBindingSizes = (Vector<size_t>&&)(_Other.UniformBufferBindingSizes);
+
+	_Other.Parent = nullptr;
+	_Other.ClearDepthValue = 1.0f;
+	_Other.ViewPortX = 0;
+	_Other.ViewPortY = 0;
+	_Other.ViewPortWidth = 0;
+	_Other.ViewPortHeight = 0;
+	_Other.CullingType = _NoCullingType;
+	_Other.DepthTestingType = _NoDepthTestingType;
+	_Other.BlendingType = _NoBlendingType;
+
+	return *this;
+}
+
+void BFW::Rasterizer::Context::VertexPass()
+{
+	...;
+}
+
+void BFW::Rasterizer::Context::GeometryPass()
+{
+	...;
+}
+
+void BFW::Rasterizer::Context::ClippingPass()
+{
+	...;
+}
+
+void BFW::Rasterizer::Context::CullingPass()
+{
+	...;
+}
+
+void BFW::Rasterizer::Context::RasterizingPass()
+{
+	...;
 }
 
 

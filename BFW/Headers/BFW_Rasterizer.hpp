@@ -149,6 +149,8 @@ namespace BFW
 
 		private:
 
+			friend Context;
+
 			Vector<uint8_t> DataVector;
 
 		};
@@ -291,7 +293,26 @@ namespace BFW
 
 		};
 
-		class BFW_API TextureSDR
+		class BFW_API Texture
+		{
+
+		public:
+
+			virtual const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const = 0;
+
+		protected:
+
+			Texture();
+			Texture(const Texture& _Other);
+			Texture(Texture&& _Other) noexcept;
+			virtual ~Texture();
+
+			Texture& operator= (const Texture& _Other);
+			Texture& operator= (Texture&& _Other) noexcept;
+
+		};
+
+		class BFW_API TextureSDR : public Texture
 		{
 
 		public:
@@ -305,8 +326,7 @@ namespace BFW
 			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
 			void WrappingTypes(const uint8_t _XWrappingType, const uint8_t _YWrappingType);
 
-			const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const;
-			const Math::Vec4 Sample(const Math::Vec3& _TextureCoords) const;
+			const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const override;
 
 			TextureSDR& operator= (const TextureSDR& _Other);
 			TextureSDR& operator= (TextureSDR&& _Other) noexcept;
@@ -327,7 +347,7 @@ namespace BFW
 
 		};
 
-		class BFW_API TextureHDR
+		class BFW_API TextureHDR : public Texture
 		{
 
 		public:
@@ -341,8 +361,7 @@ namespace BFW
 			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
 			void WrappingTypes(const uint8_t _XWrappingType, const uint8_t _YWrappingType);
 
-			const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const;
-			const Math::Vec4 Sample(const Math::Vec3& _TextureCoords) const;
+			const Math::Vec4 Sample(const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const override;
 
 			TextureHDR& operator= (const TextureHDR& _Other);
 			TextureHDR& operator= (TextureHDR&& _Other) noexcept;
@@ -363,7 +382,26 @@ namespace BFW
 
 		};
 
-		class BFW_API CubeTextureSDR
+		class BFW_API CubeTexture
+		{
+
+		public:
+
+			virtual const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const = 0;
+
+		protected:
+
+			CubeTexture();
+			CubeTexture(const CubeTexture& _Other);
+			CubeTexture(CubeTexture&& _Other) noexcept;
+			virtual ~CubeTexture();
+
+			CubeTexture& operator= (const CubeTexture& _Other);
+			CubeTexture& operator= (CubeTexture&& _Other) noexcept;
+
+		};
+
+		class BFW_API CubeTextureSDR : public CubeTexture
 		{
 
 		public:
@@ -376,8 +414,7 @@ namespace BFW
 			void Data(const size_t _Face, const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const uint8_t* _Data);
 			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
 
-			const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const;
-			const Math::Vec4 Sample(const Math::Vec4& _Direction) const;
+			const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const override;
 
 			CubeTextureSDR& operator= (const CubeTextureSDR& _Other);
 			CubeTextureSDR& operator= (CubeTextureSDR&& _Other) noexcept;
@@ -390,7 +427,7 @@ namespace BFW
 
 		};
 
-		class BFW_API CubeTextureHDR
+		class BFW_API CubeTextureHDR : public CubeTexture
 		{
 
 		public:
@@ -403,8 +440,7 @@ namespace BFW
 			void Data(const size_t _Face, const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const float* _Data);
 			void FilteringTypes(const uint8_t _XFilteringType, const uint8_t _YFilteringType, const uint8_t _ZFilteringType);
 
-			const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const;
-			const Math::Vec4 Sample(const Math::Vec4& _Direction) const;
+			const Math::Vec4 Sample(const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const override;
 
 			CubeTextureHDR& operator= (const CubeTextureHDR& _Other);
 			CubeTextureHDR& operator= (CubeTextureHDR&& _Other) noexcept;
@@ -446,6 +482,8 @@ namespace BFW
 
 		private:
 
+			friend Context;
+
 			Assets::BitMap* ColorSDR;
 			Assets::Hdr* ColorHDR;
 			Assets::Hdr* Depth;
@@ -457,28 +495,34 @@ namespace BFW
 
 		public:
 
-			Context();
+			Context(const Context* _Parent = nullptr);
 			Context(const Context& _Other);
 			Context(Context&& _Other) noexcept;
 			~Context();
 
-			void Clear();
-			void ClearColor();
-			void ClearDepth();
+			void Clear(FrameBuffer& _FBO);
+			void ClearColor(FrameBuffer& _FBO);
+			void ClearDepth(FrameBuffer& _FBO);
 
 			void DrawArrays(const uint8_t _Shape, const size_t _First, const size_t _Count, const VertexArray& _VAO, const Program& _Program, FrameBuffer& _FBO);
 			void DrawElements(const uint8_t _Shape, const size_t _Count, const void* _Indices, const VertexArray& _VAO, const Program& _Program, FrameBuffer& _FBO);
+
+			const Math::Vec4 Sample(const uint64_t _GUID, const Math::Vec2& _TextureCoords, const float _MipLevel = 0.0f) const;
+			const Math::Vec4 Sample(const uint64_t _GUID, const Math::Vec3& _Direction, const float _MipLevel = 0.0f) const;
 
 			void SetClearColorValue(const Math::Vec4& _ClearColorValue);
 			void SetClearDepthValue(const float _ClearDepthValue);
 
 			void SetViewPort(const intptr_t _ViewPortX, const intptr_t _ViewPortY, const size_t _ViewPortWidth, const size_t _ViewPortHeight);
 
-			void SetCullingType(const uint8_t _CullingType);
-			void SetDepthTestingType(const uint8_t _DepthTestingType);
-			void SetBlendingType(const uint8_t _BlendingType);
+			const bool SetCullingType(const uint8_t _CullingType);
+			const bool SetDepthTestingType(const uint8_t _DepthTestingType);
+			const bool SetBlendingType(const uint8_t _BlendingType);
 
-			void SetUniformBufferBinding(const UniformBuffer* _UniformBufferBinding, const size_t _UniformBufferBindingOffset, const size_t _UniformBufferBindingSize);
+			void SetTextureGUID(const Texture* _Texture, const uint64_t _GUID);
+			void SetCubeTextureGUID(const CubeTexture* _Texture, const uint64_t _GUID);
+
+			void SetUniformBufferBinding(const size_t _Slot, const UniformBuffer* _UniformBufferBinding, const size_t _UniformBufferBindingOffset, const size_t _UniformBufferBindingSize);
 
 			Context& operator= (const Context& _Other);
 			Context& operator= (Context&& _Other) noexcept;
@@ -491,6 +535,8 @@ namespace BFW
 			void CullingPass();
 			void RasterizingPass();
 
+			const Context* Parent;
+
 			Math::Vec4 ClearColorValue;
 			float ClearDepthValue;
 
@@ -502,6 +548,11 @@ namespace BFW
 			uint8_t CullingType;
 			uint8_t DepthTestingType;
 			uint8_t BlendingType;
+
+			Vector<uint64_t> TextureGUIDs;
+			Trie<const Texture*> Textures;
+			Vector<uint64_t> CubeTextureGUIDs;
+			Trie<const CubeTexture*> CubeTextures;
 
 			Vector<const UniformBuffer*> UniformBufferBindings;
 			Vector<size_t> UniformBufferBindingOffsets;

@@ -255,7 +255,7 @@ namespace BFW
 					return *this;
 				}
 
-				*(Sequence<T>*)(this) = (const Sequence<T>&)(_Other);
+				Sequence<T>::operator=((const Sequence<T>&)(_Other));
 
 				return *this;
 			}
@@ -267,7 +267,7 @@ namespace BFW
 					return *this;
 				}
 
-				*(Sequence<T>*)(this) = (Sequence<T>&&)(_Other);
+				Sequence<T>::operator=((Sequence<T>&&)(_Other));
 
 				return *this;
 			}
@@ -349,7 +349,7 @@ namespace BFW
 					return *this;
 				}
 
-				*(Sequence<T>*)(this) = (const Sequence<T>&)(_Other);
+				Sequence<T>::operator=((const Sequence<T>&)(_Other));
 
 				return *this;
 			}
@@ -361,7 +361,7 @@ namespace BFW
 					return *this;
 				}
 
-				*(Sequence<T>*)(this) = (Sequence<T>&&)(_Other);
+				Sequence<T>::operator=((Sequence<T>&&)(_Other));
 
 				return *this;
 			}
