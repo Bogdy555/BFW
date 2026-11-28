@@ -484,9 +484,11 @@ namespace BFW
 
 			friend Context;
 
-			Assets::BitMap* ColorSDR;
-			Assets::Hdr* ColorHDR;
-			Assets::Hdr* Depth;
+			TextureSDR* ColorSDR;
+			TextureHDR* ColorHDR;
+			TextureHDR* Depth;
+			size_t ColorMip;
+			size_t DepthMip;
 
 		};
 
@@ -559,9 +561,6 @@ namespace BFW
 			Vector<size_t> UniformBufferBindingSizes;
 
 		};
-
-		void SetLastError();
-		const bool GetLastError();
 
 	}
 

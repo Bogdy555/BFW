@@ -545,7 +545,7 @@ void BFW::Rasterizer::Uniform::Set4f(const float _XVal, const float _YVal, const
 	Floats[0] = _XVal;
 	Floats[1] = _YVal;
 	Floats[2] = _ZVal;
-	Floats[4] = _WVal;
+	Floats[3] = _WVal;
 }
 
 void BFW::Rasterizer::Uniform::Set1i(const int32_t _XVal)
@@ -571,7 +571,7 @@ void BFW::Rasterizer::Uniform::Set4i(const int32_t _XVal, const int32_t _YVal, c
 	Ints[0] = _XVal;
 	Ints[1] = _YVal;
 	Ints[2] = _ZVal;
-	Ints[4] = _WVal;
+	Ints[3] = _WVal;
 }
 
 void BFW::Rasterizer::Uniform::Set1ui(const uint32_t _XVal)
@@ -597,7 +597,7 @@ void BFW::Rasterizer::Uniform::Set4ui(const uint32_t _XVal, const uint32_t _YVal
 	UInts[0] = _XVal;
 	UInts[1] = _YVal;
 	UInts[2] = _ZVal;
-	UInts[4] = _WVal;
+	UInts[3] = _WVal;
 }
 
 void BFW::Rasterizer::Uniform::Set2m(const float* _Data)
@@ -952,7 +952,7 @@ BFW::Rasterizer::TextureSDR::~TextureSDR()
 
 void BFW::Rasterizer::TextureSDR::Data(const size_t _Level, const size_t _Width, const size_t _Height, const size_t _ChannelsCount, const uint8_t* _Data)
 {
-	if (_Level > TextureChain.GetSize() || !_Width || !_Height || !_ChannelsCount || _ChannelsCount > 4)
+	if (_Level > TextureChain.GetSize() || !_Width || !_Height || !_ChannelsCount || _ChannelsCount > 4 || (_Level > 0 && (TextureChain[_Level - 1].GetWidth() <= _Width || TextureChain[_Level - 1].GetHeight() <= _Height)))
 	{
 		LastError = true;
 		return;
@@ -1455,14 +1455,20 @@ BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR() : CubeTexture(), Textures(6)
 
 }
 
-BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(const CubeTextureSDR& _Other) : CubeTexture((const CubeTexture&)(_Other)), Textures(_Other.Textures)
+BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(const CubeTextureSDR& _Other) : CubeTexture((const CubeTexture&)(_Other)), Textures(6)
 {
-
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = _Other.Textures[_Index];
+	}
 }
 
-BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(CubeTextureSDR&& _Other) noexcept : CubeTexture((CubeTexture&&)(_Other)), Textures((Vector<TextureSDR>&&)(_Other.Textures))
+BFW::Rasterizer::CubeTextureSDR::CubeTextureSDR(CubeTextureSDR&& _Other) noexcept : CubeTexture((CubeTexture&&)(_Other)), Textures(6)
 {
-	_Other.Textures = Vector<TextureSDR>(6);
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = (TextureSDR&&)(_Other.Textures[_Index]);
+	}
 }
 
 BFW::Rasterizer::CubeTextureSDR::~CubeTextureSDR()
@@ -1564,7 +1570,11 @@ BFW::Rasterizer::CubeTextureSDR& BFW::Rasterizer::CubeTextureSDR::operator= (con
 	}
 
 	CubeTexture::operator=((const CubeTexture&)(_Other));
-	Textures = _Other.Textures;
+
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = _Other.Textures[_Index];
+	}
 
 	return *this;
 }
@@ -1577,9 +1587,11 @@ BFW::Rasterizer::CubeTextureSDR& BFW::Rasterizer::CubeTextureSDR::operator= (Cub
 	}
 
 	CubeTexture::operator=((CubeTexture&&)(_Other));
-	Textures = (Vector<TextureSDR>&&)(_Other.Textures);
 
-	_Other.Textures = Vector<TextureSDR>(6);
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = (TextureSDR&&)(_Other.Textures[_Index]);
+	}
 
 	return *this;
 }
@@ -1591,14 +1603,20 @@ BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR() : CubeTexture(), Textures(6)
 
 }
 
-BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(const CubeTextureHDR& _Other) : CubeTexture((const CubeTexture&)(_Other)), Textures(_Other.Textures)
+BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(const CubeTextureHDR& _Other) : CubeTexture((const CubeTexture&)(_Other)), Textures(6)
 {
-
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = _Other.Textures[_Index];
+	}
 }
 
-BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(CubeTextureHDR&& _Other) noexcept : CubeTexture((CubeTexture&&)(_Other)), Textures((Vector<TextureHDR>&&)(_Other.Textures))
+BFW::Rasterizer::CubeTextureHDR::CubeTextureHDR(CubeTextureHDR&& _Other) noexcept : CubeTexture((CubeTexture&&)(_Other)), Textures(6)
 {
-	_Other.Textures = Vector<TextureHDR>(6);
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = (TextureHDR&&)(_Other.Textures[_Index]);
+	}
 }
 
 BFW::Rasterizer::CubeTextureHDR::~CubeTextureHDR()
@@ -1700,7 +1718,11 @@ BFW::Rasterizer::CubeTextureHDR& BFW::Rasterizer::CubeTextureHDR::operator= (con
 	}
 
 	CubeTexture::operator=((const CubeTexture&)(_Other));
-	Textures = _Other.Textures;
+
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = _Other.Textures[_Index];
+	}
 
 	return *this;
 }
@@ -1713,30 +1735,34 @@ BFW::Rasterizer::CubeTextureHDR& BFW::Rasterizer::CubeTextureHDR::operator= (Cub
 	}
 
 	CubeTexture::operator=((CubeTexture&&)(_Other));
-	Textures = (Vector<TextureHDR>&&)(_Other.Textures);
 
-	_Other.Textures = Vector<TextureHDR>(6);
+	for (size_t _Index = 0; _Index < 6; _Index++)
+	{
+		Textures[_Index] = (TextureHDR&&)(_Other.Textures[_Index]);
+	}
 
 	return *this;
 }
 
 
 
-BFW::Rasterizer::FrameBuffer::FrameBuffer() : ColorSDR(nullptr), ColorHDR(nullptr), Depth(nullptr)
+BFW::Rasterizer::FrameBuffer::FrameBuffer() : ColorSDR(nullptr), ColorHDR(nullptr), Depth(nullptr), ColorMip(0), DepthMip(0)
 {
 
 }
 
-BFW::Rasterizer::FrameBuffer::FrameBuffer(const FrameBuffer& _Other) : ColorSDR(_Other.ColorSDR), ColorHDR(_Other.ColorHDR), Depth(_Other.Depth)
+BFW::Rasterizer::FrameBuffer::FrameBuffer(const FrameBuffer& _Other) : ColorSDR(_Other.ColorSDR), ColorHDR(_Other.ColorHDR), Depth(_Other.Depth), ColorMip(_Other.ColorMip), DepthMip(_Other.DepthMip)
 {
 
 }
 
-BFW::Rasterizer::FrameBuffer::FrameBuffer(FrameBuffer&& _Other) noexcept : ColorSDR(_Other.ColorSDR), ColorHDR(_Other.ColorHDR), Depth(_Other.Depth)
+BFW::Rasterizer::FrameBuffer::FrameBuffer(FrameBuffer&& _Other) noexcept : ColorSDR(_Other.ColorSDR), ColorHDR(_Other.ColorHDR), Depth(_Other.Depth), ColorMip(_Other.ColorMip), DepthMip(_Other.DepthMip)
 {
 	_Other.ColorSDR = nullptr;
 	_Other.ColorHDR = nullptr;
 	_Other.Depth = nullptr;
+	_Other.ColorMip = 0;
+	_Other.DepthMip = 0;
 }
 
 BFW::Rasterizer::FrameBuffer::~FrameBuffer()
@@ -1752,8 +1778,9 @@ void BFW::Rasterizer::FrameBuffer::AttachColorSDR(TextureSDR& _Texture, const si
 		return;
 	}
 
-	ColorSDR = &_Texture.TextureChain[_Level];
+	ColorSDR = &_Texture;
 	ColorHDR = nullptr;
+	ColorMip = _Level;
 }
 
 void BFW::Rasterizer::FrameBuffer::AttachColorHDR(TextureHDR& _Texture, const size_t _Level)
@@ -1765,7 +1792,8 @@ void BFW::Rasterizer::FrameBuffer::AttachColorHDR(TextureHDR& _Texture, const si
 	}
 
 	ColorSDR = nullptr;
-	ColorHDR = &_Texture.TextureChain[_Level];
+	ColorHDR = &_Texture;
+	ColorMip = _Level;
 }
 
 void BFW::Rasterizer::FrameBuffer::AttachColorCubeSDR(CubeTextureSDR& _Texture, const size_t _Face, const size_t _Level)
@@ -1776,8 +1804,9 @@ void BFW::Rasterizer::FrameBuffer::AttachColorCubeSDR(CubeTextureSDR& _Texture, 
 		return;
 	}
 
-	ColorSDR = &_Texture.Textures[_Face].TextureChain[_Level];
+	ColorSDR = &_Texture.Textures[_Face];
 	ColorHDR = nullptr;
+	ColorMip = _Level;
 }
 
 void BFW::Rasterizer::FrameBuffer::AttachColorCubeHDR(CubeTextureHDR& _Texture, const size_t _Face, const size_t _Level)
@@ -1789,7 +1818,8 @@ void BFW::Rasterizer::FrameBuffer::AttachColorCubeHDR(CubeTextureHDR& _Texture, 
 	}
 
 	ColorSDR = nullptr;
-	ColorHDR = &_Texture.Textures[_Face].TextureChain[_Level];
+	ColorHDR = &_Texture.Textures[_Face];
+	ColorMip = _Level;
 }
 
 void BFW::Rasterizer::FrameBuffer::AttachDepth(TextureHDR& _Texture, const size_t _Level)
@@ -1800,18 +1830,21 @@ void BFW::Rasterizer::FrameBuffer::AttachDepth(TextureHDR& _Texture, const size_
 		return;
 	}
 
-	Depth = &_Texture.TextureChain[_Level];
+	Depth = &_Texture;
+	DepthMip = _Level;
 }
 
 void BFW::Rasterizer::FrameBuffer::DetachColor()
 {
 	ColorSDR = nullptr;
 	ColorHDR = nullptr;
+	ColorMip = 0;
 }
 
 void BFW::Rasterizer::FrameBuffer::DetachDepth()
 {
 	Depth = nullptr;
+	DepthMip = 0;
 }
 
 const bool BFW::Rasterizer::FrameBuffer::IsValid() const
@@ -1845,13 +1878,13 @@ void BFW::Rasterizer::FrameBuffer::ReadSDR(const intptr_t _PositionX, const intp
 
 	if (ColorSDR)
 	{
-		for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorSDR->GetHeight()) ? _Height + _PositionY : ColorSDR->GetHeight()); _ForPositionY++)
+		for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorSDR->TextureChain[ColorMip].GetHeight()) ? _Height + _PositionY : ColorSDR->TextureChain[ColorMip].GetHeight()); _ForPositionY++)
 		{
-			for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorSDR->GetWidth()) ? _Width + _PositionX : ColorSDR->GetWidth()); _ForPositionX++)
+			for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorSDR->TextureChain[ColorMip].GetWidth()) ? _Width + _PositionX : ColorSDR->TextureChain[ColorMip].GetWidth()); _ForPositionX++)
 			{
-				for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorSDR->GetChannelsCount() ? _ChannelsCount : ColorSDR->GetChannelsCount()); _Channel++)
+				for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorSDR->TextureChain[ColorMip].GetChannelsCount() ? _ChannelsCount : ColorSDR->TextureChain[ColorMip].GetChannelsCount()); _Channel++)
 				{
-					_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] = (*ColorSDR)[_ForPositionY][_ForPositionX * ColorSDR->GetChannelsCount() + _Channel];
+					_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] = ColorSDR->TextureChain[ColorMip][_ForPositionY][_ForPositionX * ColorSDR->TextureChain[ColorMip].GetChannelsCount() + _Channel];
 				}
 			}
 		}
@@ -1859,18 +1892,18 @@ void BFW::Rasterizer::FrameBuffer::ReadSDR(const intptr_t _PositionX, const intp
 		return;
 	}
 
-	for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorHDR->GetHeight()) ? _Height + _PositionY : ColorHDR->GetHeight()); _ForPositionY++)
+	for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorHDR->TextureChain[ColorMip].GetHeight()) ? _Height + _PositionY : ColorHDR->TextureChain[ColorMip].GetHeight()); _ForPositionY++)
 	{
-		for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorHDR->GetWidth()) ? _Width + _PositionX : ColorHDR->GetWidth()); _ForPositionX++)
+		for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorHDR->TextureChain[ColorMip].GetWidth()) ? _Width + _PositionX : ColorHDR->TextureChain[ColorMip].GetWidth()); _ForPositionX++)
 		{
-			for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorHDR->GetChannelsCount() ? _ChannelsCount : ColorHDR->GetChannelsCount()); _Channel++)
+			for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorHDR->TextureChain[ColorMip].GetChannelsCount() ? _ChannelsCount : ColorHDR->TextureChain[ColorMip].GetChannelsCount()); _Channel++)
 			{
 				_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] =
 					(uint8_t)
 					(
 						Math::Clamp
 						(
-							(*ColorHDR)[_ForPositionY][_ForPositionX * ColorHDR->GetChannelsCount() + _Channel],
+							ColorHDR->TextureChain[ColorMip][_ForPositionY][_ForPositionX * ColorHDR->TextureChain[ColorMip].GetChannelsCount() + _Channel],
 							0.0f,
 							1.0f
 						) *
@@ -1907,13 +1940,13 @@ void BFW::Rasterizer::FrameBuffer::ReadHDR(const intptr_t _PositionX, const intp
 
 	if (ColorSDR)
 	{
-		for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorSDR->GetHeight()) ? _Height + _PositionY : ColorSDR->GetHeight()); _ForPositionY++)
+		for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorSDR->TextureChain[ColorMip].GetHeight()) ? _Height + _PositionY : ColorSDR->TextureChain[ColorMip].GetHeight()); _ForPositionY++)
 		{
-			for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorSDR->GetWidth()) ? _Width + _PositionX : ColorSDR->GetWidth()); _ForPositionX++)
+			for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorSDR->TextureChain[ColorMip].GetWidth()) ? _Width + _PositionX : ColorSDR->TextureChain[ColorMip].GetWidth()); _ForPositionX++)
 			{
-				for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorSDR->GetChannelsCount() ? _ChannelsCount : ColorSDR->GetChannelsCount()); _Channel++)
+				for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorSDR->TextureChain[ColorMip].GetChannelsCount() ? _ChannelsCount : ColorSDR->TextureChain[ColorMip].GetChannelsCount()); _Channel++)
 				{
-					_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] = (float)((*ColorSDR)[_ForPositionY][_ForPositionX * ColorSDR->GetChannelsCount() + _Channel]) / 255.0f;
+					_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] = (float)(ColorSDR->TextureChain[ColorMip][_ForPositionY][_ForPositionX * ColorSDR->TextureChain[ColorMip].GetChannelsCount() + _Channel]) / 255.0f;
 				}
 			}
 		}
@@ -1921,13 +1954,13 @@ void BFW::Rasterizer::FrameBuffer::ReadHDR(const intptr_t _PositionX, const intp
 		return;
 	}
 
-	for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorHDR->GetHeight()) ? _Height + _PositionY : ColorHDR->GetHeight()); _ForPositionY++)
+	for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(ColorHDR->TextureChain[ColorMip].GetHeight()) ? _Height + _PositionY : ColorHDR->TextureChain[ColorMip].GetHeight()); _ForPositionY++)
 	{
-		for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorHDR->GetWidth()) ? _Width + _PositionX : ColorHDR->GetWidth()); _ForPositionX++)
+		for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(ColorHDR->TextureChain[ColorMip].GetWidth()) ? _Width + _PositionX : ColorHDR->TextureChain[ColorMip].GetWidth()); _ForPositionX++)
 		{
-			for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorHDR->GetChannelsCount() ? _ChannelsCount : ColorHDR->GetChannelsCount()); _Channel++)
+			for (size_t _Channel = 0; _Channel < (_ChannelsCount < ColorHDR->TextureChain[ColorMip].GetChannelsCount() ? _ChannelsCount : ColorHDR->TextureChain[ColorMip].GetChannelsCount()); _Channel++)
 			{
-				_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] = (*ColorHDR)[_ForPositionY][_ForPositionX * ColorHDR->GetChannelsCount() + _Channel];
+				_Data[((_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width) * _ChannelsCount + _Channel] = ColorHDR->TextureChain[ColorMip][_ForPositionY][_ForPositionX * ColorHDR->TextureChain[ColorMip].GetChannelsCount() + _Channel];
 			}
 		}
 	}
@@ -1949,11 +1982,11 @@ void BFW::Rasterizer::FrameBuffer::ReadDepth(const intptr_t _PositionX, const in
 		}
 	}
 
-	for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(Depth->GetHeight()) ? _Height + _PositionY : Depth->GetHeight()); _ForPositionY++)
+	for (size_t _ForPositionY = _PositionY * (_PositionY >= 0); _ForPositionY < ((intptr_t)(_Height) + _PositionY < (intptr_t)(Depth->TextureChain[DepthMip].GetHeight()) ? _Height + _PositionY : Depth->TextureChain[DepthMip].GetHeight()); _ForPositionY++)
 	{
-		for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(Depth->GetWidth()) ? _Width + _PositionX : Depth->GetWidth()); _ForPositionX++)
+		for (size_t _ForPositionX = _PositionX * (_PositionX >= 0); _ForPositionX < ((intptr_t)(_Width) + _PositionX < (intptr_t)(Depth->TextureChain[DepthMip].GetWidth()) ? _Width + _PositionX : Depth->TextureChain[DepthMip].GetWidth()); _ForPositionX++)
 		{
-			_Data[(_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width] = (*Depth)[_ForPositionY][_ForPositionX];
+			_Data[(_ForPositionX - _PositionX) + (_ForPositionY - _PositionY) * _Width] = Depth->TextureChain[DepthMip][_ForPositionY][_ForPositionX];
 		}
 	}
 }
@@ -1968,6 +2001,8 @@ BFW::Rasterizer::FrameBuffer& BFW::Rasterizer::FrameBuffer::operator= (const Fra
 	ColorSDR = _Other.ColorSDR;
 	ColorHDR = _Other.ColorHDR;
 	Depth = _Other.Depth;
+	ColorMip = _Other.ColorMip;
+	DepthMip = _Other.DepthMip;
 
 	return *this;
 }
@@ -1982,10 +2017,14 @@ BFW::Rasterizer::FrameBuffer& BFW::Rasterizer::FrameBuffer::operator= (FrameBuff
 	ColorSDR = _Other.ColorSDR;
 	ColorHDR = _Other.ColorHDR;
 	Depth = _Other.Depth;
+	ColorMip = _Other.ColorMip;
+	DepthMip = _Other.DepthMip;
 
 	_Other.ColorSDR = nullptr;
 	_Other.ColorHDR = nullptr;
 	_Other.Depth = nullptr;
+	_Other.ColorMip = 0;
+	_Other.DepthMip = 0;
 
 	return *this;
 }
@@ -2141,7 +2180,7 @@ const BFW::Math::Vec4 BFW::Rasterizer::Context::Sample(const uint64_t _GUID, con
 		return Parent->Sample(_GUID, _TextureCoords, _MipLevel);
 	}
 
-	Textures[BFW_TO_STRING(_GUID).c_str()]->Sample(_TextureCoords, _MipLevel);
+	return Textures[BFW_TO_STRING(_GUID).c_str()]->Sample(_TextureCoords, _MipLevel);
 }
 
 const BFW::Math::Vec4 BFW::Rasterizer::Context::Sample(const uint64_t _GUID, const Math::Vec3& _Direction, const float _MipLevel) const
@@ -2156,7 +2195,7 @@ const BFW::Math::Vec4 BFW::Rasterizer::Context::Sample(const uint64_t _GUID, con
 		return Parent->Sample(_GUID, _Direction, _MipLevel);
 	}
 
-	CubeTextures[BFW_TO_STRING(_GUID).c_str()]->Sample(_Direction, _MipLevel);
+	return CubeTextures[BFW_TO_STRING(_GUID).c_str()]->Sample(_Direction, _MipLevel);
 }
 
 void BFW::Rasterizer::Context::SetClearColorValue(const Math::Vec4& _ClearColorValue)
@@ -2179,7 +2218,7 @@ void BFW::Rasterizer::Context::SetViewPort(const intptr_t _ViewPortX, const intp
 
 const bool BFW::Rasterizer::Context::SetCullingType(const uint8_t _CullingType)
 {
-	if (CullingType > _CounterClockWiseCullingType)
+	if (_CullingType > _CounterClockWiseCullingType)
 	{
 		return false;
 	}
@@ -2191,7 +2230,7 @@ const bool BFW::Rasterizer::Context::SetCullingType(const uint8_t _CullingType)
 
 const bool BFW::Rasterizer::Context::SetDepthTestingType(const uint8_t _DepthTestingType)
 {
-	if (DepthTestingType > _HigherOrEqualDepthTestingType)
+	if (_DepthTestingType > _HigherOrEqualDepthTestingType)
 	{
 		return false;
 	}
@@ -2203,7 +2242,7 @@ const bool BFW::Rasterizer::Context::SetDepthTestingType(const uint8_t _DepthTes
 
 const bool BFW::Rasterizer::Context::SetBlendingType(const uint8_t _BlendingType)
 {
-	if (BlendingType > _AdditiveBlendingType)
+	if (_BlendingType > _AdditiveBlendingType)
 	{
 		return false;
 	}
@@ -2397,22 +2436,4 @@ void BFW::Rasterizer::Context::CullingPass()
 void BFW::Rasterizer::Context::RasterizingPass()
 {
 	...;
-}
-
-
-
-void BFW::Rasterizer::SetLastError()
-{
-	LastError = true;
-}
-
-const bool BFW::Rasterizer::GetLastError()
-{
-	if (LastError)
-	{
-		LastError = false;
-		return true;
-	}
-
-	return false;
 }
